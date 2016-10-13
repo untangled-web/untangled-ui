@@ -1,20 +1,19 @@
 (ns untangled.components.ui.component.image-library
-  (:require
-    [clojure.string :as str]
-    [goog.object :as gobj]
-    [om.dom :as dom]
-    [om.next :as om :refer-macros [defui]]
-    [untangled.client.core :as uc]
-    [untangled.client.data-fetch :as df]
-    [untangled.client.mutations :as m]
-    [untangled.components.ui.dom :refer [get-icon]]
-    [untangled.i18n :refer-macros [tr trf]])
-  (:import goog.events))
+  (:require [om.dom :as dom]
+            [om.next :as om :refer-macros [defui]]
+            [untangled.i18n :refer-macros [tr trf]]
+            [goog.object :as gobj]
+            [clojure.string :as str]
+            [untangled.client.core :as uc]
+            [untangled.client.data-fetch :as df]
+            [untangled.client.mutations :as m])
+  (:import (goog.events)))
 
 (defn debounce [timeout f]
   (let [id (atom nil)]
     (fn [& args]
-      (when @id (js/clearTimeout @id))
+      (if (not (nil? @id))
+        (js/clearTimeout @id))
       (reset! id
         (js/setTimeout
           (partial apply f args)
@@ -210,7 +209,7 @@
                            :onChange    (.search this id)
                            :value       (or search-string "")
                            :placeholder (tr "Search your images")})
-           (get-icon :search)))
+           ((.getIconFn this) :search)))
         (dom/div #js {:className "u-end"}))))
   (componentDidMount [this newprops]
     (let [image-list (om/get-state this :image-list)]
@@ -219,6 +218,8 @@
                         (when (<= (.-scrollHeight image-list)
                                   (+ (.-offsetHeight image-list) (.-scrollTop image-list)))
                           (.show-more this)))))))
+  (getIconFn [this]
+    (om/get-computed this :icon-fn))
   (render-images [this]
     (let [{:keys [id current-page images]} (om/props this)
           {:keys [image-cdn]} (om/get-computed this)
@@ -249,7 +250,7 @@
         (dom/div #js {:className "u-start"}
           (dom/button #js {:className "c-button"
                           :onClick #(.click (om/get-state this :file-input))}
-           (get-icon :cloud_upload)
+           ((.getIconFn this) :cloud_upload)
            (dom/span nil (tr "Upload image"))))
         (dom/div #js {:className "u-end"}
           (dom/button #js {:className "c-button c-button--text"
@@ -264,10 +265,10 @@
   (render-header [this]
     (let [{:keys [onClose]} (om/get-computed this)]
       (dom/div #js {:className "o-modal__title"}
-        (get-icon :arrow_back {:className ["u-hide@md-up"] :title (tr "Back") :onClick onClose})
+        ((.getIconFn this) :arrow_back :className ["u-hide@md-up"] :title (tr "Back") :onClick onClose)
         (dom/h1 #js {:className "o-modal__heading"}
           (tr "Choose an image"))
-        (get-icon :close {:className ["u-hide@sm"] :title (tr "Close") :onClick onClose}))))
+        ((.getIconFn this) :close :className ["u-hide@sm"] :title (tr "Close") :onClick onClose))))
 
   (render-backdrop [this]
     (let [{:keys [onClose]} (om/get-computed this)]
