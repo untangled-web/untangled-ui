@@ -1,6 +1,6 @@
-(ns untangled-components.ui.component.calendar
+(ns untangled.components.ui.component.calendar
   (:require [clojure.set :refer [difference]]
-            [untangled-components.ui.dom :as n]
+            [untangled.components.ui.dom :as n]
             [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
             [untangled.client.mutations :as m]

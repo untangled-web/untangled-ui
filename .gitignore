@@ -5,3 +5,4 @@ resources/public/js
 .idea
 node_modules
 target
+pom.xml

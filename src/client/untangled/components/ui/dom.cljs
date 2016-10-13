@@ -1,4 +1,4 @@
-(ns untangled-components.ui.dom
+(ns untangled.components.ui.dom
   (:require
     [om.dom :as dom]
     [goog.object]))

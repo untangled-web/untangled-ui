@@ -1,7 +1,7 @@
-(ns untangled-components.ui.component.table-spec
+(ns untangled.components.ui.component.table-spec
   (:require [untangled-spec.core :refer-macros [behavior specification assertions component]]
             yahoo.intl-messageformat-with-locales
-            [untangled-components.ui.component.table :as t :refer [sort-table money-formatter number-formatter]]))
+            [untangled.components.ui.component.table :as t :refer [sort-table money-formatter number-formatter]]))
 
 (def table-state
   {:available-columns #{:a :b}

@@ -8,6 +8,7 @@
                  [cljsjs/topojson "1.6.18-0"]
                  [clojurewerkz/money "1.9.0"]
                  [com.andrewmcveigh/cljs-time "0.3.14"]
+                 [image-resizer "0.1.9"]
                  [lein-doo "0.1.7"]
                  [org.clojure/clojure "1.8.0" :scope "provided"]
                  [org.clojure/clojurescript "1.9.229" :scope "provided"]
@@ -20,8 +21,9 @@
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev/clj" "src/client"]
-  :test-paths ["specs/client"]
+  :source-paths ["dev" "src/server" "src/client"]
+  :test-paths ["specs"]
+  :resource-paths ["src" "resources"]
 
   :jvm-opts ["-server" "-Xmx1024m" "-Xms512m" "-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js/specs" "resources/public/js/compiled" "target" "resources/private/js"]
@@ -33,7 +35,7 @@
               [{:id           "cards"
                 :source-paths ["src/cards" "src/client" "src/shared"]
                 :figwheel     {:devcards true}
-                :compiler     {:main                 untangled-components.cards-ui
+                :compiler     {:main                 untangled.components.cards-ui
                                :asset-path           "js/compiled/cards"
                                :output-to            "resources/public/js/compiled/cards.js"
                                :output-dir           "resources/public/js/compiled/cards"
@@ -41,18 +43,18 @@
                                :recompile-dependents true
                                :source-map-timestamp true}}
                {:id           "test"
-                :source-paths ["specs/client" "specs/shared" "src/client" "src/shared" ]
+                :source-paths ["specs/client" "src/client" "src/shared"]
                 :figwheel     true
-                :compiler     {:main                 untangled-components.test-main
+                :compiler     {:main                 untangled.components.test-main
                                :output-to            "resources/public/js/specs/specs.js"
                                :output-dir           "resources/public/js/compiled/specs"
                                :asset-path           "js/compiled/specs"
                                :recompile-dependents true
                                :optimizations        :none}}
                {:id           "automated-tests"
-                :source-paths ["specs/client" "specs/shared" "src/client" "src/shared"]
+                :source-paths ["specs/client" "src/client" "src/shared"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"
-                               :main          untangled-components.all-tests
+                               :main          untangled.components.all-tests
                                :asset-path    "js"
                                :output-dir    "resources/private/js"
                                :optimizations :none
@@ -67,6 +69,6 @@
                                       [org.clojure/tools.namespace "0.2.11"]
                                       [org.clojure/tools.nrepl "0.2.12"]
                                       [devcards "0.2.2" :exclusions [org.omcljs/om]]]
-                       :repl-options {:init-ns          user
+                       :repl-options {:init-ns          clj.user
                                       :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                       :port             7001}}})

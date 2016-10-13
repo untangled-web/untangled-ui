@@ -1,10 +1,10 @@
-(ns untangled-components.tables
+(ns untangled.components.tables
   (:require
     [om.next :as om :refer-macros [defui]]
     [cljs.test :refer-macros [is are]]
     [untangled.i18n :as i :refer-macros [tr trf]]
     [om.dom :as dom]
-    [untangled-components.ui.component.table :refer [money-formatter number-formatter toggle-groupings sort-table sort-by-label
+    [untangled.components.ui.component.table :refer [money-formatter number-formatter toggle-groupings sort-table sort-by-label
                                        ui-grouped-table GroupedTable]]
     [devcards.core :as dc :refer-macros [defcard dom-node deftest]]
     [untangled.client.core :as uc]))

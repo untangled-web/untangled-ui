@@ -1,4 +1,4 @@
-(ns untangled-components.sample-card
+(ns untangled.components.sample-card
   (:require
     [om.dom :as dom]
     [devcards.core :refer-macros [defcard dom-node]]))

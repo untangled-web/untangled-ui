@@ -1,7 +1,6 @@
-(ns untangled-components.state.mutations
+(ns untangled.components.state.mutations
   (:require [om.next :as om]
             [untangled.client.mutations :as m :refer [mutate]]
-            [untangled-components.initial-state :as s]
             [untangled.client.impl.data-fetch :as df]
             [untangled.client.logging :as log]))
 
@@ -22,7 +21,8 @@
              (swap! state assoc-in [:visualizations :email-file :data :delta] segment))})
 
 (defmethod mutate 'dashboards/set-email-capture-segment [{:keys [state]} k {:keys [segment]}]
-  {:action (fn [] (swap! state assoc-in [:visualizations :email-capture :data :dataset] (get s/email-capture-data segment)))})
+  {:action (fn [] (swap! state assoc-in [:visualizations :email-capture :data :dataset]
+                    (throw (ex-info "not implemented correctly, oops!" {}))))})
 
 (defmethod mutate 'dashboards/set-email-capture-dropdown [{:keys [state]} k {:keys [selection]}]
   {:action (fn [] (swap! state assoc-in [:ui :email-capture-dropdown :dropdown-selection-active] selection))})

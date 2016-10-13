@@ -1,11 +1,11 @@
-(ns untangled-components.calendar
+(ns untangled.components.calendar
   (:require
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
     [devcards.core :as dc :include-macros true]
     [untangled.i18n.core :as i18n]
     [untangled.client.core :as uc]
-    [untangled-components.ui.component.calendar :as c]))
+    [untangled.components.ui.component.calendar :as c]))
 
 (defonce state (atom {:start-date     [:calendar/by-id :start-date]
                       :calendar/by-id {:start-date (c/initial-calendar :start-date #(str "Start Date")

@@ -1,4 +1,4 @@
-(ns untangled-components.ui.component.table
+(ns untangled.components.ui.component.table
   (:require
     [om.next :as om :refer-macros [defui]]
     [cljs.test :refer-macros [is are]]
