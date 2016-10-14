@@ -43,14 +43,12 @@
                                :recompile-dependents true
                                :source-map-timestamp true}}
                {:id           "test"
-                :source-paths ["specs/client" "src/client" "src/shared" "dev"]
-                :figwheel     true
-                :compiler     {:main                 untangled.components.test-main
-                               :output-to            "resources/public/js/specs.js"
-                               :output-dir           "resources/public/js/specs"
-                               :asset-path           "js/specs"
-                               :recompile-dependents true
-                               :optimizations        :none}}
+                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev"]
+                :figwheel     {:on-jsload "cljs.user/on-load"}
+                :compiler     {:main       cljs.user
+                               :output-to  "resources/public/js/specs.js"
+                               :output-dir "resources/public/js/specs"
+                               :asset-path "js/specs"}}
                {:id           "automated-tests"
                 :source-paths ["specs/client" "src/client" "src/shared"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"
