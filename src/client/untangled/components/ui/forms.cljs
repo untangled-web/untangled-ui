@@ -332,6 +332,29 @@
   [app-or-reconciler forms]
   (uc/merge-state! app-or-reconciler Forms {:all-forms forms}))
 
+(defn extract-form
+  "Get a form from component props (which are joined in by form idents). Returns the first (or only) form if no form ID is supplied.
+
+  This function assumes that the component query contains joined forms like this:
+
+  `[{(form-ident :id) (om/get-query MyForm)}]`
+
+  Calling this function as `(extract-form this :id)` (or even `(extract-form this)`) on that component would return the properties for MyForm.
+  "
+  ([component] (extract-form component nil))
+  ([component form-id]
+   (let [props (om/props component)
+         is-form-join? (fn [join-key] (and (vector? join-key) (= ::by-id (first join-key))))
+         form (if form-id
+                (get props (form-ident form-id))
+                (first (keep (fn [[k v]] (when (is-form-join? k) v)) props)))]
+     (when (:id form)
+       form))))
+
+(defn valid-form?
+  "Has the form been initialized to a state that is ready to render?"
+  [form] (and form (:state form) (:id form)))
+
 (def a {:form-state/by-instance-id {1 {:db/id                {:input/value 33 :input/valid true :input/identity true}
                                        :person/name          {:input/value "Tony"}
                                        :person/phone-numbers [[:form-state/by-instance-id 2] [:form-state/by-instance-id 3]]}

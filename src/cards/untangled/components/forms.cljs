@@ -68,9 +68,8 @@
   (query [this] [{(f/form-ident :my-form) (om/get-query MyForm)}])
   Object
   (render [this]
-    (let [p (om/props this)
-          form (get p (f/form-ident :my-form))]
-      (when (:id form)
+    (let [form (f/extract-form this)]
+      (when (f/valid-form? form)
         (ui-form form)))))
 
 (defui PhoneForm
@@ -92,9 +91,8 @@
   (query [this] [{(f/form-ident :phone-form) (om/get-query PhoneForm)}])
   Object
   (render [this]
-    (let [p (om/props this)
-          form (get p (f/form-ident :phone-form))]
-      (when (:id form)
+    (let [form (f/extract-form this)]
+      (when (f/valid-form? form)
         (ui-phone-form form)))))
 
 (dc/defcard sample-form-1
