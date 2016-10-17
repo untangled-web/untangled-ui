@@ -12,16 +12,15 @@
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.8.0" :scope "provided"]
                  [org.clojure/clojurescript "1.9.229" :scope "provided"]
-                 [org.clojure/core.async "0.2.374"]
+                 [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha46" :scope "provided"]
                  [navis/untangled-client "0.6.0-SNAPSHOT" :scope "provided"]
-                 [navis/untangled-server "0.6.1" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test" :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]]
 
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/server" "src/client" "src/shared"]
+  :source-paths ["dev" "src/server" "src/client" "src/shared" "checkouts/untangled-client/src"]
   :test-paths ["specs/server" "specs/shared"]
   :resource-paths ["src" "resources"]
 
@@ -33,7 +32,7 @@
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/cards" "src/client" "src/shared"]
+                :source-paths ["src/cards" "src/client" "src/shared" "checkouts/untangled-client/src"]
                 :figwheel     {:devcards true}
                 :compiler     {:main                 untangled.components.cards-ui
                                :asset-path           "js/cards"
@@ -43,7 +42,7 @@
                                :recompile-dependents true
                                :source-map-timestamp true}}
                {:id           "test"
-                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev"]
+                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev" "checkouts/untangled-client/src"]
                 :figwheel     {:on-jsload "cljs.user/on-load"}
                 :compiler     {:main       cljs.user
                                :output-to  "resources/public/js/specs.js"
