@@ -61,7 +61,7 @@
 (defn field-config
   "Get the configuration for the given field in the form."
   [form name]
-  (get-in form [:config :fields/by-name name]))
+  (get-in form [:fields/by-name name]))
 
 (defn current-value
   "Gets the current value of a field in a form"
@@ -71,13 +71,13 @@
 (defn invalid?
   "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
   fields, so you should run validate-entire-form! before trusting this value on a form."
-  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (keys (get-in form [:config :fields/by-name]))))
+  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (keys (get form :fields/by-name))))
   ([form field] (= :invalid (get-in form [:state field :input/valid]))))
 
 (defn valid?
   "Returns true iff the field has been validated, and the validation is ok. Running this on a form is only reliable if
   you've already validated the entire form (validate-entire-form!)."
-  ([form] (reduce (fn [result field] (and result (valid? form field))) true (keys (get-in form [:config :fields/by-name]))))
+  ([form] (reduce (fn [result field] (and result (valid? form field))) true (keys (get form :fields/by-name))))
   ([form field] (= :valid (get-in form [:state field :input/valid]))))
 
 (defn checked?
@@ -88,7 +88,7 @@
 (defn form-id
   "Given an entire form config, returns the ID of that form."
   [form]
-  (get-in form [:config :id]))
+  (get form :id))
 
 (defn default-state
   "INTERNAL METHOD. Get the default state configuration for the given field definitions."
@@ -114,7 +114,7 @@
 
 (defmethod m/mutate 'untangled.components.form/reset-form! [{:keys [state]} k {:keys [form-id]}]
   {:action (fn []
-             (let [fields (vals (get-in @state [::by-id form-id :config :fields/by-name]))
+             (let [fields (vals (get-in @state [::by-id form-id :fields/by-name]))
                    new-state (default-state fields)]
                (swap! state assoc-in [::by-id form-id :state] new-state)))})
 
@@ -124,12 +124,12 @@
 (defn validator
   "Returns the validator symbol from the form field"
   [form field]
-  (get-in form [:config :fields/by-name field :input/validator]))
+  (get-in form [:fields/by-name field :input/validator]))
 
 (defn validator-args
   "Returns the validator args from the form field"
   [form field]
-  (get-in form [:config :fields/by-name field :input/validator-args] {}))
+  (get-in form [:fields/by-name field :input/validator-args] {}))
 
 (defn update-validation
   "Given a form and a field, returns a new form with that field validated."
@@ -147,7 +147,7 @@
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."
   [form]
-  (let [field-ids (keys (get-in form [:config :fields/by-name]))]
+  (let [field-ids (keys (get form :fields/by-name))]
     (reduce (fn [form field-id] (update-validation form field-id)) form field-ids)))
 
 ;; Mutation to run validation on an entire form
@@ -159,7 +159,7 @@
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
           (fn [component form name]
-            (let [dispatch (get-in form [:config :fields/by-name name :input/type])]
+            (let [dispatch (get-in form [:fields/by-name name :input/type])]
               dispatch)))
 
 (defmethod form-field :default [component form name]
@@ -237,8 +237,7 @@
   (let [config (-> config
                    (assoc :fields/by-name (zipmap (map :input/name fields) fields))
                    (dissoc :fields))]
-    {:config config
-     :state  (default-state fields)}))
+    (assoc config :state (default-state fields))))
 
 (defn field-value
   "Get the current value of a form field in the app state"
@@ -252,7 +251,7 @@
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
   [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get-in form [:config :id])})]))
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get form :id)})]))
 
 (defn reset-from-entity!
   "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
@@ -309,11 +308,11 @@
   [form-props-or-name]
   (cond
     (keyword? form-props-or-name) [::by-id form-props-or-name]
-    (get-in form-props-or-name [:config :id]) [::by-id (get-in form-props-or-name [:config :id])]
+    (get form-props-or-name :id) [::by-id (get form-props-or-name :id)]
     :otherwise [:missing :id]))
 
 ;; A declaration of the minimum you want to query for in the UI of a form for it to work
-(def form-query [:state :config {:subforms '...}])
+(def form-query [:id :fields/by-name :state])
 
 (defui Form
   static om/IQuery
@@ -333,3 +332,19 @@
   [app-or-reconciler forms]
   (uc/merge-state! app-or-reconciler Forms {:all-forms forms}))
 
+(def a {:form-state/by-instance-id {1 {:db/id                {:input/value 33 :input/valid true :input/identity true}
+                                       :person/name          {:input/value "Tony"}
+                                       :person/phone-numbers [[:form-state/by-instance-id 2] [:form-state/by-instance-id 3]]}
+                                    2 {:db/id        {:input/value 1 :input/valid true :input/identity true}
+                                       :phone/number {:input/value "555-1212"} :phone/type {:input/value :mobile}}
+                                    3 {:db/id        {:input/value 2 :input/valid true :input/identity true}
+                                       :phone/number {:input/value "412-1212"} :phone/type {:input/value :home}}}
+        :people/by-id              {1 {:person/name "Tony" :person/phone-numbers [[:phone/by-id 2] [:phone/by-id 3]]}}
+        :phone/by-id               {2 {:phone/number "567" :phone/type :mobile}
+                                    3 {:phone/number "124" :phone/type :home}}
+        :form/by-id                {:phone  {:fields [{:input/name :phone/number} {:input/name :phone/type}]}
+                                    :person {:fields [{:input/name :person/name}
+                                                      {:input/name       :person/phone-numbers
+                                                       :input/type       :form
+                                                       :input/ordinality :many
+                                                       :input/form       [:form/by-id :phone]}]}}})

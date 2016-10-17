@@ -70,7 +70,7 @@
   (render [this]
     (let [p (om/props this)
           form (get p (f/form-ident :my-form))]
-      (when (:config form)
+      (when (:id form)
         (ui-form form)))))
 
 (defui PhoneForm
@@ -94,7 +94,7 @@
   (render [this]
     (let [p (om/props this)
           form (get p (f/form-ident :phone-form))]
-      (when (:config form)
+      (when (:id form)
         (ui-phone-form form)))))
 
 (dc/defcard sample-form-1
