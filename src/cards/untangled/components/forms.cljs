@@ -43,7 +43,7 @@
         (field-with-label this form :person/registered-to-vote? "Registered?")
         (when (f/checked? form :person/registered-to-vote?)
           (dom/div nil "Good on you!"))
-        (dom/button #js {:onClick #(f/reset-from-entity! this form Person id)} "Load person: ")
+        (dom/button #js {:onClick #(f/reset-from-entity! this form Person id true)} "Load person: ")
         (dom/input #js {:value (or id "") :onChange #(m/set-integer! this :ui/person-id :event %)})
         (dom/br nil)
         (dom/button #js {:onClick #(f/commit-to-entity! this form Person)} "Save to entity!")
