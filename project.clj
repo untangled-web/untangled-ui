@@ -15,7 +15,7 @@
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha46" :scope "provided"]
                  [navis/untangled-client "0.6.0-SNAPSHOT" :scope "provided"]
-                 [navis/untangled-spec "0.3.9" :scope "test" :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]]
+                 [navis/untangled-spec "0.3.9" :scope "test"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
@@ -61,7 +61,7 @@
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.5.2"]
                                   [criterium "0.4.3"]
-                                  [figwheel-sidecar "0.5.7" :exclusions [ring/ring-core commons-fileupload]]
+                                  [figwheel-sidecar "0.5.7"]
                                   [com.cemerick/piggieback "0.2.1"]
                                   [org.clojure/tools.namespace "0.2.11"]
                                   [org.clojure/tools.nrepl "0.2.12"]
