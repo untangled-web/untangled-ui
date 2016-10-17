@@ -3,6 +3,7 @@
             [devtools.core :as devtools]
             [untangled.components.forms]
             [untangled.components.tables]
+            [yahoo.intl-messageformat-with-locales]
             [untangled.components.calendar]))
 
 (defn start []
