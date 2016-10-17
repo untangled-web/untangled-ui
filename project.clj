@@ -20,7 +20,7 @@
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/server" "src/client" "src/shared" "checkouts/untangled-client/src"]
+  :source-paths ["dev" "src/server" "src/client" "src/shared"]
   :test-paths ["specs/server" "specs/shared"]
   :resource-paths ["src" "resources"]
 
@@ -32,7 +32,7 @@
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/cards" "src/client" "src/shared" "checkouts/untangled-client/src"]
+                :source-paths ["src/cards" "src/client" "src/shared"]
                 :figwheel     {:devcards true}
                 :compiler     {:main                 untangled.components.cards-ui
                                :asset-path           "js/cards"
@@ -42,7 +42,7 @@
                                :recompile-dependents true
                                :source-map-timestamp true}}
                {:id           "test"
-                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev" "checkouts/untangled-client/src"]
+                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev"]
                 :figwheel     {:on-jsload "cljs.user/on-load"}
                 :compiler     {:main       cljs.user
                                :output-to  "resources/public/js/specs.js"
