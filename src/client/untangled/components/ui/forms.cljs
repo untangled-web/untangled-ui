@@ -17,7 +17,7 @@
 
 (defn text-input
   "Declare a text input on a form"
-  ([name] (text-input name (constantly true) {}))
+  ([name] (text-input name nil {}))
   ([name validator] (text-input name validator {}))
   ([name validator validator-args]
    {:input/name           name
@@ -43,6 +43,25 @@
   {:input/type          ::checkbox
    :input/default-value false
    :input/name          name})
+
+(defn dropdown-input
+  "Declare a dropdown menu selector."
+  [name options]
+  {:input/type          ::dropdown
+   :input/default-value ::none
+   :input/options       options
+   :input/name          name})
+
+(defn option
+  "Create an option for use in a dropdown"
+  [key label]
+  {:option/key   key
+   :option/label label})
+
+(defn field-config
+  "Get the configuration for the given field in the form."
+  [form name]
+  (get-in form [:config :fields/by-name name]))
 
 (defn current-value
   "Gets the current value of a field in a form"
@@ -139,9 +158,9 @@
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-  (fn [component form name]
-    (let [dispatch (get-in form [:config :fields/by-name name :input/type])]
-      dispatch)))
+          (fn [component form name]
+            (let [dispatch (get-in form [:config :fields/by-name name :input/type])]
+              dispatch)))
 
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form "for field " name))
@@ -169,6 +188,26 @@
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
                                                                                                               :field   name
                                                                                                               :value   (int (.. event -target -value))})]))})))
+
+(defmethod m/mutate 'untangled.components.form/select-option
+  [{:keys [state]} k {:keys [form-id field value]}]
+  {:action (fn [] (let [value (.substring value 1)]
+                    (swap! state assoc-in [::by-id form-id :state field :input/value] (keyword value))))})
+
+(defmethod form-field ::dropdown [component form name]
+  (let [id (form-id form)
+        selection (current-value form name)
+        field (field-config form name)
+        optional? (= ::none (:input/default-value field))
+        options (:input/options field)]
+    (dom/select #js {:name     name
+                     :value    selection
+                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/select-option ~{:form-id id
+                                                                                                                :field   name
+                                                                                                                :value   (.. event -target -value)})]))}
+                (when optional?
+                  (dom/option #js {:value ::none} ""))
+                (map (fn [{:keys [option/key option/label]}] (dom/option #js {:key key :value key} label)) options))))
 
 ;; Field renderer for a ::checkbox form field
 (defmethod form-field ::checkbox [component form name]
@@ -205,17 +244,6 @@
   "Get the current value of a form field in the app state"
   ([app-state form-id field-name] (field-value app-state form-id field-name ""))
   ([app-state form-id field-name dflt] (get-in app-state [::by-id form-id :state field-name :input/value] dflt)))
-
-(defn form-ident
-  "Returns the application ident for the given form or keyword form ID"
-  [form-props-or-name]
-  (cond
-    (keyword? form-props-or-name) [::by-id form-props-or-name]
-    (get-in form-props-or-name [:config :id]) [::by-id (get-in form-props-or-name [:config :id])]
-    :otherwise [:missing :id]))
-
-;; A declaration of the minimum you want to query for in the UI of a form for it to work
-(def form-query [:config :state])
 
 (defn validate-entire-form!
   "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
@@ -275,6 +303,17 @@
                                                      (assoc-in s [k :input/value] v)
                                                      )) form-state (keys entity))]
                (swap! state assoc-in state-path updated-state)))})
+
+(defn form-ident
+  "Returns the application ident for the given form or keyword form ID"
+  [form-props-or-name]
+  (cond
+    (keyword? form-props-or-name) [::by-id form-props-or-name]
+    (get-in form-props-or-name [:config :id]) [::by-id (get-in form-props-or-name [:config :id])]
+    :otherwise [:missing :id]))
+
+;; A declaration of the minimum you want to query for in the UI of a form for it to work
+(def form-query [:state :config {:subforms '...}])
 
 (defui Form
   static om/IQuery

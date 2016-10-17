@@ -4,6 +4,7 @@
             [om.dom :as dom]
             [om.next :as om :refer [defui]]
             [devcards.core :as dc]
+            [untangled.i18n :refer [tr]]
             [untangled.components.ui.forms :as f]
             [untangled.client.core :as uc]
             [untangled.client.mutations :as m]))
@@ -51,6 +52,11 @@
 
 (def ui-form (om/factory MyForm))
 
+(def phone-form (f/build-form {:id     :phone-form
+                               :fields [(f/id-field :db/id)
+                                        (f/text-input :phone/number)
+                                        (f/dropdown-input :phone/type [(f/option :mobile (tr "Mobile")) (f/option :home (tr "Home")) (f/option :work (tr "Work"))])]}))
+
 (def my-form (f/build-form {:id     :my-form
                             :fields [(f/id-field :db/id)
                                      (f/text-input :person/name 'name-valid?)
@@ -67,6 +73,30 @@
       (when (:config form)
         (ui-form form)))))
 
+(defui PhoneForm
+  static om/IQuery
+  (query [this] f/form-query)
+  static om/Ident
+  (ident [this props] (f/form-ident props))
+  Object
+  (render [this]
+    (let [form (om/props this)]
+      (dom/div nil
+        (field-with-label this form :phone/type "Phone type:")
+        (field-with-label this form :phone/number "Number:")))))
+
+(def ui-phone-form (om/factory PhoneForm))
+
+(defui PhoneRoot
+  static om/IQuery
+  (query [this] [{(f/form-ident :phone-form) (om/get-query PhoneForm)}])
+  Object
+  (render [this]
+    (let [p (om/props this)
+          form (get p (f/form-ident :phone-form))]
+      (when (:config form)
+        (ui-phone-form form)))))
+
 (dc/defcard sample-form-1
   "This card shows a very simple form in action."
   (untangled-app Root
@@ -77,4 +107,9 @@
   {:inspect-data true})
 
 
-
+(dc/defcard phone-number-form
+  "This card should a simple form with a dropdown"
+  (untangled-app PhoneRoot
+                 :started-callback (fn [app] (f/initialize-forms! app [phone-form])))
+  {}
+  {:inspect-data true})
