@@ -8,6 +8,9 @@
             [untangled.client.core :as uc]
             [untangled.client.data-fetch :as df]))
 
+(defprotocol IForm
+  (fields [this] "Returns the field definitions for form support."))
+
 (defn id-field
   "Declare a hidden identity field. Required to read/write to/from other db tables, and to make sure tempids and such
   follow along properly."
@@ -61,34 +64,37 @@
 (defn field-config
   "Get the configuration for the given field in the form."
   [form name]
-  (get-in form [:fields/by-name name]))
+  (get-in form [:ui/form :fields/by-name name]))
 
 (defn current-value
   "Gets the current value of a field in a form"
   [form field]
-  (get-in form [:state field :input/value]))
+  (get-in form [:ui/form :state field :input/value]))
+
+(defn current-validity
+  [form field]
+  (get-in form [:ui/form :state field :input/valid]))
+
+(defn field-names
+  [form]
+  (keys (get-in form [:ui/form :fields/by-name])))
 
 (defn invalid?
   "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
   fields, so you should run validate-entire-form! before trusting this value on a form."
-  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (keys (get form :fields/by-name))))
-  ([form field] (= :invalid (get-in form [:state field :input/valid]))))
+  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (field-names form)))
+  ([form field] (= :invalid (current-validity form field))))
 
 (defn valid?
   "Returns true iff the field has been validated, and the validation is ok. Running this on a form is only reliable if
   you've already validated the entire form (validate-entire-form!)."
-  ([form] (reduce (fn [result field] (and result (valid? form field))) true (keys (get form :fields/by-name))))
-  ([form field] (= :valid (get-in form [:state field :input/valid]))))
+  ([form] (reduce (fn [result field] (and result (valid? form field))) true (field-names form)))
+  ([form field] (= :valid (current-validity form field))))
 
 (defn checked?
   "Returns true iff the field is a boolean control that is true."
   [form field]
   (= true (current-value form field)))
-
-(defn form-id
-  "Given an entire form config, returns the ID of that form."
-  [form]
-  (get form :id))
 
 (defn default-state
   "INTERNAL METHOD. Get the default state configuration for the given field definitions."
@@ -99,18 +105,22 @@
                                                   {:input/valid :unchecked
                                                    :input/value (:input/default-value f)})) fields)))
 
-(defn reset-form!
-  "Resets a form in the application state database to its default state."
-  [component-or-reconciler form-or-id]
-  (let [id (if (keyword? form-or-id) form-or-id (form-id form-or-id))]
-    (om/transact! component-or-reconciler `[(untangled.components.form/reset-form! ~{:form-id id})])))
+#_(defn reset-form!
+    "Resets a form in the application state database to its default state."
+    [component-or-reconciler form-or-id]
+    (let [id (if (keyword? form-or-id) form-or-id (form-id form-or-id))]
+      (om/transact! component-or-reconciler `[(untangled.components.form/reset-form! ~{:form-id id})])))
 
+
+(defn form-id
+  [form]
+  (get-in form [:ui/form :ident]))
 
 (defmethod m/mutate 'untangled.components.form/toggle-field [{:keys [state]} k {:keys [form-id field]}]
-  {:action (fn [] (swap! state update-in [::by-id form-id :state field :input/value] not))})
+  {:action (fn [] (swap! state update-in (conj form-id :ui/form :state field :input/value) not))})
 
 (defmethod m/mutate 'untangled.components.form/update-field [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (swap! state assoc-in [::by-id form-id :state field :input/value] value))})
+  {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state field :input/value) value))})
 
 (defmethod m/mutate 'untangled.components.form/reset-form! [{:keys [state]} k {:keys [form-id]}]
   {:action (fn []
@@ -124,12 +134,17 @@
 (defn validator
   "Returns the validator symbol from the form field"
   [form field]
-  (get-in form [:fields/by-name field :input/validator]))
+  (get-in form [:ui/form :fields/by-name field :input/validator]))
 
 (defn validator-args
   "Returns the validator args from the form field"
   [form field]
-  (get-in form [:fields/by-name field :input/validator-args] {}))
+  (get-in form [:ui/form :fields/by-name field :input/validator-args] {}))
+
+(defn dirty?
+  "Returns true if the entity state does not match the form state."
+  [form]
+  (some #(not= (current-value form %) (get form %)) (field-names form)))
 
 (defn update-validation
   "Given a form and a field, returns a new form with that field validated."
@@ -137,29 +152,28 @@
   (if-let [validator (validator form field)]
     (let [validator-args (validator-args form field)
           valid? (form-field-valid? validator (current-value form field) validator-args)]
-      (assoc-in form [:state field :input/valid] (if valid? :valid :invalid)))
-    (assoc-in form [:state field :input/valid] :valid)))
+      (assoc-in form [:ui/form :state field :input/valid] (if valid? :valid :invalid)))
+    (assoc-in form [:ui/form :state field :input/valid] :valid)))
 
 ;; Mutation to run validation on a specific field
 (defmethod m/mutate 'untangled.components.form/validate [{:keys [state]} k {:keys [form-id field]}]
-  {:action #(swap! state update-in [::by-id form-id] update-validation field)})
+  {:action #(swap! state update-in form-id update-validation field)})
 
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."
   [form]
-  (let [field-ids (keys (get form :fields/by-name))]
+  (let [field-ids (field-names form)]
     (reduce (fn [form field-id] (update-validation form field-id)) form field-ids)))
 
 ;; Mutation to run validation on an entire form
 (defmethod m/mutate 'untangled.components.form/validate-form! [{:keys [state]} k {:keys [form-id]}]
   {:action (fn []
-             (let [form-path [::by-id form-id]]
-               (swap! state update-in form-path validate-fields)))})
+             (swap! state update-in form-id validate-fields))})
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
           (fn [component form name]
-            (let [dispatch (get-in form [:fields/by-name name :input/type])]
+            (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
               dispatch)))
 
 (defmethod form-field :default [component form name]
@@ -192,7 +206,7 @@
 (defmethod m/mutate 'untangled.components.form/select-option
   [{:keys [state]} k {:keys [form-id field value]}]
   {:action (fn [] (let [value (.substring value 1)]
-                    (swap! state assoc-in [::by-id form-id :state field :input/value] (keyword value))))})
+                    (swap! state assoc-in (conj form-id :ui/form :state field :input/value) (keyword value))))})
 
 (defmethod form-field ::dropdown [component form name]
   (let [id (form-id form)
@@ -230,19 +244,21 @@
 
 (defn build-form
   "Build an empty form with default field values."
-  [{:keys [id fields form-update] :or {form-update identity} :as config}]
-  {:pre [(keyword? id)
-         (fn? form-update)
-         (vector? fields)]}
-  (let [config (-> config
-                   (assoc :fields/by-name (zipmap (map :input/name fields) fields))
-                   (dissoc :fields))]
-    (assoc config :state (default-state fields))))
+  [form-class entity-state]
+  (let [fields (fields form-class)
+        fields-by-name (zipmap (map :input/name fields) fields)
+        empty-state (default-state fields)
+        state (reduce (fn [s k] (if-let [v (get entity-state k)]
+                                  (assoc-in s [k :input/value] v)
+                                  s)) empty-state (keys fields-by-name))]
+    (assoc entity-state :ui/form {:ident          (om/ident form-class entity-state)
+                                  :fields/by-name fields-by-name
+                                  :state          state})))
 
 (defn field-value
   "Get the current value of a form field in the app state"
   ([app-state form-id field-name] (field-value app-state form-id field-name ""))
-  ([app-state form-id field-name dflt] (get-in app-state [::by-id form-id :state field-name :input/value] dflt)))
+  ([app-state form-id field-name dflt] (get-in app-state (conj form-id :state field-name :input/value) dflt)))
 
 (defn validate-entire-form!
   "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
@@ -253,107 +269,55 @@
   [comp-or-reconciler form]
   (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get form :id)})]))
 
-(defn reset-from-entity!
-  "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
-   is supplied then the indicated entity is first loaded from the server (via a direct entity ident join query to the server). You
-   may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:entity-ident [:id id] :form-id fid})` directly."
-  ([comp-or-reconciler form entity-class entity-id] (reset-from-entity! comp-or-reconciler form entity-class entity-id false))
-  ([comp-or-reconciler form entity-class entity-id remote]
-   (let [form-id (form-id form)
-         entity-ident (assoc (om/ident entity-class {}) 1 entity-id)
-         params {:entity-ident entity-ident :form-id form-id}]
-     (if remote
-       ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
-       (df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
-       (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~params)
-                                          (untangled.components.form/validate-form! ~{:form-id form-id})])))))
+#_(defn reset-from-entity!
+    "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
+     is supplied then the indicated entity is first loaded from the server (via a direct entity ident join query to the server). You
+     may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:entity-ident [:id id] :form-id fid})` directly."
+    ([comp-or-reconciler form-class id] (reset-from-entity! comp-or-reconciler form-class id false))
+    ([comp-or-reconciler form-class id remote]
+     (let [entity-ident (assoc (om/ident form-class {}) 1 id)
+           form-config (fields form-class)
+           params {:entity-ident entity-ident :form-config form-config}]
+       (if remote
+         ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
+         (df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
+         (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~params)
+                                            (untangled.components.form/validate-form! ~{:form-id form-id})])))))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
   database and also post the entity to the server. For remotes to work you must implement
   `(untangled.components.form/commit-to-entity! {:ident [:id id] :value {...})` on the server. "
-  ([comp-or-reconciler form entity-class] (commit-to-entity! comp-or-reconciler form entity-class false))
-  ([comp-or-reconciler form entity-class remote]
+  ([comp-or-reconciler form] (commit-to-entity! comp-or-reconciler form false))
+  ([comp-or-reconciler form remote]
    (let [validated-form (validate-fields form)]
      (if (valid? validated-form)
-       (let [form-id (form-id form)
-             entity-props (into {} (map (fn [[k v]] [k (:input/value v)]) (:state validated-form)))
-             entity-ident (om/ident entity-class entity-props)]
-         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:entity-ident entity-ident :form-id form-id :remote remote})]))
+       (let [form-id (form-id form)]
+         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote})]))
        (log/error "Cannot commit. Form did not validate.")))))
 
 ;; Mutation for moving form data from the form into an entity
-(defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [entity-ident form-id remote]}]
-  (let [form-path [::by-id form-id]
-        form-state (get-in @state (conj form-path :state))
-        old-entity (get-in @state entity-ident {})
+(defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id remote]}]
+  (let [form-state (get-in @state (conj form-id :ui/form :state))
+        old-entity (get-in @state form-id {})
         updated-entity (into old-entity (map (fn [[k v]] [k (:input/value v)]) form-state))]
-    {:remote (when remote (assoc ast :params {:ident entity-ident :value updated-entity}))
-     :action (fn [] (swap! state assoc-in entity-ident updated-entity))}))
+    {:remote (when remote (assoc ast :params {:ident form-id :value updated-entity}))
+     :action (fn [] (swap! state assoc-in form-id updated-entity))}))
 
 ;; Mutation for moving form data from the an entity into the form
-(defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [entity-ident form-id]}]
-  {:action (fn []
-             (let [form-path [::by-id form-id]
-                   state-path (conj form-path :state)
-                   form-state (get-in @state state-path)
-                   entity (get-in @state entity-ident)
-                   updated-state (reduce (fn [s k] (let [v (get entity k)]
-                                                     (assoc-in s [k :input/value] v)
-                                                     )) form-state (keys entity))]
-               (swap! state assoc-in state-path updated-state)))})
-
-(defn form-ident
-  "Returns the application ident for the given form or keyword form ID"
-  [form-props-or-name]
-  (cond
-    (keyword? form-props-or-name) [::by-id form-props-or-name]
-    (get form-props-or-name :id) [::by-id (get form-props-or-name :id)]
-    :otherwise [:missing :id]))
-
-;; A declaration of the minimum you want to query for in the UI of a form for it to work
-(def form-query [:id :fields/by-name :state])
-
-(defui Form
-  static om/IQuery
-  (query [this] form-query)
-  static om/Ident
-  (ident [this props] (form-ident props)))
-
-(defui Forms
-  static om/Ident
-  (ident [this props] [:master :form])
-  static om/IQuery
-  (query [this] [{:all-forms (om/get-query Form)}]))
-
-(defn initialize-forms!
-  "Normalize all forms and place them in app state. Usually called from the application started-callback, but can
-  be called at any time to add form definitions to the system."
-  [app-or-reconciler forms]
-  (uc/merge-state! app-or-reconciler Forms {:all-forms forms}))
-
-(defn extract-form
-  "Get a form from component props (which are joined in by form idents). Returns the first (or only) form if no form ID is supplied.
-
-  This function assumes that the component query contains joined forms like this:
-
-  `[{(form-ident :id) (om/get-query MyForm)}]`
-
-  Calling this function as `(extract-form this :id)` (or even `(extract-form this)`) on that component would return the properties for MyForm.
-  "
-  ([component] (extract-form component nil))
-  ([component form-id]
-   (let [props (om/props component)
-         is-form-join? (fn [join-key] (and (vector? join-key) (= ::by-id (first join-key))))
-         form (if form-id
-                (get props (form-ident form-id))
-                (first (keep (fn [[k v]] (when (is-form-join? k) v)) props)))]
-     (when (:id form)
-       form))))
+#_(defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [entity-ident form-config]}]
+    {:action (fn []
+               (let [form-path [:ui/form]
+                     form-state (get-in @state state-path)
+                     entity (get-in @state entity-ident)
+                     updated-state (reduce (fn [s k] (let [v (get entity k)]
+                                                       (assoc-in s [k :input/value] v)
+                                                       )) form-state (keys entity))]
+                 (swap! state assoc-in state-path updated-state)))})
 
 (defn valid-form?
   "Has the form been initialized to a state that is ready to render?"
-  [form] (and form (:state form) (:id form)))
+  [form] (and form (:ui/form form)))
 
 (def a {:form-state/by-instance-id {1 {:db/id                {:input/value 33 :input/valid true :input/identity true}
                                        :person/name          {:input/value "Tony"}
