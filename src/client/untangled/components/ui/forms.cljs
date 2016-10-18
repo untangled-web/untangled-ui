@@ -194,7 +194,10 @@
                     :onBlur   (fn [_] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/root-form]))
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
                                                                                                               :field   name
-                                                                                                              :value   (int (.. event -target -value))}) :ui/root-form]))})))
+                                                                                                              :value   (let [v (.. event -target -value)]
+                                                                                                                         (if (seq (re-matches #"^[0-9]*$" v))
+                                                                                                                          (int v)
+                                                                                                                          v))}) :ui/root-form]))})))
 
 (defmethod m/mutate 'untangled.components.form/select-option
   [{:keys [state]} k {:keys [form-id field value]}]
@@ -301,7 +304,3 @@
                                       (assoc-in s [k :input/value] v)
                                       s)) (get form [:ui/form :state]) (field-names form))]
     {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state) new-state))}))
-
-(defn valid-form?
-  "Has the form been initialized to a state that is ready to render?"
-  [form] (and form (:ui/form form)))

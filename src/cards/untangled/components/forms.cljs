@@ -41,79 +41,6 @@
 
 (def ui-phone-form (om/factory PhoneForm {:keyfn :db/id}))
 
-(defui ^:once PersonForm
-  static uc/InitialAppState
-  (initial-state [this params] (f/build-form this (or params {})))
-  static f/IForm
-  (fields [this] [(f/id-field :db/id)
-                  (f/text-input :person/name 'name-valid?)
-                  (f/text-input :person/name 'name-valid?)
-                  (f/numeric-input :person/age 'in-range? {:min 1 :max 110})
-                  (f/checkbox-input :person/registered-to-vote?)])
-  static om/IQuery
-  (query [this] [:ui/root-form :db/id :person/name :person/age
-                 :person/registered-to-vote? {:person/phone-numbers (om/get-query PhoneForm)} :ui/form])
-  static om/Ident
-  (ident [this props] [:people/by-id (:db/id props)])
-  Object
-  (render [this]
-    (let [{:keys [person/phone-numbers] :as props} (om/props this)
-          dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
-      (dom/div nil
-        (when (f/valid? props)
-          (dom/div nil "READY to submit!"))
-        (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
-        (field-with-label this props :person/age "Age:" "That isn't a real age!")
-        (field-with-label this props :person/registered-to-vote? "Registered?")
-        (when (f/checked? props :person/registered-to-vote?)
-          (dom/div nil "Good on you!"))
-        (dom/div nil
-          (mapv ui-phone-form phone-numbers))
-        (dom/button #js {:onClick #(om/transact! this
-                                    `[(sample/add-phone ~{:id     (om/tempid)
-                                                          :person (:db/id props)})])} "Add Phone")
-        (dom/br nil)
-        (dom/button #js {:onClick (fn []
-                                    (doseq [n phone-numbers]
-                                      (f/validate-entire-form! this n))
-                                    (f/validate-entire-form! this props))} "Validate")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     (doseq [n phone-numbers]
-                                       (f/reset-from-entity! this n))
-                                     (f/reset-from-entity! this props))} "UNDO")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     (doseq [n phone-numbers]
-                                       (f/commit-to-entity! this n true))
-                                     (f/commit-to-entity! this props true))} "Save to entity!")))))
-
-(def ui-person-form (om/factory PersonForm))
-
-(defui ^:once Root
-  static uc/InitialAppState
-  (initial-state [this params]
-    {:ui/person-id 1
-     :person       (uc/initial-state PersonForm
-                     {:db/id                      1
-                      :person/name                "Tony Kay"
-                      :person/age                 23
-                      :person/registered-to-vote? false
-                      :person/phone-numbers       [(uc/initial-state PhoneForm {:db/id        22
-                                                                                :phone/type   :work
-                                                                                :phone/number "412-1212"})
-                                                   (uc/initial-state PhoneForm {:db/id        23
-                                                                                :phone/type   :home
-                                                                                :phone/number "555-1212"})]})})
-  static om/IQuery
-  (query [this] [:ui/person-id {:person (om/get-query PersonForm)}])
-  Object
-  (render [this]
-    (let [{:keys [ui/react-key ui/person-id person]} (om/props this)]
-      (dom/div #js {:key react-key}
-        (when person
-          (ui-person-form person))))))
-
 (defn add-phone-mutation [{:keys [state]} k {:keys [id person]}]
   {:action (fn []
              (let [new-phone (uc/initial-state PhoneForm {:db/id id :phone/type :home :phone/number ""})
@@ -308,6 +235,80 @@
   "Edit the phone field and then set the phone type. The blur will trigger validation"
   (untangled-app ValidatedPhoneRoot))
 
+(defui ^:once PersonForm
+  static uc/InitialAppState
+  (initial-state [this params] (f/build-form this (or params {})))
+  static f/IForm
+  (fields [this] [(f/id-field :db/id)
+                  (f/text-input :person/name 'name-valid?)
+                  (f/text-input :person/name 'name-valid?)
+                  (f/numeric-input :person/age 'in-range? {:min 1 :max 110})
+                  (f/checkbox-input :person/registered-to-vote?)])
+  static om/IQuery
+  (query [this] [:ui/root-form :db/id :person/name :person/age
+                 :person/registered-to-vote? {:person/phone-numbers (om/get-query ValidatedPhoneForm)} :ui/form])
+  static om/Ident
+  (ident [this props] [:people/by-id (:db/id props)])
+  Object
+  (render [this]
+    (let [{:keys [person/phone-numbers] :as props} (om/props this)
+          dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
+      (dom/div nil
+        (when (f/valid? props)
+          (dom/div nil "READY to submit!"))
+        (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
+        (field-with-label this props :person/age "Age:" "That isn't a real age!")
+        (field-with-label this props :person/registered-to-vote? "Registered?")
+        (when (f/checked? props :person/registered-to-vote?)
+          (dom/div nil "Good on you!"))
+        (dom/div nil
+          (mapv ui-vphone-form phone-numbers))
+        (dom/button #js {:onClick #(om/transact! this
+                                    `[(sample/add-phone ~{:id     (om/tempid)
+                                                          :person (:db/id props)})])} "Add Phone")
+        (dom/br nil)
+        (dom/button #js {:onClick (fn []
+                                    (doseq [n phone-numbers]
+                                      (f/validate-entire-form! this n))
+                                    (f/validate-entire-form! this props))} "Validate")
+        (dom/button #js {:disabled (not dirty?)
+                         :onClick  (fn []
+                                     (doseq [n phone-numbers]
+                                       (f/reset-from-entity! this n))
+                                     (f/reset-from-entity! this props))} "UNDO")
+        (dom/button #js {:disabled (not dirty?)
+                         :onClick  (fn []
+                                     (doseq [n phone-numbers]
+                                       (f/commit-to-entity! this n true))
+                                     (f/commit-to-entity! this props true))} "Save to entity!")))))
+
+(def ui-person-form (om/factory PersonForm))
+
+(defui ^:once Root
+  static uc/InitialAppState
+  (initial-state [this params]
+    {:ui/person-id 1
+     :person       (uc/initial-state PersonForm
+                     {:db/id                      1
+                      :person/name                "Tony Kay"
+                      :person/age                 23
+                      :person/registered-to-vote? false
+                      :person/phone-numbers       [(uc/initial-state ValidatedPhoneForm {:db/id        22
+                                                                                         :phone/type   :work
+                                                                                         :phone/number "(123) 412-1212"})
+                                                   (uc/initial-state ValidatedPhoneForm {:db/id        23
+                                                                                         :phone/type   :home
+                                                                                         :phone/number "(541) 555-1212"})]})})
+  static om/IQuery
+  (query [this] [:ui/person-id {:person (om/get-query PersonForm)}])
+  Object
+  (render [this]
+    (let [{:keys [ui/react-key ui/person-id person]} (om/props this)]
+      (dom/div #js {:key react-key}
+        (when person
+          (ui-person-form person))))))
+
+
 (defcard-doc
   "
   ## State Evolution
@@ -376,4 +377,74 @@
   (untangled-app Root)
   {}
   {:inspect-data false})
+
+(defcard-doc
+  "## Adding Form Field Types
+
+  Adding a new kind of form field is simple:
+
+  - Create a method that returns a map of input configuration values
+  - Add a multimethod that can render your field with appropriate hooks into the logic
+
+  The text input field is implemented like this:
+
+  "
+  (dc/mkdn-pprint-source f/text-input)
+  "
+
+  The keys in an input's configuration map are:
+
+  - `:input/name` : Required. What you want to call the field. Must match an entity property (e.g. :person/name).
+  - `:input/type` : Required. Usually namespaced. This should be a unique key that indicates what kind of input you're making
+  - `:input/validator` : Optional. Specifies a symbol (dispatch of the form-field-valid? multimethod).
+  - `:input/validator-args` : Optional. If there is a validator, it is called with the validator symbol, the questionable value, and these args.
+  - Any you want to define : This is a map. Put whatever else you want in this map to help with rendering (e.g. placeholder text,
+   class names, style, etc).
+
+  and its renderer looks like this:
+
+  ```
+  (defmethod form-field ::text [component form name]
+    (let [id (form-id form)
+          text-value (current-value form name)]
+      (dom/input #js {:type     \"text\"
+                      :name     name
+                      :value    text-value
+                      :onBlur   (fn [event] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/root-form]))
+                      :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
+                                                                                                                :field   name
+                                                                                                                :value   (.. event -target -value)}) :ui/root-form]))})))
+  ```
+
+  You can retrieve a field's current form value with `(f/current-value form field-name)`, and you can obtain
+  your field's configuration (map of :input/??? values) with `(f/field-config form field-name)`.
+
+  The `form-field` multimethod should, in general, return as little as possible, but you are allowed to do whatever you want.
+  You are free to make form field renderers that render much more complex DOM, an SVG, etc.
+
+  The following built-in mutations can (and should) be used in your event handlers:
+
+  - `(untangled.components.form/validate {:form-id [:ident/by-x n] :field :field-name})` - Run validation on the given form/field. Marks the form state for the field to `:invalid` or `:valid`. Fields without validators
+  will be marked `:valid`.
+  - `(untangled.components.form/update-field {:form-id [:ident/by-x n] :field :field-name :value raw-value})` - Set the raw-value (you can use any type) onto the form's placeholder state (not on the entity)
+  - Others listed elsewhere, like those that commit, validate, etc.
+
+  ## Other Functions of Interest
+
+  Since the `form` is also your entity, you may of course pull any entity data from the `form` map. (E.g. you can
+  for example directly access `(:person/name person-form)`). The form attributes are stored under the `:ui/form` key
+  and are intended to be opaque. Do not sneak access into the data structure, since we may choose to change the structure
+  in future versions. Instead, use these:
+
+  - `f/current-value` : Get the most recent value of a field from a form
+  - `f/current-validity` : Get the most recent result of validation on a field
+  - `f/valid?` : Test if the form (or a field) is currently marked valid (must run validation separately)
+  - `f/invalid?` : Test if the form (or a field) is currently marked invalid (must run validation separately)
+  - `f/field-names` : Get the field names on a form
+  - `f/form-id` : returns the Om Ident of the form (which is also the ident of the entity)
+  - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
+  - `f/field-value` : Just like `current-value`, but works against the top-level app state map (not the atom)
+  - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
+  "
+  )
 
