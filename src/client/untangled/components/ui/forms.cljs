@@ -186,10 +186,10 @@
     (dom/input #js {:type     "text"
                     :name     name
                     :value    text-value
-                    :onBlur   (fn [event] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name})]))
+                    :onBlur   (fn [event] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/form]))
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
                                                                                                               :field   name
-                                                                                                              :value   (.. event -target -value)})]))})))
+                                                                                                              :value   (.. event -target -value)}) :ui/form]))})))
 
 ;; Field renderer for a ::numeric form field
 (defmethod form-field ::numeric [component form name]
@@ -198,10 +198,10 @@
     (dom/input #js {:type     "number"
                     :name     name
                     :value    text-value
-                    :onBlur   (fn [_] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name})]))
+                    :onBlur   (fn [_] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/form]))
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
                                                                                                               :field   name
-                                                                                                              :value   (int (.. event -target -value))})]))})))
+                                                                                                              :value   (int (.. event -target -value))}) :ui/form]))})))
 
 (defmethod m/mutate 'untangled.components.form/select-option
   [{:keys [state]} k {:keys [form-id field value]}]
@@ -218,7 +218,7 @@
                      :value    selection
                      :onChange (fn [event] (om/transact! component `[(untangled.components.form/select-option ~{:form-id id
                                                                                                                 :field   name
-                                                                                                                :value   (.. event -target -value)})]))}
+                                                                                                                :value   (.. event -target -value)}) :ui/form]))}
                 (when optional?
                   (dom/option #js {:value ::none} ""))
                 (map (fn [{:keys [option/key option/label]}] (dom/option #js {:key key :value key} label)) options))))
@@ -231,7 +231,7 @@
                     :name     name
                     :checked  bool-value
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/toggle-field ~{:form-id id
-                                                                                                              :field   name})]))})))
+                                                                                                              :field   name}) :ui/form]))})))
 ;; Sample validator that requires there be at least two words
 (defmethod form-field-valid? 'name-valid? [_ value args]
   (let [trimmed-value (str/trim value)]
@@ -267,7 +267,7 @@
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
   [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get form :id)})]))
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get form :id)}) :ui/form]))
 
 #_(defn reset-from-entity!
     "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
@@ -293,7 +293,7 @@
    (let [validated-form (validate-fields form)]
      (if (valid? validated-form)
        (let [form-id (form-id form)]
-         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote})]))
+         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form]))
        (log/error "Cannot commit. Form did not validate.")))))
 
 ;; Mutation for moving form data from the form into an entity
