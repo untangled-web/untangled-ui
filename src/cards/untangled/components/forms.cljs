@@ -25,18 +25,18 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (fields [this] [(f/id-field :db/id)
+  (fields [this] [(f/id-field :db/id)                       ; Mark which thing is the ID of this entity
                   (f/text-input :phone/number)
                   (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
-  (query [this] [:db/id :phone/type :phone/number :ui/form])
+  (query [this] [:db/id :phone/type :phone/number :ui/form]) ; Don't forget :ui/form!
   static om/Ident
   (ident [this props] [:phone/by-id (:db/id props)])
   Object
   (render [this]
     (let [form (om/props this)]
       (dom/div nil
-        (field-with-label this form :phone/type "Phone type:")
+        (field-with-label this form :phone/type "Phone type:") ; Use your own helpers to render out the fields
         (field-with-label this form :phone/number "Number:")))))
 
 (def ui-phone-form (om/factory PhoneForm {:keyfn :db/id}))
@@ -47,10 +47,12 @@
   static f/IForm
   (fields [this] [(f/id-field :db/id)
                   (f/text-input :person/name 'name-valid?)
+                  (f/text-input :person/name 'name-valid?)
                   (f/numeric-input :person/age 'in-range? {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
-  (query [this] [:ui/root-form :db/id :person/name :person/age :person/registered-to-vote? {:person/phone-numbers (om/get-query PhoneForm)} :ui/form])
+  (query [this] [:ui/root-form :db/id :person/name :person/age
+                 :person/registered-to-vote? {:person/phone-numbers (om/get-query PhoneForm)} :ui/form])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   Object
@@ -67,30 +69,48 @@
           (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-phone-form phone-numbers))
-        (dom/button #js {:onClick #(om/transact! this `[(sample/add-phone ~{:id (om/tempid) :person (:db/id props)})])} "Add Phone")
+        (dom/button #js {:onClick #(om/transact! this
+                                    `[(sample/add-phone ~{:id     (om/tempid)
+                                                          :person (:db/id props)})])} "Add Phone")
         (dom/br nil)
-        (dom/button #js {:disabled (not dirty?) :onClick (fn []
-                                                           (doseq [n phone-numbers]
-                                                             (f/commit-to-entity! this n true))
-                                                           (f/commit-to-entity! this props true))} "Save to entity!")
-        #_(dom/button #js {:onClick #(f/validate-entire-form! this form)} "Submit!")
-        #_(dom/button #js {:onClick #(f/reset-form! this form)} "Reset")))))
+        (dom/button #js {:onClick (fn []
+                                    (doseq [n phone-numbers]
+                                      (f/validate-entire-form! this n))
+                                    (f/validate-entire-form! this props))} "Validate")
+        (dom/button #js {:disabled (not dirty?)
+                         :onClick  (fn []
+                                     (doseq [n phone-numbers]
+                                       (f/reset-from-entity! this n))
+                                     (f/reset-from-entity! this props))} "UNDO")
+        (dom/button #js {:disabled (not dirty?)
+                         :onClick  (fn []
+                                     (doseq [n phone-numbers]
+                                       (f/commit-to-entity! this n true))
+                                     (f/commit-to-entity! this props true))} "Save to entity!")))))
 
 (def ui-person-form (om/factory PersonForm))
 
 (defui ^:once Root
   static uc/InitialAppState
-  (initial-state [this params] {:ui/person-id 1 :person (uc/initial-state PersonForm {:db/id                1 :person/name "Tony Kay" :person/age 23 :person/registered-to-vote? false
-                                                                                      :person/phone-numbers [(uc/initial-state PhoneForm {:db/id 22 :phone/type :work :phone/number "412-1212"})
-                                                                                                             (uc/initial-state PhoneForm {:db/id 23 :phone/type :home :phone/number "555-1212"})]})})
+  (initial-state [this params]
+    {:ui/person-id 1
+     :person       (uc/initial-state PersonForm
+                     {:db/id                      1
+                      :person/name                "Tony Kay"
+                      :person/age                 23
+                      :person/registered-to-vote? false
+                      :person/phone-numbers       [(uc/initial-state PhoneForm {:db/id        22
+                                                                                :phone/type   :work
+                                                                                :phone/number "412-1212"})
+                                                   (uc/initial-state PhoneForm {:db/id        23
+                                                                                :phone/type   :home
+                                                                                :phone/number "555-1212"})]})})
   static om/IQuery
   (query [this] [:ui/person-id {:person (om/get-query PersonForm)}])
   Object
   (render [this]
     (let [{:keys [ui/react-key ui/person-id person]} (om/props this)]
       (dom/div #js {:key react-key}
-        #_(dom/button #js {:onClick #(f/reset-from-entity! this PersonForm person-id)} "Load person: ")
-        #_(dom/input #js {:value (or person-id "") :onChange #(m/set-integer! this :ui/person-id :event %)})
         (when person
           (ui-person-form person))))))
 
@@ -105,7 +125,7 @@
 (defmethod m/mutate 'sample/add-phone [e k p] (add-phone-mutation e k p))
 
 (defcard-doc
-  "# Forms
+  "# Forms Quick Tour
 
    Generic form support is a primary rapid appliation development feature. Fortunately, the overall structure of Om Next
    and Untangled makes it relatively simple to write form support in a general-purpose, composeable manner. In fact,
@@ -118,7 +138,7 @@
    - Remote integration with form <-> entity
    - Local integration with entities in the browser database
 
-   In the following examples, the following requires are needed:
+   In the following examples, the following requires define any namespacing we do:
 
    ```
    (ns your-ns
@@ -131,51 +151,193 @@
        [untangled.client.mutations :as m]))
    ```
 
-  # Form Fields
+  **IMPORTANT NOTE**: When we use the parameter `form` or the word 'form' in the descriptions below, we mean the data
+  of the entire entity from an Om table that normally represents something in your application (like a person, phone number, etc).
+  This library *augments* your database entry with form support data (your 'person' becomes a 'person' AND a 'form'). In
+  raw technical terms, the `build-form` function takes a map, and adds a `:ui/form { ... }` entry *to it*.
 
-  Form fields are most conveniently declared on the ui component that will render the form. For example, say we
-  want to be able to render a form to edit a phone number:
+  ## Form Fields - Declarative Form Definition
 
-  "
-  (dc/mkdn-pprint-source PhoneForm)
-  "
+  Form fields are most conveniently declared on the ui component that will render the form. The fields themselves
+  are declared with function calls that correspond to the field type:
 
-  The `f/id-field` form field is a special form field that you normally do not render, but it marks the field on the
-  entity that represents the unique (server) identity of the object. The other form-field types represent abstract
-  form elements that can be rendered.
+  - `id-field` : A (meant-to-be-hidden) form field that corresponds to the attribute that uniquely identifies the entity being edited. Required for much of the interesting support.
+  - `text-input` : An optionally validated input for strings.
+  - `dropdown-input` : A menu that allows the user to choose from a set of values.
+  - `checkbox-input` : A boolean control
+  - your-input-here! : Form support is extensible. Whatever interaction you can imagine can be added to a form.
 
-  Also take special note of the query. It **must** include `:ui/form`, which will pull in the special data needed
-  by the form logic. Also note the call in `InitialAppState` to `f/build-form`. This build function is responsible
-  for creating the initial state of any component that wishes to act as a form.
+  Form fields are really just simple maps of attributes that describe the configuration of the input.
 
-  Field rendering itself is done by the `f/form-field` multimethod. However, this method renders *only* the input. It
-  does not render a lable, set classes, etc. Therefore, you will usually want to write your own wrapper function that
-  can be used to lay out exactly how you want a form field to look. For example:
+  The built-in support for doing form logic expects the fields to be declared on the component that will
+  render the form, as shown below:
 
+  ```
+  (defui PhoneForm
+    static f/IForm
+    (fields [this] [(f/id-field :db/id)
+                    (f/text-input :phone/number)
+                    (f/dropdown-input :phone/type [(f/option :home \"Home\") (f/option :work \"Work\")])])
+    ...)
+  ```
+
+  ### Rendering a Form Field
+
+  The form fields themselves are rendered by calling `(f/form-field form field-name)`. This method **only** renders
+  the simple input itself.
+
+  `(f/form-field my-form :name)` --- outputs ---> `(dom/input #js { ... })`
+
+  This is the minimum we can do to ensure that the logic is correctly connected, while not interfering with your
+  ability to render the form however you please.
+
+  You'll commonly write some functions of your own that combine other DOM markup with this, such as the function
+  below:
   "
   (dc/mkdn-pprint-source field-with-label)
   "
-  You see here that there are a number of helper functions that can be used to check things like if the value of the
-  field is currently invalid.
+
+  where functions like `f/invalid?` are used to make decisions about showing/hiding validation messages.
+
+  **The rendering of the form is pretty much up to you! Thus, your forms can be as pretty (or ugly) as you care to make
+  them. No worrying about figuring out how we render them, and then trying to make *that* look good.**
+
+  ## A Complete Form Component
+
+  Now that you know how to declare fields on a component and render the controls, the last remaining bit is
+  initializing the application state to support the form.
+
+  ### Setting Up the Form State
+
+  A form can augment any entity in an app database table in your client application. The `f/build-form` function
+  can take any such entity and add form support to it. The result is perfectly compatible with the original entity.
+
+  "
+  (dc/mkdn-pprint-source PhoneForm))
+
+(defui PhoneRoot
+  static om/IQuery
+  (query [this] [{:phone (om/get-query PhoneForm)}])
+  static uc/InitialAppState
+  (initial-state [this params]
+    (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
+      {:phone (f/build-form PhoneForm phone-number)}))
+  Object
+  (render [this]
+    (let [{:keys [phone]} (om/props this)]
+      (dom/div nil
+        (ui-phone-form phone)))))
+
+(defcard phone-form
+  "The PhoneRoot above was used to generate this simple interactive form"
+  (untangled-app PhoneRoot))
+
+(defui ^:once ValidatedPhoneForm
+  static uc/InitialAppState
+  (initial-state [this params] (f/build-form this (or params {})))
+  static f/IForm
+  (fields [this] [(f/id-field :db/id)
+                  (f/text-input :phone/number 'us-phone?)   ; Addition of validator
+                  (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+  static om/IQuery
+  (query [this] [:db/id :phone/type :phone/number :ui/form])
+  static om/Ident
+  (ident [this props] [:phone/by-id (:db/id props)])
+  Object
+  (render [this]
+    (let [form (om/props this)]
+      (dom/div nil
+        (field-with-label this form :phone/type "Phone type:")
+        ;; One more parameter to give the validation error message:
+        (field-with-label this form :phone/number "Number:" "Please format as (###) ###-####")))))
+
+(def ui-vphone-form (om/factory ValidatedPhoneForm))
+
+(defui ValidatedPhoneRoot
+  static om/IQuery
+  (query [this] [{:phone (om/get-query ValidatedPhoneForm)}])
+  static uc/InitialAppState
+  (initial-state [this params]
+    (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
+      {:phone (f/build-form ValidatedPhoneForm phone-number)}))
+  Object
+  (render [this]
+    (let [{:keys [phone]} (om/props this)]
+      (dom/div nil
+        (ui-vphone-form phone)))))
+
+(defmethod f/form-field-valid? 'us-phone? [sym value args]
+  (seq (re-matches #"[(][0-9][0-9][0-9][)] [0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]" value)))
+
+(defcard-doc
+  "
+
+  **IMPORTANT**: Take special note of the query. It **must** include `:ui/form`, which will pull in the special data needed
+  by the form logic. Also note the call in `InitialAppState` to `f/build-form`. This build function is responsible
+  for creating the initial state of any component that wishes to act as a form.
 
   ## Validation
 
-  - Runs on blur
-  - Can be triggered for the whole form
+  The validation system is completely extensible as well. There is a multimethod `(f/form-field-valid? [symbol value args])`
+  that dispatches on symbol (symbols are allowed in app state, lambdas are not). Form fields that support validation
+  will run that validation on blur.
 
+  Validation is tri-state. The allowed states are `:valid` (checked and correct), `:invalid` (checked and incorrect),
+  and `:unchecked`.
+
+  You can trigger full-form validation (which you should do as part of your interaction with the form) by calling
+  `(f/validate-entire-form! component form)`. This function invokes a transaction that will update the validation
+  markings on all declared fields (which in turn will re-render your UI).
+
+  If you want to check if a form is valid (with updating the markings in the app state...e.g. you want an inline
+  answer), then use `(f/valid? (f/validate-fields form))` to get an immediate answer.
+
+  The definition of a validator for US phone numbers could be:
+
+  ```
+  (defmethod f/form-field-valid? 'us-phone? [sym value args]
+    (seq (re-matches #\"[(][0-9][0-9][0-9][)] [0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]\" value)))
+  ```
+
+  The only change would be to add the validator and a message:
+  "
+  (dc/mkdn-pprint-source ValidatedPhoneForm)
+  )
+
+(defcard validated-phone-number
+  "Edit the phone field and then set the phone type. The blur will trigger validation"
+  (untangled-app ValidatedPhoneRoot))
+
+(defcard-doc
+  "
   ## State Evolution
 
   A form will initially have the field values set to the entity state (passed to `build-form`). As you interact with
-  the form, the form fields change, but the entity itself does not update in the database table. This allows you to:
+  the form the form fields will change, but **the entity itself does not update in the database table**. This allows you to:
 
   - Reset the form from the entity (optionally triggering a (re)read from the server)
   - Commit the form changes to the entity (local and optionally remote)
 
+  **This, combined with a little server code, makes the form support full stack!**
+
+  You can trigger the following operations on a form:
+
+  - `(f/commit-to-entity! comp form)` : Commit the current edits to the entity (no-op if the form doesn't validate)
+  - `(f/commit-to-entity! comp form true)` : Commit the current edits to the entity AND the server (is a no-op if the form doesn't validate)
+  - `(f/reset-from-entity! comp form)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
+  - More coming...
+
+  ### State evolution within your own transactions
+
+  All of the functions described above trigger underlying Om `transact!`. Feel free to read the source of those functions
+  and compose the mutations into your own transactions.
+
   ## Composition
 
-  Forms can be easily composed. They are UI components, and have nothing special about them other than the `:ui/form`
-  state that is added to the entity (though your call of `build-form`). You can convert any entity in your database
-  to a form using the `build-form` function, meaning that you can load entities as normal, and as you want to edit them
+  Form support augments normalized entities in your app database, so they can be easily composed! They are UI components, and have nothing special
+  about them other than the `:ui/form` state that is added to the entity (though your call of `build-form`).
+  You can convert any entity in your database to a form using the `build-form` function, meaning that you can load
+  entities as normal, and as you want to edit them
   in a form, simple mutate them into form-compatible entities with `build-form` (which will not touch the original
   properties of the entity, just add `:ui/form`). Then render them with a UI component that shares your entity Ident,
   but has a render method that renders the form fields with `form-field`.
@@ -192,11 +354,26 @@
   Adding a phone number is done via the add phone mutation, which looks like this:
   "
   (dc/mkdn-pprint-source add-phone-mutation)
-  )
+  "
+  Notice that there is nothing really special going on here. Just add an additional item to the database (which is
+  augmented with `f/build-form`) and integrate it's ident!
+
+  If you look carefully at `PersonForm` you'll see the button to trigger adding a phone number, where we're using
+  `(om/tempid)` to generate a temporary ID for the new phone number.
+
+  ### Compositional Dirty-Checking, Validation, and Submission
+
+  The code also shows how you would compose the checks. The `dirty?` definition combines the results of the nested forms
+  together with the top form. You could do the same for validations.
+
+  The `Save` button does a similar thing: it submits the phone numbers, and then the top. Note that Untangled combines
+  mutations that happen in the same thread sequence (e.g. you have not given up the thread for rendering). So, all of
+  those commits will be sent to the server as a single transaction (if you include the remote parameter).
+  ")
 
 (defcard sample-form-1
   "This card shows a very simple form in action."
   (untangled-app Root)
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 

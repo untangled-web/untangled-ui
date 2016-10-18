@@ -105,13 +105,6 @@
                                                   {:input/valid :unchecked
                                                    :input/value (:input/default-value f)})) fields)))
 
-#_(defn reset-form!
-    "Resets a form in the application state database to its default state."
-    [component-or-reconciler form-or-id]
-    (let [id (if (keyword? form-or-id) form-or-id (form-id form-or-id))]
-      (om/transact! component-or-reconciler `[(untangled.components.form/reset-form! ~{:form-id id})])))
-
-
 (defn form-id
   [form]
   (get-in form [:ui/form :ident]))
@@ -168,14 +161,13 @@
 
 ;; Mutation to run validation on an entire form
 (defmethod m/mutate 'untangled.components.form/validate-form! [{:keys [state]} k {:keys [form-id]}]
-  {:action (fn []
-             (swap! state update-in form-id validate-fields))})
+  {:action (fn [] (swap! state update-in form-id validate-fields))})
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-  (fn [component form name]
-    (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
-      dispatch)))
+          (fn [component form name]
+            (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
+              dispatch)))
 
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form "for field " name))
@@ -268,22 +260,19 @@
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
   [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (get form :id)}) :ui/root-form]))
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/root-form]))
 
-#_(defn reset-from-entity!
-    "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
-     is supplied then the indicated entity is first loaded from the server (via a direct entity ident join query to the server). You
-     may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:entity-ident [:id id] :form-id fid})` directly."
-    ([comp-or-reconciler form-class id] (reset-from-entity! comp-or-reconciler form-class id false))
-    ([comp-or-reconciler form-class id remote]
-     (let [entity-ident (assoc (om/ident form-class {}) 1 id)
-           form-config (fields form-class)
-           params {:entity-ident entity-ident :form-config form-config}]
-       (if remote
-         ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
-         (df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
-         (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~params)
-                                            (untangled.components.form/validate-form! ~{:form-id form-id})])))))
+(defn reset-from-entity!
+  "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
+   is supplied then the indicated entity is first loaded from the server (via a direct entity ident join query to the server). You
+   may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:entity-ident [:id id] :form-id fid})` directly."
+  ([comp-or-reconciler form] (reset-from-entity! comp-or-reconciler form false))
+  ([comp-or-reconciler form remote]                         ; FIXME: No remote yet
+   (let [form-id (form-id form)]
+     ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
+     ;(df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
+     (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
+                                        (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/root-form]))))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
@@ -306,33 +295,13 @@
      :action (fn [] (swap! state assoc-in form-id updated-entity))}))
 
 ;; Mutation for moving form data from the an entity into the form
-#_(defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [entity-ident form-config]}]
-    {:action (fn []
-               (let [form-path [:ui/form]
-                     form-state (get-in @state state-path)
-                     entity (get-in @state entity-ident)
-                     updated-state (reduce (fn [s k] (let [v (get entity k)]
-                                                       (assoc-in s [k :input/value] v)
-                                                       )) form-state (keys entity))]
-                 (swap! state assoc-in state-path updated-state)))})
+(defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [form-id]}]
+  (let [form (get-in @state form-id {})
+        new-state (reduce (fn [s k] (if-let [v (get form k)]
+                                      (assoc-in s [k :input/value] v)
+                                      s)) (get form [:ui/form :state]) (field-names form))]
+    {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state) new-state))}))
 
 (defn valid-form?
   "Has the form been initialized to a state that is ready to render?"
   [form] (and form (:ui/form form)))
-
-(def a {:form-state/by-instance-id {1 {:db/id                {:input/value 33 :input/valid true :input/identity true}
-                                       :person/name          {:input/value "Tony"}
-                                       :person/phone-numbers [[:form-state/by-instance-id 2] [:form-state/by-instance-id 3]]}
-                                    2 {:db/id        {:input/value 1 :input/valid true :input/identity true}
-                                       :phone/number {:input/value "555-1212"} :phone/type {:input/value :mobile}}
-                                    3 {:db/id        {:input/value 2 :input/valid true :input/identity true}
-                                       :phone/number {:input/value "412-1212"} :phone/type {:input/value :home}}}
-        :people/by-id              {1 {:person/name "Tony" :person/phone-numbers [[:phone/by-id 2] [:phone/by-id 3]]}}
-        :phone/by-id               {2 {:phone/number "567" :phone/type :mobile}
-                                    3 {:phone/number "124" :phone/type :home}}
-        :form/by-id                {:phone  {:fields [{:input/name :phone/number} {:input/name :phone/type}]}
-                                    :person {:fields [{:input/name :person/name}
-                                                      {:input/name       :person/phone-numbers
-                                                       :input/type       :form
-                                                       :input/ordinality :many
-                                                       :input/form       [:form/by-id :phone]}]}}})
