@@ -1,8 +1,8 @@
 (ns untangled.components.calendar
+  (:require-macros [devcards.core :as dc :refer [defcard]])
   (:require
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
-    [devcards.core :as dc :include-macros true]
     [untangled.i18n.core :as i18n]
     [untangled.client.core :as uc]
     [untangled.components.ui.component.calendar :as c]))
@@ -26,7 +26,7 @@
           "External mutation (Toggle overlay)")
         (c/ui-calendar this start-date)))))
 
-(dc/defcard calendar-viewer
+(defcard calendar-viewer
   "#A Calendar Widget."
   (dc/dom-node
     (fn [state-atom node]

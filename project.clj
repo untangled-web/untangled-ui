@@ -32,15 +32,13 @@
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/cards" "src/client" "src/shared"]
+                :source-paths ["src/client" "src/cards" "src/shared"]
                 :figwheel     {:devcards true}
-                :compiler     {:main                 untangled.components.cards-ui
-                               :asset-path           "js/cards"
-                               :output-to            "resources/public/js/cards.js"
-                               :output-dir           "resources/public/js/cards"
-                               :optimizations        :none
-                               :recompile-dependents true
-                               :source-map-timestamp true}}
+                :compiler     {:main          untangled.components.cards-ui
+                               :asset-path    "js/cards"
+                               :output-to     "resources/public/js/cards.js"
+                               :output-dir    "resources/public/js/cards"
+                               :optimizations :none}}
                {:id           "test"
                 :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev"]
                 :figwheel     {:on-jsload "cljs.user/on-load"}

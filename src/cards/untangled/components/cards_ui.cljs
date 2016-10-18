@@ -1,15 +1,14 @@
 (ns untangled.components.cards-ui
-  (:require [devcards.core :as dc :include-macros true]
-            [devtools.core :as devtools]
+  (:require [devtools.core :as devtools]
             [untangled.components.forms]
             [untangled.components.tables]
-            [yahoo.intl-messageformat-with-locales]
-            [untangled.components.calendar]))
+            [untangled.components.calendar]
+            [yahoo.intl-messageformat-with-locales]))
 
-(defn start []
-  (dc/start-devcard-ui!))
+#_(defn start []
+    (dc/start-devcard-ui!))
 
-(start)
+#_(start)
 
 (devtools/enable-feature! :sanity-hints)
 (devtools/install!)
