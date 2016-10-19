@@ -11,6 +11,8 @@
             [untangled.client.core :as uc]
             [untangled.client.mutations :as m]))
 
+(declare add-phone-mutation ValidatedPhoneForm)
+
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
   ([comp form name label] (field-with-label comp form name label nil))
@@ -43,9 +45,9 @@
 
 (defn add-phone-mutation [{:keys [state]} k {:keys [id person]}]
   {:action (fn []
-             (let [new-phone (uc/initial-state PhoneForm {:db/id id :phone/type :home :phone/number ""})
+             (let [new-phone (uc/initial-state ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
                    person-ident [:people/by-id person]
-                   phone-ident (om/ident PhoneForm new-phone)]
+                   phone-ident (om/ident ValidatedPhoneForm new-phone)]
                (swap! state assoc-in phone-ident new-phone)
                (uc/integrate-ident! state phone-ident :append (conj person-ident :person/phone-numbers))))})
 
@@ -182,7 +184,7 @@
 
 (defui ValidatedPhoneRoot
   static om/IQuery
-  (query [this] [{:phone (om/get-query ValidatedPhoneForm)}])
+  (query [this] [:ui/form {:phone (om/get-query ValidatedPhoneForm)}])
   static uc/InitialAppState
   (initial-state [this params]
     (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
@@ -240,7 +242,6 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/text-input :person/name 'name-valid?)
                   (f/text-input :person/name 'name-valid?)
                   (f/numeric-input :person/age 'in-range? {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)])
@@ -347,7 +348,7 @@
   each represented by a nested phone number entity/form. Note the use of `InitialAppState` in Root to build out sample
   data.
   "
-  (dc/mkdn-pprint-source PhoneForm)
+  (dc/mkdn-pprint-source ValidatedPhoneForm)
   (dc/mkdn-pprint-source PersonForm)
   (dc/mkdn-pprint-source Root)
   "
