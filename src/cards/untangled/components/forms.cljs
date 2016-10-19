@@ -251,7 +251,8 @@
   (fields [this] [(f/id-field :db/id)
                   (f/text-input :person/name 'name-valid?)
                   (f/integer-input :person/age 'in-range? {:min 1 :max 110})
-                  (f/checkbox-input :person/registered-to-vote?)])
+                  (f/checkbox-input :person/registered-to-vote?)
+                  (f/subform :person/phone-numbers :many)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :db/id :person/name :person/age
@@ -282,11 +283,14 @@
                                     (f/validate-entire-form! this props))} "Validate")
         (dom/button #js {:disabled (not dirty?)
                          :onClick  (fn []
+                                     ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
+                                     ;; and run post mutations that re-initialize the form state on entities just loaded
                                      (doseq [n phone-numbers]
                                        (f/reset-from-entity! this n))
                                      (f/reset-from-entity! this props))} "UNDO")
         (dom/button #js {:disabled (not dirty?)
                          :onClick  (fn []
+                                     ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
                                      (doseq [n phone-numbers]
                                        (f/commit-to-entity! this n true))
                                      (f/commit-to-entity! this props true))} "Save to entity!")))))

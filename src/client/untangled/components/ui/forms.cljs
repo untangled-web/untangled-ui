@@ -44,6 +44,14 @@
 ;; FIELD DEFINITIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn subform
+  "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
+  must be included in your list of fields if you want server interactions to trigger nested form interactions."
+  [field cardinality]
+  {:input/name       field
+   :input/type       ::subform
+   :input/cadinality cardinality})
+
 (defn id-field
   "Declare a hidden identity field. Required to read/write to/from other db tables, and to make sure tempids and such
   follow along properly."
