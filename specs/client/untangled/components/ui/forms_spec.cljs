@@ -1,7 +1,6 @@
 (ns untangled.components.ui.forms-spec
   (:require [untangled-spec.core :refer-macros [behavior specification assertions component]]
-            [untangled.components.ui.forms :as f]
-            ))
+            [untangled.components.ui.forms :as f]))
 
 (specification "Form Field Declarations"
   (component "text-input"
@@ -33,16 +32,4 @@
                  (:input/name field) => :name
                  "has the correct type"
                  (:input/type field) => ::f/checkbox))))
-
-(specification "name validation"
-  (assertions
-    "indicates valid when there are two or more words in the input"
-    (f/form-field-valid? 'name-valid? "Sam Fox" {}) => true
-    (f/form-field-valid? 'name-valid? "Sam J. Fox" {}) => true
-    "indicates invalid when the input contains only a single word"
-    (f/form-field-valid? 'name-valid? "Tony " {}) => false
-    (f/form-field-valid? 'name-valid? " Tony " {}) => false
-    (f/form-field-valid? 'name-valid? " Tony" {}) => false
-    "indicates invalid when the input is empty"
-    (f/form-field-valid? 'name-valid? "" {}) => false))
 

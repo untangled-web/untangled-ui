@@ -253,7 +253,8 @@
                   (f/integer-input :person/age 'in-range? {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
-  (query [this] [:ui/root-form :db/id :person/name :person/age
+  ; NOTE: :ui/form-root so that sub-forms will trigger render here
+  (query [this] [:ui/form-root :db/id :person/name :person/age
                  :person/registered-to-vote? {:person/phone-numbers (om/get-query ValidatedPhoneForm)} :ui/form])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
@@ -301,12 +302,14 @@
                       :person/name                "Tony Kay"
                       :person/age                 23
                       :person/registered-to-vote? false
-                      :person/phone-numbers       [(uc/initial-state ValidatedPhoneForm {:db/id        22
-                                                                                         :phone/type   :work
-                                                                                         :phone/number "(123) 412-1212"})
-                                                   (uc/initial-state ValidatedPhoneForm {:db/id        23
-                                                                                         :phone/type   :home
-                                                                                         :phone/number "(541) 555-1212"})]})})
+                      :person/phone-numbers       [(uc/initial-state ValidatedPhoneForm
+                                                     {:db/id        22
+                                                      :phone/type   :work
+                                                      :phone/number "(123) 412-1212"})
+                                                   (uc/initial-state ValidatedPhoneForm
+                                                     {:db/id        23
+                                                      :phone/type   :home
+                                                      :phone/number "(541) 555-1212"})]})})
   static om/IQuery
   (query [this] [:ui/person-id {:person (om/get-query PersonForm)}])
   Object
@@ -360,7 +363,16 @@
   (dc/mkdn-pprint-source Root)
   "
 
-  Adding a phone number is done via the add phone mutation, which looks like this:
+  ### Composition and Rendering Refresh
+
+  The one caveat is that when forms are nested, the mutations on the nested fields cannot (due to the design of Om) refresh
+  the parent automatically. To work around this, all built-in form mutations will trigger follow-on reads of
+  the special property `:ui/form-root`. So, if you add that to your parent form's query, rendering of the top-level
+  form elements (e.g. buttons that control submission) will properly update.
+
+  ### Adding Sub-form Elements
+
+  Adding a phone number (which acts as a sub-form) is done via the add-phone-mutation, which looks like this:
   "
   (dc/mkdn-pprint-source add-phone-mutation)
   "
@@ -411,17 +423,11 @@
 
   and its renderer looks like this:
 
+  "
+  (dc/mkdn-pprint-source f/render-text-field)
+  "
   ```
-  (defmethod form-field ::text [component form name]
-    (let [id (form-id form)
-          text-value (current-value form name)]
-      (dom/input #js {:type     \"text\"
-                      :name     name
-                      :value    text-value
-                      :onBlur   (fn [event] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/root-form]))
-                      :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
-                                                                                                                :field   name
-                                                                                                                :value   (.. event -target -value)}) :ui/root-form]))})))
+  (defmethod form-field ::text [component form name] (render-text-field component form name))
   ```
 
   You can retrieve a field's current form value with `(f/current-value form field-name)`, and you can obtain

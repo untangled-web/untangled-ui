@@ -191,7 +191,7 @@
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
   [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/root-form]))
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/form-root]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GENERAL FORM MUTATION METHODS
@@ -222,32 +222,50 @@
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
 
-;; Field renderer for a ::text form field
-(defmethod form-field ::text [component form name]
+(defn render-text-field [component form name]
   (let [id (form-id form)
         text-value (current-value form name)]
     (dom/input #js {:type     "text"
                     :name     name
                     :value    text-value
-                    :onBlur   (fn [event] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/root-form]))
-                    :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
-                                                                                                              :field   name
-                                                                                                              :value   (.. event -target -value)}) :ui/root-form]))})))
+                    :onBlur   (fn [event]
+                                (om/transact! component
+                                  `[(untangled.components.form/validate ~{:form-id id :field name})
+                                    :ui/form-root]))
+                    :onChange (fn [event]
+                                (om/transact! component
+                                  `[(untangled.components.form/update-field
+                                      ~{:form-id id
+                                        :field   name
+                                        :value   (.. event -target -value)})
+                                    :ui/form-root]))})))
 
-;; Field renderer for a ::integer form field
-(defmethod form-field ::integer [component form name]
+;; Field renderer for a ::text form field
+(defmethod form-field ::text [component form name] (render-text-field component form name))
+
+(defn render-integer-field [component form name]
   (let [id (form-id form)
         text-value (current-value form name)]
     (dom/input #js {:type     "number"
                     :name     name
                     :value    text-value
-                    :onBlur   (fn [_] (om/transact! component `[(untangled.components.form/validate ~{:form-id id :field name}) :ui/root-form]))
-                    :onChange (fn [event] (om/transact! component `[(untangled.components.form/update-field ~{:form-id id
-                                                                                                              :field   name
-                                                                                                              :value   (let [v (.. event -target -value)]
-                                                                                                                         (if (seq (re-matches #"^[0-9]*$" v))
-                                                                                                                           (int v)
-                                                                                                                           v))}) :ui/root-form]))})))
+                    :onBlur   (fn [_]
+                                (om/transact! component
+                                  `[(untangled.components.form/validate ~{:form-id id :field name})
+                                    :ui/form-root]))
+                    :onChange (fn [event]
+                                (let [raw-value (.. event -target -value)
+                                      v (if (seq (re-matches #"^[0-9]*$" raw-value))
+                                          (int raw-value)
+                                          raw-value)]
+                                  (om/transact! component
+                                    `[(untangled.components.form/update-field ~{:form-id id
+                                                                                :field   name
+                                                                                :value   v})
+                                      :ui/form-root])))})))
+
+;; Field renderer for a ::integer form field
+(defmethod form-field ::integer [component form name] (render-integer-field component form name))
 
 (defmethod m/mutate 'untangled.components.form/select-option
   [{:keys [state]} k {:keys [form-id field value]}]
@@ -264,7 +282,7 @@
                      :value    selection
                      :onChange (fn [event] (om/transact! component `[(untangled.components.form/select-option ~{:form-id id
                                                                                                                 :field   name
-                                                                                                                :value   (.. event -target -value)}) :ui/root-form]))}
+                                                                                                                :value   (.. event -target -value)}) :ui/form-root]))}
                 (when optional?
                   (dom/option #js {:value ::none} ""))
                 (map (fn [{:keys [option/key option/label]}] (dom/option #js {:key key :value key} label)) options))))
@@ -277,7 +295,7 @@
                     :name     name
                     :checked  bool-value
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/toggle-field ~{:form-id id
-                                                                                                              :field   name}) :ui/root-form]))})))
+                                                                                                              :field   name}) :ui/form-root]))})))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -294,7 +312,7 @@
      ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
      ;(df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
      (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
-                                        (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/root-form]))))
+                                        (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
@@ -305,7 +323,7 @@
    (let [validated-form (validate-fields form)]
      (if (valid? validated-form)
        (let [form-id (form-id form)]
-         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/root-form]))
+         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form-root]))
        (log/error "Cannot commit. Form did not validate.")))))
 
 ;; Mutation for moving form data from the form into an entity
