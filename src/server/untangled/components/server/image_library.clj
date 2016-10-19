@@ -53,6 +53,7 @@
   (start [this]
     (let [[comp-name comp-builder] (switch-fn this)
           component (component/start (comp-builder (dissoc this :switch-fn)))]
+      (timbre/debug "Started the" comp-name "component.")
       component))
   (stop [this]
     (component/stop this)))
@@ -63,21 +64,26 @@
 
 (defn build-components [{:keys [meta-deps blob-deps meta-fn blob-fn]}]
   {::storage/meta (build-switcher (or meta-deps [:config])
-            (or meta-fn
-                (fn [_] ["in-memory meta store" storage/map->InMemMetaStore])))
+                    (some-fn meta-fn
+                             (fn [_] ["in-memory meta store" storage/map->InMemMetaStore])))
    ::storage/blob (build-switcher (or blob-deps [:config])
-            (or blob-fn
-                (fn [_] ["file-system blob store" storage/map->FileStore])))})
+                    (some-fn blob-fn
+                             (fn [_] ["file-system blob store" storage/map->FileStore])))})
 
-(defn example-owner-fn [_ {:as params :keys [owner]}]
+(defn example-owner-fn [_env {:as params :keys [owner]}]
   (if owner
     [owner params]
     ["Scrooge McDuck" (assoc params :image/owner "Scrooge McDuck")]))
 
+(defn with-defaults [params defaults]
+  (merge defaults params))
+
 (defn image-library [params]
-  (let [params (merge {:auth-fn (fn [env params] :ok)
-                       :assets-path "/assets/"}
-                      params)
+  (let [params (with-defaults params
+                 {:auth-fn (fn [env params] :ok)
+                  :assets-path "/assets/"
+                  :meta-fn (constantly nil)
+                  :blob-fn (constantly nil)})
         components (build-components params)]
     {:components components
      :parser-injections (keys components)
