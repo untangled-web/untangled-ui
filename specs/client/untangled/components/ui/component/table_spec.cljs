@@ -37,7 +37,7 @@
       (get-in sorted-table-b [:sections 1 :rows 0 :b]) => 22
       )))
 
-(specification "Column Formatters"
+#_(specification "Column Formatters"
   (component "Money"
     (assertions
       "Is rounded properly"

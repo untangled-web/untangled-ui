@@ -243,7 +243,7 @@
   static f/IForm
   (fields [this] [(f/id-field :db/id)
                   (f/text-input :person/name 'name-valid?)
-                  (f/numeric-input :person/age 'in-range? {:min 1 :max 110})
+                  (f/integer-input :person/age 'in-range? {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
   (query [this] [:ui/root-form :db/id :person/name :person/age

@@ -5,10 +5,5 @@
             [untangled.components.calendar]
             [yahoo.intl-messageformat-with-locales]))
 
-#_(defn start []
-    (dc/start-devcard-ui!))
-
-#_(start)
-
 (devtools/enable-feature! :sanity-hints)
 (devtools/install!)

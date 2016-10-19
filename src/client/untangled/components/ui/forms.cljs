@@ -29,16 +29,16 @@
     :input/validator-args validator-args
     :input/type           ::text}))
 
-(defn numeric-input
+(defn integer-input
   "Declare an integer input on a form"
-  ([name] (numeric-input name (constantly true) {}))
-  ([name validator] (numeric-input name validator {}))
+  ([name] (integer-input name (constantly true) {}))
+  ([name validator] (integer-input name validator {}))
   ([name validator validator-args]
    {:input/name           name
     :input/default-value  ""
     :input/validator      validator
     :input/validator-args validator-args
-    :input/type           ::numeric}))
+    :input/type           ::integer}))
 
 (defn checkbox-input
   "Declare a checkbox on a form"
@@ -184,8 +184,8 @@
                                                                                                               :field   name
                                                                                                               :value   (.. event -target -value)}) :ui/root-form]))})))
 
-;; Field renderer for a ::numeric form field
-(defmethod form-field ::numeric [component form name]
+;; Field renderer for a ::integer form field
+(defmethod form-field ::integer [component form name]
   (let [id (form-id form)
         text-value (current-value form name)]
     (dom/input #js {:type     "number"
