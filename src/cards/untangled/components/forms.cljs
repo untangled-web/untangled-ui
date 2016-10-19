@@ -262,6 +262,7 @@
   Object
   (render [this]
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
+          ;; FIXME: should be able to make dirty automatically recurse using declared subforms
           dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
       (dom/div nil
         (when (f/valid? props)
@@ -291,6 +292,8 @@
         (dom/button #js {:disabled (not dirty?)
                          :onClick  (fn []
                                      ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
+                                     ;; FIXME: Commit should ONLY send delta (dirty fields) to server
+                                     ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
                                      (doseq [n phone-numbers]
                                        (f/commit-to-entity! this n true))
                                      (f/commit-to-entity! this props true))} "Save to entity!")))))
