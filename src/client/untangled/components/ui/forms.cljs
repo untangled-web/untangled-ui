@@ -11,6 +11,39 @@
 (defprotocol IForm
   (fields [this] "Returns the field definitions for form support."))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; FORM CONSTRUCTION
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn default-state
+  "INTERNAL METHOD. Get the default state configuration for the given field definitions."
+  [fields]
+  (zipmap (map :input/name fields) (map (fn [f] (if (= ::identity (:input/type f))
+                                                  {:input/valid :valid
+                                                   :input/value (om/tempid)}
+                                                  {:input/valid :unchecked
+                                                   :input/value (:input/default-value f)})) fields)))
+
+(defn build-form
+  "Build an empty form, based on the given entity state. If any fields are declared on
+   the form that do not exist in the entity, then the form will fill those with
+   the  default field values for the declared input fields."
+  [form-class entity-state]
+  (let [fields (fields form-class)
+        fields-by-name (zipmap (map :input/name fields) fields)
+        empty-state (default-state fields)
+        state (reduce (fn [s k] (if-let [v (get entity-state k)]
+                                  (assoc-in s [k :input/value] v)
+                                  s)) empty-state (keys fields-by-name))]
+    (assoc entity-state :ui/form {:ident          (om/ident form-class entity-state)
+                                  :fields/by-name fields-by-name
+                                  :state          state})))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; FIELD DEFINITIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn id-field
   "Declare a hidden identity field. Required to read/write to/from other db tables, and to make sure tempids and such
   follow along properly."
@@ -61,23 +94,41 @@
   {:option/key   key
    :option/label label})
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GENERAL FORM STATE ACCESS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn form-id
+  [form]
+  (get-in form [:ui/form :ident]))
+
 (defn field-config
   "Get the configuration for the given field in the form."
   [form name]
   (get-in form [:ui/form :fields/by-name name]))
 
 (defn current-value
-  "Gets the current value of a field in a form"
+  "Gets the current value of a field in a form."
   [form field]
   (get-in form [:ui/form :state field :input/value]))
+
+(defn field-value
+  "Get the current value of a form field in the app state."
+  ([app-state form-id field-name] (field-value app-state form-id field-name ""))
+  ([app-state form-id field-name dflt] (get-in app-state (conj form-id :state field-name :input/value) dflt)))
+
+(defn field-names
+  "Get all of the field names that are defined on the form."
+  [form]
+  (keys (get-in form [:ui/form :fields/by-name])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; VALIDATION SUPPORT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn current-validity
   [form field]
   (get-in form [:ui/form :state field :input/valid]))
-
-(defn field-names
-  [form]
-  (keys (get-in form [:ui/form :fields/by-name])))
 
 (defn invalid?
   "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
@@ -90,36 +141,6 @@
   you've already validated the entire form (validate-entire-form!)."
   ([form] (reduce (fn [result field] (and result (valid? form field))) true (field-names form)))
   ([form field] (= :valid (current-validity form field))))
-
-(defn checked?
-  "Returns true iff the field is a boolean control that is true."
-  [form field]
-  (= true (current-value form field)))
-
-(defn default-state
-  "INTERNAL METHOD. Get the default state configuration for the given field definitions."
-  [fields]
-  (zipmap (map :input/name fields) (map (fn [f] (if (= ::identity (:input/type f))
-                                                  {:input/valid :valid
-                                                   :input/value (om/tempid)}
-                                                  {:input/valid :unchecked
-                                                   :input/value (:input/default-value f)})) fields)))
-
-(defn form-id
-  [form]
-  (get-in form [:ui/form :ident]))
-
-(defmethod m/mutate 'untangled.components.form/toggle-field [{:keys [state]} k {:keys [form-id field]}]
-  {:action (fn [] (swap! state update-in (conj form-id :ui/form :state field :input/value) not))})
-
-(defmethod m/mutate 'untangled.components.form/update-field [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state field :input/value) value))})
-
-(defmethod m/mutate 'untangled.components.form/reset-form! [{:keys [state]} k {:keys [form-id]}]
-  {:action (fn []
-             (let [fields (vals (get-in @state [::by-id form-id :fields/by-name]))
-                   new-state (default-state fields)]
-               (swap! state assoc-in [::by-id form-id :state] new-state)))})
 
 ;; Extensible form field validation. Triggered by symbols. Arguments (args) are declared on the fields themselves.
 (defmulti form-field-valid? (fn [symbol value args] symbol))
@@ -134,11 +155,11 @@
   [form field]
   (get-in form [:ui/form :fields/by-name field :input/validator-args] {}))
 
-(defn dirty?
-  "Returns true if the entity state does not match the form state, or if it contains a tempid."
-  [form]
-  (some #(or (om/tempid? (current-value form %))
-             (not= (current-value form %) (get form %))) (field-names form)))
+
+;; Sample validator that requires a number be in the (inclusive) range.
+(defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
+  (let [value (int value)]
+    (<= min value max)))
 
 (defn update-validation
   "Given a form and a field, returns a new form with that field validated."
@@ -163,14 +184,43 @@
 (defmethod m/mutate 'untangled.components.form/validate-form! [{:keys [state]} k {:keys [form-id]}]
   {:action (fn [] (swap! state update-in form-id validate-fields))})
 
+(defn validate-entire-form!
+  "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
+   but the UI will update after validation is complete. If you want to test if a form is valid use validate-fields on
+   the state of the form to obtain an updated validated form. If you want to trigger validation as *part* of your
+   own transaction (so your mutation can see the validated form), you may use the underlying
+   `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
+  [comp-or-reconciler form]
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/root-form]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GENERAL FORM MUTATION METHODS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod m/mutate 'untangled.components.form/toggle-field [{:keys [state]} k {:keys [form-id field]}]
+  {:action (fn [] (swap! state update-in (conj form-id :ui/form :state field :input/value) not))})
+
+(defmethod m/mutate 'untangled.components.form/update-field [{:keys [state]} k {:keys [form-id field value]}]
+  {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state field :input/value) value))})
+
+(defn dirty?
+  "Returns true if the entity state does not match the form state, or if it contains a tempid."
+  [form]
+  (some #(or (om/tempid? (current-value form %))
+             (not= (current-value form %) (get form %))) (field-names form)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; FORM FIELD RENDERING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-          (fn [component form name]
-            (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
-              dispatch)))
+  (fn [component form name]
+    (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
+      dispatch)))
 
 (defmethod form-field :default [component form name]
-  (log/error "Cannot dispatch to form-field renderer on form " form "for field " name))
+  (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
 
 ;; Field renderer for a ::text form field
 (defmethod form-field ::text [component form name]
@@ -196,8 +246,8 @@
                                                                                                               :field   name
                                                                                                               :value   (let [v (.. event -target -value)]
                                                                                                                          (if (seq (re-matches #"^[0-9]*$" v))
-                                                                                                                          (int v)
-                                                                                                                          v))}) :ui/root-form]))})))
+                                                                                                                           (int v)
+                                                                                                                           v))}) :ui/root-form]))})))
 
 (defmethod m/mutate 'untangled.components.form/select-option
   [{:keys [state]} k {:keys [form-id field value]}]
@@ -228,42 +278,11 @@
                     :checked  bool-value
                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/toggle-field ~{:form-id id
                                                                                                               :field   name}) :ui/root-form]))})))
-;; Sample validator that requires there be at least two words
-(defmethod form-field-valid? 'name-valid? [_ value args]
-  (let [trimmed-value (str/trim value)]
-    (str/includes? trimmed-value " ")))
 
-;; Sample validator that requires a number be in the (inclusive) range.
-(defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
-  (let [value (int value)]
-    (<= min value max)))
 
-(defn build-form
-  "Build an empty form with default field values."
-  [form-class entity-state]
-  (let [fields (fields form-class)
-        fields-by-name (zipmap (map :input/name fields) fields)
-        empty-state (default-state fields)
-        state (reduce (fn [s k] (if-let [v (get entity-state k)]
-                                  (assoc-in s [k :input/value] v)
-                                  s)) empty-state (keys fields-by-name))]
-    (assoc entity-state :ui/form {:ident          (om/ident form-class entity-state)
-                                  :fields/by-name fields-by-name
-                                  :state          state})))
-
-(defn field-value
-  "Get the current value of a form field in the app state"
-  ([app-state form-id field-name] (field-value app-state form-id field-name ""))
-  ([app-state form-id field-name dflt] (get-in app-state (conj form-id :state field-name :input/value) dflt)))
-
-(defn validate-entire-form!
-  "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
-   but the UI will update after validation is complete. If you want to test if a form is valid use validate-fields on
-   the state of the form to obtain an updated validated form. If you want to trigger validation as *part* of your
-   own transaction (so your mutation can see the validated form), you may use the underlying
-   `(untangled.components.form/validate-form! {:form-id fid})` Om mutation in your own call to `transact!`."
-  [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/root-form]))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LOAD AND SAVE FORM TO/FROM ENTITY
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn reset-from-entity!
   "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote

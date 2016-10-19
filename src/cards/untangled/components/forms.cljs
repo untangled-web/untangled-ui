@@ -13,6 +13,13 @@
 
 (declare add-phone-mutation ValidatedPhoneForm)
 
+;; Sample validator that requires there be at least two words
+(defmethod f/form-field-valid? 'name-valid? [_ value args]
+  (let [trimmed-value (str/trim value)]
+    (str/includes? trimmed-value " ")))
+
+
+
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
   ([comp form name label] (field-with-label comp form name label nil))
@@ -260,7 +267,7 @@
         (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
         (field-with-label this props :person/registered-to-vote? "Registered?")
-        (when (f/checked? props :person/registered-to-vote?)
+        (when (f/current-value props :person/registered-to-vote?)
           (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
