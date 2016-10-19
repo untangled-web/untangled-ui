@@ -303,28 +303,29 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn reset-from-entity!
-  "Reset the form from a given entity in your application database using an Om transaction. This assumes your entity and form match on field names. If remote
-   is supplied then the indicated entity is first loaded from the server (via a direct entity ident join query to the server). You
-   may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:entity-ident [:id id] :form-id fid})` directly."
-  ([comp-or-reconciler form] (reset-from-entity! comp-or-reconciler form false))
-  ([comp-or-reconciler form remote]                         ; FIXME: No remote yet
-   (let [form-id (form-id form)]
-     ; FIXME: post mutation needs ability to take args! UNTESTED!!!!
-     ;(df/load comp-or-reconciler entity-ident entity-class {:post-mutation 'untangled.components.form/reset-from-entity! :post-mutation-params params})
-     (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
-                                        (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
+  "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
+   You may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:form-id [:entity id]})` directly."
+  [comp-or-reconciler form]
+  (let [form-id (form-id form)]
+    (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
+                                       (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root])))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
-  database and also post the entity to the server. For remotes to work you must implement
-  `(untangled.components.form/commit-to-entity! {:ident [:id id] :value {...})` on the server. "
+  database and also post the entity to the server.
+
+  IMPORTANT: This function checks the validity of the form. If it is invalid, it will NOT commit the changes, but will
+  instead trigger an update of the form in the UI to show validation errors.
+
+  For remotes to work you must implement `(untangled.components.form/commit-to-entity! {:form-id [:id id] :value {...})`
+  on the server. "
   ([comp-or-reconciler form] (commit-to-entity! comp-or-reconciler form false))
   ([comp-or-reconciler form remote]
    (let [validated-form (validate-fields form)]
      (if (valid? validated-form)
        (let [form-id (form-id form)]
          (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form-root]))
-       (log/error "Cannot commit. Form did not validate.")))))
+       (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root])))))
 
 ;; Mutation for moving form data from the form into an entity
 (defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id remote]}]
