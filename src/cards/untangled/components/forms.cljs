@@ -9,7 +9,8 @@
             [untangled.components.ui.forms :as f]
             [untangled.dom :as udom]
             [untangled.client.core :as uc]
-            [untangled.client.mutations :as m]))
+            [untangled.client.mutations :as m]
+            [com.stuartsierra.component :as component]))
 
 (declare add-phone-mutation ValidatedPhoneForm)
 
@@ -403,7 +404,7 @@
   "This card shows a very simple form in action."
   (untangled-app Root)
   {}
-  {:inspect-data false})
+  {:inspect-data true})
 
 (defcard-doc
   "## Adding Form Field Types
@@ -468,4 +469,3 @@
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
   "
   )
-

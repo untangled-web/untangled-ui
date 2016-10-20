@@ -6,7 +6,8 @@
             [untangled.client.logging :as log]
             [untangled.client.mutations :as m]
             [untangled.client.core :as uc]
-            [untangled.client.data-fetch :as df]))
+            [untangled.client.data-fetch :as df]
+            [om.util :as util]))
 
 (defprotocol IForm
   (fields [this] "Returns the field definitions for form support."))
@@ -105,6 +106,90 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GENERAL FORM STATE ACCESS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- subforms*
+  "Returns a map whose keys are the keys of the component's query that point to subforms, and whose values are the
+  defui component of that form. This will give you ALL of the current subforms declared in the static query and IForm
+  fields. If your form crosses unions or has other data dependencies, then this will return all of them. Use get-forms to obtain the
+  current state of active forms. It is a gathering mechanism only."
+  ([form-class] (subforms* form-class []))
+  ([form-class current-path]
+   (let [ast (om/query->ast (om/get-query form-class))
+         allowed-fields (set (keep (fn [f] (when (= ::subform (:input/type f)) (:input/name f))) (fields form-class)))
+         is-form? (fn [ast-node] (let [form-class (:component ast-node)]
+                                   (and
+                                     (contains? allowed-fields (:key ast-node))
+                                     (= :join (:type ast-node))
+                                     (implements? om/IQuery form-class)
+                                     (implements? om/Ident form-class)
+                                     (implements? IForm form-class))))
+         sub-forms (->> ast
+                        :children
+                        (keep (fn [ast-node] (when (is-form? ast-node) ast-node)))
+                        (mapv (fn [node] [(conj current-path (:key node)) (:component node)])))
+         all-forms (reduce (fn [collected-so-far [path component]]
+                             (let [nested-forms (subforms* component path)]
+                               (if (seq nested-forms)
+                                 (into collected-so-far nested-forms)
+                                 collected-so-far)))
+                           sub-forms
+                           sub-forms)]
+     all-forms)))
+
+(defn- to-ident
+  "Follows a key-path through the graph database started from the current object."
+  [app-state current-object key-path]
+  (loop [path key-path obj current-object]
+    (let [k (first path)
+          remainder (rest path)
+          v (get obj k)
+          current-ident (if (util/ident? v) v nil)]
+      (if (seq remainder)
+        (recur remainder (get-in app-state current-ident))
+        current-ident))))
+
+(defn get-forms
+  "Reads the app state database starting at form-ident, and returns a sequence of :
+
+  {:ident ident :class form-class :form form-value}
+
+  for the top form and all of its **declared** subforms. Useful for running transforms and collection across a nested form.
+  "
+  [root-form-class app-state form-ident]
+  (let [form (get-in app-state form-ident)
+        subforms (subforms* root-form-class)
+        result (map (fn [[k class]] (let [ident (to-ident app-state form k)
+                                          value (get-in app-state ident)]
+                                      {:ident ident :class class :form value})) subforms)]
+    (filter #(:ident %) (conj result {:ident form-ident :class root-form-class :form form}))))
+
+; TODO: CONTINUE FROM HERE...NEED SPEC instead of just state in fn
+(defn update-forms
+  "Similar to update-in, but walks your form declaration to affect all nested forms. Useful for applying validation
+  or some mutation to all forms. Returns the new app-state. You supply a (form-update-fn form) => form'"
+  [root-form-class app-state form-ident form-update-fn]
+  (let [form-specs (get-forms root-form-class app-state form-ident)
+        updated-form-specs (map (fn [{:keys [form] :as form-spec}] (assoc form-spec :form (form-update-fn form))) form-specs)]
+    (reduce (fn [s {:keys [ident form]}]
+              (assoc-in s ident form)) app-state updated-form-specs)))
+
+#_(defn init-form
+  "Adds form support data to the given (nested) form."
+  [form-class app-state form-ident]
+  (update-forms form-class app-state form-ident build-form)
+  )
+
+(defn reduce-forms
+  "Similar to reduce, but walks the forms. Useful for gathering information from
+  nested forms (are all of them valid?). At each form it calls (form-fn accumulator {:keys [ident value class]}). The first visit will
+  use `starting-value` as the initial accumulator, and the return value of form-fn will become the new accumulator.
+
+  The `form-fn`'s second argument is a map that contains the form's class, ident, and current value.
+
+  Returns the final accumulator value."
+  [root-form-class app-state form-ident form-fn starting-value]
+  (let [form-specs (get-forms root-form-class app-state form-ident)]
+    (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
 
 (defn form-id
   [form]
@@ -223,9 +308,9 @@
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-  (fn [component form name]
-    (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
-      dispatch)))
+          (fn [component form name]
+            (let [dispatch (get-in form [:ui/form :fields/by-name name :input/type])]
+              dispatch)))
 
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
