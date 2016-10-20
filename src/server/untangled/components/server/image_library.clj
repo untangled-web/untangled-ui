@@ -14,10 +14,10 @@
     (java.util Arrays Base64)
     (java.io ByteArrayInputStream)))
 
-(defn get-ext [[_ _ ext] act-ext _opts]
+(defn get-ext [desired-ext actual-ext _opts]
   ;;TODO use opts to tell if we're outside the image & => need png
-  (if (#{"gif"} act-ext) act-ext
-    (if ext ext act-ext)))
+  (if (#{"gif"} actual-ext) actual-ext
+    (if desired-ext desired-ext actual-ext)))
 
 (defn build-extra-routes [{:keys [assets-path auth-fn owner-fn]}]
   (let [id+ext-regex #"(\d+)\.?(\w+)?"]
@@ -26,27 +26,23 @@
      {::assets
       (fn [{:as env :keys [request]} {{:keys [id]} :route-params}]
         ;;FIXME: workaround because https://github.com/juxt/bidi/issues/141
-        (when-let [[_ id ext] (re-find #"(\d+)\.?(\w+)?" id)]
-          (auth-fn env {:db/id id})
-          (let [owner (first (owner-fn env {:db/id id}))
-                opts (into {} (mapv (comp #(update % 0 keyword)
-                                      #(update % 1 (comp edn/read-string (partial re-find #"\d+"))))
-                                (:query-params request)))
-                rid (second (re-find id+ext-regex id))]
-            (timbre/debug {:rid rid, :opts opts, :owner owner :id id})
-            (if-let [meta-info (->> rid edn/read-string
-                                 (storage/grab (::storage/meta env) owner)
-                                 (timbre/spy :debug "meta-info"))]
-              (let [img-ext (get-ext
-                              (re-find id+ext-regex id)
-                              (:extension meta-info)
-                              opts)]
-                {:status  200
-                 :headers {"Content-Type" (str "image/" img-ext)}
-                 :body    (-> (storage/fetch (::storage/blob env) meta-info)
-                            (img/crop-image-from opts)
-                            (img/as-stream-with-format img-ext))})
-              {:status 404}))))}}))
+        (when-let [[_ id ext] (re-find id+ext-regex id)]
+          (let [im (->> id edn/read-string (hash-map :id) storage/map->ImageMeta)]
+            (let [im (owner-fn env im)
+                  opts (into {} (mapv (comp #(update % 0 keyword)
+                                        #(update % 1 (comp edn/read-string (partial re-find #"\d+"))))
+                                  (:query-params request)))]
+              (timbre/debug {:opts opts, :im im :id id})
+              (auth-fn env im :read)
+              (if-let [meta-info (->> im (storage/grab (::storage/meta env))
+                                   (timbre/spy :debug "meta-info"))]
+                (let [img-ext (get-ext ext (:extension meta-info) opts)]
+                  {:status  200
+                   :headers {"Content-Type" (str "image/" img-ext)}
+                   :body    (-> (storage/fetch (::storage/blob env) meta-info)
+                              (img/crop-image-from opts)
+                              (img/as-stream-with-format img-ext))})
+                {:status 404})))))}}))
 
 (defrecord Switcher [switch-fn]
   component/Lifecycle
@@ -70,17 +66,15 @@
                     (some-fn blob-fn
                              (fn [_] ["file-system blob store" storage/map->FileStore])))})
 
-(defn example-owner-fn [_env {:as params :keys [owner]}]
-  (if owner
-    [owner params]
-    ["Scrooge McDuck" (assoc params :image/owner "Scrooge McDuck")]))
+(defn example-owner-fn [_env im]
+  (assoc im :owner "Example Owner"))
 
 (defn with-defaults [params defaults]
   (merge defaults params))
 
 (defn image-library [params]
   (let [params (with-defaults params
-                 {:auth-fn (fn [env params] :ok)
+                 {:auth-fn (fn [env im loc] :ok)
                   :assets-path "/assets/"
                   :meta-fn (constantly nil)
                   :blob-fn (constantly nil)})

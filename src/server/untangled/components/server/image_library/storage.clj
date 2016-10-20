@@ -37,9 +37,9 @@
       map->ImageMeta)))
 
 (defprotocol IMetaStorage
-  (save [this owner ^ImageMeta im]
+  (save [this ^ImageMeta im]
     "Store the metadata for an image, returning ImageMeta with the ID set to the permanent ID of the metadata.")
-  (grab [this owner] [this owner ^ImageMeta im]
+  (grab [this ^ImageMeta im]
     "Get the metadata for a specific image (or all images). Returns (a seq of) ImageMeta."))
 
 (defprotocol IBlobStorage
@@ -68,16 +68,18 @@
 
 (defrecord InMemMetaStore [config value]
   IMetaStorage
-  (save [this _owner im]
+  (save [this im]
     (let [rid (::counter @value)
           nim (assoc im :id rid)]
       (swap! value assoc rid nim)
       (swap! value update ::counter inc)
       nim))
-  (grab [this _owner id]
-    (get @value id))
-  (grab [this _owner]
-    (vals (dissoc @value ::counter)))
+  (grab [this im]
+    (cond (:id im) (get @value (:id im))
+          (:owner im) (filter (comp #{(:owner im)} :owner)
+                              (vals (dissoc @value ::counter)))
+          :else (throw (ex-info (str "InMemMetaStore failed to grab for " im)
+                         {:this this :im im :config config :value @value}))))
   component/Lifecycle
   (start [this] (assoc this :value (atom {::counter 0})))
   (stop [this] (dissoc this :value)))
