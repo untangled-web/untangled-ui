@@ -20,9 +20,10 @@
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/server" "src/client" "src/shared"]
-  :test-paths ["specs/server" "specs/shared"]
-  :resource-paths ["src" "resources"]
+  :source-paths ["dev" "src/main" "src/cards"]
+  :test-paths ["src/test"]
+  :jar-exclusions [#".DS_Store" #"public" #"cards" #"user.clj"]
+
 
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
@@ -32,7 +33,7 @@
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/client" "src/cards" "src/shared"]
+                :source-paths ["src/main" "cards/cards"]
                 :figwheel     {:devcards true}
                 :compiler     {:main          untangled.components.cards-ui
                                :asset-path    "js/cards"
@@ -40,14 +41,14 @@
                                :output-dir    "resources/public/js/cards"
                                :optimizations :none}}
                {:id           "test"
-                :source-paths ["specs/client" "src/client" "src/shared" "src/cards" "dev"]
+                :source-paths ["src/test" "src/main" "dev"]
                 :figwheel     {:on-jsload "cljs.user/on-load"}
                 :compiler     {:main       cljs.user
                                :output-to  "resources/public/js/specs.js"
                                :output-dir "resources/public/js/specs"
                                :asset-path "js/specs"}}
                {:id           "automated-tests"
-                :source-paths ["specs/client" "src/client" "src/shared"]
+                :source-paths ["src/test" "src/main"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"
                                :output-dir    "resources/private/js/unit-tests"
                                :main          untangled.components.all-tests
