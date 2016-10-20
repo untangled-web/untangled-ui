@@ -18,6 +18,7 @@
                  [navis/untangled-spec "0.3.9" :scope "test"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]
+            [com.jakemccrary/lein-test-refresh "0.17.0"]
             [lein-doo "0.1.7"]]
 
   :source-paths ["dev" "src/main" "src/cards"]
@@ -33,7 +34,7 @@
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/main" "cards/cards"]
+                :source-paths ["src/main" "src/cards"]
                 :figwheel     {:devcards true}
                 :compiler     {:main          untangled.components.cards-ui
                                :asset-path    "js/cards"
