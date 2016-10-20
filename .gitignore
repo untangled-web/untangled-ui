@@ -8,3 +8,4 @@ target
 pom.xml
 figwheel_server.log
 checkouts
+!.idea/runConfigurations
