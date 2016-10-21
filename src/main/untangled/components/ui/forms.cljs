@@ -48,10 +48,9 @@
 (defn subform
   "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
   must be included in your list of fields if you want server interactions to trigger nested form interactions."
-  [field cardinality]
-  {:input/name       field
-   :input/type       ::subform
-   :input/cadinality cardinality})
+  [field]
+  {:input/name field
+   :input/type ::subform})
 
 (defn id-field
   "Declare a hidden identity field. Required to read/write to/from other db tables, and to make sure tempids and such
@@ -163,21 +162,21 @@
                                       {:ident ident :class class :form value})) subforms)]
     (filter #(:ident %) (conj result {:ident form-ident :class root-form-class :form form}))))
 
-; TODO: CONTINUE FROM HERE...NEED SPEC instead of just state in fn
 (defn update-forms
   "Similar to update-in, but walks your form declaration to affect all nested forms. Useful for applying validation
-  or some mutation to all forms. Returns the new app-state. You supply a (form-update-fn form) => form'"
+  or some mutation to all forms. Returns the new app-state. You supply a (form-update-fn form-spec) => form', where
+  form-spec is a map with keys `:class` (the component that has the form), `:ident` (of the form in app state),
+  and `:form` (the value of the form in app state)."
   [root-form-class app-state form-ident form-update-fn]
   (let [form-specs (get-forms root-form-class app-state form-ident)
-        updated-form-specs (map (fn [{:keys [form] :as form-spec}] (assoc form-spec :form (form-update-fn form))) form-specs)]
+        updated-form-specs (map (fn [form-spec] (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
     (reduce (fn [s {:keys [ident form]}]
               (assoc-in s ident form)) app-state updated-form-specs)))
 
-#_(defn init-form
+(defn init-form
   "Adds form support data to the given (nested) form."
   [form-class app-state form-ident]
-  (update-forms form-class app-state form-ident build-form)
-  )
+  (update-forms form-class app-state form-ident (fn [{:keys [class form]}] (build-form class form))))
 
 (defn reduce-forms
   "Similar to reduce, but walks the forms. Useful for gathering information from
