@@ -25,11 +25,18 @@
   "A non-library helper function, written by you to help lay out your form."
   ([comp form name label] (field-with-label comp form name label nil))
   ([comp form name label validation-message]
-   (dom/div #js {:className ""}
-     (dom/label #js {:className (if (f/invalid? form name) "invalid" "") :htmlFor name} label)
-     (f/form-field comp form name)
+   (dom/div #js {:className (str "form-group" (if (f/invalid? form name) " has-error" ""))}
+     (dom/label #js {:className "col-sm-2" :htmlFor name} label)
+     (dom/div #js {:className "col-sm-10"} (f/form-field comp form name))
      (when (and validation-message (f/invalid? form name))
-       (dom/span #js {:className (str "invalid " name)} validation-message)))))
+       (dom/span #js {:className (str "col-sm-offset-2 col-sm-10" name)} validation-message)))))
+
+(defn checkbox-with-label
+  "A helper function to lay out checkboxes."
+  ([comp form name label] (field-with-label comp form name label nil))
+  ([comp form name label validation-message]
+   (dom/div #js {:className "checkbox"}
+     (dom/label nil (f/form-field comp form name) label))))
 
 (defui ^:once PhoneForm
   static uc/InitialAppState
@@ -45,7 +52,7 @@
   Object
   (render [this]
     (let [form (om/props this)]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (field-with-label this form :phone/type "Phone type:") ; Use your own helpers to render out the fields
         (field-with-label this form :phone/number "Number:")))))
 
@@ -174,8 +181,8 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/text-input :phone/number 'us-phone?)   ; Addition of validator
-                  (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+                  (f/set-class "form-control" (f/text-input :phone/number 'us-phone?)) ; Addition of validator
+                  (f/set-class "form-control" (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")]))])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form])
   static om/Ident
@@ -183,7 +190,7 @@
   Object
   (render [this]
     (let [form (om/props this)]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (field-with-label this form :phone/type "Phone type:")
         ;; One more parameter to give the validation error message:
         (field-with-label this form :phone/number "Number:" "Please format as (###) ###-####")))))
@@ -250,10 +257,10 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/text-input :person/name 'name-valid?)
-                  (f/integer-input :person/age 'in-range? {:min 1 :max 110})
-                  (f/checkbox-input :person/registered-to-vote?)
-                  (f/subform :person/phone-numbers :many)])
+                  (f/set-class "col-sm8" (f/text-input :person/name 'name-valid?))
+                  (f/set-class "col-sm8" (f/integer-input :person/age 'in-range? {:min 1 :max 110}))
+                  (f/set-class "col-sm8" (f/checkbox-input :person/registered-to-vote?))
+                  (f/set-class "col-sm8" (f/subform :person/phone-numbers))])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :db/id :person/name :person/age
@@ -265,12 +272,12 @@
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
           ;; FIXME: should be able to make dirty automatically recurse using declared subforms
           dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (when (f/valid? props)
           (dom/div nil "READY to submit!"))
         (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
-        (field-with-label this props :person/registered-to-vote? "Registered?")
+        (checkbox-with-label this props :person/registered-to-vote? "Registered?")
         (when (f/current-value props :person/registered-to-vote?)
           (dom/div nil "Good on you!"))
         (dom/div nil
@@ -404,7 +411,7 @@
   "This card shows a very simple form in action."
   (untangled-app Root)
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 
 (defcard-doc
   "## Adding Form Field Types

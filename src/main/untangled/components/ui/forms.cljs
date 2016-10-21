@@ -59,6 +59,9 @@
   {:input/name name
    :input/type ::identity})
 
+(defn set-class [cls input]
+  (assoc input :input/className cls))
+
 (defn text-input
   "Declare a text input on a form"
   ([name] (text-input name nil {}))
@@ -204,6 +207,11 @@
   [form field]
   (get-in form [:ui/form :state field :input/value]))
 
+(defn css-class
+  "Gets the css class for the form field"
+  [form field]
+  (get-in form [:ui/form :state field :input/className]))
+
 (defn field-value
   "Get the current value of a form field in the app state."
   ([app-state form-id field-name] (field-value app-state form-id field-name ""))
@@ -316,45 +324,49 @@
 
 (defn render-text-field [component form name]
   (let [id (form-id form)
-        text-value (current-value form name)]
-    (dom/input #js {:type     "text"
-                    :name     name
-                    :value    text-value
-                    :onBlur   (fn [event]
-                                (om/transact! component
-                                  `[(untangled.components.form/validate ~{:form-id id :field name})
-                                    :ui/form-root]))
-                    :onChange (fn [event]
-                                (om/transact! component
-                                  `[(untangled.components.form/update-field
-                                      ~{:form-id id
-                                        :field   name
-                                        :value   (.. event -target -value)})
-                                    :ui/form-root]))})))
+        text-value (current-value form name)
+        cls (or (css-class form name) "form-control")]
+    (dom/input #js {:type      "text"
+                    :name      name
+                    :value     text-value
+                    :className cls
+                    :onBlur    (fn [event]
+                                 (om/transact! component
+                                   `[(untangled.components.form/validate ~{:form-id id :field name})
+                                     :ui/form-root]))
+                    :onChange  (fn [event]
+                                 (om/transact! component
+                                   `[(untangled.components.form/update-field
+                                       ~{:form-id id
+                                         :field   name
+                                         :value   (.. event -target -value)})
+                                     :ui/form-root]))})))
 
 ;; Field renderer for a ::text form field
 (defmethod form-field ::text [component form name] (render-text-field component form name))
 
 (defn render-integer-field [component form name]
   (let [id (form-id form)
+        cls (or (css-class form name) "form-control")
         text-value (current-value form name)]
-    (dom/input #js {:type     "number"
-                    :name     name
-                    :value    text-value
-                    :onBlur   (fn [_]
-                                (om/transact! component
-                                  `[(untangled.components.form/validate ~{:form-id id :field name})
-                                    :ui/form-root]))
-                    :onChange (fn [event]
-                                (let [raw-value (.. event -target -value)
-                                      v (if (seq (re-matches #"^[0-9]*$" raw-value))
-                                          (int raw-value)
-                                          raw-value)]
-                                  (om/transact! component
-                                    `[(untangled.components.form/update-field ~{:form-id id
-                                                                                :field   name
-                                                                                :value   v})
-                                      :ui/form-root])))})))
+    (dom/input #js {:type      "number"
+                    :name      name
+                    :className cls
+                    :value     text-value
+                    :onBlur    (fn [_]
+                                 (om/transact! component
+                                   `[(untangled.components.form/validate ~{:form-id id :field name})
+                                     :ui/form-root]))
+                    :onChange  (fn [event]
+                                 (let [raw-value (.. event -target -value)
+                                       v (if (seq (re-matches #"^[0-9]*$" raw-value))
+                                           (int raw-value)
+                                           raw-value)]
+                                   (om/transact! component
+                                     `[(untangled.components.form/update-field ~{:form-id id
+                                                                                 :field   name
+                                                                                 :value   v})
+                                       :ui/form-root])))})))
 
 ;; Field renderer for a ::integer form field
 (defmethod form-field ::integer [component form name] (render-integer-field component form name))
@@ -367,14 +379,16 @@
 (defmethod form-field ::dropdown [component form name]
   (let [id (form-id form)
         selection (current-value form name)
+        cls (or (css-class form name) "form-control")
         field (field-config form name)
         optional? (= ::none (:input/default-value field))
         options (:input/options field)]
-    (dom/select #js {:name     name
-                     :value    selection
-                     :onChange (fn [event] (om/transact! component `[(untangled.components.form/select-option ~{:form-id id
-                                                                                                                :field   name
-                                                                                                                :value   (.. event -target -value)}) :ui/form-root]))}
+    (dom/select #js {:name      name
+                     :className cls
+                     :value     selection
+                     :onChange  (fn [event] (om/transact! component `[(untangled.components.form/select-option ~{:form-id id
+                                                                                                                 :field   name
+                                                                                                                 :value   (.. event -target -value)}) :ui/form-root]))}
                 (when optional?
                   (dom/option #js {:value ::none} ""))
                 (map (fn [{:keys [option/key option/label]}] (dom/option #js {:key key :value key} label)) options))))
@@ -382,12 +396,14 @@
 ;; Field renderer for a ::checkbox form field
 (defmethod form-field ::checkbox [component form name]
   (let [id (form-id form)
+        cls (or (css-class form name) "")
         bool-value (current-value form name)]
-    (dom/input #js {:type     "checkbox"
-                    :name     name
-                    :checked  bool-value
-                    :onChange (fn [event] (om/transact! component `[(untangled.components.form/toggle-field ~{:form-id id
-                                                                                                              :field   name}) :ui/form-root]))})))
+    (dom/input #js {:type      "checkbox"
+                    :name      name
+                    :className cls
+                    :checked   bool-value
+                    :onChange  (fn [event] (om/transact! component `[(untangled.components.form/toggle-field ~{:form-id id
+                                                                                                               :field   name}) :ui/form-root]))})))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
