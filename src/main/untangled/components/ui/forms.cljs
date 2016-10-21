@@ -462,14 +462,18 @@
 
 ;; Mutation for moving form data from the form into an entity
 (defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id remote]}]
-  (let [form-state (get-in @state (conj form-id :ui/form :state))
-        old-entity (get-in @state form-id {})
-        updated-entity (into old-entity (map (fn [[k v]] [k (:input/value v)]) form-state))]
-    {:remote (when remote (assoc ast :params {:ident form-id :value updated-entity}))
-     :action (fn [] (swap! state assoc-in form-id updated-entity))}))
+  (letfn [(form-state [form-id] (get-in @state (conj form-id :ui/form :state)))
+          (old-entity [form-id] (get-in @state form-id {}))
+          (updated-entity [form-id] (into (old-entity form-id) (map (fn [[k v]] [k (:input/value v)]) (form-state form-id))))]
+    {:remote false                                          ; TODO
+     :action (fn [] (let [top-form (get-in @state form-id)
+                          top-class (form-component top-form)]
+                      (swap! state update-forms top-class form-id (fn [{:keys [ident]}]
+                                                                    (updated-entity ident)))))}))
 
 ;; Mutation for moving form data from the an entity into the form
 (defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [form-id]}]
+  ;; TODO: Make this use update-forms
   (let [form (get-in @state form-id {})
         new-state (reduce (fn [s k] (if-let [v (get form k)]
                                       (assoc-in s [k :input/value] v)

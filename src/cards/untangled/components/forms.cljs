@@ -191,6 +191,7 @@
   (render [this]
     (let [form (om/props this)]
       (dom/div #js {:className "form-horizontal"}
+        (js/console.log :validated-phone form)
         (field-with-label this form :phone/type "Phone type:")
         ;; One more parameter to give the validation error message:
         (field-with-label this form :phone/number "Number:" "Please format as (###) ###-####")))))
@@ -402,8 +403,7 @@
 (defcard sample-form-1
   "This card shows a very simple form in action."
   (untangled-app Root)
-  {}
-  {:inspect-data false})
+  )
 
 (defcard-doc
   "## Adding Form Field Types
