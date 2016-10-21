@@ -260,7 +260,7 @@
                   (f/text-input :person/name 'name-valid?)
                   (f/integer-input :person/age 'in-range? {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)
-                  (f/subform :person/phone-numbers)])
+                  (f/subform :person/phone-numbers :many)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :db/id :person/name :person/age
@@ -286,24 +286,16 @@
           (dom/button #js {:className "btn btn-primary" :onClick #(om/transact! this
                                                                    `[(sample/add-phone ~{:id     (om/tempid)
                                                                                          :person (:db/id props)})])} "Add Phone")
-          (dom/button #js {:className "btn btn-default" :onClick (fn []
-                                                                   (doseq [n phone-numbers]
-                                                                     (f/validate-entire-form! this n))
-                                                                   (f/validate-entire-form! this props))} "Validate")
+          (dom/button #js {:className "btn btn-default" :onClick #(f/validate-entire-form! this props)} "Validate")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
                                         ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
                                         ;; and run post mutations that re-initialize the form state on entities just loaded
-                                        (doseq [n phone-numbers]
-                                          (f/reset-from-entity! this n))
                                         (f/reset-from-entity! this props))} "UNDO")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
-                                        ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
                                         ;; FIXME: Commit should ONLY send delta (dirty fields) to server
                                         ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (doseq [n phone-numbers]
-                                          (f/commit-to-entity! this n true))
                                         (f/commit-to-entity! this props true))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))

@@ -51,6 +51,20 @@
   static om/Ident
   (ident [this props] [:data (:id props)]))
 
+(defui ToManyForm
+  static uc/InitialAppState
+  (initial-state [this params] {:id      99
+                                :to-many true
+                                :value   1
+                                :leaves  [(uc/initial-state LeafForm {:id 3}) (uc/initial-state LeafForm {:id 4})]})
+  static om/IQuery
+  (query [this] [{:leaves (om/get-query LeafForm)} :value])
+  static om/Ident
+  (ident [this props] [:tomform (:id props)])
+  static f/IForm
+  (fields [this] [(f/subform :leaves)]))
+
+
 (defui Level2Form
   static uc/InitialAppState
   (initial-state [this params] {:id     2
@@ -101,19 +115,23 @@
     "gives back pairs of [prop-path class] on a singly-nested form"
     (f/subforms* Level2Form) => [[[:leaf1] LeafForm] [[:leaf2] LeafForm] [[:leaf3] LeafForm]]
     "gives back pairs of [prop-path class] on a nested form"
-    (f/subforms* Level3Form) => [[[:level2] Level2Form] [[:level2 :leaf1] LeafForm] [[:level2 :leaf2] LeafForm] [[:level2 :leaf3] LeafForm]]))
+    (f/subforms* Level3Form) => [[[:level2] Level2Form] [[:level2 :leaf1] LeafForm] [[:level2 :leaf2] LeafForm] [[:level2 :leaf3] LeafForm]]
+    "supports to-many sub-forms"
+    (f/subforms* ToManyForm) => [[[:leaves] LeafForm]]))
 
 (def person-db {:person/by-id {1 {:name "A" :friend [:person/by-id 2]}
                                2 {:name "B" :friend [:person/by-id 3]}
                                3 {:name "C"}}})
-
-(specification "to-ident"
-  (assertions
-    "finds an ident by walking the graph"
-    (f/to-ident person-db (get-in person-db [:person/by-id 1]) [:friend]) => [:person/by-id 2]
-    (f/to-ident person-db (get-in person-db [:person/by-id 1]) [:friend :friend]) => [:person/by-id 3]))
-
 (def nested-form-db (om/tree->db [{:root (om/get-query Level3Form)}] {:root (uc/initial-state Level3Form {})} true))
+(def tomany-form-db (om/tree->db [{:root (om/get-query ToManyForm)}] {:root (uc/initial-state ToManyForm {})} true))
+
+(specification "to-idents"
+  (assertions
+    "finds a sequence of idents by walking the graph"
+    (f/to-idents person-db (get-in person-db [:person/by-id 1]) [:friend]) => [[:person/by-id 2]]
+    (f/to-idents person-db (get-in person-db [:person/by-id 1]) [:friend :friend]) => [[:person/by-id 3]]
+    (f/to-idents tomany-form-db (get-in tomany-form-db [:tomform 99]) [:leaves]) => [[:leaf 3] [:leaf 4]]))
+
 
 (specification "get-forms"
   (assertions
@@ -121,7 +139,18 @@
     (f/get-forms nested-form-db Level3Form [:level3 1]) => [{:ident [:level3 1] :class Level3Form :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
                                                             {:ident [:level2 2] :class Level2Form :form {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
                                                             {:ident [:leaf 5] :class LeafForm :form {:id 5 :value 1 :leaf true}}
-                                                            {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]))
+                                                            {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]
+    "Can pull to-many relations of sub-forms"
+    (f/get-forms tomany-form-db ToManyForm [:tomform 99]) => [{:ident [:tomform 99]
+                                                               :class ToManyForm
+                                                               :form  {:id 99 :to-many true :value 1 :leaves [[:leaf 3] [:leaf 4]]}}
+                                                              {:ident [:leaf 3]
+                                                               :class LeafForm
+                                                               :form  {:id 3 :value 1 :leaf true}}
+                                                              {:ident [:leaf 4]
+                                                               :class LeafForm
+                                                               :form  {:id 4 :value 1 :leaf true}}]
+    ))
 
 
 (specification "update-forms"

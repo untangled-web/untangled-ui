@@ -49,9 +49,13 @@
 (defn subform
   "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
   must be included in your list of fields if you want server interactions to trigger nested form interactions."
-  [field]
-  {:input/name field
-   :input/type ::subform})
+  ([field]
+   {:input/name field
+    :input/type ::subform})
+  ([field cardinality]
+   {:input/name        field
+    :input/cardinality (or (#{:one :many} cardinality) :many)
+    :input/type        ::subform}))
 
 (defn id-field
   "Declare a hidden identity field. Required to read/write to/from other db tables, and to make sure tempids and such
@@ -142,17 +146,21 @@
                            sub-forms)]
      all-forms)))
 
-(defn- to-ident
-  "Follows a key-path through the graph database started from the current object."
+(defn- to-idents
+  "Follows a key-path through the graph database started from the current object. Follows to-one and to-many joins
+  are results in a sequence of all of the idents of the items indicated by the given key-path from the given object."
   [app-state current-object key-path]
   (loop [path key-path obj current-object]
     (let [k (first path)
           remainder (rest path)
           v (get obj k)
-          current-ident (if (util/ident? v) v nil)]
-      (if (seq remainder)
-        (recur remainder (get-in app-state current-ident))
-        current-ident))))
+          to-many? (and (vector? v) (every? util/ident? v))
+          ident? (and (not to-many?) (util/ident? v))
+          many-idents (if to-many? (apply concat (map-indexed (fn [idx _] (to-idents app-state v (conj remainder idx))) v)) [])
+          result (vec (keep identity (conj many-idents (when ident? v))))]
+      (if (and ident? (seq remainder))
+        (recur remainder (get-in app-state v))
+        result))))
 
 (defn get-forms
   "Reads the app state database starting at form-ident, and returns a sequence of :
@@ -160,13 +168,16 @@
   {:ident ident :class form-class :form form-value}
 
   for the top form and all of its **declared** subforms. Useful for running transforms and collection across a nested form.
+
+  If there are any to-many relations in the database, they will be expanded to individual entries of the returned sequence.
   "
   [app-state root-form-class form-ident]
   (let [form (get-in app-state form-ident)
         subforms (subforms* root-form-class)
-        result (map (fn [[k class]] (let [ident (to-ident app-state form k)
-                                          value (get-in app-state ident)]
-                                      {:ident ident :class class :form value})) subforms)]
+        result (flatten (map (fn [[k class]]
+                               (for [ident (to-idents app-state form k)]
+                                 (let [value (get-in app-state ident)]
+                                   {:ident ident :class class :form value}))) subforms))]
     (filter #(:ident %) (conj result {:ident form-ident :class root-form-class :form form}))))
 
 (defn update-forms
@@ -176,7 +187,8 @@
   and `:form` (the value of the form in app state)."
   [app-state root-form-class form-ident form-update-fn]
   (let [form-specs (get-forms app-state root-form-class form-ident)
-        updated-form-specs (map (fn [form-spec] (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
+        updated-form-specs (map (fn [form-spec]
+                                  (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
     (reduce (fn [s {:keys [ident form]}]
               (assoc-in s ident form)) app-state updated-form-specs)))
 
@@ -196,6 +208,11 @@
   [app-state root-form-class form-ident form-fn starting-value]
   (let [form-specs (get-forms app-state root-form-class form-ident)]
     (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
+
+(defn form-component
+  "Get the component that declared the given form data."
+  [form]
+  (-> form :ui/form meta :component))
 
 (defn form-id
   [form]
@@ -275,10 +292,7 @@
 
 ;; Mutation to run validation on a specific field
 (defmethod m/mutate 'untangled.components.form/validate [{:keys [state]} k {:keys [form-id field]}]
-  {:action (fn []
-             (let [form (get-in @state form-id)
-                   form-class (-> form meta :component)]
-               (swap! state update-forms form-id update-validation field)))})
+  {:action #(swap! state update-in form-id update-validation field)})
 
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."
@@ -288,7 +302,12 @@
 
 ;; Mutation to run validation on an entire form
 (defmethod m/mutate 'untangled.components.form/validate-form! [{:keys [state]} k {:keys [form-id]}]
-  {:action (fn [] (swap! state update-in form-id validate-fields))})
+  {:action (fn []
+             (let [form (get-in @state form-id)
+                   form-class (form-component form)]
+               (if form-class
+                 (swap! state update-forms form-class form-id (fn [{:keys [form]}] (validate-fields form)))
+                 (log/error "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))})
 
 (defn validate-entire-form!
   "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
