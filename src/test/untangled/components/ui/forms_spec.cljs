@@ -118,14 +118,14 @@
 (specification "get-forms"
   (assertions
     "Obtains a list of nested forms and idents that are BOTH declared as subforms AND are present (others are skipped)."
-    (f/get-forms Level3Form nested-form-db [:level3 1]) => [{:ident [:level3 1] :class Level3Form :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
+    (f/get-forms nested-form-db Level3Form [:level3 1]) => [{:ident [:level3 1] :class Level3Form :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
                                                             {:ident [:level2 2] :class Level2Form :form {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
                                                             {:ident [:leaf 5] :class LeafForm :form {:id 5 :value 1 :leaf true}}
                                                             {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]))
 
 
 (specification "update-forms"
-  (let [new-state (f/update-forms Level3Form nested-form-db [:level3 1] (fn [{:keys [form]}] (assoc form :touched true)))]
+  (let [new-state (f/update-forms nested-form-db Level3Form [:level3 1] (fn [{:keys [form]}] (assoc form :touched true)))]
     (assertions
       "Updates the state of the correct forms using a supplied function."
       (get-in new-state [:level3 1]) => {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2] :touched true}
@@ -136,18 +136,22 @@
 
 (specification "reduce-forms"
   (assertions "Can accumulate values from all forms"
-    (f/reduce-forms Level3Form nested-form-db [:level3 1] (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0) => 3))
+    (f/reduce-forms nested-form-db Level3Form [:level3 1] (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0) => 3))
 
 (specification "init-form"
-  (let [augmented-state (f/init-form LeafForm nested-form-db [:leaf 5])
+  (let [augmented-state (f/init-form nested-form-db LeafForm [:leaf 5])
         form (get-in augmented-state [:leaf 5])]
     (assertions
       "Adds form state to forms"
-      (get-in form [:ui/form :fields/by-name]) => {:id {:input/name :id :input/type ::f/identity}}))
-  (let [augmented-state (f/init-form Level3Form nested-form-db [:level3 1])
+      (get-in form [:ui/form :fields/by-name]) => {:id {:input/name :id :input/type ::f/identity}}
+      "Adds form class as metadata"
+      (-> form (get :ui/form) meta :component) => LeafForm))
+  (let [augmented-state (f/init-form nested-form-db Level3Form [:level3 1])
         leaf-form (get-in augmented-state [:leaf 5])
         top-form (get-in augmented-state [:level3 1])]
     (assertions
       "Adds form state to nested, declared subforms"
       (get-in leaf-form [:ui/form :fields/by-name]) => {:id {:input/name :id :input/type ::f/identity}}
-      (get-in top-form [:ui/form :fields/by-name]) => {:level2 {:input/name :level2 :input/type ::f/subform}})))
+      (get-in top-form [:ui/form :fields/by-name]) => {:level2 {:input/name :level2 :input/type ::f/subform}}
+      "Adds form class as metadata"
+      (-> top-form (get :ui/form) meta :component) => Level3Form)))

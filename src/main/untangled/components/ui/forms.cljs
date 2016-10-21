@@ -36,9 +36,10 @@
         state (reduce (fn [s k] (if-let [v (get entity-state k)]
                                   (assoc-in s [k :input/value] v)
                                   s)) empty-state (keys fields-by-name))]
-    (assoc entity-state :ui/form {:ident          (om/ident form-class entity-state)
-                                  :fields/by-name fields-by-name
-                                  :state          state})))
+    (assoc entity-state :ui/form (with-meta {:ident          (om/ident form-class entity-state)
+                                             :fields/by-name fields-by-name
+                                             :state          state}
+                                            {:component form-class}))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,7 +60,10 @@
   {:input/name name
    :input/type ::identity})
 
-(defn set-class [cls input]
+(defn set-class
+  "Set an advisory CSS class on an input field declaration."
+  [cls input]
+  {:pre [(:input/name input)]}
   (assoc input :input/className cls))
 
 (defn text-input
@@ -157,7 +161,7 @@
 
   for the top form and all of its **declared** subforms. Useful for running transforms and collection across a nested form.
   "
-  [root-form-class app-state form-ident]
+  [app-state root-form-class form-ident]
   (let [form (get-in app-state form-ident)
         subforms (subforms* root-form-class)
         result (map (fn [[k class]] (let [ident (to-ident app-state form k)
@@ -170,16 +174,16 @@
   or some mutation to all forms. Returns the new app-state. You supply a (form-update-fn form-spec) => form', where
   form-spec is a map with keys `:class` (the component that has the form), `:ident` (of the form in app state),
   and `:form` (the value of the form in app state)."
-  [root-form-class app-state form-ident form-update-fn]
-  (let [form-specs (get-forms root-form-class app-state form-ident)
+  [app-state root-form-class form-ident form-update-fn]
+  (let [form-specs (get-forms app-state root-form-class form-ident)
         updated-form-specs (map (fn [form-spec] (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
     (reduce (fn [s {:keys [ident form]}]
               (assoc-in s ident form)) app-state updated-form-specs)))
 
 (defn init-form
   "Adds form support data to the given (nested) form."
-  [form-class app-state form-ident]
-  (update-forms form-class app-state form-ident (fn [{:keys [class form]}] (build-form class form))))
+  [app-state form-class form-ident]
+  (update-forms app-state form-class form-ident (fn [{:keys [class form]}] (build-form class form))))
 
 (defn reduce-forms
   "Similar to reduce, but walks the forms. Useful for gathering information from
@@ -189,8 +193,8 @@
   The `form-fn`'s second argument is a map that contains the form's class, ident, and current value.
 
   Returns the final accumulator value."
-  [root-form-class app-state form-ident form-fn starting-value]
-  (let [form-specs (get-forms root-form-class app-state form-ident)]
+  [app-state root-form-class form-ident form-fn starting-value]
+  (let [form-specs (get-forms app-state root-form-class form-ident)]
     (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
 
 (defn form-id
@@ -255,7 +259,6 @@
   [form field]
   (get-in form [:ui/form :fields/by-name field :input/validator-args] {}))
 
-
 ;; Sample validator that requires a number be in the (inclusive) range.
 (defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
   (let [value (int value)]
@@ -272,7 +275,10 @@
 
 ;; Mutation to run validation on a specific field
 (defmethod m/mutate 'untangled.components.form/validate [{:keys [state]} k {:keys [form-id field]}]
-  {:action #(swap! state update-in form-id update-validation field)})
+  {:action (fn []
+             (let [form (get-in @state form-id)
+                   form-class (-> form meta :component)]
+               (swap! state update-forms form-id update-validation field)))})
 
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."

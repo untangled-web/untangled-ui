@@ -60,7 +60,7 @@
 
 (defn add-phone-mutation [{:keys [state]} k {:keys [id person]}]
   {:action (fn []
-             (let [new-phone (uc/initial-state ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
+             (let [new-phone (f/build-form ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
                    person-ident [:people/by-id person]
                    phone-ident (om/ident ValidatedPhoneForm new-phone)]
                (swap! state assoc-in phone-ident new-phone)
@@ -181,8 +181,8 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/set-class "form-control" (f/text-input :phone/number 'us-phone?)) ; Addition of validator
-                  (f/set-class "form-control" (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")]))])
+                  (f/text-input :phone/number 'us-phone?)   ; Addition of validator
+                  (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form])
   static om/Ident
@@ -257,10 +257,10 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/set-class "col-sm8" (f/text-input :person/name 'name-valid?))
-                  (f/set-class "col-sm8" (f/integer-input :person/age 'in-range? {:min 1 :max 110}))
-                  (f/set-class "col-sm8" (f/checkbox-input :person/registered-to-vote?))
-                  (f/set-class "col-sm8" (f/subform :person/phone-numbers))])
+                  (f/text-input :person/name 'name-valid?)
+                  (f/integer-input :person/age 'in-range? {:min 1 :max 110})
+                  (f/checkbox-input :person/registered-to-vote?)
+                  (f/subform :person/phone-numbers)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :db/id :person/name :person/age
@@ -282,29 +282,29 @@
           (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
-        (dom/button #js {:onClick #(om/transact! this
-                                    `[(sample/add-phone ~{:id     (om/tempid)
-                                                          :person (:db/id props)})])} "Add Phone")
-        (dom/br nil)
-        (dom/button #js {:onClick (fn []
-                                    (doseq [n phone-numbers]
-                                      (f/validate-entire-form! this n))
-                                    (f/validate-entire-form! this props))} "Validate")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
-                                     ;; and run post mutations that re-initialize the form state on entities just loaded
-                                     (doseq [n phone-numbers]
-                                       (f/reset-from-entity! this n))
-                                     (f/reset-from-entity! this props))} "UNDO")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
-                                     ;; FIXME: Commit should ONLY send delta (dirty fields) to server
-                                     ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                     (doseq [n phone-numbers]
-                                       (f/commit-to-entity! this n true))
-                                     (f/commit-to-entity! this props true))} "Save to entity!")))))
+        (dom/div #js {:className "button-group"}
+          (dom/button #js {:className "btn btn-primary" :onClick #(om/transact! this
+                                                                   `[(sample/add-phone ~{:id     (om/tempid)
+                                                                                         :person (:db/id props)})])} "Add Phone")
+          (dom/button #js {:className "btn btn-default" :onClick (fn []
+                                                                   (doseq [n phone-numbers]
+                                                                     (f/validate-entire-form! this n))
+                                                                   (f/validate-entire-form! this props))} "Validate")
+          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
+                           :onClick   (fn []
+                                        ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
+                                        ;; and run post mutations that re-initialize the form state on entities just loaded
+                                        (doseq [n phone-numbers]
+                                          (f/reset-from-entity! this n))
+                                        (f/reset-from-entity! this props))} "UNDO")
+          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
+                           :onClick   (fn []
+                                        ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
+                                        ;; FIXME: Commit should ONLY send delta (dirty fields) to server
+                                        ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
+                                        (doseq [n phone-numbers]
+                                          (f/commit-to-entity! this n true))
+                                        (f/commit-to-entity! this props true))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
