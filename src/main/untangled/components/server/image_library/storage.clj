@@ -46,7 +46,7 @@
   (store [this ^ImageMeta im value] "Store value (binary). Uses ImageMeta to name the image in the store.")
   (fetch [this ^ImageMeta im] "Fetch the content of the given path. Returns an input stream or nil if missing."))
 
-(defrecord FileStore [config temp-path]
+(defrecord FileStore [temp-path]
   IBlobStorage
   (store [this im value]
     (with-open [w (io/output-stream (io/file temp-path (str (:id im))))]
@@ -66,7 +66,7 @@
               (io/delete-file file))]
       (delete-folder temp-path))))
 
-(defrecord InMemMetaStore [config value]
+(defrecord InMemMetaStore [value]
   IMetaStorage
   (save [this im]
     (let [rid (::counter @value)
@@ -79,7 +79,7 @@
           (:owner im) (filter (comp #{(:owner im)} :owner)
                               (vals (dissoc @value ::counter)))
           :else (throw (ex-info (str "InMemMetaStore failed to grab for " im)
-                         {:this this :im im :config config :value @value}))))
+                         {:this this :im im :value @value}))))
   component/Lifecycle
   (start [this] (assoc this :value (atom {::counter 0})))
   (stop [this] (dissoc this :value)))

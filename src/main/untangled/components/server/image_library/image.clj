@@ -6,6 +6,11 @@
   (:import
     (java.util Arrays)))
 
+(defn get-ext [desired-ext actual-ext _opts]
+  ;;TODO use opts to tell if we're outside the image & => need png
+  (if (#{"gif"} actual-ext) actual-ext
+    (if desired-ext desired-ext actual-ext)))
+
 (defn animated-gif? [data]
   (let [bitvalue (bit-and (bit-and (nth data 10) 0x000000ff) 2r111)
         global-len (* 3 (Math/pow 2 (+ 1 bitvalue)))

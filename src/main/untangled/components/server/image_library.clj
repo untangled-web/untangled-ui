@@ -3,46 +3,47 @@
     [clojure.edn :as edn]
     [clojure.java.io :as io]
     [clojure.set :as set]
+    [clojure.string :as str]
     [com.stuartsierra.component :as component]
     [om.next.server :as oms]
     [taoensso.timbre :as timbre]
     [untangled.components.server.image-library.image :as img]
     [untangled.components.server.image-library.parser :as parser]
-    [untangled.components.server.image-library.storage :as storage])
+    [untangled.components.server.image-library.storage :as storage]
+    [untangled.server.core :as usc])
   (:import
     (javax.imageio ImageIO)
     (java.util Arrays Base64)
     (java.io ByteArrayInputStream)))
 
-(defn get-ext [desired-ext actual-ext _opts]
-  ;;TODO use opts to tell if we're outside the image & => need png
-  (if (#{"gif"} actual-ext) actual-ext
-    (if desired-ext desired-ext actual-ext)))
-
-(defn build-extra-routes [{:keys [assets-path auth-fn owner-fn]}]
-  (let [id+ext-regex #"(\d+)\.?(\w+)?"]
-    {:routes [assets-path {[:id] ::assets}]
-     :handlers
-     {::assets
-      (fn [{:as env :keys [request]} {{:keys [id]} :route-params}]
-        ;;FIXME: workaround because https://github.com/juxt/bidi/issues/141
-        (when-let [[_ id ext] (re-find id+ext-regex id)]
-          (let [im (->> id edn/read-string (hash-map :id) storage/map->ImageMeta)]
-            (let [im (owner-fn env im)
-                  opts (into {} (mapv (comp #(update % 0 keyword)
-                                        #(update % 1 (comp edn/read-string (partial re-find #"\d+"))))
-                                  (:query-params request)))]
-              (timbre/debug {:opts opts, :im im :id id})
-              (auth-fn env im :read)
-              (if-let [meta-info (->> im (storage/grab (::storage/meta env))
-                                   (timbre/spy :debug "meta-info"))]
-                (let [img-ext (get-ext ext (:extension meta-info) opts)]
-                  {:status  200
-                   :headers {"Content-Type" (str "image/" img-ext)}
-                   :body    (-> (storage/fetch (::storage/blob env) meta-info)
-                              (img/crop-image-from opts)
-                              (img/as-stream-with-format img-ext))})
-                {:status 404})))))}}))
+(defrecord ImageLibraryMiddleware [middleware owner-fn auth-fn assets-root]
+  component/Lifecycle
+  (start [this]
+    (assoc this :middleware
+      (let [id+ext-regex #"(\d+)\.?(\w+)?"]
+        (fn [handler]
+          (fn [request]
+            (if-not (re-find (re-pattern assets-root) (:uri request)) (handler request)
+              (when-let [[_ id ext] (re-find id+ext-regex (str/replace (:uri request) assets-root ""))]
+                (let [env (assoc this :request request)
+                      im (->> id edn/read-string (hash-map :id) storage/map->ImageMeta)]
+                  (let [im (owner-fn env im)
+                        opts (into {} (mapv (comp #(update % 0 keyword)
+                                              #(update % 1 (comp edn/read-string (partial re-find #"\d+"))))
+                                        (:query-params request)))]
+                    (timbre/debug {:opts opts, :im im :id id})
+                    (auth-fn env im :read)
+                    (if-let [meta-info (->> im (storage/grab (::storage/meta this))
+                                         (timbre/spy :debug "meta-info"))]
+                      (let [img-ext (img/get-ext ext (:extension meta-info) opts)]
+                        {:status  200
+                         :headers {"Content-Type" (str "image/" img-ext)}
+                         :body    (-> (storage/fetch (::storage/blob this) meta-info)
+                                    (img/crop-image-from opts)
+                                    (img/as-stream-with-format img-ext))})
+                      {:status 404}))))))))))
+  (stop [this]
+    (dissoc this :middleware)))
 
 (defrecord Switcher [switch-fn]
   component/Lifecycle
@@ -58,29 +59,48 @@
     (map->Switcher {:switch-fn switch-fn})
     deps))
 
-(defn build-components [{:keys [meta-deps blob-deps meta-fn blob-fn]}]
-  {::storage/meta (build-switcher (or meta-deps [:config])
+(defn build-components [{:as opts
+                         :keys [meta-deps blob-deps meta-fn blob-fn
+                                middleware-key middleware-deps]}]
+  {::storage/meta (build-switcher (or meta-deps [])
                     (some-fn meta-fn
                              (fn [_] ["in-memory meta store" storage/map->InMemMetaStore])))
-   ::storage/blob (build-switcher (or blob-deps [:config])
+   ::storage/blob (build-switcher (or blob-deps [])
                     (some-fn blob-fn
-                             (fn [_] ["file-system blob store" storage/map->FileStore])))})
+                             (fn [_] ["file-system blob store" storage/map->FileStore])))
+   (or middleware-key ::middleware)
+   (component/using
+     (map->ImageLibraryMiddleware opts)
+     (vec (into #{::storage/blob ::storage/meta} middleware-deps)))})
 
-(defn example-owner-fn [_env im]
+(defn example-owner-fn [_this im]
   (assoc im :owner "Example Owner"))
 
 (defn with-defaults [params defaults]
   (merge defaults params))
 
-(defn image-library [params]
-  (let [params (with-defaults params
-                 {:auth-fn (fn [env im loc] :ok)
-                  :assets-path "/assets/"
-                  :meta-fn (constantly nil)
-                  :blob-fn (constantly nil)})
-        components (build-components params)]
-    {:components components
-     :parser-injections (keys components)
-     :parser {:reads (parser/build-reads params)
-              :mutates (parser/build-mutates params)}
-     :extra-routes (build-extra-routes params)}))
+(defrecord ImageLibrary [meta-fn blob-fn meta-deps blob-deps
+                         auth-fn owner-fn assets-root]
+  usc/Module
+  (system-key [this] ::ImageLibrary)
+  (components [this] (build-components this))
+  usc/APIHandler
+  (api-read [this R] (parser/build-read this R))
+  (api-mutate [this M] (parser/build-mutate this M)))
+
+(defn image-library [opts]
+  (component/using
+    (map->ImageLibrary
+      (with-defaults
+        (select-keys opts
+          [:meta-fn :meta-deps
+           :blob-fn :blob-deps
+           :auth-fn :owner-fn
+           :middleware-key :middleware-deps
+           :assets-root])
+        {:auth-fn (fn [this im loc] :ok)
+         :assets-root "/assets/"
+         :middleware-deps []
+         :meta-fn (constantly nil)
+         :blob-fn (constantly nil)}))
+    [::storage/blob ::storage/meta]))
