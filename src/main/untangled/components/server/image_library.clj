@@ -62,13 +62,13 @@
 (defn build-components [{:as opts
                          :keys [meta-deps blob-deps meta-fn blob-fn
                                 middleware-key middleware-deps]}]
-  {::storage/meta (build-switcher (or meta-deps [])
+  {::storage/meta (build-switcher meta-deps
                     (some-fn meta-fn
                              (fn [_] ["in-memory meta store" storage/map->InMemMetaStore])))
-   ::storage/blob (build-switcher (or blob-deps [])
+   ::storage/blob (build-switcher blob-deps
                     (some-fn blob-fn
                              (fn [_] ["file-system blob store" storage/map->FileStore])))
-   (or middleware-key ::middleware)
+   middleware-key
    (component/using
      (map->ImageLibraryMiddleware opts)
      (vec (into #{::storage/blob ::storage/meta} middleware-deps)))})
@@ -101,6 +101,9 @@
         {:auth-fn (fn [this im loc] :ok)
          :assets-root "/assets/"
          :middleware-deps []
+         :middleware-key ::middleware
          :meta-fn (constantly nil)
-         :blob-fn (constantly nil)}))
+         :meta-deps []
+         :blob-fn (constantly nil)
+         :blob-deps []}))
     [::storage/blob ::storage/meta]))
