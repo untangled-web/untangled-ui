@@ -40,28 +40,6 @@
                                 (img/as-stream-with-format img-ext))})
                   {:status 404})))))))))
 
-(defrecord Switcher [switch-fn]
-  component/Lifecycle
-  (start [this]
-    (let [[comp-name comp-builder] (switch-fn this)
-          component (component/start (comp-builder (dissoc this :switch-fn)))]
-      (timbre/debug "Started the" comp-name "component.")
-      component))
-  (stop [this]
-    (component/stop this)))
-(defn build-switcher [deps switch-fn]
-  (component/using
-    (map->Switcher {:switch-fn switch-fn})
-    deps))
-
-(defn build-components [{:keys [meta-deps blob-deps meta-fn blob-fn]}]
-  {::storage/meta (build-switcher meta-deps
-                    (some-fn meta-fn
-                             (fn [_] ["in-memory meta store" storage/map->InMemMetaStore])))
-   ::storage/blob (build-switcher blob-deps
-                    (some-fn blob-fn
-                             (fn [_] ["file-system blob store" storage/map->FileStore])))})
-
 (defn example-owner-fn [_this im]
   (assoc im :owner "Example Owner"))
 
@@ -71,10 +49,10 @@
 (defrecord ImageLibrary [meta-deps blob-deps assets-root]
   usc/Module
   (system-key [this] ::image-library)
-  (components [this] (build-components this))
+  (components [this] {})
   usc/APIHandler
-  (api-read [this R] (parser/build-read this R))
-  (api-mutate [this M] (parser/build-mutate this M))
+  (api-read [this] (parser/build-read this))
+  (api-mutate [this] (parser/build-mutate this))
   component/Lifecycle
   (stop [this] this)
   (start [this]
@@ -87,14 +65,8 @@
     (map->ImageLibrary
       (with-defaults
         (select-keys opts
-          [:meta-fn :meta-deps
-           :blob-fn :blob-deps
-           :auth-fn :owner-fn
+          [:auth-fn :owner-fn
            :assets-root])
         {:auth-fn (fn [this im loc] :ok)
-         :assets-root "/assets/"
-         :meta-fn (constantly nil)
-         :meta-deps []
-         :blob-fn (constantly nil)
-         :blob-deps []}))
+         :assets-root "/assets/"}))
     [::storage/blob ::storage/meta]))
