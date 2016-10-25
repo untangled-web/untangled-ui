@@ -55,7 +55,7 @@
     (io/input-stream (io/file temp-path (str (:id im)))))
   component/Lifecycle
   (start [this]
-    (let [temp-path (io/file (System/getProperty "java.io.tmpdir") "content_server")]
+    (let [temp-path (or temp-path (io/file (System/getProperty "java.io.tmpdir") "content_server"))]
       (io/make-parents (io/file temp-path "not-used"))
       (assoc this :temp-path temp-path)))
   (stop [this]
