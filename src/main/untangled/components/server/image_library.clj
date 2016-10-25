@@ -59,7 +59,19 @@
     (assoc this :middleware
       (image-library-middleware this))))
 
-(defn image-library [opts]
+(defn image-library
+  "Parameters:
+   :owner-fn - (Required) Gets the owner for a specified ImageMeta,
+                          (fn [env ImageMeta] -> (assoc ImageMeta :owner ...))
+   :auth-fn - (Optional) Asserts request is valid based on an ImageMeta, (fn [env ImageMeta loc] -> anything or throws),
+                         where loc is one of #{:read :read-all :store} as the location in which it's called dictates what the ImageMeta will contain.
+   :assets-root - (Optional) Images url prefix (defaults to '/assets/')
+
+   System dependencies (Required):
+   [untangled.components.server.image-library.storage :as storage]
+   ::storage/blob - Must implement storage/IBlobStorage for grabbing the image contents.
+   ::storage/meta - Must implement storage/IMetaStorage for grabbing image meta data (eg: id, name, owner, etc...)"
+  [opts]
   (assert (fn? (:owner-fn opts)))
   (component/using
     (map->ImageLibrary
