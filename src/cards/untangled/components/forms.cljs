@@ -19,8 +19,6 @@
   (let [trimmed-value (str/trim value)]
     (str/includes? trimmed-value " ")))
 
-
-
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
   ([comp form name label] (field-with-label comp form name label nil))
@@ -43,7 +41,7 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)                       ; Mark which thing is the ID of this entity
-                  (f/text-input :phone/number)
+                  (f/text-input :phone/number :class "form-control")
                   (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form]) ; Don't forget :ui/form!
@@ -181,7 +179,7 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/text-input :phone/number 'us-phone?)   ; Addition of validator
+                  (f/text-input :phone/number :validator 'us-phone?)   ; Addition of validator
                   (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form])
@@ -258,8 +256,9 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (fields [this] [(f/id-field :db/id)
-                  (f/text-input :person/name 'name-valid?)
-                  (f/integer-input :person/age 'in-range? {:min 1 :max 110})
+                  (f/text-input :person/name :validator 'name-valid?)
+                  (f/integer-input :person/age :validator 'in-range?
+                                   :validator-args {:min 1 :max 110})
                   (f/checkbox-input :person/registered-to-vote?)
                   (f/subform :person/phone-numbers :many)])
   static om/IQuery
@@ -273,6 +272,7 @@
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
           ;; FIXME: should be able to make dirty automatically recurse using declared subforms
           dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
+      (js/console.log :root-render)
       (dom/div #js {:className "form-horizontal"}
         (when (f/valid? props)
           (dom/div nil "READY to submit!"))
@@ -297,7 +297,7 @@
                            :onClick   (fn []
                                         ;; FIXME: Commit should ONLY send delta (dirty fields) to server
                                         ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (f/commit-to-entity! this props true))} "Save to entity!"))))))
+                                        (f/commit-to-entity! this props))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -403,7 +403,8 @@
 (defcard sample-form-1
   "This card shows a very simple form in action."
   (untangled-app Root)
-  )
+  {}
+  {:inspect-data true})
 
 (defcard-doc
   "## Adding Form Field Types

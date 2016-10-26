@@ -35,6 +35,34 @@
         "has the correct type"
         (:input/type field) => ::f/checkbox))))
 
+(specification "Building a Form"
+  (component "The default state of a form"
+    (component "id fields"
+      (let [fields [(f/id-field :db/id)]
+            default-state (f/default-state fields)]
+        (assertions
+          "are marked as valid to start"
+          (-> default-state :db/id :input/valid) => :valid
+          "are given an Om tempid by default"
+          (-> default-state :db/id :input/value om/tempid?) => true)))
+    (component "non-id fields"
+      (let [fields [(assoc (f/text-input :name) :input/default-value :ABC)]
+            default-state (f/default-state fields)]
+        (assertions
+          "are marked as validation :unchecked to start"
+          (-> default-state :name :input/valid) => :unchecked
+          "are given a default value defined by the field type"
+          (-> default-state :name :input/value) => :ABC))))
+  (component "The initialized state of a form"
+    (assertions
+      "overwrites the defaults with the entity state being augmented"
+      1 => 2
+      "leaves defaults alone when the entity state does not contain them"
+      1 => 2
+      "tolerates nil and empty entities"
+      1 => 2
+      )))
+
 (defui LeafForm
   static uc/InitialAppState
   (initial-state [this {:keys [id]}] {:id id :value 1 :leaf true})
@@ -43,6 +71,7 @@
   static om/Ident
   (ident [this props] [:leaf (:id props)])
   static f/IForm
+  (subforms [this] [])
   (fields [this] [(f/id-field :id)]))
 
 (defui NonForm
@@ -62,7 +91,8 @@
   static om/Ident
   (ident [this props] [:tomform (:id props)])
   static f/IForm
-  (fields [this] [(f/subform :leaves)]))
+  (subforms [this] [(f/subform :leaves)])
+  (fields [this] []))
 
 
 (defui Level2Form
@@ -80,9 +110,10 @@
   static om/Ident
   (ident [this props] [:level2 (:id props)])
   static f/IForm
-  (fields [this] [(f/subform :leaf1)
-                  (f/subform :leaf2)
-                  (f/subform :leaf3)]))
+  (subforms [this] [(f/subform :leaf1)
+                    (f/subform :leaf2)
+                    (f/subform :leaf3)])
+  (fields [this] []))
 
 (defui OtherRootForm
   static uc/InitialAppState
@@ -92,6 +123,7 @@
   static om/Ident
   (ident [this props] [:other (:id props)])
   static f/IForm
+  (subforms [this] [])
   (fields [this] []))
 
 (defui Level3Form
@@ -106,7 +138,8 @@
   static om/Ident
   (ident [this props] [:level3 (:id props)])
   static f/IForm
-  (fields [this] [(f/subform :level2)]))
+  (subforms [this] [(f/subform :level2)])
+  (fields [this] []))
 
 (specification "subforms*"
   (assertions

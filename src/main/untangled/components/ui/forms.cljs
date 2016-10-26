@@ -10,6 +10,7 @@
             [om.util :as util]))
 
 (defprotocol IForm
+  (subforms [this] "Returns the subform definitions of this form")
   (fields [this] "Returns the field definitions for form support."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -25,6 +26,13 @@
                                                   {:input/valid :unchecked
                                                    :input/value (:input/default-value f)})) fields)))
 
+(defn initialized-state
+  "INTERNAL. Get the initialized state of the form based on default state and the entity"
+  [empty-form-state normal-fields entity]
+  (reduce (fn [s k] (if-let [v (get entity k)]
+                      (assoc-in s [k :input/value] v)
+                      s)) empty-form-state normal-fields))
+
 (defn build-form
   "Build an empty form, based on the given entity state. If any fields are declared on
    the form that do not exist in the entity, then the form will fill those with
@@ -32,12 +40,12 @@
   [form-class entity-state]
   (let [fields (fields form-class)
         fields-by-name (zipmap (map :input/name fields) fields)
+        normal-keys (keys fields-by-name)
         empty-state (default-state fields)
-        state (reduce (fn [s k] (if-let [v (get entity-state k)]
-                                  (assoc-in s [k :input/value] v)
-                                  s)) empty-state (keys fields-by-name))]
+        state (initialized-state empty-state normal-keys entity-state)]
     (assoc entity-state :ui/form (with-meta {:ident          (om/ident form-class entity-state)
                                              :fields/by-name fields-by-name
+                                             :subforms       (or (subforms form-class) [])
                                              :state          state}
                                             {:component form-class}))))
 
@@ -64,33 +72,25 @@
   {:input/name name
    :input/type ::identity})
 
-(defn set-class
-  "Set an advisory CSS class on an input field declaration."
-  [cls input]
-  {:pre [(:input/name input)]}
-  (assoc input :input/className cls))
-
 (defn text-input
   "Declare a text input on a form"
-  ([name] (text-input name nil {}))
-  ([name validator] (text-input name validator {}))
-  ([name validator validator-args]
-   {:input/name           name
-    :input/default-value  ""
-    :input/validator      validator
-    :input/validator-args validator-args
-    :input/type           ::text}))
+  [name & {:keys [validator validator-args className]}]
+  {:input/name           name
+   :input/default-value  ""
+   :input/validator      validator
+   :input/validator-args validator-args
+   :input/css-class      className
+   :input/type           ::text})
 
 (defn integer-input
   "Declare an integer input on a form"
-  ([name] (integer-input name (constantly true) {}))
-  ([name validator] (integer-input name validator {}))
-  ([name validator validator-args]
-   {:input/name           name
-    :input/default-value  ""
-    :input/validator      validator
-    :input/validator-args validator-args
-    :input/type           ::integer}))
+  [name & {:keys [validator validator-args className]}]
+  {:input/name           name
+   :input/default-value  ""
+   :input/validator      validator
+   :input/validator-args validator-args
+   :input/css-class      className
+   :input/type           ::integer})
 
 (defn checkbox-input
   "Declare a checkbox on a form"
@@ -223,6 +223,15 @@
   [form name]
   (get-in form [:ui/form :fields/by-name name]))
 
+(defn field-type
+  "Get the configuration for the given field in the form."
+  [form name]
+  (:input/type (field-config form name)))
+
+(defn is-subform?
+  [form name]
+  (= ::subform (field-type form name)))
+
 (defn current-value
   "Gets the current value of a field in a form."
   [form field]
@@ -231,7 +240,7 @@
 (defn css-class
   "Gets the css class for the form field"
   [form field]
-  (get-in form [:ui/form :state field :input/className]))
+  (get-in form [:ui/form :state field :input/css-class]))
 
 (defn field-value
   "Get the current value of a form field in the app state."
@@ -239,9 +248,9 @@
   ([app-state form-id field-name dflt] (get-in app-state (conj form-id :state field-name :input/value) dflt)))
 
 (defn field-names
-  "Get all of the field names that are defined on the form."
+  "Get all of the field names that are defined on the form. Does not return subform fields"
   [form]
-  (keys (get-in form [:ui/form :fields/by-name])))
+  (keep (fn [k] (is-subform? form k) nil k) (keys (get-in form [:ui/form :fields/by-name]))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; VALIDATION SUPPORT
@@ -282,13 +291,15 @@
     (<= min value max)))
 
 (defn update-validation
-  "Given a form and a field, returns a new form with that field validated."
+  "Given a form and a field, returns a new form with that field validated. Does NOT recurse into subforms."
   [form field]
-  (if-let [validator (validator form field)]
+  (if-let [validator (and (validator form field))]
     (let [validator-args (validator-args form field)
           valid? (form-field-valid? validator (current-value form field) validator-args)]
       (assoc-in form [:ui/form :state field :input/valid] (if valid? :valid :invalid)))
-    (assoc-in form [:ui/form :state field :input/valid] :valid)))
+    (if (is-subform? form field)
+      form
+      (assoc-in form [:ui/form :state field :input/valid] :valid))))
 
 ;; Mutation to run validation on a specific field
 (defmethod m/mutate 'untangled.components.form/validate [{:keys [state]} k {:keys [form-id field]}]
@@ -452,13 +463,12 @@
 
   For remotes to work you must implement `(untangled.components.form/commit-to-entity! {:form-id [:id id] :value {...})`
   on the server. "
-  ([comp-or-reconciler form] (commit-to-entity! comp-or-reconciler form false))
-  ([comp-or-reconciler form remote]
-   (let [validated-form (validate-fields form)]
-     (if (valid? validated-form)
-       (let [form-id (form-id form)]
-         (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form-root]))
-       (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root])))))
+  [comp-or-reconciler form & {:keys [remote rerender] :or {remote false rerender []}}]
+  (let [validated-form (validate-fields form)]
+    (if (valid? validated-form)
+      (let [form-id (form-id form)]
+        (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form-root]))
+      (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
 
 ;; Mutation for moving form data from the form into an entity
 (defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id remote]}]
