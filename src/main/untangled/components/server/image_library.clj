@@ -46,7 +46,7 @@
 (defn with-defaults [params defaults]
   (merge defaults params))
 
-(defrecord ImageLibrary [meta-deps blob-deps assets-root]
+(defrecord ImageLibrary [assets-root]
   usc/Module
   (system-key [this] ::image-library)
   (components [this] {})

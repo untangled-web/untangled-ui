@@ -4,7 +4,18 @@
     [image-resizer.core :as img-core]
     [image-resizer.format :as img-format])
   (:import
-    (java.util Arrays)))
+    (java.util Arrays)
+    (javax.imageio ImageIO)
+    (java.io ByteArrayInputStream)))
+
+(defn infer-img-ext [bain]
+  (-> bain
+    ByteArrayInputStream.
+    ImageIO/createImageInputStream
+    ImageIO/getImageReaders
+    iterator-seq first
+    .getFormatName
+    .toLowerCase))
 
 (defn get-ext [desired-ext actual-ext _opts]
   ;;TODO use opts to tell if we're outside the image & => need png

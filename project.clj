@@ -32,6 +32,10 @@
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
 
+  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+                 :changes-only true
+                 :with-repl true}
+
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}
 
