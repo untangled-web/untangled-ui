@@ -166,7 +166,7 @@
   used to `swap!` on app state atom). Will **not** add forms where there is not already an entity in the database."
   [app-state form-class form-ident]
   (if-let [form (get-in app-state form-ident)]
-    (if (initialized? form)
+    (if (initialized? form) ; TODO: Not quite right. I need to stop the recursion by tracking visited nodes, or I will not be able to "fill in" new subforms
       app-state
       (let [elements (form-elements form-class)
             subforms (filter :input/is-form? elements)
