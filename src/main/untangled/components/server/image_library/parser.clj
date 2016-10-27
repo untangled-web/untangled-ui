@@ -18,7 +18,8 @@
            (auth-fn env im :store)
            (let [img-meta (storage/save (::storage/meta env) im)]
              (storage/store (::storage/blob env) img-meta (:content/data params))
-             {:tempids {(:db/id params) (:id img-meta)}})))} )))
+             {:tempids {(:db/id params) (:id img-meta)}})))}
+      nil)))
 
 (defn build-read [{:keys [auth-fn owner-fn] :as this}]
   (fn [env k params]
@@ -26,4 +27,5 @@
       :images
       (let [im (owner-fn env (storage/make-image-meta params))]
         (auth-fn env im :read-all)
-        {:value (mapv storage/unravel-image-meta (storage/grab (::storage/meta env) im))}))))
+        {:value (mapv storage/unravel-image-meta (storage/grab (::storage/meta env) im))})
+      nil)))

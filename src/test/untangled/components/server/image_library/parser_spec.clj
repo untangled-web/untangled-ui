@@ -53,7 +53,11 @@
                        {:owner-fn owner-fn
                         :auth-fn auth-fn})
           {:db/id 42 :content/data "hello"}))
-      => 0)))
+      => 0
+      "if it does not handle the dispatch-key it return nil"
+      (let [img-lib (test-image-library)]
+        ((.api-mutate img-lib) img-lib ::should-not-handle {}))
+      => nil)))
 
 (defn read-images [img-lib]
   (:value ((.api-read img-lib) img-lib :images {})))
@@ -81,4 +85,7 @@
              :image/name nil
              :image/size nil
              :image/dimensions nil
-             :image/extension "TEST"}]))))
+             :image/extension "TEST"}]
+        "if it does not handle the dispatch-key it return nil"
+        (let [img-lib (test-image-library)]
+          ((.api-read img-lib) img-lib ::should-not-handle {})) => nil))))
