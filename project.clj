@@ -15,13 +15,13 @@
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha46" :scope "provided"]
                  [navis/untangled-client "0.6.0-SNAPSHOT" :scope "provided"]
-                 [navis/untangled-server "0.6.1" :scope "provided"]
+                 [navis/untangled-server "0.6.3-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
                  [com.taoensso/timbre "4.7.4"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]
-            [com.jakemccrary/lein-test-refresh "0.17.0"]
+  :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
+            [lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
   :source-paths ["dev" "src/main" "src/cards"]
@@ -31,6 +31,10 @@
 
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
+
+  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+                 :changes-only true
+                 :with-repl true}
 
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}

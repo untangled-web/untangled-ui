@@ -2,10 +2,8 @@
   (:require
     [clojure.java.io :as io]
     [clojure.set :as set]
-    [com.stuartsierra.component :as component])
-  (:import
-    (javax.imageio ImageIO)
-    (java.io ByteArrayInputStream)))
+    [com.stuartsierra.component :as component]
+    [untangled.components.server.image-library.image :as img]))
 
 (defrecord ImageMeta [id owner name size dimensions extension])
 
@@ -15,14 +13,6 @@
              :image/size       :size
              :image/dimensions :dimensions
              :image/extension  :extension}]
-  (defn infer-img-ext [bain]
-    (-> bain
-      ByteArrayInputStream.
-      ImageIO/createImageInputStream
-      ImageIO/getImageReaders
-      iterator-seq first
-      .getFormatName
-      .toLowerCase))
   (defn unravel-image-meta [im]
     (-> im
       (set/rename-keys (set/map-invert remap))))
@@ -31,7 +21,7 @@
       ((fn [{:as m :keys [content/data]}]
          (cond-> m
            data (assoc :image/extension
-                       (infer-img-ext data)))))
+                       (img/infer-img-ext data)))))
       (select-keys (keys remap))
       (set/rename-keys remap)
       map->ImageMeta)))
@@ -46,27 +36,28 @@
   (store [this ^ImageMeta im value] "Store value (binary). Uses ImageMeta to name the image in the store.")
   (fetch [this ^ImageMeta im] "Fetch the content of the given path. Returns an input stream or nil if missing."))
 
-(defrecord FileStore [config temp-path]
+(defn- delete-folder [file]
+  (when (.isDirectory file)
+    (doseq [f (.listFiles file)]
+      (delete-folder f)))
+  (io/delete-file file))
+
+(defrecord FileStore [images-root tmpdir]
   IBlobStorage
   (store [this im value]
-    (with-open [w (io/output-stream (io/file temp-path (str (:id im))))]
+    (with-open [w (io/output-stream (io/file images-root (str (:id im))))]
       (.write w value)))
   (fetch [this im]
-    (io/input-stream (io/file temp-path (str (:id im)))))
+    (io/input-stream (io/file images-root (str (:id im)))))
   component/Lifecycle
   (start [this]
-    (let [temp-path (io/file (System/getProperty "java.io.tmpdir") "content_server")]
-      (io/make-parents (io/file temp-path "not-used"))
-      (assoc this :temp-path temp-path)))
+    (let [images-root (io/file (or tmpdir (System/getProperty "java.io.tmpdir")) "content_server")]
+      (io/make-parents (io/file images-root "not-used"))
+      (assoc this :images-root images-root)))
   (stop [this]
-    (letfn [(delete-folder [file]
-              (when (.isDirectory file)
-                (doseq [f (.listFiles file)]
-                  (delete-folder f)))
-              (io/delete-file file))]
-      (delete-folder temp-path))))
+    (delete-folder images-root)))
 
-(defrecord InMemMetaStore [config value]
+(defrecord InMemMetaStore [value]
   IMetaStorage
   (save [this im]
     (let [rid (::counter @value)
@@ -79,7 +70,7 @@
           (:owner im) (filter (comp #{(:owner im)} :owner)
                               (vals (dissoc @value ::counter)))
           :else (throw (ex-info (str "InMemMetaStore failed to grab for " im)
-                         {:this this :im im :config config :value @value}))))
+                         {:this this :im im :value @value}))))
   component/Lifecycle
   (start [this] (assoc this :value (atom {::counter 0})))
   (stop [this] (dissoc this :value)))
