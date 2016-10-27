@@ -1,4 +1,4 @@
-(defproject untangled-components "0.1.0-SNAPSHOT"
+(defproject navis/untangled-components "0.1.0-SNAPSHOT"
   :description "Untangled Components is a library of pre-built components for use with Untangled and Om Next"
   :url ""
   :license {:name "MIT"
