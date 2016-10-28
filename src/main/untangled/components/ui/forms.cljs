@@ -19,13 +19,17 @@
 (defn subform-element
   "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
   must be included in your list of form elements if you want form interactions to trigger across a form group."
-  ([field FormClass] (subform-element field FormClass :one))
-  ([field FormClass cardinality]
+  ([field form-class] (subform-element field form-class :one))
+  ([field form-class cardinality]
+   (when (not (and (implements? om/Ident form-class)
+                   (implements? IForm form-class)
+                   (implements? om/IQuery form-class)))
+     (log/error "Subform element " field " (ignored). It points at " form-class " which MUST implement IForm, IQuery, and Ident."))
    (with-meta {:input/name        field
                :input/is-form?    true
                :input/cardinality (or (#{:one :many} cardinality) :many)
                :input/type        ::subform}
-              {:component FormClass})))
+              {:component form-class})))
 
 (defn form-switcher-input
   "Create a field that understands it points to a to-many list of subforms, only one of which
@@ -188,103 +192,115 @@
   [app-state form-class form-ident] (init-form* app-state form-class form-ident {}))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GENERAL FORM STATE ACCESS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- subforms*
+  "Returns a map whose keys are the query key-path from the component's query that point to subforms, and whose values are the
+  defui component of that form (e.g. `{ [:k :k2] Subform }`). This will give you ALL of the current subforms declared in the static query and IForm
+  fields. NOTE: union queries in grouped forms are not supported, since there would be no way to auto-gather non-displayed
+  forms in the 'current' state.
+
+  Use get-forms to obtain the current state of active forms. It is a gathering mechanism only."
+  ([form-class] (subforms* form-class []))
+  ([form-class current-path]
+   (let [ast (om/query->ast (om/get-query form-class))
+         subform-fields (set (keep (fn [f] (when (:input/is-form? f) (:input/name f))) (form-elements form-class)))
+         is-form-node? (fn [ast-node]
+                         (let [form-class (:component ast-node)
+                               prop (:key ast-node)
+                               join? (= :join (:type ast-node))
+                               union? (and join? (map? (:query ast-node)))
+                               wants-to-be? (contains? subform-fields prop)]
+                           (when (and union? wants-to-be?)
+                             (log/error "Subforms cannot be on union queries. You will have to manually group your subforms if you use unions."))
+                           (when (and
+                                   wants-to-be?
+                                   (not (and (implements? om/Ident form-class)
+                                             (implements? IForm form-class)
+                                             (implements? om/IQuery form-class))))
+                             (log/error "Declared subform for property " prop " does not implement IForm, IQuery, and Ident."))
+                           (and
+                             wants-to-be?
+                             join?
+                             (not union?)
+                             (implements? om/IQuery form-class)
+                             (implements? om/Ident form-class)
+                             (implements? IForm form-class))))
+         sub-forms (->> ast
+                        :children
+                        (keep (fn [ast-node] (when (is-form-node? ast-node) ast-node)))
+                        (mapv (fn [node] [(conj current-path (:key node)) (:component node)])))
+         all-forms (reduce (fn [collected-so-far [path component]]
+                             (let [nested-forms (subforms* component path)]
+                               (if (seq nested-forms)
+                                 (into collected-so-far nested-forms)
+                                 collected-so-far)))
+                           sub-forms
+                           sub-forms)]
+     all-forms)))
+
+(defn- to-idents
+  "Follows a key-path through the graph database started from the current object. Follows to-one and to-many joins.
+  Results in a sequence of all of the idents of the items indicated by the given key-path from the given object."
+  [app-state current-object key-path]
+  (loop [path key-path obj current-object]
+    (let [k (first path)
+          remainder (rest path)
+          v (get obj k)
+          to-many? (and (vector? v) (every? util/ident? v))
+          ident? (and (not to-many?) (util/ident? v))
+          many-idents (if to-many? (apply concat (map-indexed (fn [idx _] (to-idents app-state v (conj remainder idx))) v)) [])
+          result (vec (keep identity (conj many-idents (when ident? v))))]
+      (if (and ident? (seq remainder))
+        (recur remainder (get-in app-state v))
+        result))))
+
+(defn get-forms
+  "Reads the app state database starting at form-ident, and returns a sequence of :
+
+  {:ident ident :class form-class :form form-value}
+
+  for the top form and all of its **declared** subforms. Useful for running transforms and collection across a nested form.
+
+  If there are any to-many relations in the database, they will be expanded to individual entries of the returned sequence.
+  "
+  [app-state root-form-class form-ident]
+  (let [form (get-in app-state form-ident)
+        subforms (subforms* root-form-class)
+        result (flatten (map (fn [[query-key-path class]]
+                               (for [ident (to-idents app-state form query-key-path)]
+                                 (let [value (get-in app-state ident)]
+                                   {:ident ident :class class :form value}))) subforms))]
+    (filter #(:ident %) (conj result {:ident form-ident :class root-form-class :form form}))))
+
+(defn update-forms
+  "Similar to update-in, but walks your form declaration to affect all (initialized and preset) nested forms.
+  Useful for applying validation or some mutation to all forms. Returns the new app-state. You supply a
+  `(form-update-fn form-spec) => form`, where `form-spec` is a map with keys `:class` (the component that has the form),
+  `:ident` (of the form in app state), and `:form` (the value of the form in app state)."
+  [app-state root-form-class form-ident form-update-fn]
+  (let [form-specs (get-forms app-state root-form-class form-ident)
+        updated-form-specs (map (fn [form-spec]
+                                  (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
+    (reduce (fn [s {:keys [ident form]}]
+              (assoc-in s ident form)) app-state updated-form-specs)))
+
+
+(defn reduce-forms
+  "Similar to reduce, but walks the forms. Useful for gathering information from
+  nested forms (are all of them valid?). At each form it calls (form-fn accumulator {:keys [ident value class]}). The first visit will
+  use `starting-value` as the initial accumulator, and the return value of form-fn will become the new accumulator.
+
+  The `form-fn`'s second argument is a map that contains the form's class, ident, and current value.
+
+  Returns the final accumulator value."
+  [app-state root-form-class form-ident form-fn starting-value]
+  (let [form-specs (get-forms app-state root-form-class form-ident)]
+    (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
+
 (comment
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; GENERAL FORM STATE ACCESS
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  (defn- subforms*
-    "Returns a map whose keys are the keys of the component's query that point to subforms, and whose values are the
-    defui component of that form. This will give you ALL of the current subforms declared in the static query and IForm
-    fields. If your form crosses unions or has other data dependencies, then this will return all of them. Use get-forms to obtain the
-    current state of active forms. It is a gathering mechanism only."
-    ([form-class] (subforms* form-class []))
-    ([form-class current-path]
-     (let [ast (om/query->ast (om/get-query form-class))
-           allowed-fields (set (keep (fn [f] (when (= ::subform (:input/type f)) (:input/name f))) (fields form-class)))
-           is-form? (fn [ast-node] (let [form-class (:component ast-node)]
-                                     (and
-                                       (contains? allowed-fields (:key ast-node))
-                                       (= :join (:type ast-node))
-                                       (implements? om/IQuery form-class)
-                                       (implements? om/Ident form-class)
-                                       (implements? IForm form-class))))
-           sub-forms (->> ast
-                          :children
-                          (keep (fn [ast-node] (when (is-form? ast-node) ast-node)))
-                          (mapv (fn [node] [(conj current-path (:key node)) (:component node)])))
-           all-forms (reduce (fn [collected-so-far [path component]]
-                               (let [nested-forms (subforms* component path)]
-                                 (if (seq nested-forms)
-                                   (into collected-so-far nested-forms)
-                                   collected-so-far)))
-                             sub-forms
-                             sub-forms)]
-       all-forms)))
-
-  (defn- to-idents
-    "Follows a key-path through the graph database started from the current object. Follows to-one and to-many joins
-    are results in a sequence of all of the idents of the items indicated by the given key-path from the given object."
-    [app-state current-object key-path]
-    (loop [path key-path obj current-object]
-      (let [k (first path)
-            remainder (rest path)
-            v (get obj k)
-            to-many? (and (vector? v) (every? util/ident? v))
-            ident? (and (not to-many?) (util/ident? v))
-            many-idents (if to-many? (apply concat (map-indexed (fn [idx _] (to-idents app-state v (conj remainder idx))) v)) [])
-            result (vec (keep identity (conj many-idents (when ident? v))))]
-        (if (and ident? (seq remainder))
-          (recur remainder (get-in app-state v))
-          result))))
-
-  (defn get-forms
-    "Reads the app state database starting at form-ident, and returns a sequence of :
-
-    {:ident ident :class form-class :form form-value}
-
-    for the top form and all of its **declared** subforms. Useful for running transforms and collection across a nested form.
-
-    If there are any to-many relations in the database, they will be expanded to individual entries of the returned sequence.
-    "
-    [app-state root-form-class form-ident]
-    (let [form (get-in app-state form-ident)
-          subforms (subforms* root-form-class)
-          result (flatten (map (fn [[k class]]
-                                 (for [ident (to-idents app-state form k)]
-                                   (let [value (get-in app-state ident)]
-                                     {:ident ident :class class :form value}))) subforms))]
-      (filter #(:ident %) (conj result {:ident form-ident :class root-form-class :form form}))))
-
-  (defn update-forms
-    "Similar to update-in, but walks your form declaration to affect all nested forms. Useful for applying validation
-    or some mutation to all forms. Returns the new app-state. You supply a (form-update-fn form-spec) => form', where
-    form-spec is a map with keys `:class` (the component that has the form), `:ident` (of the form in app state),
-    and `:form` (the value of the form in app state)."
-    [app-state root-form-class form-ident form-update-fn]
-    (let [form-specs (get-forms app-state root-form-class form-ident)
-          updated-form-specs (map (fn [form-spec]
-                                    (assoc form-spec :form (form-update-fn form-spec))) form-specs)]
-      (reduce (fn [s {:keys [ident form]}]
-                (assoc-in s ident form)) app-state updated-form-specs)))
-
-  (defn init-form
-    "Adds form support data to the given (nested) form."
-    [app-state form-class form-ident]
-    (update-forms app-state form-class form-ident (fn [{:keys [class form]}] (build-form class form))))
-
-  (defn reduce-forms
-    "Similar to reduce, but walks the forms. Useful for gathering information from
-    nested forms (are all of them valid?). At each form it calls (form-fn accumulator {:keys [ident value class]}). The first visit will
-    use `starting-value` as the initial accumulator, and the return value of form-fn will become the new accumulator.
-
-    The `form-fn`'s second argument is a map that contains the form's class, ident, and current value.
-
-    Returns the final accumulator value."
-    [app-state root-form-class form-ident form-fn starting-value]
-    (let [form-specs (get-forms app-state root-form-class form-ident)]
-      (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
-
   (defn form-component
     "Get the component that declared the given form data."
     [form]
