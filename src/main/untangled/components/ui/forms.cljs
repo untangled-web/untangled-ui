@@ -152,7 +152,8 @@
         visited (update-in visited subform-ident inc)]
     (assert (or (nil? subform-ident)
                 (util/ident? subform-ident)) "Initialize-one form did not find a to-one relation in the database")
-    (if (> (get-in visited subform-ident) 1)
+    (if (or (nil? (second subform-ident))
+            (> (get-in visited subform-ident) 1))
       state
       (init-form* state subform-class subform-ident visited))))
 
@@ -167,7 +168,9 @@
     (reduce (fn
               ([] state)
               ([st f-ident]
-               (if (> (get-in visited f-ident) 1)
+               (if (or
+                     (nil? (second f-ident))
+                     (> (get-in visited f-ident) 1))
                  st
                  (init-form* st subform-class f-ident visited)))) state subform-idents)))
 
@@ -207,8 +210,14 @@
   ([form-class current-path]
    (let [ast (om/query->ast (om/get-query form-class))
          subform-fields (set (keep (fn [f] (when (:input/is-form? f) (:input/name f))) (form-elements form-class)))
+         get-class (fn [ast-node] (let [subquery (:query ast-node)]
+                                    (if (or (int? subquery) (= '... subquery))
+                                      (do
+                                        (log/error "Forms do not support recursive-query-based subforms!")
+                                        form-class)
+                                      (:component ast-node))))
          is-form-node? (fn [ast-node]
-                         (let [form-class (:component ast-node)
+                         (let [form-class (get-class ast-node)
                                prop (:key ast-node)
                                join? (= :join (:type ast-node))
                                union? (and join? (map? (:query ast-node)))
@@ -217,27 +226,22 @@
                              (log/error "Subforms cannot be on union queries. You will have to manually group your subforms if you use unions."))
                            (when (and
                                    wants-to-be?
-                                   (not (and (implements? om/Ident form-class)
-                                             (implements? IForm form-class)
+                                   (not (and (implements? om/Ident form-class) (implements? IForm form-class)
                                              (implements? om/IQuery form-class))))
-                             (log/error "Declared subform for property " prop " does not implement IForm, IQuery, and Ident."))
-                           (and
-                             wants-to-be?
-                             join?
-                             (not union?)
-                             (implements? om/IQuery form-class)
-                             (implements? om/Ident form-class)
-                             (implements? IForm form-class))))
+                             (log/error "Declared subform for property " prop " does not implement IForm, IQuery, and Ident." ast-node))
+                           (and form-class wants-to-be? join? (not union?) (implements? om/IQuery form-class)
+                                (implements? om/Ident form-class) (implements? IForm form-class))))
          sub-forms (->> ast
                         :children
-                        (keep (fn [ast-node] (when (is-form-node? ast-node) ast-node)))
-                        (mapv (fn [node] [(conj current-path (:key node)) (:component node)])))
+                        (keep (fn [ast-node] (when (is-form-node? ast-node)
+                                               (let [path (conj current-path (:key ast-node))
+                                                     form-class (get-class ast-node)]
+                                                 [path form-class])))))
          all-forms (reduce (fn [collected-so-far [path component]]
-                             (let [nested-forms (subforms* component path)]
-                               (if (seq nested-forms)
-                                 (into collected-so-far nested-forms)
-                                 collected-so-far)))
-                           sub-forms
+                             (-> collected-so-far
+                                 (conj [path component])
+                                 (into (subforms* component path))))
+                           []
                            sub-forms)]
      all-forms)))
 
@@ -300,108 +304,123 @@
   (let [form-specs (get-forms app-state root-form-class form-ident)]
     (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
 
+(defn form-component
+  "Get the UI component that declared the given form."
+  [form]
+  (-> form :ui/form meta :component))
+
+; TODO: RENAME
+(defn form-id
+  "Get the ident of this form's entity"
+  [form]
+  (get-in form [:ui/form :ident]))
+
+(defn field-config
+  "Get the configuration for the given field in the form."
+  [form name]
+  (get-in form [:ui/form :elements/by-name name]))
+
+(defn field-type
+  "Get the configuration for the given field in the form."
+  [form name]
+  (:input/type (field-config form name)))
+
+(defn is-subform?
+  [form name]
+  (:input/is-form? (field-config form name)))
+
+; TODO: RENAME
+(defn current-value
+  "Gets the current value of a field in a form."
+  [form field]
+  (get-in form [:ui/form :state field :input/value]))
+
+(defn css-class
+  "Gets the css class for the form field"
+  [form field]
+  (:input/css-class (field-config form field)))
+
+; TODO: rename
+(defn field-value
+  "Get the current value of a form field in the app state."
+  ([app-state form-id field-name] (field-value app-state form-id field-name ""))
+  ([app-state form-id field-name dflt] (or (current-value (get-in app-state form-id) field-name) dflt)))
+
+; TODO: rename
+(defn field-names
+  "Get all of the field names that are defined on the form. Does not return pure subforms"
+  [form]
+  (keep (fn [k] (if (= ::subform (field-type form k)) nil k)) (keys (get-in form [:ui/form :elements/by-name]))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; VALIDATION SUPPORT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn current-validity
+  [form field]
+  (get-in form [:ui/form :state field :input/valid]))
+
+(defn invalid?
+  "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
+  fields, so you should run validate-entire-form! before trusting this value on a form."
+  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (field-names form)))
+  ([form field] (= :invalid (current-validity form field))))
+
+(defn valid?
+  "Returns true iff the field has been validated, and the validation is ok. Running this on a form is only reliable if
+  you've already validated the entire form (validate-entire-form!)."
+  ([form] (reduce (fn [result field] (and result (valid? form field))) true (field-names form)))
+  ([form field] (= :valid (current-validity form field))))
+
+(defn validator
+  "Returns the validator symbol from the form field"
+  [form field]
+  (get-in form [:ui/form :elements/by-name field :input/validator]))
+
+(defn validator-args
+  "Returns the validator args from the form field"
+  [form field]
+  (get-in form [:ui/form :elements/by-name field :input/validator-args] {}))
+
+;; Extensible form field validation. Triggered by symbols. Arguments (args) are declared on the fields themselves.
+(defmulti form-field-valid? (fn [symbol value args] symbol))
+
+;; Sample validator that requires a number be in the (inclusive) range.
+(defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
+  (let [value (int value)]
+    (<= min value max)))
+
+(defn update-validation
+  "Given a form and a field, returns a new form with that field validated. Does NOT recurse into subforms."
+  [form field]
+  (if-let [validator (and (validator form field))]
+    (let [validator-args (validator-args form field)
+          valid? (form-field-valid? validator (current-value form field) validator-args)]
+      (assoc-in form [:ui/form :state field :input/valid] (if valid? :valid :invalid)))
+    (if (is-subform? form field)
+      form
+      (assoc-in form [:ui/form :state field :input/valid] :valid))))
+
+(defn validate-fields
+  "Runs validation on the defined fields and returns a new form with them properly marked."
+  [form]
+  (let [field-ids (field-names form)]
+    (reduce (fn [form field-id] (update-validation form field-id)) form field-ids)))
+
+(defn validate!
+  "Update the validation markings on an entire form with subforms. Requires an app-state atom and the ident of the
+  form to validate."
+  [state-atom form-id]
+  (let [form (get-in @state-atom form-id)
+        form-class (form-component form)]
+    (if form-class
+      (swap! state-atom update-forms form-class form-id (fn [{:keys [form]}] (validate-fields form)))
+      (log/error "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))
+
 (comment
-  (defn form-component
-    "Get the component that declared the given form data."
-    [form]
-    (-> form :ui/form meta :component))
-
-  (defn form-id
-    [form]
-    (get-in form [:ui/form :ident]))
-
-  (defn field-config
-    "Get the configuration for the given field in the form."
-    [form name]
-    (get-in form [:ui/form :elements/by-name name]))
-
-  (defn field-type
-    "Get the configuration for the given field in the form."
-    [form name]
-    (:input/type (field-config form name)))
-
-  (defn is-subform?
-    [form name]
-    (= ::subform (field-type form name)))
-
-  (defn current-value
-    "Gets the current value of a field in a form."
-    [form field]
-    (get-in form [:ui/form :state field :input/value]))
-
-  (defn css-class
-    "Gets the css class for the form field"
-    [form field]
-    (get-in form [:ui/form :state field :input/css-class]))
-
-  (defn field-value
-    "Get the current value of a form field in the app state."
-    ([app-state form-id field-name] (field-value app-state form-id field-name ""))
-    ([app-state form-id field-name dflt] (get-in app-state (conj form-id :state field-name :input/value) dflt)))
-
-  (defn field-names
-    "Get all of the field names that are defined on the form. Does not return subform fields"
-    [form]
-    (keep (fn [k] (is-subform? form k) nil k) (keys (get-in form [:ui/form :elements/by-name]))))
-
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; VALIDATION SUPPORT
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  (defn current-validity
-    [form field]
-    (get-in form [:ui/form :state field :input/valid]))
-
-  (defn invalid?
-    "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
-    fields, so you should run validate-entire-form! before trusting this value on a form."
-    ([form] (reduce (fn [result field] (or result (invalid? form field))) false (field-names form)))
-    ([form field] (= :invalid (current-validity form field))))
-
-  (defn valid?
-    "Returns true iff the field has been validated, and the validation is ok. Running this on a form is only reliable if
-    you've already validated the entire form (validate-entire-form!)."
-    ([form] (reduce (fn [result field] (and result (valid? form field))) true (field-names form)))
-    ([form field] (= :valid (current-validity form field))))
-
-  ;; Extensible form field validation. Triggered by symbols. Arguments (args) are declared on the fields themselves.
-  (defmulti form-field-valid? (fn [symbol value args] symbol))
-
-  (defn validator
-    "Returns the validator symbol from the form field"
-    [form field]
-    (get-in form [:ui/form :elements/by-name field :input/validator]))
-
-  (defn validator-args
-    "Returns the validator args from the form field"
-    [form field]
-    (get-in form [:ui/form :elements/by-name field :input/validator-args] {}))
-
-  ;; Sample validator that requires a number be in the (inclusive) range.
-  (defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
-    (let [value (int value)]
-      (<= min value max)))
-
-  (defn update-validation
-    "Given a form and a field, returns a new form with that field validated. Does NOT recurse into subforms."
-    [form field]
-    (if-let [validator (and (validator form field))]
-      (let [validator-args (validator-args form field)
-            valid? (form-field-valid? validator (current-value form field) validator-args)]
-        (assoc-in form [:ui/form :state field :input/valid] (if valid? :valid :invalid)))
-      (if (is-subform? form field)
-        form
-        (assoc-in form [:ui/form :state field :input/valid] :valid))))
-
   ;; Mutation to run validation on a specific field
   (defmethod m/mutate 'untangled.components.form/validate [{:keys [state]} k {:keys [form-id field]}]
     {:action #(swap! state update-in form-id update-validation field)})
-
-  (defn validate-fields
-    "Runs validation on the defined fields and returns a new form with them properly marked."
-    [form]
-    (let [field-ids (field-names form)]
-      (reduce (fn [form field-id] (update-validation form field-id)) form field-ids)))
 
   ;; Mutation to run validation on an entire form
   (defmethod m/mutate 'untangled.components.form/validate-form! [{:keys [state]} k {:keys [form-id]}]

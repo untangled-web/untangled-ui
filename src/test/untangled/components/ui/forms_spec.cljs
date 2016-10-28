@@ -2,33 +2,40 @@
   (:require [untangled-spec.core :refer-macros [behavior specification assertions component when-mocking provided]]
             [untangled.components.ui.forms :as f]
             [om.next :as om :refer [defui]]
-            [untangled.client.core :as uc]))
+            [untangled.client.core :as uc]
+            [untangled.client.logging :as log]))
 
 (specification "Form Elements Declarations"
   (component "subform-element"
-    (let [f (f/subform-element :name 'Cls)]
-      (assertions
-        "defaults as a to-one relation"
-        (:input/cardinality f) => :one
-        "is marked as a subform"
-        (true? (:input/is-form? f)) => true
-        "has the correct type"
-        (:input/type f) => ::f/subform
-        "tracks the class of the subform UI"
-        (-> f meta :component) => 'Cls)))
+    (when-mocking
+      (log/error msg a b c d) => (do (assertions "Logs a message for joins on non-augmented classes"
+                                       msg =fn=> (fn [m] (re-matches #"^Subform elem.*$" m))))
+      (let [f (f/subform-element :name 'Cls)]
+        (assertions
+          "defaults as a to-one relation"
+          (:input/cardinality f) => :one
+          "is marked as a subform"
+          (true? (:input/is-form? f)) => true
+          "has the correct type"
+          (:input/type f) => ::f/subform
+          "tracks the class of the subform UI"
+          (-> f meta :component) => 'Cls))))
   (component "form-switcher-input"
-    (let [f (f/form-switcher-input :name 'Cls :k)]
-      (assertions
-        "defaults as a to-many relation"
-        (:input/cardinality f) => :many
-        "is marked as a subform"
-        (true? (:input/is-form? f)) => true
-        "has a subform selection key"
-        (:input/select-key f) => :k
-        "has the correct type"
-        (:input/type f) => ::f/switcher
-        "tracks the class of the subform UI"
-        (-> f meta :component) => 'Cls)))
+    (when-mocking
+      (log/error msg a b c d) => (do (assertions "Logs a message for joins on non-augmented classes"
+                                       msg =fn=> (fn [m] (re-matches #"^Subform elem.*$" m))))
+      (let [f (f/form-switcher-input :name 'Cls :k)]
+        (assertions
+          "defaults as a to-many relation"
+          (:input/cardinality f) => :many
+          "is marked as a subform"
+          (true? (:input/is-form? f)) => true
+          "has a subform selection key"
+          (:input/select-key f) => :k
+          "has the correct type"
+          (:input/type f) => ::f/switcher
+          "tracks the class of the subform UI"
+          (-> f meta :component) => 'Cls))))
   (component "id-field"
     (let [field (f/id-field :name)]
       (assertions
@@ -151,124 +158,125 @@
         (f/initialized-state default-state field-keys {}) => default-state
         (f/initialized-state default-state field-keys nil) => default-state))))
 
+(defui Phone
+  static om/IQuery
+  (query [this] [:db/id :phone/number])
+  static om/Ident
+  (ident [this props] [:phone/by-id (:db/id props)])
+  static f/IForm
+  (form-elements [this] [(f/text-input :phone/number)]))
+
 (defui Person
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/mate 1}])
+  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :person/mate Person :one)]))
+  (form-elements [this] [(f/subform-element :person/number Phone :one)
+                         (f/text-input :person/name :className "name-class")]))
+
+(def person-db {:phone/by-id  {1 {:db/id 1 :phone/number "555-1212"}
+                               2 {:db/id 2 :phone/number "555-3345"}}
+                :people/by-id {1 {:db/id 1 :person/name "A" :person/number [:phone/by-id 1]}
+                               3 {:db/id 3 :person/name "B"}
+                               5 {:db/id 5 :person/name "D" :person/number []}
+                               4 {:db/id 4 :person/name "C" :person/number [[:phone/by-id 1] [:phone/by-id 2]]}}})
 
 (specification "Initializing a to-one form relation"
-  (let [app-state {:people/by-id {1 {:db/id 1 :person/mate [:people/by-id 2]}
-                                  2 {:db/id 2 :person/mate [:people/by-id 1]}
-                                  3 {:db/id 3}
-                                  4 {:db/id 4 :person/mate [[:people/by-id 3] [:people/by-id 1]]}}}
+  (let [app-state person-db
         base-form (get-in app-state [:people/by-id 1])
         spec (-> (f/form-elements Person) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
                                                    "initializes the proper target form"
-                                                   ident => [:people/by-id 2]
+                                                   ident => [:phone/by-id 1]
                                                    "finds the proper class of the form"
-                                                   class => Person)
+                                                   class => Phone)
                                                  :new-state)
       (let [actual (f/init-one app-state base-form spec {})]
         (assertions
           "returns the value of a call to init-form"
           actual => :new-state)))
-    (when-mocking
-      (f/init-form* state class ident v) =1x=> :A
-
-      (assertions
-        "Is ok when the target is nil"
-        (f/init-one app-state (get-in app-state [:people/by-id 3]) spec {}) => :A
-        "Throws an error when targeting a to-many"
-        (f/init-one app-state (get-in app-state [:people/by-id 4]) spec {}) =throws=> (js/Error.)))))
+    (assertions
+      "Is ok when the target is nil"
+      (f/init-one app-state (get-in app-state [:people/by-id 3]) spec {}) => app-state
+      "Throws an error when targeting a to-many"
+      (f/init-one app-state (get-in app-state [:people/by-id 4]) spec {}) =throws=> (js/Error.))))
 
 (defui PolyPerson
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/mate 1}])
+  (query [this] [:db/id :person/name {:person/phone (om/get-query Phone)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :person/mate PolyPerson :many)]))
+  (form-elements [this] [(f/subform-element :person/number Phone :many)]))
 
 (specification "Initializing a to-many form relation"
-  (let [app-state {:people/by-id {1 {:db/id 1 :person/mate [:people/by-id 2]}
-                                  2 {:db/id 2 :person/mate [:people/by-id 1]}
-                                  3 {:db/id 3}
-                                  4 {:db/id 4 :person/mate [[:people/by-id 3] [:people/by-id 1]]}}}
-        base-form (get-in app-state [:people/by-id 4])
+  (let [base-form (get-in person-db [:people/by-id 4])
         spec (-> (f/form-elements PolyPerson) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
                                                    "initializes the first item"
-                                                   ident => [:people/by-id 3]
+                                                   ident => [:phone/by-id 1]
                                                    "finds the proper class of the form"
-                                                   class => PolyPerson)
+                                                   class => Phone)
                                                  state)
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
                                                    "initializes the other item(s)"
-                                                   ident => [:people/by-id 1]
+                                                   ident => [:phone/by-id 2]
                                                    "finds the proper class of the form"
-                                                   class => PolyPerson)
+                                                   class => Phone)
                                                  :new-state)
-      (let [actual (f/init-many app-state base-form spec {})]
+      (let [actual (f/init-many person-db base-form spec {})]
         (assertions
           "returns the state of the final init-state"
           actual => :new-state)))
     (assertions
-      "Is ok when the target is nil"
-      (f/init-many app-state (get-in app-state [:people/by-id 3]) spec #{}) => app-state
+      "Is ok when the target field is nil"
+      (f/init-many person-db (get-in person-db [:people/by-id 3]) spec {}) => person-db
       "Throws an error when targeting a to-one"
-      (f/init-many app-state (get-in app-state [:people/by-id 1]) spec #{}) =throws=> (js/Error.))))
+      (f/init-many person-db (get-in person-db [:people/by-id 1]) spec {}) =throws=> (js/Error.))))
 
-(specification "Initializing a recursive form"
+(specification "Initializing a form recursively"
   (assertions
     "detects initialized forms by looking for form state"
     (f/initialized? {:db/id 1}) => false
     (f/initialized? {:db/id 1 :ui/form {}}) => true)
-  (let [app-state {:people/by-id {1 {:db/id 1 :person/mate [:people/by-id 2]}
-                                  2 {:db/id 2 :person/mate [:people/by-id 1]}}}
-        tm-app-state {:people/by-id {1 {:db/id 1 :person/mate [[:people/by-id 2] [:people/by-id 3]]}
-                                     2 {:db/id 2 :person/mate [[:people/by-id 1]]}
-                                     3 {:db/id 3 :person/mate [[:people/by-id 1]]}}}]
-    (provided "when the form is already initialized"
-      (f/initialized? f) => true
+  (provided "when the form is already initialized"
+    (f/initialized? f) => true
 
-      (assertions
-        "Just returns the unmodified app state"
-        (f/init-form app-state Person [:people/by-id 1]) => app-state))
-    (provided "when the form is partially initialized (to-one)"
-      (f/initialized? f) => (= 1 (:db/id f))
+    (assertions
+      "Just returns the unmodified app state"
+      (f/init-form person-db Person [:people/by-id 1]) => person-db))
+  (provided "when the form is partially initialized (to-one)"
+    (f/initialized? f) => (boolean (:person/name f))
 
-      (let [result (f/init-form app-state Person [:people/by-id 1])]
-        (assertions
-          "still initializes the nested form"
-          (get-in result [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2])))
-    (provided "when the form is partially initialized (to-many)"
-      (f/initialized? f) => (= 1 (:db/id f))
+    (let [result (f/init-form person-db Person [:people/by-id 1])]
+      (assertions
+        "still initializes the nested form"
+        (get-in result [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1])))
+  (provided "when the form is partially initialized (to-many)"
+    (f/initialized? f) => (= 4 (:db/id f))
 
-      (let [result (f/init-form tm-app-state PolyPerson [:people/by-id 1])]
-        (assertions
-          "still initializes the nested form"
-          (get-in result [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2]
-          (get-in result [:people/by-id 3 :ui/form :ident]) => [:people/by-id 3])))
-    (let [actual (f/init-form app-state Person [:people/by-id 1])]
+    (let [result (f/init-form person-db PolyPerson [:people/by-id 4])]
       (assertions
-        "properly initializes a nested to-one form (integration)"
-        (get-in actual [:people/by-id 1 :ui/form :ident]) => [:people/by-id 1]
-        (get-in actual [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2]))
-    (let [actual (f/init-form tm-app-state PolyPerson [:people/by-id 1])]
-      (assertions
-        "properly initializes a nested to-many form (integration)"
-        (get-in actual [:people/by-id 1 :ui/form :ident]) => [:people/by-id 1]
-        (get-in actual [:people/by-id 3 :ui/form :ident]) => [:people/by-id 3]
-        (get-in actual [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2]))))
+        "still initializes the nested form"
+        (get-in result [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]
+        (get-in result [:phone/by-id 2 :ui/form :ident]) => [:phone/by-id 2])))
+  (let [actual (f/init-form person-db Person [:people/by-id 1])]
+    (assertions
+      "properly initializes a nested to-one form (integration)"
+      (get-in actual [:people/by-id 1 :ui/form :ident]) => [:people/by-id 1]
+      (get-in actual [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]))
+  (let [actual (f/init-form person-db PolyPerson [:people/by-id 4])]
+    (assertions
+      "properly initializes a nested to-many form (integration)"
+      (get-in actual [:people/by-id 4 :ui/form :ident]) => [:people/by-id 4]
+      (get-in actual [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]
+      (get-in actual [:phone/by-id 2 :ui/form :ident]) => [:phone/by-id 2])))
 
 (defui LeafForm
   static uc/InitialAppState
@@ -353,17 +361,13 @@
     "supports to-many sub-forms"
     (f/subforms* ToManyForm) => [[[:leaves] LeafForm]]))
 
-(def person-db {:person/by-id {1 {:name "A" :friend [:person/by-id 2]}
-                               2 {:name "B" :friend [:person/by-id 3]}
-                               3 {:name "C"}}})
 (def nested-form-db (om/tree->db [{:root (om/get-query Level3Form)}] {:root (uc/initial-state Level3Form {})} true))
 (def tomany-form-db (om/tree->db [{:root (om/get-query ToManyForm)}] {:root (uc/initial-state ToManyForm {})} true))
 
 (specification "to-idents"
   (assertions
     "finds a sequence of idents by walking the graph (to-one)"
-    (f/to-idents person-db (get-in person-db [:person/by-id 1]) [:friend]) => [[:person/by-id 2]]
-    (f/to-idents person-db (get-in person-db [:person/by-id 1]) [:friend :friend]) => [[:person/by-id 3]]
+    (f/to-idents person-db (get-in person-db [:people/by-id 1]) [:person/number]) => [[:phone/by-id 1]]
     "finds a sequence of idents by walking the graph (to-many)"
     (f/to-idents tomany-form-db (get-in tomany-form-db [:tomform 99]) [:leaves]) => [[:leaf 3] [:leaf 4]]))
 
@@ -399,4 +403,92 @@
   (assertions "Can accumulate values from all forms"
     (f/reduce-forms nested-form-db Level3Form [:level3 1] (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0) => 3))
 
+(specification "Form config and state helpers"
+  (let [app-state (f/init-form person-db Person [:people/by-id 1])
+        person-form (get-in app-state [:people/by-id 1])]
+    (assertions
+      "Can access the component for the form"
+      (f/form-component person-form) => Person
+      "Can access the ident of the form's location in the state"
+      (f/form-id person-form) => [:people/by-id 1]
+      "Can access the config of a given field on a form"
+      (get (f/field-config person-form :person/number) :input/name) => :person/number
+      "Can access the type of a given field on a form"
+      (f/field-type person-form :person/number) => ::f/subform
+      "Can identify a subform field"
+      (f/is-subform? person-form :person/number) => true
+      (f/is-subform? {:ui/form {:elements/by-name {:person/mate {:input/is-form? true}}}} :person/mate) => true
+      "Can access the current (edited) value"
+      (f/current-value person-form :person/name) => "A"
+      "Can access the desired CSS class of a field"
+      (f/css-class person-form :person/name) => "name-class"
+      "Can access field state using a form ident"
+      (f/field-value app-state [:people/by-id 1] :person/name) => "A"
+      "Field state defaults to an empty string"
+      (f/field-value app-state [:people/by-id 2] :boo) => ""
+      "Field state default can be specified"
+      (f/field-value app-state [:people/by-id 2] :boo 42) => 42
+      "Can access field names for all regular fields"
+      (f/field-names person-form) => [:person/name])))
+
+(defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
+
+(defui CPerson                                              ; only valid if name is 'C'
+  static om/IQuery
+  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
+  static om/Ident
+  (ident [this props] [:people/by-id (:db/id props)])
+  static f/IForm
+  (form-elements [this] [(f/text-input :person/name :className "name-class" :validator 'is-named? :validator-args {:name "C"})
+                         (f/subform-element :person/number Phone :many)]))
+
+(specification "Form Validation"
+  (let [app-state (-> person-db
+                      (f/init-form CPerson [:people/by-id 4])
+                      (f/init-form CPerson [:people/by-id 5]))
+        unchecked-person (get-in app-state [:people/by-id 5])
+        c-person (get-in app-state [:people/by-id 4])
+        valid-person (f/update-validation c-person :person/name)
+        invalid-person (f/update-validation unchecked-person :person/name)
+        validated-person (f/validate-fields unchecked-person)]
+    (component "Update validation (on a field)"
+      (assertions
+        "properly marks valid using the provided validator (integration)"
+        (get-in valid-person [:ui/form :state :person/name :input/valid]) => :valid
+        "properly marks invalid using the provided validator (integration)"
+        (get-in invalid-person [:ui/form :state :person/name :input/valid]) => :invalid))
+    (component "validate-fields"
+      (assertions
+        "non-recursively updates validation on all fields"
+        (f/valid? validated-person :person/name) => false))
+    (assertions
+      "Can query the tri-state validity of a specific field (which defaults to unchecked)"
+      (f/current-validity unchecked-person :person/name) => :unchecked
+      "indicates a field is invalid iff it is marked invalid (integration)"
+      (f/invalid? unchecked-person :person/name) => false
+      (f/invalid? valid-person :person/name) => false
+      (f/invalid? invalid-person :person/name) => true
+      "indicates a field is valid iff it is marked valid (integration)"
+      (f/valid? unchecked-person :person/name) => false
+      (f/valid? valid-person :person/name) => true
+      (f/valid? invalid-person :person/name) => false
+      "Can find the validation trigger symbol for a field"
+      (f/validator invalid-person :person/name) => 'is-named?
+      "Can find the validation trigger args for a field"
+      (f/validator-args invalid-person :person/name) => {:name "C"}))
+  (component "validate!"
+    (let [app-state-atom (atom (f/init-form person-db CPerson [:people/by-id 4]))
+          get-person (fn [id] (-> app-state-atom deref (get-in [:people/by-id id])))
+          get-phone (fn [id] (-> app-state-atom deref (get-in [:phone/by-id id])))]
+
+      (f/validate! app-state-atom [:people/by-id 4])
+
+      (assertions
+        "recursively walks an entire form in app state and marks all fields as valid/invalid"
+        (f/valid? (get-person 4) :person/name) => true
+        (f/invalid? (get-person 4) :person/name) => false
+        (f/valid? (get-phone 1) :phone/number) => true
+        (f/invalid? (get-phone 1) :phone/number) => false
+        (f/valid? (get-phone 2) :phone/number) => true
+        (f/invalid? (get-phone 2) :phone/number) => false))))
 
