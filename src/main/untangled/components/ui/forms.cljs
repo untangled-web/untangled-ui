@@ -134,49 +134,58 @@
                                              :state            state}
                                             {:component form-class}))))
 
-(declare init-form)
+(declare init-form*)
 
 (defn initialized? "Returns true if the given form is already initialized with form setup data"
   [form]
   (map? (:ui/form form)))
 
 (defn init-one
-  [state base-form subform-spec]
+  [state base-form subform-spec visited]
   (let [k (:input/name subform-spec)
         subform-class (some-> subform-spec meta :component)
-        subform-ident (get base-form k)]
+        subform-ident (get base-form k)
+        visited (update-in visited subform-ident inc)]
     (assert (or (nil? subform-ident)
                 (util/ident? subform-ident)) "Initialize-one form did not find a to-one relation in the database")
-    (init-form state subform-class subform-ident)))
+    (if (> (get-in visited subform-ident) 1)
+      state
+      (init-form* state subform-class subform-ident visited))))
 
 (defn init-many
-  [state base-form subform-spec]
+  [state base-form subform-spec visited]
   (let [k (:input/name subform-spec)
         subform-idents (get base-form k)
-        subform-class (some-> subform-spec meta :component)]
+        subform-class (some-> subform-spec meta :component)
+        visited (reduce (fn [v ident] (update-in v ident inc)) visited subform-idents)]
     (assert (or (nil? subform-idents)
                 (every? util/ident? subform-idents)) "Initialize-many form did not find a to-many relation in the database")
     (reduce (fn
               ([] state)
               ([st f-ident]
-                 (init-form st subform-class f-ident))) state subform-idents)))
+               (if (> (get-in visited f-ident) 1)
+                 st
+                 (init-form* st subform-class f-ident visited)))) state subform-idents)))
+
+(defn- init-form*
+  [app-state form-class form-ident forms-visited]
+  (if-let [form (get-in app-state form-ident)]
+    (let [elements (form-elements form-class)
+          subforms (filter :input/is-form? elements)
+          base-form (if (initialized? form) form (build-form form-class form))
+          base-app-state (assoc-in app-state form-ident base-form)]
+      (reduce (fn [state subform-spec]
+                (if (= :many (:input/cardinality subform-spec))
+                  (init-many state base-form subform-spec forms-visited)
+                  (init-one state base-form subform-spec forms-visited))) base-app-state subforms))
+    app-state))
 
 (defn init-form
-  "Recursively initialize a form from an app state database. Will follow subforms. Returns the new app state (can be
-  used to `swap!` on app state atom). Will **not** add forms where there is not already an entity in the database."
-  [app-state form-class form-ident]
-  (if-let [form (get-in app-state form-ident)]
-    (if (initialized? form) ; TODO: Not quite right. I need to stop the recursion by tracking visited nodes, or I will not be able to "fill in" new subforms
-      app-state
-      (let [elements (form-elements form-class)
-            subforms (filter :input/is-form? elements)
-            base-form (build-form form-class form)
-            base-app-state (assoc-in app-state form-ident base-form)]
-        (reduce (fn [state subform-spec]
-                  (if (= :many (:input/cardinality subform-spec))
-                    (init-many state form subform-spec)
-                    (init-one state form subform-spec))) base-app-state subforms)))
-    app-state))
+  "Recursively initialize a form from an app state database. Will follow subforms (even when top-levels are initialized).
+  Returns the new app state (can be used to `swap!` on app state atom). Will **not** add forms where there is not
+  already an entity in the database. If there are subforms, this function will only initialize those that are present
+  AND uninitialized. Under no circumstances will this function re-initialize a form or subform."
+  [app-state form-class form-ident] (init-form* app-state form-class form-ident {}))
 
 
 (comment

@@ -165,25 +165,25 @@
         base-form (get-in app-state [:people/by-id 1])
         spec (-> (f/form-elements Person) first)]
     (when-mocking
-      (f/init-form state class ident) =1x=> (do
-                                              (assertions
-                                                "initializes the proper target form"
-                                                ident => [:people/by-id 2]
-                                                "finds the proper class of the form"
-                                                class => Person)
-                                              :new-state)
-      (let [actual (f/init-one app-state base-form spec)]
+      (f/init-form* state class ident v) =1x=> (do
+                                                 (assertions
+                                                   "initializes the proper target form"
+                                                   ident => [:people/by-id 2]
+                                                   "finds the proper class of the form"
+                                                   class => Person)
+                                                 :new-state)
+      (let [actual (f/init-one app-state base-form spec {})]
         (assertions
           "returns the value of a call to init-form"
           actual => :new-state)))
     (when-mocking
-      (f/init-form state class ident) =1x=> :A
+      (f/init-form* state class ident v) =1x=> :A
 
       (assertions
-        "Is ok  when the target is nil"
-        (f/init-one app-state (get-in app-state [:people/by-id 3]) spec) => :A
+        "Is ok when the target is nil"
+        (f/init-one app-state (get-in app-state [:people/by-id 3]) spec {}) => :A
         "Throws an error when targeting a to-many"
-        (f/init-one app-state (get-in app-state [:people/by-id 4]) spec) =throws=> (js/Error.)
+        (f/init-one app-state (get-in app-state [:people/by-id 4]) spec {}) =throws=> (js/Error.)
         ))))
 
 (defui PolyPerson
@@ -200,29 +200,29 @@
         base-form (get-in app-state [:people/by-id 4])
         spec (-> (f/form-elements PolyPerson) first)]
     (when-mocking
-      (f/init-form state class ident) =1x=> (do
-                                              (assertions
-                                                "initializes the first item"
-                                                ident => [:people/by-id 3]
-                                                "finds the proper class of the form"
-                                                class => PolyPerson)
-                                              state)
-      (f/init-form state class ident) =1x=> (do
-                                              (assertions
-                                                "initializes the other item(s)"
-                                                ident => [:people/by-id 1]
-                                                "finds the proper class of the form"
-                                                class => PolyPerson)
-                                              :new-state)
-      (let [actual (f/init-many app-state base-form spec)]
+      (f/init-form* state class ident v) =1x=> (do
+                                                 (assertions
+                                                   "initializes the first item"
+                                                   ident => [:people/by-id 3]
+                                                   "finds the proper class of the form"
+                                                   class => PolyPerson)
+                                                 state)
+      (f/init-form* state class ident v) =1x=> (do
+                                                 (assertions
+                                                   "initializes the other item(s)"
+                                                   ident => [:people/by-id 1]
+                                                   "finds the proper class of the form"
+                                                   class => PolyPerson)
+                                                 :new-state)
+      (let [actual (f/init-many app-state base-form spec {})]
         (assertions
           "returns the state of the final init-state"
           actual => :new-state)))
     (assertions
       "Is ok when the target is nil"
-      (f/init-many app-state (get-in app-state [:people/by-id 3]) spec) => app-state
+      (f/init-many app-state (get-in app-state [:people/by-id 3]) spec #{}) => app-state
       "Throws an error when targeting a to-one"
-      (f/init-many app-state (get-in app-state [:people/by-id 1]) spec) =throws=> (js/Error.))))
+      (f/init-many app-state (get-in app-state [:people/by-id 1]) spec #{}) =throws=> (js/Error.))))
 
 (specification "Initializing a recursive form"
   (assertions
@@ -240,6 +240,21 @@
       (assertions
         "Just returns the unmodified app state"
         (f/init-form app-state Person [:people/by-id 1]) => app-state))
+    (provided "when the form is partially initialized (to-one)"
+      (f/initialized? f) => (= 1 (:db/id f))
+
+      (let [result (f/init-form app-state Person [:people/by-id 1])]
+        (assertions
+          "still initializes the nested form"
+          (get-in result [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2])))
+    (provided "when the form is partially initialized (to-many)"
+      (f/initialized? f) => (= 1 (:db/id f))
+
+      (let [result (f/init-form tm-app-state PolyPerson [:people/by-id 1])]
+        (assertions
+          "still initializes the nested form"
+          (get-in result [:people/by-id 2 :ui/form :ident]) => [:people/by-id 2]
+          (get-in result [:people/by-id 3 :ui/form :ident]) => [:people/by-id 3])))
     (let [actual (f/init-form app-state Person [:people/by-id 1])]
       (assertions
         "properly initializes a nested to-one form (integration)"
