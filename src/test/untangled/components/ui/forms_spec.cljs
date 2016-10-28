@@ -390,18 +390,22 @@
                                                                :form  {:id 4 :value 1 :leaf true}}]))
 
 (specification "update-forms"
-  (let [new-state (f/update-forms nested-form-db Level3Form [:level3 1] (fn [{:keys [form]}] (assoc form :touched true)))]
+  (let [state (f/init-form nested-form-db Level3Form [:level3 1])
+        form (get-in state [:level3 1])
+        new-state (f/update-forms state form (fn [{:keys [form]}] (assoc form :touched true)))]
     (assertions
       "Updates the state of the correct forms using a supplied function."
-      (get-in new-state [:level3 1]) => {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2] :touched true}
-      (get-in new-state [:level2 2]) => {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6] :touched true}
-      (get-in new-state [:leaf 5]) => {:id 5 :value 1 :leaf true :touched true}
-      (get-in new-state [:leaf 6]) => {:id 6 :value 1 :leaf true :touched true}
-      (get-in new-state [:other 100]) => {:id 100 :value 50 :other true})))
+      (get-in new-state [:level3 1 :touched]) => true
+      (get-in new-state [:level2 2 :touched]) => true
+      (get-in new-state [:leaf 5 :touched]) => true
+      (get-in new-state [:leaf 6 :touched]) => true
+      (get-in new-state [:other 100 :touched]) => nil)))
 
 (specification "reduce-forms"
   (assertions "Can accumulate values from all forms"
-    (f/reduce-forms nested-form-db Level3Form [:level3 1] (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0) => 3))
+    (let [state (f/init-form nested-form-db Level3Form [:level3 1])
+          form (get-in state [:level3 1])]
+      (f/reduce-forms state form (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0)) => 3))
 
 (specification "Form config and state helpers"
   (let [app-state (f/init-form person-db Person [:people/by-id 1])
@@ -428,8 +432,8 @@
       (f/field-value app-state [:people/by-id 2] :boo) => ""
       "Field state default can be specified"
       (f/field-value app-state [:people/by-id 2] :boo 42) => 42
-      "Can access field names for all regular fields"
-      (f/field-names person-form) => [:person/name])))
+      "Can access field names for all editable fields"
+      (f/editable-fields person-form) => [:person/name])))
 
 (defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
 
@@ -475,16 +479,24 @@
       "Can find the validation trigger symbol for a field"
       (f/validator invalid-person :person/name) => 'is-named?
       "Can find the validation trigger args for a field"
-      (f/validator-args invalid-person :person/name) => {:name "C"}))
-  (component "validate!"
-    (let [app-state-atom (atom (f/init-form person-db CPerson [:people/by-id 4]))
-          get-person (fn [id] (-> app-state-atom deref (get-in [:people/by-id id])))
-          get-phone (fn [id] (-> app-state-atom deref (get-in [:phone/by-id id])))]
+      (f/validator-args invalid-person :person/name) => {:name "C"}
+      "Can see if a field is clean on the form"
+      (f/dirty? valid-person) => false
+      "Can see if a field is dirty on the form"
+      (f/dirty? (update-in valid-person [:ui/form :state :person/name] assoc :input/value "X")) => true
+      "Can recursively check for dirty data on a form"
+      (f/any-dirty? app-state c-person) => false
+      (f/any-dirty? (update-in app-state [:people/by-id 4 :ui/form :state :person/name] assoc :input/value "X") c-person) => true
+      (f/any-dirty? (update-in app-state [:phone/by-id 1 :ui/form :state :phone/number] assoc :input/value "222") c-person) => true
+      (f/any-dirty? (update-in app-state [:phone/by-id 2 :ui/form :state :phone/number] assoc :input/value "4") c-person) => true))
 
-      (f/validate! app-state-atom [:people/by-id 4])
-
+  (component "validate-forms"
+    (let [app-state (f/init-form person-db CPerson [:people/by-id 4])
+          validated-state (f/validate-forms app-state [:people/by-id 4])
+          get-person (fn [id] (get-in validated-state [:people/by-id id]))
+          get-phone (fn [id] (get-in validated-state [:phone/by-id id]))]
       (assertions
-        "recursively walks an entire form in app state and marks all fields as valid/invalid"
+        "recursively walks an entire form in app state and updates all fields validity to proper valid/invalid."
         (f/valid? (get-person 4) :person/name) => true
         (f/invalid? (get-person 4) :person/name) => false
         (f/valid? (get-phone 1) :phone/number) => true
