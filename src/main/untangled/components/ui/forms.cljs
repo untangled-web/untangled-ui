@@ -413,8 +413,6 @@
   (let [field-ids (editable-fields form)]
     (reduce (fn [form field-id] (update-validation form field-id)) form field-ids)))
 
-
-
 (defn dirty?
   "Returns true if the entity state does not match the form state, or if it contains a tempid. Does not recurse into
   subforms"
