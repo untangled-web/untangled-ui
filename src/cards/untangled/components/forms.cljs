@@ -66,6 +66,19 @@
 
 (defmethod m/mutate 'sample/add-phone [e k p] (add-phone-mutation e k p))
 
+(defui PhoneRoot
+  static om/IQuery
+  (query [this] [{:phone (om/get-query PhoneForm)}])
+  static uc/InitialAppState
+  (initial-state [this params]
+    (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
+      {:phone (uc/initial-state PhoneForm phone-number)}))
+  Object
+  (render [this]
+    (let [{:keys [phone]} (om/props this)]
+      (dom/div nil
+        (ui-phone-form phone)))))
+
 (defcard-doc
   "# Forms Quick Tour
 
@@ -73,14 +86,14 @@
    and Untangled makes it relatively simple to write form support in a general-purpose, composeable manner. In fact,
    just a few simple functions make it possible to support:
 
-   - An extensible form field set
+   - An extensible set of form fields
    - Extensible validation
    - Declarative forms
    - Separation of form UI from form logic
    - Remote integration with form <-> entity
    - Local integration with entities in the browser database
 
-   In the following examples, the following requires define any namespacing we do:
+   In the following examples, the following `requires` define the namespaces used:
 
    ```
    (ns your-ns
@@ -155,20 +168,10 @@
   can take any such entity and add form support to it. The result is perfectly compatible with the original entity.
 
   "
-  (dc/mkdn-pprint-source PhoneForm))
+  (dc/mkdn-pprint-source PhoneForm)
+  (dc/mkdn-pprint-source PhoneRoot))
 
-(defui PhoneRoot
-  static om/IQuery
-  (query [this] [{:phone (om/get-query PhoneForm)}])
-  static uc/InitialAppState
-  (initial-state [this params]
-    (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
-      {:phone (f/build-form PhoneForm phone-number)}))
-  Object
-  (render [this]
-    (let [{:keys [phone]} (om/props this)]
-      (dom/div nil
-        (ui-phone-form phone)))))
+
 
 (defcard phone-form
   "The PhoneRoot above was used to generate this simple interactive form"
@@ -179,7 +182,7 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (form-elements [this] [(f/id-field :db/id)
-                         (f/text-input :phone/number :validator 'us-phone?) ; Addition of validator
+                         (f/text-input :phone/number :validator 'us-phone? :validate-on-blur? true) ; Addition of validator
                          (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form])
@@ -222,7 +225,7 @@
 
   The validation system is completely extensible as well. There is a multimethod `(f/form-field-valid? [symbol value args])`
   that dispatches on symbol (symbols are allowed in app state, lambdas are not). Form fields that support validation
-  will run that validation on blur.
+  can be configured to run validation on interaction.
 
   Validation is tri-state. The allowed states are `:valid` (checked and correct), `:invalid` (checked and incorrect),
   and `:unchecked`.
@@ -256,9 +259,9 @@
   static f/IForm
   (form-elements [this] [(f/id-field :db/id)
                          (f/subform-element :person/phone-numbers ValidatedPhoneForm :many)
-                         (f/text-input :person/name :validator 'name-valid?)
+                         (f/text-input :person/name :validator 'name-valid? :validate-on-blur? true)
                          (f/integer-input :person/age :validator 'in-range?
-                                          :validator-args {:min 1 :max 110})
+                                          :validator-args {:min 1 :max 110} :validate-on-blur? true)
                          (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
@@ -269,8 +272,7 @@
   Object
   (render [this]
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
-          ;; FIXME: should be able to make dirty automatically recurse using declared subforms
-          dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
+          dirty? (f/any-dirty? this)]
       (dom/div #js {:className "form-horizontal"}
         (when (f/valid? props)
           (dom/div nil "READY to submit!"))
@@ -288,13 +290,12 @@
           (dom/button #js {:className "btn btn-default" :onClick #(f/validate-entire-form! this props)} "Validate")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
-                                        ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
+                                        ;; TODO: Should be able to use fields, subform, and meta on query to focus query
                                         ;; and run post mutations that re-initialize the form state on entities just loaded
-                                        (f/reset-from-entity! this props))} "UNDO")
+                                        (f/reset-from-entity! this))} "UNDO")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
-                                        ;; FIXME: Commit should ONLY send delta (dirty fields) to server
-                                        ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
+                                        ;; TODO: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
                                         (f/commit-to-entity! this))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
@@ -333,8 +334,8 @@
   A form will initially have the field values set to the entity state (passed to `build-form`). As you interact with
   the form the form fields will change, but **the entity itself does not update in the database table**. This allows you to:
 
-  - Reset the form from the entity (optionally triggering a (re)read from the server)
-  - Commit the form changes to the entity (local and optionally remote)
+  - Reset the form from the entity (TODO: optionally triggering a (re)read from the server)
+  - Commit the form changes from the form to the entity (local and (TODO) optionally remote)
 
   **This, combined with a little server code, makes the form support full stack!**
 
@@ -345,6 +346,17 @@
   - `(f/reset-from-entity! comp)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
   - More coming...
 
+  The above function calls have corresponding Untangled mutations so you can compose them into your own transactions:
+
+  - `(untangled.components.form/reset-from-entity! {:form-id ident-of-form })`
+  - `(untangled.components.form/commit-to-entity! {:form-id ident-of-form :delta delta :remote remote})`
+
+  The delta of a form's edits can be computed by calling:
+
+  `(modified-fields app-state form)`
+
+  See the source of the `commit-to-entity!` and `reset-from-entity!` functions for examples of calling these mutations.
+
   ### State evolution within your own transactions
 
   All of the functions described above trigger underlying Om `transact!`. Feel free to read the source of those functions
@@ -352,17 +364,21 @@
 
   ## Composition
 
-  Form support augments normalized entities in your app database, so they can be easily composed! They are UI components, and have nothing special
-  about them other than the `:ui/form` state that is added to the entity (though your call of `build-form`).
+  Form support augments normalized entities in your app database so they can be easily composed! They are UI components,
+  and have nothing special about them other than the `:ui/form` state that is added to the entity (though your call of `build-form`).
   You can convert any entity in your database to a form using the `build-form` function, meaning that you can load
   entities as normal, and as you want to edit them
   in a form, simple mutate them into form-compatible entities with `build-form` (which will not touch the original
   properties of the entity, just add `:ui/form`). Then render them with a UI component that shares your entity Ident,
   but has a render method that renders the form fields with `form-field`.
 
+  If you want support for recursive operations on validation, commit, and reset then you can add subforms to your
+  `form-elements` return value using the `subform-element` constructor function.
+
   Here is the source for an application that renders a Person form, where the person can have any nubmer of phone numbers,
   each represented by a nested phone number entity/form. Note the use of `InitialAppState` in Root to build out sample
-  data.
+  data. Also note that the commit/reset buttons traverse to the nested phone forms (TODO: removing transient
+  instances)
   "
   (dc/mkdn-pprint-source ValidatedPhoneForm)
   (dc/mkdn-pprint-source PersonForm)
@@ -390,6 +406,8 @@
 
   ### Compositional Dirty-Checking, Validation, and Submission
 
+  There are built-in functions for running validation (transactions), and checking things like the dirty state of the
+  form.
   The code also shows how you would compose the checks. The `dirty?` definition combines the results of the nested forms
   together with the top form. You could do the same for validations.
 
@@ -446,8 +464,9 @@
 
   - `(untangled.components.form/validate {:form-id [:ident/by-x n] :field :field-name})` - Run validation on the given form/field. Marks the form state for the field to `:invalid` or `:valid`. Fields without validators
   will be marked `:valid`.
+  - `(untangled.components.form/validate-form! {:form-id [:ident/by-x n])  - Run recursive validation on the given form. Marks the form state for the fields to `:invalid` or `:valid`.
+  - `(untangled.components.form/toggle-field {:form-id [:ident/by-x n] :field :field-name)  - Toggle a boolean field value
   - `(untangled.components.form/update-field {:form-id [:ident/by-x n] :field :field-name :value raw-value})` - Set the raw-value (you can use any type) onto the form's placeholder state (not on the entity)
-  - Others listed elsewhere, like those that commit, validate, etc.
 
   ## Other Functions of Interest
 
@@ -457,12 +476,13 @@
   in future versions. Instead, use these:
 
   - `f/current-value` : Get the most recent value of a field from a form
-  - `f/current-validity` : Get the most recent result of validation on a field
-  - `f/valid?` : Test if the form (or a field) is currently marked valid (must run validation separately)
-  - `f/invalid?` : Test if the form (or a field) is currently marked invalid (must run validation separately)
+  - `f/valid?` : Test if the form (or a field) is currently marked valid (you must run validation separately)
+  - `f/dirty?` : Test if the form is dirty (modified). Does not recurse into subforms. Will always return true if the
+  entity's ID is a tempid.
+  - `f/any-dirty?` : Test if any form or subform in a form set is dirty (modified). Recurses into subforms.
+  - `f/invalid?` : Test if the form (or a field) is currently marked invalid (you must run validation separately)
   - `f/field-names` : Get the field names on a form
-  - `f/form-id` : returns the Om Ident of the form (which is also the ident of the entity)
   - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
-  - `f/field-value` : Just like `current-value`, but works against the top-level app state map (not the atom)
-  - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
+  - `f/form-ident` : returns the Om Ident of the form (which is also the ident of the entity)
+  - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update the UI)
   ")

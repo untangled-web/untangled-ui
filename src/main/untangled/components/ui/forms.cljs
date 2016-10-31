@@ -51,25 +51,36 @@
    :input/type ::identity})
 
 (defn text-input
-  "Declare a text input on a form"
-  [name & {:keys [validator validator-args className default-value placeholder] :or {placeholder "" default-value "" className ""}}]
-  {:input/name           name
-   :input/default-value  default-value
-   :input/placeholder    placeholder
-   :input/validator      validator
-   :input/validator-args validator-args
-   :input/css-class      className
-   :input/type           ::text})
+  "Declare a text input on a form.
+
+  Named parameters:
+  `validator` : A symbol for the validator to use
+  `validator-args` : Any arguments required by the validator
+  `validate-on-blur?`: Should this input validate itself on blur events?
+  `className`: The CSS classes to include on the input
+  `default-value`: The value to use for this input on a newly created form (e.g. a new entity)
+  `placeholder`: The placeholder text
+  "
+  [name & {:keys [validator validator-args validate-on-blur? className default-value placeholder] :or {placeholder "" default-value "" className ""}}]
+  {:input/name              name
+   :input/default-value     default-value
+   :input/placeholder       placeholder
+   :input/validator         validator
+   :input/validator-args    validator-args
+   :input/validate-on-blur? validate-on-blur?
+   :input/css-class         className
+   :input/type              ::text})
 
 (defn integer-input
-  "Declare an integer input on a form"
-  [name & {:keys [validator validator-args className default-value] :or {default-value 0 className ""}}]
-  {:input/name           name
-   :input/default-value  default-value
-   :input/validator      validator
-   :input/validator-args validator-args
-   :input/css-class      className
-   :input/type           ::integer})
+  "Declare an integer input on a form. Similar arguments to text-input, but forces state value to an integer."
+  [name & {:keys [validator validate-on-blur? validator-args className default-value] :or {default-value 0 className ""}}]
+  {:input/name              name
+   :input/default-value     default-value
+   :input/validator         validator
+   :input/validator-args    validator-args
+   :input/validate-on-blur? validate-on-blur?
+   :input/css-class         className
+   :input/type              ::integer})
 
 (defn checkbox-input
   "Declare a checkbox on a form"
@@ -80,7 +91,10 @@
    :input/name          name})
 
 (defn dropdown-input
-  "Declare a dropdown menu selector."
+  "Declare a dropdown menu selector. The options must be instances created by `f/option`.
+
+  If you supply a default-value, then the input will require a value. If you do not, then
+  the input will be allowed to be unselected and will have a blank entry."
   [name options & {:keys [default-value className] :or {default-value ::none className ""}}]
   {:pre [(or (= default-value ::none)
              (some #(= default-value (:option/key %)) options))
@@ -93,7 +107,7 @@
    :input/name          name})
 
 (defn option
-  "Create an option for use in a dropdown"
+  "Create an option for use in a dropdown with the given key (low-level state) and label (visible)"
   [key label]
   {:option/key   key
    :option/label label})
@@ -369,6 +383,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn current-validity
+  "Reads the validity of the given field. This does not run validation, it reads the last result of it."
   [form field]
   (get-in form [:ui/form :state field :input/valid]))
 
@@ -426,8 +441,11 @@
 
 (defn any-dirty?
   "Checks if the top-level form, or any of the subforms, are dirty."
-  [app-state form]
-  (reduce-forms app-state form (fn [d? {:keys [form]}] (or d? (dirty? form))) false))
+  ([component]
+   (let [app-state (-> component om/get-reconciler om/app-state deref)
+         form (om/props component)]
+     (any-dirty? app-state form)))
+  ([app-state form] (reduce-forms app-state form (fn [d? {:keys [form]}] (or d? (dirty? form))) false)))
 
 (defn validate-forms
   "Run validation on an entire form (by ident) with subforms. Returns an updated app-state."
@@ -479,9 +497,9 @@
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-  (fn [component form name & params]
-    (let [dispatch (get-in form [:ui/form :elements/by-name name :input/type])]
-      dispatch)))
+          (fn [component form name & params]
+            (let [dispatch (get-in form [:ui/form :elements/by-name name :input/type])]
+              dispatch)))
 
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
@@ -489,11 +507,17 @@
 (defn render-text-field [component form name]
   (let [id (form-ident form)
         text-value (or (current-value form name) "")
-        cls (or (css-class form name) "form-control")]
+        cls (or (css-class form name) "form-control")
+        validate-on-blur? (:input/validate-on-blur? (field-config form name))]
     (dom/input #js {:type      "text"
                     :name      name
                     :value     text-value
                     :className cls
+                    :onBlur    (fn [event]
+                                 (when validate-on-blur?
+                                   (om/transact! component
+                                     `[(untangled.components.form/validate ~{:form-id id :field name})
+                                       :ui/form-root])))
                     :onChange  (fn [event]
                                  (om/transact! component
                                    `[(untangled.components.form/update-field
@@ -508,15 +532,17 @@
 (defn render-integer-field [component form name]
   (let [id (form-ident form)
         cls (or (css-class form name) "form-control")
-        text-value (current-value form name)]
+        value (current-value form name)
+        validate-on-blur? (:input/validate-on-blur? (field-config form name))]
     (dom/input #js {:type      "number"
                     :name      name
                     :className cls
-                    :value     text-value
+                    :value     value
                     :onBlur    (fn [_]
-                                 (om/transact! component
-                                   `[(untangled.components.form/validate ~{:form-id id :field name})
-                                     :ui/form-root]))
+                                 (when validate-on-blur?
+                                   (om/transact! component
+                                     `[(untangled.components.form/validate ~{:form-id id :field name})
+                                       :ui/form-root])))
                     :onChange  (fn [event]
                                  (let [raw-value (.. event -target -value)
                                        v (if (seq (re-matches #"^[0-9]*$" raw-value))
@@ -573,11 +599,12 @@
 (defn reset-from-entity!
   "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
    You may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:form-id [:entity id]})` directly."
-  [comp-or-reconciler form]
-  (let [form-id (form-ident form)]
-    (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
-                                       (untangled.components.form/validate-form! ~{:form-id form-id})
-                                       :ui/form-root])))
+  [component]
+  (let [form (om/props component)
+        form-id (form-ident form)]
+    (om/transact! component `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
+                              (untangled.components.form/validate-form! ~{:form-id form-id})
+                              :ui/form-root])))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
