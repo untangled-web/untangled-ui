@@ -9,7 +9,8 @@
             [untangled.components.ui.forms :as f]
             [untangled.dom :as udom]
             [untangled.client.core :as uc]
-            [untangled.client.mutations :as m]))
+            [untangled.client.mutations :as m]
+            [com.stuartsierra.component :as component]))
 
 (declare add-phone-mutation ValidatedPhoneForm)
 
@@ -18,25 +19,30 @@
   (let [trimmed-value (str/trim value)]
     (str/includes? trimmed-value " ")))
 
-
-
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
   ([comp form name label] (field-with-label comp form name label nil))
   ([comp form name label validation-message]
-   (dom/div #js {:className ""}
-     (dom/label #js {:className (if (f/invalid? form name) "invalid" "") :htmlFor name} label)
-     (f/form-field comp form name)
+   (dom/div #js {:className (str "form-group" (if (f/invalid? form name) " has-error" ""))}
+     (dom/label #js {:className "col-sm-2" :htmlFor name} label)
+     (dom/div #js {:className "col-sm-10"} (f/form-field comp form name))
      (when (and validation-message (f/invalid? form name))
-       (dom/span #js {:className (str "invalid " name)} validation-message)))))
+       (dom/span #js {:className (str "col-sm-offset-2 col-sm-10" name)} validation-message)))))
+
+(defn checkbox-with-label
+  "A helper function to lay out checkboxes."
+  ([comp form name label] (field-with-label comp form name label nil))
+  ([comp form name label validation-message]
+   (dom/div #js {:className "checkbox"}
+     (dom/label nil (f/form-field comp form name) label))))
 
 (defui ^:once PhoneForm
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (fields [this] [(f/id-field :db/id)                       ; Mark which thing is the ID of this entity
-                  (f/text-input :phone/number)
-                  (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+  (form-elements [this] [(f/id-field :db/id)                ; Mark which thing is the ID of this entity
+                         (f/text-input :phone/number :class "form-control")
+                         (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form]) ; Don't forget :ui/form!
   static om/Ident
@@ -44,7 +50,7 @@
   Object
   (render [this]
     (let [form (om/props this)]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (field-with-label this form :phone/type "Phone type:") ; Use your own helpers to render out the fields
         (field-with-label this form :phone/number "Number:")))))
 
@@ -52,7 +58,7 @@
 
 (defn add-phone-mutation [{:keys [state]} k {:keys [id person]}]
   {:action (fn []
-             (let [new-phone (uc/initial-state ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
+             (let [new-phone (f/build-form ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
                    person-ident [:people/by-id person]
                    phone-ident (om/ident ValidatedPhoneForm new-phone)]
                (swap! state assoc-in phone-ident new-phone)
@@ -172,9 +178,9 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (fields [this] [(f/id-field :db/id)
-                  (f/text-input :phone/number 'us-phone?)   ; Addition of validator
-                  (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+  (form-elements [this] [(f/id-field :db/id)
+                         (f/text-input :phone/number :validator 'us-phone?) ; Addition of validator
+                         (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number :ui/form])
   static om/Ident
@@ -182,7 +188,7 @@
   Object
   (render [this]
     (let [form (om/props this)]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (field-with-label this form :phone/type "Phone type:")
         ;; One more parameter to give the validation error message:
         (field-with-label this form :phone/number "Number:" "Please format as (###) ###-####")))))
@@ -248,11 +254,12 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (fields [this] [(f/id-field :db/id)
-                  (f/text-input :person/name 'name-valid?)
-                  (f/integer-input :person/age 'in-range? {:min 1 :max 110})
-                  (f/checkbox-input :person/registered-to-vote?)
-                  (f/subform :person/phone-numbers :many)])
+  (form-elements [this] [(f/id-field :db/id)
+                         (f/subform-element :person/phone-numbers ValidatedPhoneForm :many)
+                         (f/text-input :person/name :validator 'name-valid?)
+                         (f/integer-input :person/age :validator 'in-range?
+                                          :validator-args {:min 1 :max 110})
+                         (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :db/id :person/name :person/age
@@ -264,39 +271,31 @@
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
           ;; FIXME: should be able to make dirty automatically recurse using declared subforms
           dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
-      (dom/div nil
+      (dom/div #js {:className "form-horizontal"}
         (when (f/valid? props)
           (dom/div nil "READY to submit!"))
         (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
-        (field-with-label this props :person/registered-to-vote? "Registered?")
+        (checkbox-with-label this props :person/registered-to-vote? "Registered?")
         (when (f/current-value props :person/registered-to-vote?)
           (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
-        (dom/button #js {:onClick #(om/transact! this
-                                    `[(sample/add-phone ~{:id     (om/tempid)
-                                                          :person (:db/id props)})])} "Add Phone")
-        (dom/br nil)
-        (dom/button #js {:onClick (fn []
-                                    (doseq [n phone-numbers]
-                                      (f/validate-entire-form! this n))
-                                    (f/validate-entire-form! this props))} "Validate")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
-                                     ;; and run post mutations that re-initialize the form state on entities just loaded
-                                     (doseq [n phone-numbers]
-                                       (f/reset-from-entity! this n))
-                                     (f/reset-from-entity! this props))} "UNDO")
-        (dom/button #js {:disabled (not dirty?)
-                         :onClick  (fn []
-                                     ;; FIXME: Should be able to use subform and meta on query to derive sub-commits.
-                                     ;; FIXME: Commit should ONLY send delta (dirty fields) to server
-                                     ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                     (doseq [n phone-numbers]
-                                       (f/commit-to-entity! this n true))
-                                     (f/commit-to-entity! this props true))} "Save to entity!")))))
+        (dom/div #js {:className "button-group"}
+          (dom/button #js {:className "btn btn-primary" :onClick #(om/transact! this
+                                                                   `[(sample/add-phone ~{:id     (om/tempid)
+                                                                                         :person (:db/id props)})])} "Add Phone")
+          (dom/button #js {:className "btn btn-default" :onClick #(f/validate-entire-form! this props)} "Validate")
+          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
+                           :onClick   (fn []
+                                        ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
+                                        ;; and run post mutations that re-initialize the form state on entities just loaded
+                                        (f/reset-from-entity! this props))} "UNDO")
+          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
+                           :onClick   (fn []
+                                        ;; FIXME: Commit should ONLY send delta (dirty fields) to server
+                                        ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
+                                        (f/commit-to-entity! this))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -341,9 +340,9 @@
 
   You can trigger the following operations on a form:
 
-  - `(f/commit-to-entity! comp form)` : Commit the current edits to the entity (no-op if the form doesn't validate)
-  - `(f/commit-to-entity! comp form true)` : Commit the current edits to the entity AND the server (is a no-op if the form doesn't validate)
-  - `(f/reset-from-entity! comp form)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
+  - `(f/commit-to-entity! comp)` : Commit the current edits to the entity (no-op if the form doesn't validate)
+  - `(f/commit-to-entity! comp true)` : Commit the current edits to the entity AND the server (is a no-op if the form doesn't validate)
+  - `(f/reset-from-entity! comp)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
   - More coming...
 
   ### State evolution within your own transactions
@@ -466,6 +465,4 @@
   - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
   - `f/field-value` : Just like `current-value`, but works against the top-level app state map (not the atom)
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
-  "
-  )
-
+  ")

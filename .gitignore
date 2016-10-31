@@ -2,6 +2,7 @@ target
 resources/private/js
 resources/public/js
 *.iml
+!.idea/runConfigurations
 .idea
 node_modules
 target
