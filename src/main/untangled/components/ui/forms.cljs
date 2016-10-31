@@ -286,8 +286,7 @@
   [form]
   (-> form :ui/form meta :component))
 
-; TODO: RENAME
-(defn form-id
+(defn form-ident
   "Get the ident of this form's entity"
   [form]
   (get-in form [:ui/form :ident]))
@@ -306,25 +305,16 @@
   [form name]
   (:input/is-form? (field-config form name)))
 
-; TODO: RENAME
 (defn current-value
   "Gets the current value of a field in a form."
-  [form field]
-  (get-in form [:ui/form :state field :input/value]))
+  ([form field] (get-in form [:ui/form :state field :input/value])))
 
 (defn css-class
   "Gets the css class for the form field"
   [form field]
   (:input/css-class (field-config form field)))
 
-; TODO: rename
-(defn field-value
-  "Get the current value of a form field in the app state."
-  ([app-state form-id field-name] (field-value app-state form-id field-name ""))
-  ([app-state form-id field-name dflt] (or (current-value (get-in app-state form-id) field-name) dflt)))
-
-; TODO: rename
-(defn field-names
+(defn element-names
   "Get all of the field names that are defined on the form."
   [form]
   (keys (get-in form [:ui/form :elements/by-name])))
@@ -339,7 +329,7 @@
   and the values are vectors of the keys for the fields that changed on that form."
   [app-state form]
   (reduce-forms app-state form (fn [result {:keys [ident form]}]
-                                 (let [fields (field-names form)
+                                 (let [fields (element-names form)
                                        efields (set (editable-fields form))
                                        fields-that-changed (filter (fn [k]
                                                                      (and (efields k)
@@ -354,7 +344,7 @@
   `(form-update-fn form-spec) => form`, where `form-spec` is a map with keys `:class` (the component that has the form),
   `:ident` (of the form in app state), and `:form` (the value of the form in app state)."
   [app-state form form-update-fn]
-  (let [form-ident (form-id form)
+  (let [form-ident (form-ident form)
         class (form-component form)
         form-specs (get-forms app-state class form-ident)
         updated-form-specs (map (fn [form-spec]
@@ -369,7 +359,7 @@
 
   Returns the final accumulator value."
   [app-state form form-fn starting-value]
-  (let [form-ident (form-id form)
+  (let [form-ident (form-ident form)
         class (form-component form)
         form-specs (get-forms app-state class form-ident)]
     (reduce (fn [acc spec] (form-fn acc spec)) starting-value form-specs)))
@@ -471,7 +461,7 @@
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(untangled.components.form/validate-form! {:form-id fident})` mutation in your own call to `transact!`."
   [comp-or-reconciler form]
-  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-id form)}) :ui/form-root]))
+  (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id (form-ident form)}) :ui/form-root]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GENERAL FORM MUTATION METHODS
@@ -497,7 +487,7 @@
   (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
 
 (defn render-text-field [component form name]
-  (let [id (form-id form)
+  (let [id (form-ident form)
         text-value (or (current-value form name) "")
         cls (or (css-class form name) "form-control")]
     (dom/input #js {:type      "text"
@@ -516,7 +506,7 @@
 (defmethod form-field ::text [component form name] (render-text-field component form name))
 
 (defn render-integer-field [component form name]
-  (let [id (form-id form)
+  (let [id (form-ident form)
         cls (or (css-class form name) "form-control")
         text-value (current-value form name)]
     (dom/input #js {:type      "number"
@@ -547,7 +537,7 @@
                     (swap! state assoc-in (conj form-id :ui/form :state field :input/value) (keyword value))))})
 
 (defmethod form-field ::dropdown [component form name]
-  (let [id (form-id form)
+  (let [id (form-ident form)
         selection (current-value form name)
         cls (or (css-class form name) "form-control")
         field (field-config form name)
@@ -565,7 +555,7 @@
 
 ;; Field renderer for a ::checkbox form field
 (defmethod form-field ::checkbox [component form name]
-  (let [id (form-id form)
+  (let [id (form-ident form)
         cls (or (css-class form name) "")
         bool-value (current-value form name)]
     (dom/input #js {:type      "checkbox"
@@ -584,7 +574,7 @@
   "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
    You may compose your own Om transactions and use `(untangled.components.form/reset-from-entity! {:form-id [:entity id]})` directly."
   [comp-or-reconciler form]
-  (let [form-id (form-id form)]
+  (let [form-id (form-ident form)]
     (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
                                        (untangled.components.form/validate-form! ~{:form-id form-id})
                                        :ui/form-root])))
@@ -602,11 +592,11 @@
   (let [form (om/props component)
         validated-form (validate-fields form)]
     (if (valid? validated-form)
-      (let [form-id (form-id form)
+      (let [form-id (form-ident form)
             app-state (-> component om/get-reconciler om/app-state deref)
             delta (modified-fields app-state form)]
         (om/transact! component `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :delta delta :remote remote}) :ui/form-root]))
-      (om/transact! component `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
+      (om/transact! component `[(untangled.components.form/validate-form! ~{:form-id form-ident}) :ui/form-root]))))
 
 ;; Mutation for moving form data from the form into an entity
 (defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id delta remote]}]

@@ -414,7 +414,7 @@
       "Can access the component for the form"
       (f/form-component person-form) => Person
       "Can access the ident of the form's location in the state"
-      (f/form-id person-form) => [:people/by-id 1]
+      (f/form-ident person-form) => [:people/by-id 1]
       "Can access the config of a given field on a form"
       (get (f/field-config person-form :person/number) :input/name) => :person/number
       "Can access the type of a given field on a form"
@@ -426,12 +426,6 @@
       (f/current-value person-form :person/name) => "A"
       "Can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
-      "Can access field state using a form ident"
-      (f/field-value app-state [:people/by-id 1] :person/name) => "A"
-      "Field state defaults to an empty string"
-      (f/field-value app-state [:people/by-id 2] :boo) => ""
-      "Field state default can be specified"
-      (f/field-value app-state [:people/by-id 2] :boo 42) => 42
       "Can access field names for all editable fields"
       (f/editable-fields person-form) => [:person/name])))
 
