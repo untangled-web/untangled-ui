@@ -484,7 +484,7 @@
 
 (defn render-text-field [component form name]
   (let [id (form-id form)
-        text-value (current-value form name)
+        text-value (or (current-value form name) "")
         cls (or (css-class form name) "form-control")]
     (dom/input #js {:type      "text"
                     :name      name
@@ -576,7 +576,8 @@
   [comp-or-reconciler form]
   (let [form-id (form-id form)]
     (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
-                                       (untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root])))
+                                       (untangled.components.form/validate-form! ~{:form-id form-id})
+                                        :ui/form-root])))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
@@ -608,6 +609,6 @@
   ;TODO: remoting
   {:remote false                                            ; TODO
    :action (fn [] (let [top-form (get-in @state form-id)
-                        copy-from-entity (fn [f k] (assoc-in f [:ui/form :state k] (get f k)))]
+                        copy-from-entity (fn [f k] (assoc-in f [:ui/form :state k :input/value] (get f k)))]
                     (swap! state update-forms top-form (fn [{:keys [form]}]
                                                          (reduce copy-from-entity form (editable-fields form))))))})

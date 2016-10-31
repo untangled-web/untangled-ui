@@ -404,7 +404,7 @@
   "This card shows a very simple form in action."
   (untangled-app Root)
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 
 (defcard-doc
   "## Adding Form Field Types
