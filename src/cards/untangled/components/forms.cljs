@@ -189,7 +189,6 @@
   (render [this]
     (let [form (om/props this)]
       (dom/div #js {:className "form-horizontal"}
-        (js/console.log :validated-phone form)
         (field-with-label this form :phone/type "Phone type:")
         ;; One more parameter to give the validation error message:
         (field-with-label this form :phone/number "Number:" "Please format as (###) ###-####")))))
@@ -272,7 +271,6 @@
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
           ;; FIXME: should be able to make dirty automatically recurse using declared subforms
           dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
-      (js/console.log :root-render)
       (dom/div #js {:className "form-horizontal"}
         (when (f/valid? props)
           (dom/div nil "READY to submit!"))
@@ -297,7 +295,7 @@
                            :onClick   (fn []
                                         ;; FIXME: Commit should ONLY send delta (dirty fields) to server
                                         ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (f/commit-to-entity! this props))} "Save to entity!"))))))
+                                        (f/commit-to-entity! this))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -342,9 +340,9 @@
 
   You can trigger the following operations on a form:
 
-  - `(f/commit-to-entity! comp form)` : Commit the current edits to the entity (no-op if the form doesn't validate)
-  - `(f/commit-to-entity! comp form true)` : Commit the current edits to the entity AND the server (is a no-op if the form doesn't validate)
-  - `(f/reset-from-entity! comp form)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
+  - `(f/commit-to-entity! comp)` : Commit the current edits to the entity (no-op if the form doesn't validate)
+  - `(f/commit-to-entity! comp true)` : Commit the current edits to the entity AND the server (is a no-op if the form doesn't validate)
+  - `(f/reset-from-entity! comp)` : Undo the changes on the form (back to the pristine state of the original), (triggers validation after the reset)
   - More coming...
 
   ### State evolution within your own transactions

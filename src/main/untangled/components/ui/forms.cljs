@@ -9,6 +9,8 @@
             [untangled.client.data-fetch :as df]
             [om.util :as util]))
 
+(declare init-form* reduce-forms update-forms)
+
 (defprotocol IForm
   (form-elements [this] "Returns the subform/field definitions for form support."))
 
@@ -139,8 +141,6 @@
                                              :subforms         (or subforms [])
                                              :state            state}
                                             {:component form-class}))))
-
-(declare init-form*)
 
 (defn initialized? "Returns true if the given form is already initialized with form setup data"
   [form]
@@ -334,6 +334,20 @@
   [form]
   (keys (get-in form [:ui/form :state])))
 
+(defn modified-fields
+  "Returns the modified fields of the given form as a map where the keys are the idents of the forms that have changed,
+  and the values are vectors of the keys for the fields that changed on that form."
+  [app-state form]
+  (reduce-forms app-state form (fn [result {:keys [ident form]}]
+                                 (let [fields (field-names form)
+                                       efields (set (editable-fields form))
+                                       fields-that-changed (filter (fn [k]
+                                                                     (and (efields k)
+                                                                          (not= (get form k) (current-value form k)))) fields)]
+                                   (if (seq fields-that-changed)
+                                     (assoc result ident (vec fields-that-changed))
+                                     result))) {}))
+
 (defn update-forms
   "Similar to update-in, but walks your form declaration to affect all (initialized and preset) nested forms.
   Useful for applying validation or some mutation to all forms. Returns the new app-state. You supply a
@@ -475,9 +489,9 @@
 
 ;; Multimethod for rendering field types. Dispatches on field :input/type
 (defmulti form-field
-          (fn [component form name & params]
-            (let [dispatch (get-in form [:ui/form :elements/by-name name :input/type])]
-              dispatch)))
+  (fn [component form name & params]
+    (let [dispatch (get-in form [:ui/form :elements/by-name name :input/type])]
+      dispatch)))
 
 (defmethod form-field :default [component form name]
   (log/error "Cannot dispatch to form-field renderer on form " form " for field " name))
@@ -490,10 +504,6 @@
                     :name      name
                     :value     text-value
                     :className cls
-                    :onBlur    (fn [event]
-                                 (om/transact! component
-                                   `[(untangled.components.form/validate ~{:form-id id :field name})
-                                     :ui/form-root]))
                     :onChange  (fn [event]
                                  (om/transact! component
                                    `[(untangled.components.form/update-field
@@ -577,7 +587,7 @@
   (let [form-id (form-id form)]
     (om/transact! comp-or-reconciler `[(untangled.components.form/reset-from-entity! ~{:form-id form-id})
                                        (untangled.components.form/validate-form! ~{:form-id form-id})
-                                        :ui/form-root])))
+                                       :ui/form-root])))
 
 (defn commit-to-entity!
   "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
@@ -588,15 +598,18 @@
 
   For remotes to work you must implement `(untangled.components.form/commit-to-entity! {:form-id [:id id] :value {...})`
   on the server. "
-  [comp-or-reconciler form & {:keys [remote rerender] :or {remote false rerender []}}]
-  (let [validated-form (validate-fields form)]
+  [component & {:keys [remote rerender] :or {remote false rerender []}}]
+  (let [form (om/props component)
+        validated-form (validate-fields form)]
     (if (valid? validated-form)
-      (let [form-id (form-id form)]
-        (om/transact! comp-or-reconciler `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :remote remote}) :ui/form-root]))
-      (om/transact! comp-or-reconciler `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
+      (let [form-id (form-id form)
+            app-state (-> component om/get-reconciler om/app-state deref)
+            delta (modified-fields app-state form)]
+        (om/transact! component `[(untangled.components.form/commit-to-entity! ~{:form-id form-id :delta delta :remote remote}) :ui/form-root]))
+      (om/transact! component `[(untangled.components.form/validate-form! ~{:form-id form-id}) :ui/form-root]))))
 
 ;; Mutation for moving form data from the form into an entity
-(defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id remote]}]
+(defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id delta remote]}]
   ;TODO: remoting
   {:remote false                                            ; TODO
    :action (fn [] (let [top-form (get-in @state form-id)
