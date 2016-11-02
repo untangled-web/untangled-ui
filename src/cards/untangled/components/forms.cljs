@@ -10,7 +10,8 @@
             [untangled.dom :as udom]
             [untangled.client.core :as uc]
             [untangled.client.mutations :as m]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [untangled.client.impl.network :as net]))
 
 (declare add-phone-mutation ValidatedPhoneForm)
 
@@ -111,12 +112,13 @@
   This library *augments* your database entry with form support data (your 'person' becomes a 'person' AND a 'form'). In
   raw technical terms, the `build-form` function takes a map, and adds a `:ui/form { ... }` entry *to it*.
 
-  ## Form Fields - Declarative Form Definition
+  ## Form Elements - Declarative Form Definition
 
   Form fields are most conveniently declared on the ui component that will render the form. The fields themselves
   are declared with function calls that correspond to the field type:
 
   - `id-field` : A (meant-to-be-hidden) form field that corresponds to the attribute that uniquely identifies the entity being edited. Required for much of the interesting support.
+  - `subform-element`: An element that indicates a property on this component's query points to a nested form that should be considered part of a larger form set.
   - `text-input` : An optionally validated input for strings.
   - `dropdown-input` : A menu that allows the user to choose from a set of values.
   - `checkbox-input` : A boolean control
@@ -272,17 +274,16 @@
   Object
   (render [this]
     (let [{:keys [person/phone-numbers] :as props} (om/props this)
-          dirty? (f/any-dirty? this)]
+          dirty? (f/any-dirty? this)
+          valid? (f/all-valid? this)]
       (dom/div #js {:className "form-horizontal"}
-        (when (f/valid? props)
-          (dom/div nil "READY to submit!"))
         (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
         (checkbox-with-label this props :person/registered-to-vote? "Registered?")
-        (when (f/current-value props :person/registered-to-vote?)
-          (dom/div nil "Good on you!"))
+        (when (f/current-value props :person/registered-to-vote?) (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
+
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-primary" :onClick #(om/transact! this
                                                                    `[(sample/add-phone ~{:id     (om/tempid)
@@ -293,10 +294,10 @@
                                         ;; TODO: Should be able to use fields, subform, and meta on query to focus query
                                         ;; and run post mutations that re-initialize the form state on entities just loaded
                                         (f/reset-from-entity! this))} "UNDO")
-          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
+          (dom/button #js {:className "btn btn-default" :disabled (not valid?)
                            :onClick   (fn []
                                         ;; TODO: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (f/commit-to-entity! this))} "Save to entity!"))))))
+                                        (f/commit-to-entity! this :remote true))} "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -392,9 +393,14 @@
   the special property `:ui/form-root`. So, if you add that to your parent form's query, rendering of the top-level
   form elements (e.g. buttons that control submission) will properly update.
 
-  ### Adding Sub-form Elements
+  ### Sub-forms
 
-  Adding a phone number (which acts as a sub-form) is done via the add-phone-mutation, which looks like this:
+  If you add a `subform-element` to your form it indicates that some child is also a form, and should be considered
+  part of the overall form set for things like validation and commits. Adding an instance to the application state
+  is then no more complicated that adding the instance to the state, as usual (with the added step of adding the
+  form data via `build-form`).
+
+  For example, adding a phone number (which is declared as a sub-form) is done via the add-phone-mutation which looks like this:
   "
   (dc/mkdn-pprint-source add-phone-mutation)
   "
@@ -407,18 +413,25 @@
   ### Compositional Dirty-Checking, Validation, and Submission
 
   There are built-in functions for running validation (transactions), and checking things like the dirty state of the
-  form.
-  The code also shows how you would compose the checks. The `dirty?` definition combines the results of the nested forms
-  together with the top form. You could do the same for validations.
+  form:
+
+  - `(all-valid? component)` : Returns true if validation has been run and all editable, modified fields are marked valid. Editing
+  a field will changed the validation state to `:unchecked`.
 
   The `Save` button does a similar thing: it submits the phone numbers, and then the top. Note that Untangled combines
   mutations that happen in the same thread sequence (e.g. you have not given up the thread for rendering). So, all of
   those commits will be sent to the server as a single transaction (if you include the remote parameter).
   ")
 
+(def mock-net (reify net/UntangledNetwork
+                (send [this edn ok err]
+                  (js/console.log :SERVER-SIM-GOT edn)
+                  (ok {}))
+                (start [this app] app)))
+
 (defcard sample-form-1
   "This card shows a very simple form in action."
-  (untangled-app Root)
+  (untangled-app Root :networking mock-net)
   {}
   {:inspect-data false})
 
@@ -486,3 +499,4 @@
   - `f/form-ident` : returns the Om Ident of the form (which is also the ident of the entity)
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update the UI)
   ")
+

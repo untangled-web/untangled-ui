@@ -1,0 +1,70 @@
+# Untangled Client
+:source-highlighter: coderay
+:source-language: clojure
+:toc:
+:toc-placement: preamble
+:sectlinks:
+:sectanchors:
+:sectnums:
+
+A UI component library for the Untangled Web framework. All components
+are intended to be fully internationalized using the standard
+Untangled mechanisms.
+
+This library is a work-in-progress. Contributions are welcome.
+
+image::https://img.shields.io/clojars/v/navis/untangled-components.svg[link=https://clojars.org/navis/untangled-components]
+
+Release: image:https://api.travis-ci.org/untangled-web/untangled-components.svg?branch=master[link=https://github.com/untangled-web/untangled-components/tree/master]
+Snapshot: image:https://api.travis-ci.org/untangled-web/untangled-components.svg?branch=develop[link=https://github.com/untangled-web/untangled-components/tree/develop]
+
+## Usage
+
+To see devcard demos of the components:
+
+```
+lein run -m clojure.main script/figwheel.clj
+```
+
+and open a browser on:
+
+http://localhost:3449
+
+
+## Calendar
+
+A component for choosing a date.
+
+## Image Library and Cropping
+
+The image library component supports pluggable server-side storage,
+and the crop tool supports allowing a user to select a sub-region
+of an image.
+
+Documentation coming soon.
+
+## Form Support
+
+The form support includes the following features (in progress):
+
+* Declarative form definition
+** Declaration can be shared on server
+* Extensible rendering and validation
+** Validation can be shared/applied full-stack
+* Full-stack integration with a pluggable persistence layer
+* Subforms with relations (e.g. to-many sub-forms)
+
+## Table Support (half-baked tech spike)
+
+The intention of this component is to support general tabular
+displays from declarative definition.
+
+Desired features:
+
+- Sorting by columns with extensible sorting
+- Column toggle
+- Configurable headings
+- Summary rows
+- Groupings
+- Extensible cell formatting
+

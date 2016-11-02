@@ -321,7 +321,10 @@
 
 (defn current-value
   "Gets the current value of a field in a form."
-  ([form field] (get-in form [:ui/form :state field :input/value])))
+  ([form field]
+   (if (is-subform? form field)
+     (get form field)
+     (get-in form [:ui/form :state field :input/value]))))
 
 (defn css-class
   "Gets the css class for the form field"
@@ -345,9 +348,15 @@
   (reduce-forms app-state form (fn [result {:keys [ident form]}]
                                  (let [fields (element-names form)
                                        efields (set (editable-fields form))
-                                       fields-that-changed (filter (fn [k]
-                                                                     (and (efields k)
-                                                                          (not= (get form k) (current-value form k)))) fields)]
+                                       all-fields (remove (partial is-subform? form) (element-names form))
+                                       joins (filter (partial is-subform? form) (element-names form))
+                                       is-new? (-> form form-ident second om/tempid?)
+                                       fields-that-changed (concat joins
+                                                                   (if is-new?
+                                                                     all-fields
+                                                                     (filter (fn [k]
+                                                                               (and (efields k)
+                                                                                    (not= (get form k) (current-value form k)))) fields)))]
                                    (if (seq fields-that-changed)
                                      (assoc result ident (vec fields-that-changed))
                                      result))) {}))
@@ -382,6 +391,15 @@
 ;; VALIDATION SUPPORT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn validated? [form field]
+  (let [validator (:input/validator (field-config form field))]
+    (or (symbol? validator) (and (seq validator) (every? symbol? validator)))))
+
+(defn validated-fields
+  "Returns the (nonrecursive) list of editable fields on the form that have defined validators."
+  [form]
+  (filter (partial validated? form) (editable-fields form)))
+
 (defn current-validity
   "Reads the validity of the given field. This does not run validation, it reads the last result of it."
   [form field]
@@ -390,14 +408,23 @@
 (defn invalid?
   "Returns true iff the form or field has been validated, and the validation failed. Using this on a form ignores unchecked
   fields, so you should run validate-entire-form! before trusting this value on a form."
-  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (editable-fields form)))
+  ([form] (reduce (fn [result field] (or result (invalid? form field))) false (validated-fields form)))
   ([form field] (= :invalid (current-validity form field))))
 
 (defn valid?
   "Returns true iff the field has been validated, and the validation is ok. Running this on a form is only reliable if
   you've already validated the entire form (validate-entire-form!)."
-  ([form] (reduce (fn [result field] (and result (valid? form field))) true (editable-fields form)))
+  ([form] (reduce (fn [result field] (and result (valid? form field))) true (validated-fields form)))
   ([form field] (= :valid (current-validity form field))))
+
+(defn all-valid?
+  "Recursively checks the form set (starting at component) for validity. Does not affect app state, nor does it *run*
+  validation. You must call a mutation to validate the form before this can ever return true."
+  ([component]
+   (let [app-state (-> component om/get-reconciler om/app-state deref)
+         form (om/props component)]
+     (all-valid? app-state form)))
+  ([app-state form] (reduce-forms app-state form (fn [v? {:keys [form]}] (and v? (valid? form))) true)))
 
 (defn validator
   "Returns the validator symbol from the form field"
@@ -489,7 +516,10 @@
   {:action (fn [] (swap! state update-in (conj form-id :ui/form :state field :input/value) not))})
 
 (defmethod m/mutate 'untangled.components.form/update-field [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (swap! state assoc-in (conj form-id :ui/form :state field :input/value) value))})
+  {:action (fn []
+             (let [set-value (fn [m] (assoc-in m (conj form-id :ui/form :state field :input/value) value))
+                   mark-unvalidated (fn [m] (assoc-in m (conj form-id :ui/form :state field :input/valid) :unchecked))]
+               (swap! state #(-> % set-value mark-unvalidated))))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FORM FIELD RENDERING
@@ -627,12 +657,16 @@
 
 ;; Mutation for moving form data from the form into an entity
 (defmethod m/mutate 'untangled.components.form/commit-to-entity! [{:keys [state ast]} k {:keys [form-id delta remote]}]
-  ;TODO: remoting
-  {:remote false                                            ; TODO
-   :action (fn [] (let [top-form (get-in @state form-id)
-                        copy-to-entity (fn [f k] (assoc f k (current-value f k)))]
-                    (swap! state update-forms top-form (fn [{:keys [form]}]
-                                                         (reduce copy-to-entity form (editable-fields form))))))})
+  ; TODO: Subforms must include the parent ident if it has a tempid identity
+  (let [to-map (fn [[ident props]] (let [form (get-in @state ident)]
+                                     (zipmap props (map (partial current-value form) props))))
+        state-delta (reduce (fn [d p] (merge d {(first p) (to-map p)})) {} delta)]
+    {:remote (when remote
+               (assoc ast :params state-delta))
+     :action (fn [] (let [top-form (get-in @state form-id)
+                          copy-to-entity (fn [f k] (assoc f k (current-value f k)))]
+                      (swap! state update-forms top-form (fn [{:keys [form]}]
+                                                           (reduce copy-to-entity form (editable-fields form))))))}))
 
 ;; Mutation for moving form data from the an entity into the form
 (defmethod m/mutate 'untangled.components.form/reset-from-entity! [{:keys [state]} k {:keys [form-id]}]
