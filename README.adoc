@@ -1,4 +1,4 @@
-# Untangled Client
+# Untangled Components
 :source-highlighter: coderay
 :source-language: clojure
 :toc:
