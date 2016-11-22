@@ -13,7 +13,7 @@
   ([]
    (let [props (System/getProperties)
          figwheel-config (fig/fetch-config)
-         all-builds (->> (fig/fetch-config) figwheel-config :data :all-builds (mapv :id))]
+         all-builds (->> figwheel-config :data :all-builds (mapv :id))]
      (start-figwheel (keys (select-keys props all-builds)))))
   ([build-ids]
    (let [figwheel-config (fig/fetch-config)
