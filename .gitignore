@@ -1,3 +1,12 @@
 target
 resources/private/js
 resources/public/js
+*.iml
+!.idea/runConfigurations
+.idea
+node_modules
+target
+pom.xml
+figwheel_server.log
+checkouts
+!.idea/runConfigurations

@@ -1,4 +1,4 @@
-(defproject untangled-components "0.1.0-SNAPSHOT"
+(defproject navis/untangled-components "0.1.0-1"
   :description "Untangled Components is a library of pre-built components for use with Untangled and Om Next"
   :url ""
   :license {:name "MIT"
@@ -8,64 +8,71 @@
                  [cljsjs/topojson "1.6.18-0"]
                  [clojurewerkz/money "1.9.0"]
                  [com.andrewmcveigh/cljs-time "0.3.14"]
-                 [org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.51"]
-                 [org.clojure/core.async "0.2.374"]
-                 [org.clojure/tools.namespace "0.2.11"]
-                 [org.omcljs/om "1.0.0-alpha44"]
-                 [navis/untangled-client "0.5.5"]
-                 [navis/untangled-server "0.6.1"]
-                 [navis/untangled-spec "0.3.8" :scope "test" :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]]
+                 [image-resizer "0.1.9"]
+                 [lein-doo "0.1.7" :scope "test"]
+                 [org.clojure/clojure "1.9.0-alpha13" :scope "provided"]
+                 [org.clojure/clojurescript "1.9.229" :scope "provided"]
+                 [org.clojure/core.async "0.2.391"]
+                 [org.omcljs/om "1.0.0-alpha46" :scope "provided"]
+                 [navis/untangled-client "0.6.0" :scope "provided"]
+                 [navis/untangled-server "0.6.2-1" :scope "provided"]
+                 [navis/untangled-spec "0.3.9" :scope "test"
+                  :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
+                 [com.taoensso/timbre "4.7.4"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]
-            [lein-doo "0.1.6"]]
+  :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
+            [lein-cljsbuild "1.1.4"]
+            [lein-doo "0.1.7"]]
 
-  :source-paths ["dev/clj" "src/client"]
-  :test-paths ["specs/client"]
+  :source-paths ["dev" "src/main" "src/cards"]
+  :test-paths ["src/test"]
+  :jar-exclusions [#".DS_Store" #"public" #"cards" #"user.clj"]
 
-  :jvm-opts ["-server" "-Xmx1024m" "-Xms512m" "-XX:-OmitStackTraceInFastThrow"]
-  :clean-targets ^{:protect false} ["resources/public/js/specs" "resources/public/js/compiled" "target" "resources/private/js"]
+
+  :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+  :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
+
+  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+                 :changes-only true
+                 :with-repl true}
 
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}
 
   :cljsbuild {:builds
               [{:id           "cards"
-                :source-paths ["src/cards" "src/client" "src/shared"]
+                :source-paths ["src/main" "src/cards"]
                 :figwheel     {:devcards true}
-                :compiler     {:main                 untangled-components.cards-ui
-                               :asset-path           "js/compiled/cards"
-                               :output-to            "resources/public/js/compiled/cards.js"
-                               :output-dir           "resources/public/js/compiled/cards"
-                               :optimizations        :none
-                               :recompile-dependents true
-                               :source-map-timestamp true}}
+                :compiler     {:main          untangled.components.cards-ui
+                               :asset-path    "js/cards"
+                               :output-to     "resources/public/js/cards.js"
+                               :output-dir    "resources/public/js/cards"
+                               :optimizations :none}}
                {:id           "test"
-                :source-paths ["specs/client" "specs/shared" "src/client" "src/shared" ]
-                :figwheel     true
-                :compiler     {:main                 untangled-components.test-main
-                               :output-to            "resources/public/js/specs/specs.js"
-                               :output-dir           "resources/public/js/compiled/specs"
-                               :asset-path           "js/compiled/specs"
-                               :recompile-dependents true
-                               :optimizations        :none}}
+                :source-paths ["src/test" "src/main" "dev"]
+                :figwheel     {:on-jsload "cljs.user/on-load"}
+                :compiler     {:main       cljs.user
+                               :output-to  "resources/public/js/specs.js"
+                               :output-dir "resources/public/js/specs"
+                               :asset-path "js/specs"}}
                {:id           "automated-tests"
-                :source-paths ["specs/client" "specs/shared" "src/client" "src/shared"]
+                :source-paths ["src/test" "src/main"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"
-                               :main          untangled-components.all-tests
-                               :asset-path    "js"
-                               :output-dir    "resources/private/js"
+                               :output-dir    "resources/private/js/unit-tests"
+                               :main          untangled.components.all-tests
+                               :asset-path    "js/unit-tests"
                                :optimizations :none
                                }}]}
 
   :figwheel {:css-dirs ["resources/public/css"]}
 
-  :profiles {:dev     {:dependencies [[binaryage/devtools "0.5.2"]
-                                      [criterium "0.4.3"]
-                                      [figwheel-sidecar "0.5.3-1" :exclusions [ring/ring-core commons-fileupload]]
-                                      [com.cemerick/piggieback "0.2.1"]
-                                      [org.clojure/tools.nrepl "0.2.12"]
-                                      [devcards "0.2.1-7" :exclusions [org.omcljs/om]]]
-                       :repl-options {:init-ns          user
-                                      :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                                      :port             7001}}})
+  :profiles {:dev {:dependencies [[binaryage/devtools "0.5.2"]
+                                  [criterium "0.4.3"]
+                                  [figwheel-sidecar "0.5.7"]
+                                  [com.cemerick/piggieback "0.2.1"]
+                                  [org.clojure/tools.namespace "0.2.11"]
+                                  [org.clojure/tools.nrepl "0.2.12"]
+                                  [devcards "0.2.2" :exclusions [org.omcljs/om]]]
+                   :repl-options {:init-ns          clj.user
+                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                                  :port             7001}}})
