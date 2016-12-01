@@ -2,15 +2,16 @@
   (:require-macros
     [untangled.client.cards :refer [untangled-app]]
     [devcards.core :as dc :refer [defcard defcard-doc]])
-  (:require [clojure.string :as str]
-            [om.dom :as dom]
-            [om.next :as om :refer [defui]]
-            [untangled.i18n :refer [tr]]
-            [untangled.components.ui.forms :as f]
-            [untangled.dom :as udom]
-            [untangled.client.core :as uc]
-            [untangled.client.mutations :as m]
-            [com.stuartsierra.component :as component]))
+  (:require
+    [clojure.string :as str]
+    [com.stuartsierra.component :as component]
+    [om.dom :as dom]
+    [om.next :as om :refer [defui]]
+    [untangled.client.core :as uc]
+    [untangled.client.mutations :as m]
+    [untangled.components.ui.forms :as f]
+    [untangled.dom :as udom]
+    [untangled.i18n :refer [tr]]))
 
 (declare add-phone-mutation ValidatedPhoneForm)
 
@@ -262,8 +263,9 @@
                          (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
-  (query [this] [:ui/form-root :db/id :person/name :person/age
-                 :person/registered-to-vote? {:person/phone-numbers (om/get-query ValidatedPhoneForm)} :ui/form])
+  (query [this] [:ui/form-root :ui/form
+                 :db/id :person/name :person/age
+                 :person/registered-to-vote? {:person/phone-numbers (om/get-query ValidatedPhoneForm)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   Object
@@ -282,20 +284,26 @@
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
         (dom/div #js {:className "button-group"}
-          (dom/button #js {:className "btn btn-primary" :onClick #(om/transact! this
-                                                                   `[(sample/add-phone ~{:id     (om/tempid)
-                                                                                         :person (:db/id props)})])} "Add Phone")
-          (dom/button #js {:className "btn btn-default" :onClick #(f/validate-entire-form! this props)} "Validate")
+          (dom/button #js {:className "btn btn-primary"
+                           :onClick #(om/transact! this
+                                       `[(sample/add-phone ~{:id     (om/tempid)
+                                                             :person (:db/id props)})])}
+            "Add Phone")
+          (dom/button #js {:className "btn btn-default"
+                           :onClick #(f/validate-entire-form! this props)}
+            "Validate")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
                                         ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
                                         ;; and run post mutations that re-initialize the form state on entities just loaded
-                                        (f/reset-from-entity! this props))} "UNDO")
+                                        (f/reset-from-entity! this props))}
+            "UNDO")
           (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
                            :onClick   (fn []
                                         ;; FIXME: Commit should ONLY send delta (dirty fields) to server
                                         ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (f/commit-to-entity! this))} "Save to entity!"))))))
+                                        (f/commit-to-entity! this))}
+            "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -402,7 +410,7 @@
   "This card shows a very simple form in action."
   (untangled-app Root)
   {}
-  {:inspect-data false})
+  {:inspect-data true})
 
 (defcard-doc
   "## Adding Form Field Types
@@ -444,9 +452,9 @@
 
   The following built-in mutations can (and should) be used in your event handlers:
 
-  - `(untangled.components.form/validate {:form-id [:ident/by-x n] :field :field-name})` - Run validation on the given form/field. Marks the form state for the field to `:invalid` or `:valid`. Fields without validators
+  - `(untangled.components.form/validate-field {:form-id [:ident/by-x n] :field :field-name})` - Run validation on the given form/field. Marks the form state for the field to `:invalid` or `:valid`. Fields without validators
   will be marked `:valid`.
-  - `(untangled.components.form/update-field {:form-id [:ident/by-x n] :field :field-name :value raw-value})` - Set the raw-value (you can use any type) onto the form's placeholder state (not on the entity)
+  - `(untangled.components.form/set-field {:form-id [:ident/by-x n] :field :field-name :value raw-value})` - Set the raw-value (you can use any type) onto the form's placeholder state (not on the entity)
   - Others listed elsewhere, like those that commit, validate, etc.
 
   ## Other Functions of Interest

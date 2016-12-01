@@ -133,27 +133,27 @@
             default-state (f/default-state fields)]
         (assertions
           "are marked as valid to start"
-          (-> default-state :db/id :input/valid) => :valid
+          (-> default-state :validation :db/id) => :valid
           "are given an Om tempid by default"
-          (-> default-state :db/id :input/value om/tempid?) => true)))
+          (-> default-state :state :db/id) =fn=> om/tempid?)))
     (component "non-id fields"
       (let [fields [(f/text-input :name :default-value :ABC)]
             default-state (f/default-state fields)]
         (assertions
           "are marked as validation :unchecked to start"
-          (-> default-state :name :input/valid) => :unchecked
+          (-> default-state :validation :name) => :unchecked
           "are given a default value defined by the field type"
-          (-> default-state :name :input/value) => :ABC))))
+          (-> default-state :state :name) => :ABC))))
   (component "The initialized state of a form"
     (let [entity {:a 1}
           field-keys [:a :b]
-          default-state {:a {:input/value 0} :b {:input/value "X"}}
+          default-state {:a 0 :b "X"}
           initial-state (f/initialized-state default-state [:a :b] entity)]
       (assertions
         "overwrites the defaults with the entity state being augmented"
-        (-> initial-state :a :input/value) => 1
+        (-> initial-state :a) => 1
         "leaves defaults alone when the entity state does not contain them"
-        (-> initial-state :b :input/value) => "X"
+        (-> initial-state :b) => "X"
         "tolerates nil and empty entities"
         (f/initialized-state default-state field-keys {}) => default-state
         (f/initialized-state default-state field-keys nil) => default-state))))
@@ -408,13 +408,14 @@
       (f/reduce-forms state form (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0)) => 3))
 
 (specification "Form config and state helpers"
-  (let [app-state (f/init-form person-db Person [:people/by-id 1])
-        person-form (get-in app-state [:people/by-id 1])]
+  (let [ident-under-test [:people/by-id 1]
+        app-state (f/init-form person-db Person ident-under-test)
+        person-form (get-in app-state ident-under-test)]
     (assertions
       "Can access the component for the form"
       (f/form-component person-form) => Person
       "Can access the ident of the form's location in the state"
-      (f/form-ident person-form) => [:people/by-id 1]
+      (f/form-ident person-form) => ident-under-test
       "Can access the config of a given field on a form"
       (get (f/field-config person-form :person/number) :input/name) => :person/number
       "Can access the type of a given field on a form"
@@ -446,15 +447,15 @@
                       (f/init-form CPerson [:people/by-id 5]))
         unchecked-person (get-in app-state [:people/by-id 5])
         c-person (get-in app-state [:people/by-id 4])
-        valid-person (f/update-validation c-person :person/name)
-        invalid-person (f/update-validation unchecked-person :person/name)
+        valid-person (f/validate-field c-person :person/name)
+        invalid-person (f/validate-field unchecked-person :person/name)
         validated-person (f/validate-fields unchecked-person)]
     (component "Update validation (on a field)"
       (assertions
         "properly marks valid using the provided validator (integration)"
-        (get-in valid-person [:ui/form :state :person/name :input/valid]) => :valid
+        (f/current-validity valid-person :person/name) => :valid
         "properly marks invalid using the provided validator (integration)"
-        (get-in invalid-person [:ui/form :state :person/name :input/valid]) => :invalid))
+        (f/current-validity invalid-person :person/name) => :invalid))
     (component "validate-fields"
       (assertions
         "non-recursively updates validation on all fields"
@@ -477,12 +478,12 @@
       "Can see if a field is clean on the form"
       (f/dirty? valid-person) => false
       "Can see if a field is dirty on the form"
-      (f/dirty? (update-in valid-person [:ui/form :state :person/name] assoc :input/value "X")) => true
+      (f/dirty? (assoc-in valid-person [:person/name] "X")) => true
       "Can recursively check for dirty data on a form"
       (f/any-dirty? app-state c-person) => false
-      (f/any-dirty? (update-in app-state [:people/by-id 4 :ui/form :state :person/name] assoc :input/value "X") c-person) => true
-      (f/any-dirty? (update-in app-state [:phone/by-id 1 :ui/form :state :phone/number] assoc :input/value "222") c-person) => true
-      (f/any-dirty? (update-in app-state [:phone/by-id 2 :ui/form :state :phone/number] assoc :input/value "4") c-person) => true))
+      (f/any-dirty? (assoc-in app-state [:people/by-id 4 :person/name] "X") c-person) => true
+      (f/any-dirty? (assoc-in app-state [:phone/by-id 1 :phone/number] "222") c-person) => true
+      (f/any-dirty? (assoc-in app-state [:phone/by-id 2 :phone/number] "4") c-person) => true))
 
   (component "validate-forms"
     (let [app-state (f/init-form person-db CPerson [:people/by-id 4])
@@ -497,4 +498,3 @@
         (f/invalid? (get-phone 1) :phone/number) => false
         (f/valid? (get-phone 2) :phone/number) => true
         (f/invalid? (get-phone 2) :phone/number) => false))))
-
