@@ -130,7 +130,15 @@
 
 (defn current-value
   "Gets the current value of a field in a form."
-  ([form field] (get form field)))
+  [form field] (get form field))
+
+(defn update-current-value
+  "Updates the current value of a field in a form (with a fn)."
+  [form field f & args] (apply update form field f args))
+
+(defn set-current-value
+  "Sets the current value of a field in a form."
+  [form field value] (update-current-value form field (constantly value)))
 
 (defn css-class
   "Gets the css class for the form field"
@@ -504,13 +512,11 @@
 ;; GENERAL FORM MUTATION METHODS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TODO: TESTME
 (defmethod m/mutate `toggle-field [{:keys [state]} k {:keys [form-id field]}]
-  {:action (fn [] (swap! state update-in (conj form-id field) not))})
+  {:action (fn [] (swap! state update-in form-id update-current-value field not))})
 
-;; TODO: TESTME
 (defmethod m/mutate `set-field [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (swap! state assoc-in (conj form-id field) value))})
+  {:action (fn [] (swap! state update-in form-id set-current-value field value))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FORM FIELD RENDERING

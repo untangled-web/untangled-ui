@@ -435,10 +435,57 @@
       (f/is-subform? {:ui/form {:elements/by-name {:person/mate {:input/is-form? true}}}} :person/mate) => true
       "Can access the current (edited) value"
       (f/current-value person-form :person/name) => "A"
+      "Can modify the current value"
+      (f/current-value person-form :person/name) =fn=> (comp not #{"QQ" "JJ"})
+      (-> person-form
+        (f/update-current-value :person/name (constantly "QQ"))
+        (f/current-value :person/name))
+      => "QQ"
+      (-> person-form
+        (f/set-current-value :person/name "JJ")
+        (f/current-value :person/name))
+      => "JJ"
       "Can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
       "Can access field names for all validatable fields"
       (f/validatable-fields person-form) => [:person/name])))
+
+(defn test-mutate [env disp params]
+  ((:action (m/mutate env disp params))))
+
+(defui Thing
+  static f/IForm
+  (form-elements [this]
+    [(f/id-field :db/id)
+     (f/text-input :thing/name)
+     (f/checkbox-input :thing/ok?)])
+  static om/IQuery
+  (query [this] [:db/id :thing/name :thing/ok?])
+  static om/Ident
+  (ident [this props] [:thing/by-id (:db/id props)]))
+
+(specification "Form state mutations"
+  (let [db (-> {:thing/by-id {1 {:db/id 1}}}
+             (f/init-form Thing [:thing/by-id 1]))
+        test-mutate-field (partial test-mutate {:state (atom db)})
+
+        thing-1 (get-in db [:thing/by-id 1])]
+    (component "set-field"
+      (assertions
+        (f/current-value thing-1 :thing/name) =fn=> #(not= % "asdf")
+        (-> (test-mutate-field `f/set-field
+              {:form-id [:thing/by-id 1] :field :thing/name :value "asdf"})
+          (get-in [:thing/by-id 1])
+          (f/current-value :thing/name))
+        => "asdf"))
+    (component "toggle-field"
+      (assertions
+        (f/current-value thing-1 :thing/ok?) =fn=> not
+        (-> (test-mutate-field `f/toggle-field
+              {:form-id [:thing/by-id 1] :field :thing/ok?})
+          (get-in [:thing/by-id 1])
+          (f/current-value :thing/ok?))
+        => true))))
 
 (defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
 
