@@ -17,7 +17,7 @@
           "defaults as a to-one relation"
           (:input/cardinality f) => :one
           "is marked as a subform"
-          (true? (:input/is-form? f)) => true
+          f =fn=> f/is-subform?
           "has the correct type"
           (:input/type f) => ::f/subform
           "tracks the class of the subform UI"
@@ -31,7 +31,7 @@
           "defaults as a to-many relation"
           (:input/cardinality f) => :many
           "is marked as a subform"
-          (true? (:input/is-form? f)) => true
+          f =fn=> f/is-subform?
           "has a subform selection key"
           (:input/select-key f) => :k
           "has the correct type"
@@ -179,15 +179,15 @@
 
 (def person-db {:phone/by-id  {1 {:db/id 1 :phone/number "555-1212"}
                                2 {:db/id 2 :phone/number "555-3345"}}
-                :people/by-id {1 {:db/id 1 :person/name "A" :person/number [:phone/by-id 1]}
-                               3 {:db/id 3 :person/name "B"}
+                :people/by-id {3 {:db/id 3 :person/name "B"}
+                               7 {:db/id 7 :person/name "A" :person/number [:phone/by-id 1]}
                                5 {:db/id 5 :person/name "D" :person/number []}
                                4 {:db/id 4 :person/name "C" :person/number [[:phone/by-id 1] [:phone/by-id 2]]}
                                6 {:db/id 6 :person/name "E" :person/number [[:phone/by-id 1]]}}})
 
 (specification "Initializing a to-one form relation"
   (let [app-state person-db
-        base-form (get-in app-state [:people/by-id 1])
+        base-form (get-in app-state [:people/by-id 7])
         spec (-> (f/form-elements Person) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
@@ -241,7 +241,7 @@
       "Is ok when the target field is nil"
       (f/init-many person-db (get-in person-db [:people/by-id 3]) spec {}) => person-db
       "Throws an error when targeting a to-one"
-      (f/init-many person-db (get-in person-db [:people/by-id 1]) spec {}) =throws=> (js/Error.))))
+      (f/init-many person-db (get-in person-db [:people/by-id 7]) spec {}) =throws=> (js/Error.))))
 
 (specification "Initializing a form recursively"
   (assertions
@@ -253,33 +253,33 @@
 
     (assertions
       "Just returns the unmodified app state"
-      (f/init-form person-db Person [:people/by-id 1]) => person-db))
+      (f/init-form person-db Person [:people/by-id 7]) => person-db))
   (provided "when the form is partially initialized (to-one)"
     (f/initialized? f) => (boolean (:person/name f))
 
-    (let [result (f/init-form person-db Person [:people/by-id 1])]
+    (let [result (f/init-form person-db Person [:people/by-id 7])]
       (assertions
         "still initializes the nested form"
-        (get-in result [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1])))
+        (f/form-ident (get-in result [:phone/by-id 1])) => [:phone/by-id 1])))
   (provided "when the form is partially initialized (to-many)"
     (f/initialized? f) => (= 4 (:db/id f))
 
     (let [result (f/init-form person-db PolyPerson [:people/by-id 4])]
       (assertions
         "still initializes the nested form"
-        (get-in result [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]
-        (get-in result [:phone/by-id 2 :ui/form :ident]) => [:phone/by-id 2])))
-  (let [actual (f/init-form person-db Person [:people/by-id 1])]
+        (f/form-ident (get-in result [:phone/by-id 1])) => [:phone/by-id 1]
+        (f/form-ident (get-in result [:phone/by-id 2])) => [:phone/by-id 2])))
+  (let [actual (f/init-form person-db Person [:people/by-id 7])]
     (assertions
       "properly initializes a nested to-one form (integration)"
-      (get-in actual [:people/by-id 1 :ui/form :ident]) => [:people/by-id 1]
-      (get-in actual [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]))
+      (f/form-ident (get-in actual [:people/by-id 7])) => [:people/by-id 7]
+      (f/form-ident (get-in actual [:phone/by-id 1])) => [:phone/by-id 1]))
   (let [actual (f/init-form person-db PolyPerson [:people/by-id 4])]
     (assertions
       "properly initializes a nested to-many form (integration)"
-      (get-in actual [:people/by-id 4 :ui/form :ident]) => [:people/by-id 4]
-      (get-in actual [:phone/by-id 1 :ui/form :ident]) => [:phone/by-id 1]
-      (get-in actual [:phone/by-id 2 :ui/form :ident]) => [:phone/by-id 2])))
+      (f/form-ident (get-in actual [:people/by-id 4])) => [:people/by-id 4]
+      (f/form-ident (get-in actual [:phone/by-id 1])) => [:phone/by-id 1]
+      (f/form-ident (get-in actual [:phone/by-id 2])) => [:phone/by-id 2])))
 
 (defui LeafForm
   static uc/InitialAppState
@@ -360,37 +360,44 @@
     "gives back pairs of [prop-path class] on a singly-nested form"
     (f/subforms* Level2Form) => [[[:leaf1] LeafForm] [[:leaf2] LeafForm] [[:leaf3] LeafForm]]
     "gives back pairs of [prop-path class] on a nested form"
-    (f/subforms* Level3Form) => [[[:level2] Level2Form] [[:level2 :leaf1] LeafForm] [[:level2 :leaf2] LeafForm] [[:level2 :leaf3] LeafForm]]
+    (f/subforms* Level3Form) => [[[:level2] Level2Form] [[:level2 :leaf1] LeafForm]
+                                 [[:level2 :leaf2] LeafForm] [[:level2 :leaf3] LeafForm]]
     "supports to-many sub-forms"
     (f/subforms* ToManyForm) => [[[:leaves] LeafForm]]))
 
-(def nested-form-db (om/tree->db [{:root (om/get-query Level3Form)}] {:root (uc/initial-state Level3Form {})} true))
-(def tomany-form-db (om/tree->db [{:root (om/get-query ToManyForm)}] {:root (uc/initial-state ToManyForm {})} true))
+(def nested-form-db (om/tree->db [{:root (om/get-query Level3Form)}]
+                      {:root (uc/initial-state Level3Form {})}, true))
+(def tomany-form-db (om/tree->db [{:root (om/get-query ToManyForm)}]
+                      {:root (uc/initial-state ToManyForm {})}, true))
 
 (specification "to-idents"
   (assertions
     "finds a sequence of idents by walking the graph (to-one)"
-    (f/to-idents person-db (get-in person-db [:people/by-id 1]) [:person/number]) => [[:phone/by-id 1]]
+    (f/to-idents person-db (get-in person-db [:people/by-id 7]) [:person/number]) => [[:phone/by-id 1]]
     "finds a sequence of idents by walking the graph (to-many)"
     (f/to-idents tomany-form-db (get-in tomany-form-db [:tomform 99]) [:leaves]) => [[:leaf 3] [:leaf 4]]))
 
 (specification "get-forms"
   (assertions
     "Obtains a list of nested forms and idents that are BOTH declared as subforms AND are present (others are skipped)."
-    (f/get-forms nested-form-db Level3Form [:level3 1]) => [{:ident [:level3 1] :class Level3Form :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
-                                                            {:ident [:level2 2] :class Level2Form :form {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
-                                                            {:ident [:leaf 5] :class LeafForm :form {:id 5 :value 1 :leaf true}}
-                                                            {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]
+    (f/get-forms nested-form-db Level3Form [:level3 1])
+    => [{:ident [:level3 1] :class Level3Form
+         :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
+        {:ident [:level2 2] :class Level2Form
+         :form {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
+        {:ident [:leaf 5] :class LeafForm :form {:id 5 :value 1 :leaf true}}
+        {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]
     "Can pull to-many relations of sub-forms"
-    (f/get-forms tomany-form-db ToManyForm [:tomform 99]) => [{:ident [:tomform 99]
-                                                               :class ToManyForm
-                                                               :form  {:id 99 :to-many true :value 1 :leaves [[:leaf 3] [:leaf 4]]}}
-                                                              {:ident [:leaf 3]
-                                                               :class LeafForm
-                                                               :form  {:id 3 :value 1 :leaf true}}
-                                                              {:ident [:leaf 4]
-                                                               :class LeafForm
-                                                               :form  {:id 4 :value 1 :leaf true}}]))
+    (f/get-forms tomany-form-db ToManyForm [:tomform 99])
+    => [{:ident [:tomform 99]
+         :class ToManyForm
+         :form  {:id 99 :to-many true :value 1 :leaves [[:leaf 3] [:leaf 4]]}}
+        {:ident [:leaf 3]
+         :class LeafForm
+         :form  {:id 3 :value 1 :leaf true}}
+        {:ident [:leaf 4]
+         :class LeafForm
+         :form  {:id 4 :value 1 :leaf true}}]))
 
 (specification "update-forms"
   (let [state (f/init-form nested-form-db Level3Form [:level3 1])
@@ -411,7 +418,7 @@
       (f/reduce-forms state form (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0)) => 3))
 
 (specification "Form config and state helpers"
-  (let [ident-under-test [:people/by-id 1]
+  (let [ident-under-test [:people/by-id 7]
         app-state (f/init-form person-db Person ident-under-test)
         person-form (get-in app-state ident-under-test)]
     (assertions
@@ -508,13 +515,13 @@
 (let [app-state (-> person-db
                   (f/init-form Phone [:phone/by-id 1])
                   (f/init-form Phone [:phone/by-id 2])
-                  (f/init-form Person [:people/by-id 1])
+                  (f/init-form Person [:people/by-id 7])
                   (f/init-form Person [:people/by-id 3])
                   (f/init-form PolyPerson [:people/by-id 4])
                   (f/init-form PolyPerson [:people/by-id 5])
                   (f/init-form PolyPerson [:people/by-id 6]))
       basic-person (get-in app-state [:people/by-id 3])
-      one-number-person (get-in app-state [:people/by-id 1])
+      one-number-person (get-in app-state [:people/by-id 7])
       no-number-person (get-in app-state [:people/by-id 5])
       many-number-person (get-in app-state [:people/by-id 4])
       one-many-number-person (get-in app-state [:people/by-id 6])
@@ -621,6 +628,8 @@
               => true))))
       (component "commit-state - helper"
         (assertions
+          (f/get-original-data basic-person :person/name)
+          =fn=> #(not= % "MCQ")
           (-> basic-person
             (assoc :person/name "MCQ")
             (f/commit-state)
