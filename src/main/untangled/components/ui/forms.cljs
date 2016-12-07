@@ -128,6 +128,17 @@
   ([form name]
    (:input/is-form? (field-config form name))))
 
+(defn- is-ui-query-fragment?
+  "TODO: Maybe make public from untangled-client ?"
+  [kw] (when (keyword? kw) (some->> kw namespace (re-find #"^ui(?:\.|$)"))))
+
+(defn ui-field?
+  "For checking if a field is only a ui concern.
+   eg: should therefore not be sent to the server."
+  [form field]
+  (-> (field-config form field)
+    :input/name is-ui-query-fragment?))
+
 (defn current-value
   "Gets the current value of a field in a form."
   [form field] (get form field))
@@ -155,9 +166,12 @@
   ([form] (get-in form [:ui/form :origin]))
   ([form field] (get (get-original-data form) field)))
 
+(declare validator)
+
 (defn validatable-fields
   "Get all of the names of the validatable fields that are defined on the (initialized) form."
-  [form] (filter #(not (is-subform? (field-config form %))) (element-names form)))
+  [form] (filter #(not (is-subform? (field-config form %)))
+                 (element-names form)))
 
 (defn commit-state
   "Commits the state of the form to the entity, making it the new original data."
@@ -641,25 +655,27 @@
   "Returns the diff between the form's current state and its original data.
    The return value is a map where the keys are the idents of the forms that have changed,
    and the values are vectors of the keys for the fields that changed on that form."
-  [app-state form]
+  [app-state form & [xf]]
   (reduce-forms app-state form
     (fn [diff {:keys [ident form]}]
       (let [fields (element-names form)
             diff-for-form
             (into {}
-              (map #(let [curr (current-value form %)
-                          orig (get-original-data form %)]
-                      (when-not (= curr orig)
-                        [% (let [cfg (field-config form %)]
-                             (case (:input/cardinality cfg)
-                               :many (let [additions (set/difference (set curr) (set orig))
-                                           deletions (set/difference (set orig) (set curr))]
-                                       (cond-> {}
-                                         (seq deletions) #_=> (assoc :del (vec deletions))
-                                         (seq additions) #_=> (assoc :add (vec additions))))
-                               (cond-> {}
-                                 curr #_=> (assoc :new curr)
-                                 orig #_=> (assoc :old orig))))])))
+              (cond->>
+                (map #(let [curr (current-value form %)
+                            orig (get-original-data form %)]
+                        (when-not (= curr orig)
+                          [% (let [cfg (field-config form %)]
+                               (case (:input/cardinality cfg)
+                                 :many (let [additions (set/difference (set curr) (set orig))
+                                             deletions (set/difference (set orig) (set curr))]
+                                         (cond-> {}
+                                           (seq deletions) #_=> (assoc :del (vec deletions))
+                                           (seq additions) #_=> (assoc :add (vec additions))))
+                                 (cond-> {}
+                                   curr #_=> (assoc :new curr)
+                                   orig #_=> (assoc :old orig))))])))
+                xf (comp (xf form)))
               fields)]
         (cond-> diff (seq diff-for-form)
           (assoc ident diff-for-form))))
@@ -704,7 +720,8 @@
 
 (defmethod m/mutate `commit-to-entity
   [{:keys [state ast]} k {:keys [form-id remote]}]
-  (let [delta (diff-form @state (get-in @state form-id))]
+  (let [delta (diff-form @state (get-in @state form-id)
+                (fn [form] (remove (partial ui-field? form))))]
     {:doc "Mutation for moving form data from the form into an entity
            eg: commit an entity to storage & make it the new origin for the entity"
      :remote (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))

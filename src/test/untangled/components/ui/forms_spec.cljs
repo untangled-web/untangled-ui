@@ -170,12 +170,14 @@
 
 (defui Person
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
+  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}
+                 :ui.person/client-only])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
   (form-elements [this] [(f/subform-element :person/number Phone :one)
-                         (f/text-input :person/name :className "name-class")]))
+                         (f/text-input :person/name :className "name-class")
+                         (f/text-input :ui.person/client-only)]))
 
 (def person-db {:phone/by-id  {1 {:db/id 1 :phone/number "555-1212"}
                                2 {:db/id 2 :phone/number "555-3345"}}
@@ -448,9 +450,9 @@
       "Can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
       "Can access field names for all validatable fields"
-      (f/validatable-fields person-form) => [:person/name])))
+      (f/validatable-fields person-form) => [:person/name :ui.person/client-only])))
 
-(defn test-mutate [env disp params]
+(defn test-mutate-action [env disp params]
   ((:action (m/mutate env disp params))))
 
 (defui Thing
@@ -467,7 +469,7 @@
 (specification "Form state mutations"
   (let [db (-> {:thing/by-id {1 {:db/id 1}}}
              (f/init-form Thing [:thing/by-id 1]))
-        test-mutate-field (partial test-mutate {:state (atom db)})
+        test-mutate-field (partial test-mutate-action {:state (atom db)})
 
         thing-1 (get-in db [:thing/by-id 1])]
     (component "set-field"
@@ -576,7 +578,7 @@
       test-diff-form
       (fn [form f path & args]
         (-> app-state
-          (#(apply f % (concat (f/form-ident form) path) args))
+          (#(apply f % (vec (concat (f/form-ident form) path)) args))
           (f/diff-form form)))]
   (specification "Form entity commit/reset"
     (component "commit-to-entity"
@@ -628,13 +630,19 @@
           ;; del & add ref many
           (test-diff-form many-number-person
             assoc-in [:person/number 0] [:phone/by-id 3])
-          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]], :del [[:phone/by-id 1]]}}}))
+          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]], :del [[:phone/by-id 1]]}}}
+          "takes an optional function to make a transducer for traversing on form fields"
+          (-> app-state
+            (assoc-in (conj (f/form-ident basic-person) :person/name) "I SHOULDNT APPEAR")
+            (f/diff-form basic-person
+              (fn [form] (filter #(not= :person/name %)))))
+          => {}))
       (when-mocking
         (f/entity-x-form _ form-id xf) => (do (assertions
                                                 form-id => [:people/by-id 3]
                                                 xf => f/commit-state)
                                             ::ok)
-        (f/diff-form _ _) => :fake/delta
+        (f/diff-form _ _ _) => :fake/delta
         (let [commit-mut
               (m/mutate {:state (atom app-state)
                          :ast {:params {:remote true}}}
@@ -646,6 +654,17 @@
             (:remote commit-mut) => {:params {:delta :fake/delta}}
             "the optimistic action commits the current value of the form to be its new :original state"
             ((:action commit-mut)) => ::ok)))
+      (provided "if we have modified ui only fields"
+        (let [commit-mut
+              (m/mutate {:state (atom (-> app-state
+                                        (assoc-in (conj (f/form-ident basic-person) :ui.person/client-only) "SHOULDNT_APPEAR")
+                                        (assoc-in (conj (f/form-ident basic-person) :person/name) "NEW_NAME")))
+                         :ast {:params {:remote true}}}
+                `f/commit-to-entity
+                {:remote true
+                 :form-id (f/form-ident basic-person)})]
+          (assertions "we dont send them to the server"
+            (get-in (:remote commit-mut) [:params :delta (f/form-ident basic-person) :ui.person/client-only] ::nil) => ::nil)))
       (component "commit-to-entity! - api/public function"
         (when-mocking
           (om/props :fake/component) => :fake/props
