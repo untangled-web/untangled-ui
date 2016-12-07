@@ -1,8 +1,9 @@
 (ns untangled.components.calendar
   (:require-macros
     [untangled.client.cards :refer [untangled-app]]
-    [devcards.core :as dc :refer [defcard]])
+    [devcards.core :refer [defcard]])
   (:require
+    [devcards.core :as dc]
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
     [untangled.i18n.core :as i18n]
@@ -27,4 +28,3 @@
    :calendar/by-id {:start-date (c/initial-calendar :start-date #(str "Start Date")
                                                     (js/Date. "2013-09-03 12:00:00"))}}
   {:inspect-data false})
-

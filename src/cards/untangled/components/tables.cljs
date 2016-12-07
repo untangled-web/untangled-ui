@@ -1,15 +1,15 @@
 (ns untangled.components.tables
   (:require-macros
-    [untangled.client.cards :refer [untangled-app]]
-    [devcards.core :as dc :refer [defcard dom-node]])
+    [untangled.client.cards :refer [untangled-app]])
   (:require
-    [om.next :as om :refer-macros [defui]]
     [cljs.test :refer-macros [is are]]
-    [untangled.i18n :as i :refer-macros [tr trf]]
+    [devcards.core :as dc]
     [om.dom :as dom]
+    [om.next :as om :refer-macros [defui]]
+    [untangled.client.core :as uc]
     [untangled.components.ui.component.table :refer [money-formatter number-formatter toggle-groupings sort-table sort-by-label
                                                      ui-grouped-table GroupedTable]]
-    [untangled.client.core :as uc]))
+    [untangled.i18n :as i :refer-macros [tr trf]]))
 
 (defui ^:once TableRoot
   static om/IQuery
@@ -19,11 +19,10 @@
     (let [{:keys [table]} (om/props this)]
       (ui-grouped-table table))))
 
-(defcard sample-table
+(dc/defcard sample-table
   "Demonstration of a generalized table widget."
   (untangled-app TableRoot)
-  {
-   :table [:tables/by-id :a]
+  {:table [:tables/by-id :a]
    :tables/by-id
           {:a
            {:id         :a

@@ -1,10 +1,11 @@
 (ns untangled.components.forms
   (:require-macros
     [untangled.client.cards :refer [untangled-app]]
-    [devcards.core :as dc :refer [defcard defcard-doc]])
+    )
   (:require
     [clojure.string :as str]
     [com.stuartsierra.component :as component]
+    [devcards.core :as dc :refer [defcard defcard-doc]]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]
@@ -265,7 +266,8 @@
   ; NOTE: :ui/form-root so that sub-forms will trigger render here
   (query [this] [:ui/form-root :ui/form
                  :db/id :person/name :person/age
-                 :person/registered-to-vote? {:person/phone-numbers (om/get-query ValidatedPhoneForm)}])
+                 :person/registered-to-vote?
+                 {:person/phone-numbers (om/get-query ValidatedPhoneForm)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   Object
@@ -332,7 +334,6 @@
       (dom/div #js {:key react-key}
         (when person
           (ui-person-form person))))))
-
 
 (defcard-doc
   "
@@ -471,6 +472,5 @@
   - `f/field-names` : Get the field names on a form
   - `f/form-id` : returns the Om Ident of the form (which is also the ident of the entity)
   - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
-  - `f/field-value` : Just like `current-value`, but works against the top-level app state map (not the atom)
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
   ")

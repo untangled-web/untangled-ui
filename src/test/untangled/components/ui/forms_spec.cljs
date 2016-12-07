@@ -1,9 +1,11 @@
 (ns untangled.components.ui.forms-spec
-  (:require [untangled-spec.core :refer-macros [behavior specification assertions component when-mocking provided]]
-            [untangled.components.ui.forms :as f]
-            [om.next :as om :refer [defui]]
-            [untangled.client.core :as uc]
-            [untangled.client.logging :as log]))
+  (:require
+    [om.next :as om :refer [defui]]
+    [untangled-spec.core :refer-macros [behavior specification assertions component when-mocking provided]]
+    [untangled.client.core :as uc]
+    [untangled.client.logging :as log]
+    [untangled.client.mutations :as m]
+    [untangled.components.ui.forms :as f]))
 
 (specification "Form Elements Declarations"
   (component "subform-element"
@@ -180,7 +182,8 @@
                 :people/by-id {1 {:db/id 1 :person/name "A" :person/number [:phone/by-id 1]}
                                3 {:db/id 3 :person/name "B"}
                                5 {:db/id 5 :person/name "D" :person/number []}
-                               4 {:db/id 4 :person/name "C" :person/number [[:phone/by-id 1] [:phone/by-id 2]]}}})
+                               4 {:db/id 4 :person/name "C" :person/number [[:phone/by-id 1] [:phone/by-id 2]]}
+                               6 {:db/id 6 :person/name "E" :person/number [[:phone/by-id 1]]}}})
 
 (specification "Initializing a to-one form relation"
   (let [app-state person-db
@@ -206,7 +209,7 @@
 
 (defui PolyPerson
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/phone (om/get-query Phone)}])
+  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
@@ -427,12 +430,12 @@
       (f/current-value person-form :person/name) => "A"
       "Can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
-      "Can access field names for all editable fields"
-      (f/editable-fields person-form) => [:person/name])))
+      "Can access field names for all validatable fields"
+      (f/validatable-fields person-form) => [:person/name])))
 
 (defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
 
-(defui CPerson                                              ; only valid if name is 'C'
+(defui CPerson ; only valid if name is 'C'
   static om/IQuery
   (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
   static om/Ident
@@ -498,3 +501,159 @@
         (f/invalid? (get-phone 1) :phone/number) => false
         (f/valid? (get-phone 2) :phone/number) => true
         (f/invalid? (get-phone 2) :phone/number) => false))))
+
+(defn fix-tx "hack/fix for github.com/untangled-web/untangled-spec/issues/6"
+  [tx] (mapcat #(if (seq? %) (vec %) [%]) tx))
+
+(let [app-state (-> person-db
+                  (f/init-form Phone [:phone/by-id 1])
+                  (f/init-form Phone [:phone/by-id 2])
+                  (f/init-form Person [:people/by-id 1])
+                  (f/init-form Person [:people/by-id 3])
+                  (f/init-form PolyPerson [:people/by-id 4])
+                  (f/init-form PolyPerson [:people/by-id 5])
+                  (f/init-form PolyPerson [:people/by-id 6]))
+      basic-person (get-in app-state [:people/by-id 3])
+      one-number-person (get-in app-state [:people/by-id 1])
+      no-number-person (get-in app-state [:people/by-id 5])
+      many-number-person (get-in app-state [:people/by-id 4])
+      one-many-number-person (get-in app-state [:people/by-id 6])
+
+      test-diff-form
+      (fn [form f path & args]
+        (-> app-state
+          (#(apply f % (concat (f/form-ident form) path) args))
+          (f/diff-form form)))]
+  (specification "Form entity commit/reset"
+    (component "commit-to-entity"
+      (component "diff-form"
+        (assertions
+          (f/diff-form app-state basic-person) => {}
+          (test-diff-form basic-person assoc-in [:person/name] "Foo Bar")
+          => {(f/form-ident basic-person) {:person/name {:new "Foo Bar" :old "B"}}}
+          (test-diff-form one-number-person
+            update-in [] dissoc :person/name)
+          => {(f/form-ident one-number-person) {:person/name {:old "A"}}}
+          "we can modify & pick up changes to entities we reference"
+          (-> app-state
+            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
+            (f/diff-form one-number-person))
+          => {[:phone/by-id 1] {:phone/number {:old "555-1212" :new "123-4567"}}}
+          (-> app-state
+            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
+            (f/diff-form many-number-person))
+          => {[:phone/by-id 1] {:phone/number {:new "123-4567" :old "555-1212"}}}
+          ;;*only* those we reference
+          (-> app-state
+            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
+            (f/diff-form no-number-person))
+          => {}
+          "we send a minimal delta for modification of refs (ie idents)"
+          (test-diff-form no-number-person
+            assoc-in [:phone/by-id 1 :phone/number] "123-4567")
+          => {}
+          ;; new ref one
+          (test-diff-form basic-person
+            assoc-in [:person/number] [:phone/by-id 1])
+          => {(f/form-ident basic-person) {:person/number {:new [:phone/by-id 1]}}}
+          ;; add & del ref one
+          (test-diff-form one-number-person
+            assoc-in [:person/number] [:phone/by-id 2])
+          => {(f/form-ident one-number-person) {:person/number {:new [:phone/by-id 2], :old [:phone/by-id 1]}}}
+          ;;del ref many
+          (test-diff-form one-many-number-person
+            assoc-in [:person/number] [])
+          => {(f/form-ident one-many-number-person) {:person/number {:del [[:phone/by-id 1]]}}}
+          ;; add ref many
+          (test-diff-form no-number-person
+            update-in [:person/number] conj [:phone/by-id 1])
+          => {(f/form-ident no-number-person) {:person/number {:add [[:phone/by-id 1]]}}}
+          (test-diff-form many-number-person
+            update-in [:person/number] conj [:phone/by-id 3])
+          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]]}}}
+          ;; del & add ref many
+          (test-diff-form many-number-person
+            assoc-in [:person/number 0] [:phone/by-id 3])
+          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]], :del [[:phone/by-id 1]]}}}))
+      (when-mocking
+        (f/entity-x-form _ form-id xf) => (do (assertions
+                                                form-id => [:people/by-id 3]
+                                                xf => f/commit-state)
+                                            ::ok)
+        (f/diff-form _ _) => :fake/delta
+        (let [commit-mut
+              (m/mutate {:state (atom app-state)
+                         :ast {:params {:remote true}}}
+                `f/commit-to-entity
+                {:remote true
+                 :form-id (f/form-ident basic-person)})]
+          (assertions
+            "only optionally `:remote`s the result of diff-form to the server"
+            (:remote commit-mut) => {:params {:delta :fake/delta}}
+            "the optimistic action commits the current value of the form to be its new :original state"
+            ((:action commit-mut)) => ::ok)))
+      (component "commit-to-entity! - api/public function"
+        (when-mocking
+          (om/props :fake/component) => :fake/props
+          (om/transact! :fake/component tx) => (fix-tx tx)
+          (f/form-ident _) => :fake/form-ident
+          (behavior "only commits if form is valid after validating"
+            (when-mocking
+              (f/valid? :fake/props) => true
+              (assertions
+                (f/commit-to-entity! :fake/component)
+                => `[f/commit-to-entity {:form-id :fake/form-ident :remote false}
+                     :ui/form-root]))
+            (when-mocking
+              (f/valid? :fake/props) => false
+              (assertions
+                (f/commit-to-entity! :fake/component)
+                => `[f/validate-form {:form-id :fake/form-ident}
+                     :ui/form-root])))
+          (behavior "optional `:rerender` key"
+            (assertions
+              (last (f/commit-to-entity! :fake/component :rerender [:fake/rerender]))
+              => :fake/rerender))
+          (behavior "optional `:remote` key"
+            (assertions
+              (-> (f/commit-to-entity! :fake/component :remote true)
+                second :remote)
+              => true))))
+      (component "commit-state - helper"
+        (assertions
+          (-> basic-person
+            (assoc :person/name "MCQ")
+            (f/commit-state)
+            (f/get-original-data :person/name))
+          => "MCQ")))
+
+    (component "reset-from-entity"
+      (when-mocking
+        (f/entity-x-form _ form-id xf) => (do (assertions
+                                                form-id => :fake/form-id
+                                                xf => f/reset-entity)
+                                            ::ok)
+        (let [reset-mut
+              (m/mutate {:state (atom app-state)
+                         :ast {:params {:remote true :form-id :fake/form-id}}}
+                `f/reset-from-entity
+                {:remote true
+                 :form-id :fake/form-id})]
+          (assertions
+            (:remote reset-mut) => {:params {:form-id :fake/form-id}}
+            ((:action reset-mut)) => ::ok)))
+      (component "reset-from-entity! - api/public function"
+        (when-mocking
+          (om/transact! _ tx) => (fix-tx tx)
+          (assertions
+            (f/reset-from-entity! :fake/component basic-person)
+            => `[f/reset-from-entity {:form-id [:people/by-id 3]}
+                 f/validate-form {:form-id [:people/by-id 3]}
+                 :ui/form-root])))
+      (component "reset-entity"
+        (assertions
+          (-> basic-person
+            (assoc :person/name "MCQ")
+            (f/reset-entity)
+            (f/current-value :person/name))
+          =fn=> #(not= % "MCQ"))))))
