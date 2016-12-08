@@ -1,11 +1,11 @@
-(ns untangled.components.ui.forms-spec
+(ns untangled.components.forms-spec
   (:require
     [om.next :as om :refer [defui]]
     [untangled-spec.core :refer-macros [behavior specification assertions component when-mocking provided]]
     [untangled.client.core :as uc]
     [untangled.client.logging :as log]
     [untangled.client.mutations :as m]
-    [untangled.components.ui.forms :as f]))
+    [untangled.components.forms :as f]))
 
 (specification "Form Elements Declarations"
   (component "subform-element"

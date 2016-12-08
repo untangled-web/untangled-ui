@@ -1,15 +1,15 @@
-(ns untangled.components.ui.forms
+(ns untangled.components.forms
   (:require
     [clojure.set :as set]
     [clojure.string :as str]
     [om.dom :as dom]
-    [om.next :as om :refer [defui]]
+    [om.next :as om]
     [om.util :as util]
-    [untangled.client.core :as uc]
-    [untangled.client.data-fetch :as df]
-    [untangled.client.logging :as log]
-    [untangled.client.mutations :as m]
-    [untangled.i18n :refer [tr]]))
+    #?@(:clj ([taoensso.timbre :as log]))
+    #?@(:cljs ([untangled.client.core :as uc]
+               [untangled.client.data-fetch :as df]
+               [untangled.client.logging :as log]
+               [untangled.client.mutations :as m]))))
 
 (defprotocol IForm
   (form-elements [this] "Returns the subform/field definitions for form support."))
@@ -17,6 +17,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ELEMENT DEFINITIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#?(:clj (def implements? satisfies?))
 
 (defn subform-element
   "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
@@ -208,9 +210,9 @@
                                wants-to-be? (contains? subform-fields prop)]
                            (when (and union? wants-to-be?)
                              (log/error "Subforms cannot be on union queries. You will have to manually group your subforms if you use unions."))
-                           (when (and
-                                   wants-to-be?
-                                   (not (and (implements? om/Ident form-class) (implements? IForm form-class)
+                           (when (and wants-to-be?
+                                   (not (and (implements? om/Ident form-class)
+                                          (implements? IForm form-class)
                                           (implements? om/IQuery form-class))))
                              (log/error "Declared subform for property " prop " does not implement IForm, IQuery, and Ident." ast-node))
                            (and form-class wants-to-be? join? (not union?) (implements? om/IQuery form-class)
@@ -497,18 +499,18 @@
         app-state))))
 
 ;; TODO: TESTME
-(defmethod m/mutate `validate-field [{:keys [state]} k {:keys [form-id field]}]
-  {:doc "Mutation to run validation on a specific field"
-   :action #(swap! state update-in form-id validate-field field)})
+#?(:cljs (defmethod m/mutate `validate-field [{:keys [state]} k {:keys [form-id field]}]
+           {:doc "Mutation to run validation on a specific field"
+            :action #(swap! state update-in form-id validate-field field)}))
 
 ;; TODO: TESTME
-(defmethod m/mutate `validate-form [{:keys [state]} k {:keys [form-id]}]
-  {:doc "Mutation to run validation on an entire form"
-   :action (fn []
-             (let [form (get-in @state form-id)]
-               (if form
-                 (swap! state update-forms form (comp validate-fields :form))
-                 (log/error "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))})
+#?(:cljs (defmethod m/mutate `validate-form [{:keys [state]} k {:keys [form-id]}]
+           {:doc "Mutation to run validation on an entire form"
+            :action (fn []
+                      (let [form (get-in @state form-id)]
+                        (if form
+                          (swap! state update-forms form (comp validate-fields :form))
+                          (log/error "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))}))
 
 ;; TODO: TESTME
 (defn validate-entire-form!
@@ -526,11 +528,11 @@
 ;; GENERAL FORM MUTATION METHODS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod m/mutate `toggle-field [{:keys [state]} k {:keys [form-id field]}]
-  {:action (fn [] (swap! state update-in form-id update-current-value field not))})
+#?(:cljs (defmethod m/mutate `toggle-field [{:keys [state]} k {:keys [form-id field]}]
+           {:action (fn [] (swap! state update-in form-id update-current-value field not))}))
 
-(defmethod m/mutate `set-field [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (swap! state update-in form-id set-current-value field value))})
+#?(:cljs (defmethod m/mutate `set-field [{:keys [state]} k {:keys [form-id field value]}]
+           {:action (fn [] (swap! state update-in form-id set-current-value field value))}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FORM FIELD RENDERING
@@ -600,12 +602,12 @@
 (defmethod form-field* ::integer [component form name]
   (render-integer-field component form name))
 
-(defmethod m/mutate `select-option
-  [{:keys [state]} k {:keys [form-id field value]}]
-  {:action (fn [] (let [value (.substring value 1)]
-                    (swap! state assoc-in
-                      (conj form-id field)
-                      (keyword value))))})
+#?(:cljs (defmethod m/mutate `select-option
+           [{:keys [state]} k {:keys [form-id field value]}]
+           {:action (fn [] (let [value (.substring value 1)]
+                             (swap! state assoc-in
+                               (conj form-id field)
+                               (keyword value))))}))
 
 (defmethod form-field* ::dropdown [component form name]
   (let [id (form-ident form)
@@ -718,18 +720,19 @@
     (get-in state form-id)
     (comp xf :form)))
 
-(defmethod m/mutate `commit-to-entity
-  [{:keys [state ast]} k {:keys [form-id remote]}]
-  (let [delta (diff-form @state (get-in @state form-id)
-                (fn [form] (remove (partial ui-field? form))))]
-    {:doc "Mutation for moving form data from the form into an entity
-           eg: commit an entity to storage & make it the new origin for the entity"
-     :remote (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))
-     :action (fn [] (swap! state entity-x-form form-id commit-state))}))
+#?(:cljs (defmethod m/mutate `commit-to-entity
+           [{:keys [state ast]} k {:keys [form-id remote]}]
+           (let [delta (diff-form @state (get-in @state form-id)
+                         (fn [form] (remove (partial ui-field? form))))]
+             {:doc "Mutation for moving form data from the form into an entity
+                    eg: commit an entity to storage & make it the new origin for the entity"
+              :remote (and remote (-> ast
+                                    (update :params #(-> % (dissoc :remote) (assoc :delta delta)))))
+              :action (fn [] (swap! state entity-x-form form-id commit-state))})))
 
-(defmethod m/mutate `reset-from-entity
-  [{:keys [state ast]} k {:keys [form-id remote]}]
-  {:doc "Mutation for moving form data from the entity into the form
-         eg: reset an entity to its original value"
-   :remote (and remote (update ast :params dissoc :remote))
-   :action (fn [] (swap! state entity-x-form form-id reset-entity))})
+#?(:cljs (defmethod m/mutate `reset-from-entity
+           [{:keys [state ast]} k {:keys [form-id remote]}]
+           {:doc "Mutation for moving form data from the entity into the form
+                  eg: reset an entity to its original value"
+            :remote (and remote (update ast :params dissoc :remote))
+            :action (fn [] (swap! state entity-x-form form-id reset-entity))}))

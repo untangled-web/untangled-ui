@@ -1,7 +1,6 @@
-(ns untangled.components.forms
+(ns untangled.components.forms-guide
   (:require-macros
-    [untangled.client.cards :refer [untangled-app]]
-    )
+    [untangled.client.cards :refer [untangled-app]])
   (:require
     [clojure.string :as str]
     [com.stuartsierra.component :as component]
@@ -10,7 +9,7 @@
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]
     [untangled.client.mutations :as m]
-    [untangled.components.ui.forms :as f]
+    [untangled.components.forms :as f]
     [untangled.dom :as udom]
     [untangled.i18n :refer [tr]]))
 
@@ -90,7 +89,7 @@
        [om.dom :as dom]
        [om.next :as om :refer [defui]]
        [untangled.i18n :refer [tr]]
-       [untangled.components.ui.forms :as f]
+       [untangled.components.forms :as f]
        [untangled.client.core :as uc]
        [untangled.client.mutations :as m]))
    ```
