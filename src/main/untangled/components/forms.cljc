@@ -289,7 +289,7 @@
    use `starting-value` as the initial accumulator, and the return value of form-fn will become the new accumulator.
 
    Returns the final accumulator value."
-  [app-state form form-fn starting-value]
+  [app-state form starting-value form-fn]
   (let [form-ident (form-ident form)
         class (form-component form)
         form-specs (get-forms app-state class form-ident)]
@@ -483,9 +483,8 @@
 (defn any-dirty?
   "Checks if the top-level form, or any of the subforms, are dirty."
   [app-state form]
-  (reduce-forms app-state form
-    (fn [d? {:keys [form]}] (or d? (dirty? form)))
-    false))
+  (reduce-forms app-state form false
+    (fn [d? {:keys [form]}] (or d? (dirty? form)))))
 
 (defn validate-forms
   "Run validation on an entire form (by ident) with subforms. Returns an updated app-state."
@@ -653,35 +652,61 @@
 ;; LOAD AND SAVE FORM TO/FROM ENTITY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defprotocol DBAdapter
+  (commit! [this params]
+    "Entry point for creating a transaction given params.")
+  (exec-tx! [this tx] "Execute a transaction!")
+  (gen-tempid [this] "Generates a db tempid.")
+  (parse-tx [this tx-type data]
+    "Given a tx-type and data, transforms it into a db transaction.
+     OR TODO: Should this be add-tx, set-tx, etc..."))
+
+;some helper functions
+; - ask for all tempids
+; - ask for just creation entries
+; - ask for non-creation entries
+
+;YOUR CODE
+;(defmethod your-mutate `f/commit-to-entity [env k params] (commit! (:adapter env) params))
+
 (defn diff-form
   "Returns the diff between the form's current state and its original data.
    The return value is a map where the keys are the idents of the forms that have changed,
-   and the values are vectors of the keys for the fields that changed on that form."
-  [app-state form & [xf]]
-  (reduce-forms app-state form
+   and the values are vectors of the keys for the fields that changed on that form.
+
+   Return value:
+   {:tx/new {[:phone/by-id #phone-id] {...}}
+   ,:tx/del {...}
+   ,:tx/set {[:phone/by-id 1] {:phone/number \"123-4567\"}}
+   ,:tx/add {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
+   ,:tx/rem {...}}"
+  [app-state form]
+  (reduce-forms app-state form {}
     (fn [diff {:keys [ident form]}]
-      (let [fields (element-names form)
-            diff-for-form
-            (into {}
-              (cond->>
-                (map #(let [curr (current-value form %)
-                            orig (get-original-data form %)]
-                        (when-not (= curr orig)
-                          [% (let [cfg (field-config form %)]
-                               (case (:input/cardinality cfg)
-                                 :many (let [additions (set/difference (set curr) (set orig))
-                                             deletions (set/difference (set orig) (set curr))]
-                                         (cond-> {}
-                                           (seq deletions) #_=> (assoc :del (vec deletions))
-                                           (seq additions) #_=> (assoc :add (vec additions))))
-                                 (cond-> {}
-                                   curr #_=> (assoc :new curr)
-                                   orig #_=> (assoc :old orig))))])))
-                xf (comp (xf form)))
-              fields)]
-        (cond-> diff (seq diff-for-form)
-          (assoc ident diff-for-form))))
-    {}))
+      (let [fields (element-names form)]
+        (if (om/tempid? (second ident))
+          (assoc-in diff [:tx/new ident] (select-keys form fields))
+          (transduce (remove (partial ui-field? form))
+            (completing
+              (fn [acc field]
+                (let [curr (current-value form field)
+                      orig (get-original-data form field)]
+                  (cond
+                    (= curr orig) acc
+                    :else
+                    (let [cfg (field-config form field)]
+                      (case (:input/cardinality cfg)
+                        :many (let [additions (set/difference (set curr) (set orig))
+                                    removals  (set/difference (set orig) (set curr))]
+                                (cond-> acc
+                                  (seq removals)  #_=> (assoc-in [:tx/rem ident field] (vec removals))
+                                  (seq additions) #_=> (assoc-in [:tx/add ident field] (vec additions))))
+                        (cond
+                          curr #_=> (assoc-in acc [:tx/set ident field] curr)
+                          (and (not curr) orig)
+                          #_=> (assoc-in acc [:tx/del ident field] orig)
+                          :else acc)))))))
+            diff fields))))))
 
 (defn reset-from-entity!
   "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
@@ -722,12 +747,10 @@
 
 #?(:cljs (defmethod m/mutate `commit-to-entity
            [{:keys [state ast]} k {:keys [form-id remote]}]
-           (let [delta (diff-form @state (get-in @state form-id)
-                         (fn [form] (remove (partial ui-field? form))))]
+           (let [delta (diff-form @state (get-in @state form-id))]
              {:doc "Mutation for moving form data from the form into an entity
                     eg: commit an entity to storage & make it the new origin for the entity"
-              :remote (and remote (-> ast
-                                    (update :params #(-> % (dissoc :remote) (assoc :delta delta)))))
+              :remote (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))
               :action (fn [] (swap! state entity-x-form form-id commit-state))})))
 
 #?(:cljs (defmethod m/mutate `reset-from-entity

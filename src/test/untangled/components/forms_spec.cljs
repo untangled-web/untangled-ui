@@ -417,7 +417,7 @@
   (assertions "Can accumulate values from all forms"
     (let [state (f/init-form nested-form-db Level3Form [:level3 1])
           form (get-in state [:level3 1])]
-      (f/reduce-forms state form (fn [acc spec] (+ acc (get-in spec [:form :value]))) 0)) => 3))
+      (f/reduce-forms state form 0 (fn [acc spec] (+ acc (get-in spec [:form :value]))))) => 3))
 
 (specification "Form config and state helpers"
   (let [ident-under-test [:people/by-id 7]
@@ -575,6 +575,8 @@
       many-number-person (get-in app-state [:people/by-id 4])
       one-many-number-person (get-in app-state [:people/by-id 6])
 
+      tempids (repeatedly om/tempid)
+
       test-diff-form
       (fn [form f path & args]
         (-> app-state
@@ -584,22 +586,35 @@
     (component "commit-to-entity"
       (component "diff-form"
         (assertions
+          "sanity check"
           (f/diff-form app-state basic-person) => {}
+          "we can pick up an update to a form"
           (test-diff-form basic-person assoc-in [:person/name] "Foo Bar")
-          => {(f/form-ident basic-person) {:person/name {:new "Foo Bar" :old "B"}}}
+          => {:tx/set {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
+          "we can pick up a creation of a reference"
+          (f/with-dbg
+            (-> app-state
+              (assoc-in (conj (f/form-ident basic-person) :person/number) [:phone/by-id (first tempids)])
+              (assoc-in [:phone/by-id (first tempids)]
+                {:db/id (first tempids) :phone/number "123-4567"})
+              (f/init-form Phone [:phone/by-id (first tempids)])
+              (f/diff-form basic-person)))
+          => {:tx/new {[:phone/by-id (first tempids)] {:phone/number "123-4567"}}
+              :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id (first tempids)]}}}
+          "we can pick up a deletion of a reference"
           (test-diff-form one-number-person
             update-in [] dissoc :person/name)
-          => {(f/form-ident one-number-person) {:person/name {:old "A"}}}
-          "we can modify & pick up changes to entities we reference"
+          => {:tx/del {(f/form-ident one-number-person) {:person/name "A"}}}
+          "we can pick up changes to subforms"
           (-> app-state
             (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
             (f/diff-form one-number-person))
-          => {[:phone/by-id 1] {:phone/number {:old "555-1212" :new "123-4567"}}}
+          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
           (-> app-state
             (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
             (f/diff-form many-number-person))
-          => {[:phone/by-id 1] {:phone/number {:new "123-4567" :old "555-1212"}}}
-          ;;*only* those we reference
+          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
+          "^-> but *only* those we reference"
           (-> app-state
             (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
             (f/diff-form no-number-person))
@@ -608,41 +623,36 @@
           (test-diff-form no-number-person
             assoc-in [:phone/by-id 1 :phone/number] "123-4567")
           => {}
-          ;; new ref one
+          "^-> new ref one"
           (test-diff-form basic-person
             assoc-in [:person/number] [:phone/by-id 1])
-          => {(f/form-ident basic-person) {:person/number {:new [:phone/by-id 1]}}}
-          ;; add & del ref one
+          => {:tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
+          "^-> add ref one"
           (test-diff-form one-number-person
             assoc-in [:person/number] [:phone/by-id 2])
-          => {(f/form-ident one-number-person) {:person/number {:new [:phone/by-id 2], :old [:phone/by-id 1]}}}
-          ;;del ref many
+          => {:tx/set {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
+          "^-> rem ref many"
           (test-diff-form one-many-number-person
             assoc-in [:person/number] [])
-          => {(f/form-ident one-many-number-person) {:person/number {:del [[:phone/by-id 1]]}}}
-          ;; add ref many
+          => {:tx/rem {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
+          "^-> add ref many"
           (test-diff-form no-number-person
             update-in [:person/number] conj [:phone/by-id 1])
-          => {(f/form-ident no-number-person) {:person/number {:add [[:phone/by-id 1]]}}}
+          => {:tx/add {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
           (test-diff-form many-number-person
             update-in [:person/number] conj [:phone/by-id 3])
-          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]]}}}
-          ;; del & add ref many
+          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
+          "^-> del & add ref many"
           (test-diff-form many-number-person
             assoc-in [:person/number 0] [:phone/by-id 3])
-          => {(f/form-ident many-number-person) {:person/number {:add [[:phone/by-id 3]], :del [[:phone/by-id 1]]}}}
-          "takes an optional function to make a transducer for traversing on form fields"
-          (-> app-state
-            (assoc-in (conj (f/form-ident basic-person) :person/name) "I SHOULDNT APPEAR")
-            (f/diff-form basic-person
-              (fn [form] (filter #(not= :person/name %)))))
-          => {}))
+          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
+              :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
         (f/entity-x-form _ form-id xf) => (do (assertions
                                                 form-id => [:people/by-id 3]
                                                 xf => f/commit-state)
                                             ::ok)
-        (f/diff-form _ _ _) => :fake/delta
+        (f/diff-form _ _) => :fake/delta
         (let [commit-mut
               (m/mutate {:state (atom app-state)
                          :ast {:params {:remote true}}}
