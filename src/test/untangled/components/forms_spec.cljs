@@ -7,12 +7,21 @@
     [untangled.client.mutations :as m]
     [untangled.components.forms :as f]))
 
+(defui Stub
+  static om/IQuery
+  (query [this]
+    [:db/id])
+  static om/Ident
+  (ident [this props]
+    [:stub/by-id (:db/id props)])
+  static f/IForm
+  (form-spec [this]
+    [(f/id-field :db/id)]))
+
 (specification "Form Elements Declarations"
   (component "subform-element"
     (when-mocking
-      (log/error msg a b c d) => (do (assertions "Logs a message for joins on non-augmented classes"
-                                       msg =fn=> (fn [m] (re-matches #"^Subform elem.*$" m))))
-      (let [f (f/subform-element :name 'Cls)]
+      (let [f (f/subform-element :name Stub :one)]
         (assertions
           "defaults as a to-one relation"
           (:input/cardinality f) => :one
@@ -21,12 +30,15 @@
           "has the correct type"
           (:input/type f) => ::f/subform
           "tracks the class of the subform UI"
-          (-> f meta :component) => 'Cls))))
+          (-> f meta :component) => Stub)))
+    (when-mocking
+      (log/error _ _) => :ok
+      (assertions
+        (f/subform-element :bad 'NonExistant :one)
+        =throws=> (ExceptionInfo #"NonExistant failed.*Subform element :bad.*MUST implement IForm, IQuery, and Ident."))))
   (component "form-switcher-input"
     (when-mocking
-      (log/error msg a b c d) => (do (assertions "Logs a message for joins on non-augmented classes"
-                                       msg =fn=> (fn [m] (re-matches #"^Subform elem.*$" m))))
-      (let [f (f/form-switcher-input :name 'Cls :k)]
+      (let [f (f/form-switcher-input :name Stub :k)]
         (assertions
           "defaults as a to-many relation"
           (:input/cardinality f) => :many
@@ -37,7 +49,12 @@
           "has the correct type"
           (:input/type f) => ::f/switcher
           "tracks the class of the subform UI"
-          (-> f meta :component) => 'Cls))))
+          (-> f meta :component) => Stub)))
+    (when-mocking
+      (log/error _ _) => :ok
+      (assertions
+        (f/form-switcher-input :bad 'NonExistant :one)
+        =throws=> (ExceptionInfo #"NonExistant failed.*Subform element :bad.*MUST implement IForm, IQuery, and Ident."))))
   (component "id-field"
     (let [field (f/id-field :name)]
       (assertions
@@ -46,7 +63,8 @@
         "has the correct type"
         (:input/type field) => ::f/identity)))
   (component "text-input"
-    (let [field (f/text-input :name :default-value "abc" :placeholder "Name" :className "fg" :validator 'valid? :validator-args {:v 1})]
+    (let [field (f/text-input :name :default-value "abc" :placeholder "Name"
+                  :className "fg" :validator 'valid? :validator-args {:v 1})]
       (assertions
         "has a name"
         (:input/name field) => :name
@@ -71,7 +89,8 @@
         "CSS class defaults to nothing"
         (:input/css-class field) => "")))
   (component "integer-input"
-    (let [field (f/integer-input :age :default-value 55 :className "fg" :validator 'valid? :validator-args {:v 1})]
+    (let [field (f/integer-input :age :default-value 55 :className "fg"
+                  :validator 'valid? :validator-args {:v 1})]
       (assertions
         "supports a default value"
         (:input/default-value field) => 55
@@ -166,7 +185,7 @@
   static om/Ident
   (ident [this props] [:phone/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/text-input :phone/number)]))
+  (form-spec [this] [(f/text-input :phone/number)]))
 
 (defui Person
   static om/IQuery
@@ -175,9 +194,9 @@
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :person/number Phone :one)
-                         (f/text-input :person/name :className "name-class")
-                         (f/text-input :ui.person/client-only)]))
+  (form-spec [this] [(f/subform-element :person/number Phone :one)
+                     (f/text-input :person/name :className "name-class")
+                     (f/text-input :ui.person/client-only)]))
 
 (def person-db {:phone/by-id  {1 {:db/id 1 :phone/number "555-1212"}
                                2 {:db/id 2 :phone/number "555-3345"}}
@@ -190,7 +209,7 @@
 (specification "Initializing a to-one form relation"
   (let [app-state person-db
         base-form (get-in app-state [:people/by-id 7])
-        spec (-> (f/form-elements Person) first)]
+        spec (-> (f/form-spec Person) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
@@ -215,11 +234,11 @@
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :person/number Phone :many)]))
+  (form-spec [this] [(f/subform-element :person/number Phone :many)]))
 
 (specification "Initializing a to-many form relation"
   (let [base-form (get-in person-db [:people/by-id 4])
-        spec (-> (f/form-elements PolyPerson) first)]
+        spec (-> (f/form-spec PolyPerson) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
@@ -249,7 +268,7 @@
   (assertions
     "detects initialized forms by looking for form state"
     (f/initialized? {:db/id 1}) => false
-    (f/initialized? {:db/id 1 :ui/form {}}) => true)
+    (f/initialized? {:db/id 1 f/form-key {}}) => true)
   (provided "when the form is already initialized"
     (f/initialized? f) => true
 
@@ -291,7 +310,7 @@
   static om/Ident
   (ident [this props] [:leaf (:id props)])
   static f/IForm
-  (form-elements [this] [(f/id-field :id)]))
+  (form-spec [this] [(f/id-field :id)]))
 
 (defui NonForm
   static om/IQuery
@@ -310,7 +329,7 @@
   static om/Ident
   (ident [this props] [:tomform (:id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :leaves LeafForm :many)]))
+  (form-spec [this] [(f/subform-element :leaves LeafForm :many)]))
 
 (defui Level2Form
   static uc/InitialAppState
@@ -327,9 +346,9 @@
   static om/Ident
   (ident [this props] [:level2 (:id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :leaf1 LeafForm)
-                         (f/subform-element :leaf2 LeafForm)
-                         (f/subform-element :leaf3 LeafForm)]))
+  (form-spec [this] [(f/subform-element :leaf1 LeafForm :one)
+                     (f/subform-element :leaf2 LeafForm :one)
+                     (f/subform-element :leaf3 LeafForm :one)]))
 
 (defui OtherRootForm
   static uc/InitialAppState
@@ -339,7 +358,7 @@
   static om/Ident
   (ident [this props] [:other (:id props)])
   static f/IForm
-  (form-elements [this] []))
+  (form-spec [this] []))
 
 (defui Level3Form
   static uc/InitialAppState
@@ -353,7 +372,7 @@
   static om/Ident
   (ident [this props] [:level3 (:id props)])
   static f/IForm
-  (form-elements [this] [(f/subform-element :level2 Level2Form)]))
+  (form-spec [this] [(f/subform-element :level2 Level2Form :one)]))
 
 (specification "subforms*"
   (assertions
@@ -434,7 +453,7 @@
       (f/field-type person-form :person/number) => ::f/subform
       "Can identify a subform field"
       (f/is-subform? person-form :person/number) => true
-      (f/is-subform? {:ui/form {:elements/by-name {:person/mate {:input/is-form? true}}}} :person/mate) => true
+      (f/is-subform? {f/form-key {:elements/by-name {:person/mate {:input/is-form? true}}}} :person/mate) => true
       "Can access the current (edited) value"
       (f/current-value person-form :person/name) => "A"
       "Can modify the current value"
@@ -450,14 +469,14 @@
       "Can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
       "Can access field names for all validatable fields"
-      (f/validatable-fields person-form) => [:person/name :ui.person/client-only])))
+      (set (f/validatable-fields person-form)) => #{:person/name :ui.person/client-only})))
 
 (defn test-mutate-action [env disp params]
   ((:action (m/mutate env disp params))))
 
 (defui Thing
   static f/IForm
-  (form-elements [this]
+  (form-spec [this]
     [(f/id-field :db/id)
      (f/text-input :thing/name)
      (f/checkbox-input :thing/ok?)])
@@ -497,8 +516,8 @@
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-elements [this] [(f/text-input :person/name :className "name-class" :validator 'is-named? :validator-args {:name "C"})
-                         (f/subform-element :person/number Phone :many)]))
+  (form-spec [this] [(f/text-input :person/name :className "name-class" :validator 'is-named? :validator-args {:name "C"})
+                     (f/subform-element :person/number Phone :many)]))
 
 (specification "Form Validation"
   (let [app-state (-> person-db
@@ -592,13 +611,12 @@
           (test-diff-form basic-person assoc-in [:person/name] "Foo Bar")
           => {:tx/set {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
           "we can pick up a creation of a reference"
-          (f/with-dbg
-            (-> app-state
-              (assoc-in (conj (f/form-ident basic-person) :person/number) [:phone/by-id (first tempids)])
-              (assoc-in [:phone/by-id (first tempids)]
-                {:db/id (first tempids) :phone/number "123-4567"})
-              (f/init-form Phone [:phone/by-id (first tempids)])
-              (f/diff-form basic-person)))
+          (-> app-state
+            (assoc-in (conj (f/form-ident basic-person) :person/number) [:phone/by-id (first tempids)])
+            (assoc-in [:phone/by-id (first tempids)]
+              {:db/id (first tempids) :phone/number "123-4567"})
+            (f/init-form Phone [:phone/by-id (first tempids)])
+            (f/diff-form basic-person))
           => {:tx/new {[:phone/by-id (first tempids)] {:phone/number "123-4567"}}
               :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id (first tempids)]}}}
           "we can pick up a deletion of a reference"
@@ -686,13 +704,13 @@
               (assertions
                 (f/commit-to-entity! :fake/component)
                 => `[f/commit-to-entity {:form-id :fake/form-ident :remote false}
-                     :ui/form-root]))
+                     ~f/form-root-key]))
             (when-mocking
               (f/valid? :fake/props) => false
               (assertions
                 (f/commit-to-entity! :fake/component)
                 => `[f/validate-form {:form-id :fake/form-ident}
-                     :ui/form-root])))
+                     ~f/form-root-key])))
           (behavior "optional `:rerender` key"
             (assertions
               (last (f/commit-to-entity! :fake/component :rerender [:fake/rerender]))
@@ -734,7 +752,7 @@
             (f/reset-from-entity! :fake/component basic-person)
             => `[f/reset-from-entity {:form-id [:people/by-id 3]}
                  f/validate-form {:form-id [:people/by-id 3]}
-                 :ui/form-root])))
+                 ~f/form-root-key])))
       (component "reset-entity"
         (assertions
           (-> basic-person
@@ -742,3 +760,41 @@
             (f/reset-entity)
             (f/current-value :person/name))
           =fn=> #(not= % "MCQ"))))))
+
+(defui Mutation
+  static om/IQuery
+  (query [this]
+    [:db/id :mutation/name])
+  static om/Ident
+  (ident [this props]
+    [:mutation/by-id (:db/id props)])
+  static f/IForm
+  (form-spec [this]
+    [(f/id-field :db/id)
+     (f/text-input :mutation/name)]))
+
+(defui Mutant
+  static om/IQuery
+  (query [this]
+    [:db/id :mutant/name {:mutant/mutations (om/get-query Mutation)}])
+  static om/Ident
+  (ident [this props]
+    [:mutant/by-id (:db/id props)])
+  static f/IForm
+  (form-spec [this]
+    [(f/on-form-change 'mutant/changed)
+     (f/id-field :db/id)
+     (f/text-input :mutant/name)
+     (f/subform-element :mutant/mutations Mutation :many)]))
+
+(def mutant-db
+  {:mutant/by-id {1 {:db/id 1
+                     :mutant/name "Professor X"}}})
+
+(specification "on-form-change"
+  (assertions
+    (-> mutant-db
+      (f/init-form Mutant [:mutant/by-id 1])
+      (get-in [:mutant/by-id 1])
+      f/get-on-form-change-mut-sym)
+    => 'mutant/changed))

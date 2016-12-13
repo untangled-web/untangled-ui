@@ -41,11 +41,11 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (form-elements [this] [(f/id-field :db/id)                ; Mark which thing is the ID of this entity
-                         (f/text-input :phone/number :class "form-control")
-                         (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+  (form-spec [this] [(f/id-field :db/id)                ; Mark which thing is the ID of this entity
+                     (f/text-input :phone/number :class "form-control")
+                     (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
-  (query [this] [:db/id :phone/type :phone/number :ui/form]) ; Don't forget :ui/form!
+  (query [this] [:db/id :phone/type :phone/number f/form-key]) ; Don't forget f/form-key!
   static om/Ident
   (ident [this props] [:phone/by-id (:db/id props)])
   Object
@@ -97,7 +97,7 @@
   **IMPORTANT NOTE**: When we use the parameter `form` or the word 'form' in the descriptions below, we mean the data
   of the entire entity from an Om table that normally represents something in your application (like a person, phone number, etc).
   This library *augments* your database entry with form support data (your 'person' becomes a 'person' AND a 'form'). In
-  raw technical terms, the `build-form` function takes a map, and adds a `:ui/form { ... }` entry *to it*.
+  raw technical terms, the `build-form` function takes a map, and adds a `f/form-key { ... }` entry *to it*.
 
   ## Form Fields - Declarative Form Definition
 
@@ -179,11 +179,11 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (form-elements [this] [(f/id-field :db/id)
-                         (f/text-input :phone/number :validator 'us-phone?) ; Addition of validator
-                         (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
+  (form-spec [this] [(f/id-field :db/id)
+                     (f/text-input :phone/number :validator 'us-phone?) ; Addition of validator
+                     (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
-  (query [this] [:db/id :phone/type :phone/number :ui/form])
+  (query [this] [:db/id :phone/type :phone/number f/form-key])
   static om/Ident
   (ident [this props] [:phone/by-id (:db/id props)])
   Object
@@ -198,7 +198,7 @@
 
 (defui ValidatedPhoneRoot
   static om/IQuery
-  (query [this] [:ui/form {:phone (om/get-query ValidatedPhoneForm)}])
+  (query [this] [f/form-key {:phone (om/get-query ValidatedPhoneForm)}])
   static uc/InitialAppState
   (initial-state [this params]
     (let [phone-number {:db/id 1 :phone/type :home :phone/number "555-1212"}]
@@ -215,7 +215,7 @@
 (defcard-doc
   "
 
-  **IMPORTANT**: Take special note of the query. It **must** include `:ui/form`, which will pull in the special data needed
+  **IMPORTANT**: Take special note of the query. It **must** include `f/form-key`, which will pull in the special data needed
   by the form logic. Also note the call in `InitialAppState` to `f/build-form`. This build function is responsible
   for creating the initial state of any component that wishes to act as a form.
 
@@ -255,15 +255,15 @@
   static uc/InitialAppState
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
-  (form-elements [this] [(f/id-field :db/id)
-                         (f/subform-element :person/phone-numbers ValidatedPhoneForm :many)
-                         (f/text-input :person/name :validator 'name-valid?)
-                         (f/integer-input :person/age :validator 'in-range?
-                                          :validator-args {:min 1 :max 110})
-                         (f/checkbox-input :person/registered-to-vote?)])
+  (form-spec [this] [(f/id-field :db/id)
+                     (f/subform-element :person/phone-numbers ValidatedPhoneForm :many)
+                     (f/text-input :person/name :validator 'name-valid?)
+                     (f/integer-input :person/age :validator 'in-range?
+                       :validator-args {:min 1 :max 110})
+                     (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
-  ; NOTE: :ui/form-root so that sub-forms will trigger render here
-  (query [this] [:ui/form-root :ui/form
+  ; NOTE: f/form-root-key so that sub-forms will trigger render here
+  (query [this] [f/form-root-key f/form-key
                  :db/id :person/name :person/age
                  :person/registered-to-vote?
                  {:person/phone-numbers (om/get-query ValidatedPhoneForm)}])
@@ -361,11 +361,11 @@
   ## Composition
 
   Form support augments normalized entities in your app database, so they can be easily composed! They are UI components, and have nothing special
-  about them other than the `:ui/form` state that is added to the entity (though your call of `build-form`).
+  about them other than the `f/form-key` state that is added to the entity (though your call of `build-form`).
   You can convert any entity in your database to a form using the `build-form` function, meaning that you can load
   entities as normal, and as you want to edit them
   in a form, simple mutate them into form-compatible entities with `build-form` (which will not touch the original
-  properties of the entity, just add `:ui/form`). Then render them with a UI component that shares your entity Ident,
+  properties of the entity, just add `f/form-key`). Then render them with a UI component that shares your entity Ident,
   but has a render method that renders the form fields with `form-field`.
 
   Here is the source for an application that renders a Person form, where the person can have any nubmer of phone numbers,
@@ -381,7 +381,7 @@
 
   The one caveat is that when forms are nested, the mutations on the nested fields cannot (due to the design of Om) refresh
   the parent automatically. To work around this, all built-in form mutations will trigger follow-on reads of
-  the special property `:ui/form-root`. So, if you add that to your parent form's query, rendering of the top-level
+  the special property `f/form-root-key`. So, if you add that to your parent form's query, rendering of the top-level
   form elements (e.g. buttons that control submission) will properly update.
 
   ### Adding Sub-form Elements
@@ -441,13 +441,13 @@
   (dc/mkdn-pprint-source f/render-text-field)
   "
   ```
-  (defmethod form-field ::text [component form name] (render-text-field component form name))
+  (defmethod form-field* ::text [component form name] (render-text-field component form name))
   ```
 
   You can retrieve a field's current form value with `(f/current-value form field-name)`, and you can obtain
   your field's configuration (map of :input/??? values) with `(f/field-config form field-name)`.
 
-  The `form-field` multimethod should, in general, return as little as possible, but you are allowed to do whatever you want.
+  The `form-field*` multimethod should, in general, return as little as possible, but you are allowed to do whatever you want.
   You are free to make form field renderers that render much more complex DOM, an SVG, etc.
 
   The following built-in mutations can (and should) be used in your event handlers:
@@ -460,7 +460,7 @@
   ## Other Functions of Interest
 
   Since the `form` is also your entity, you may of course pull any entity data from the `form` map. (E.g. you can
-  for example directly access `(:person/name person-form)`). The form attributes are stored under the `:ui/form` key
+  for example directly access `(:person/name person-form)`). The form attributes are stored under the `f/form-key` key
   and are intended to be opaque. Do not sneak access into the data structure, since we may choose to change the structure
   in future versions. Instead, use these:
 
@@ -472,4 +472,49 @@
   - `f/form-id` : returns the Om Ident of the form (which is also the ident of the entity)
   - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
-  ")
+   ")
+
+(defmethod m/mutate 'form-changed/notify [{:keys [state]} k {:as params :keys [form-id field value]}]
+  {:action
+   (fn []
+     (swap! state assoc-in (conj form-id :form-change/notification)
+       (str "Field: " field " changed to: " value)))})
+
+(defui ^:once ChangePlexer
+  static uc/InitialAppState
+  (initial-state [this _] (f/build-form this {:db/id 1}))
+  static f/IForm
+  (form-spec [this]
+    [(f/on-form-change 'form-changed/notify)
+     (f/id-field :db/id)
+     (f/text-input :some/text :default-value "some text")])
+  static om/IQuery
+  (query [this] [f/form-key f/form-root-key :ui/react-key
+                 :db/id :some/text :form-change/notification])
+  static om/Ident
+  (ident [this props] [:change-plexer/by-id (:db/id props)])
+  Object
+  (render [this]
+    (let [{:keys [ui/react-key form-change/notification] :as props} (om/props this)]
+      (dom/div #js {:key react-key}
+        (when notification (dom/p nil (str "on-form-change notification: " notification)))
+        (f/form-field this props :some/text)))))
+
+(def ui-change-plexer (om/factory ChangePlexer))
+
+(defui ^:once ChangeRoot
+  static uc/InitialAppState
+  (initial-state [this _] {:change-plexer (uc/initial-state ChangePlexer {})})
+  static om/IQuery
+  (query [this] [:ui/react-key {:change-plexer (om/get-query ChangePlexer)}])
+  Object
+  (render [this]
+    (let [{:keys [ui/react-key change-plexer]} (om/props this)]
+      (dom/div #js {:key react-key}
+        (ui-change-plexer change-plexer)))))
+
+(defcard on-form-change-sample
+  "This card shows example usage of the on-form-change form-spec fn."
+  (untangled-app ChangeRoot)
+  {}
+  {:inspect-data true})
