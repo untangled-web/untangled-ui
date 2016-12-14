@@ -537,7 +537,11 @@
     (component "validate-fields"
       (assertions
         "non-recursively updates validation on all fields"
-        (f/valid? validated-person :person/name) => false))
+        ((juxt f/valid? f/invalid?) validated-person) => [false true]
+        "can supply option to skip unchanged fields"
+        ((juxt f/valid? f/invalid?)
+         (f/validate-fields unchecked-person {:skip-unchanged? true}))
+        => [false false]))
     (assertions
       "Can query the tri-state validity of a specific field (which defaults to unchecked)"
       (f/current-validity unchecked-person :person/name) => :unchecked
@@ -697,6 +701,7 @@
         (when-mocking
           (om/props :fake/component) => :fake/props
           (om/transact! :fake/component tx) => (fix-tx tx)
+          (f/validate-fields :fake/props) => :fake/props
           (f/form-ident _) => :fake/form-ident
           (behavior "only commits if form is valid after validating"
             (when-mocking
@@ -751,7 +756,6 @@
           (assertions
             (f/reset-from-entity! :fake/component basic-person)
             => `[f/reset-from-entity {:form-id [:people/by-id 3]}
-                 f/validate-form {:form-id [:people/by-id 3]}
                  ~f/form-root-key])))
       (component "reset-entity"
         (assertions

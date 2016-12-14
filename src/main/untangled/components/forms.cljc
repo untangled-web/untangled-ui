@@ -107,24 +107,24 @@
   "Declare a text input on a form"
   [name & {:keys [validator validator-args className default-value placeholder]
            :or {placeholder "" default-value "" className ""}}]
-  {:input/name           name
-   :input/default-value  default-value
-   :input/placeholder    placeholder
-   :input/validator      validator
-   :input/validator-args validator-args
-   :input/css-class      className
-   :input/type           ::text})
+  (cond-> {:input/name           name
+           :input/default-value  default-value
+           :input/placeholder    placeholder
+           :input/css-class      className
+           :input/type           ::text}
+    validator      (assoc :input/validator validator)
+    validator-args (assoc :input/validator-args validator-args)))
 
 (defn integer-input
   "Declare an integer input on a form"
   [name & {:keys [validator validator-args className default-value]
            :or {default-value 0 className ""}}]
-  {:input/name           name
-   :input/default-value  default-value
-   :input/validator      validator
-   :input/validator-args validator-args
-   :input/css-class      className
-   :input/type           ::integer})
+  (cond-> {:input/name           name
+           :input/default-value  default-value
+           :input/css-class      className
+           :input/type           ::integer}
+    validator      (assoc :input/validator validator)
+    validator-args (assoc :input/validator-args validator-args)))
 
 (defn checkbox-input
   "Declare a checkbox on a form"
@@ -188,9 +188,10 @@
 (defn ui-field?
   "For checking if a field is only a ui concern.
    eg: should therefore not be sent to the server."
-  [form field]
-  (-> (field-config form field)
-    :input/name is-ui-query-fragment?))
+  ([form] (fn [field] (ui-field? form field)))
+  ([form field]
+   (-> (field-config form field)
+     :input/name is-ui-query-fragment?)))
 
 (defn current-value
   "Gets the current value of a field in a form."
@@ -217,6 +218,13 @@
   "Get the unmodified copy of the form state from when it was first initialized."
   ([form] (get-in form [form-key :origin]))
   ([form field] (get (get-original-data form) field)))
+
+(defn dirty-field?
+  ([form] (fn [field] (dirty-field? form field)))
+  ([form field]
+   (let [curr (current-value form field)]
+     (or (om/tempid? curr)
+         (not= curr (get-original-data form field))))))
 
 (declare validator)
 
@@ -310,14 +318,14 @@
   If there are any to-many relations in the database, they will be expanded to individual entries of the returned sequence.
   "
   [app-state root-form-class form-ident]
-  (let [form (get-in app-state form-ident)
-        subforms (subforms* root-form-class)
-        result (mapcat (fn [[query-key-path class]]
-                         (for [ident (to-idents app-state form query-key-path)]
-                           (let [value (get-in app-state ident)]
-                             {:ident ident :class class :form value})))
-                 subforms)]
-    (filter :ident (conj result {:ident form-ident :class root-form-class :form form}))))
+  (let [form (get-in app-state form-ident)]
+    (lazy-cat [{:ident form-ident :class root-form-class :form form}]
+      (sequence (comp (mapcat (fn [[query-key-path class]]
+                                (for [ident (to-idents app-state form query-key-path)]
+                                  (let [value (get-in app-state ident)]
+                                    {:ident ident :class class :form value}))))
+                  (filter :ident))
+                (subforms* root-form-class)))))
 
 (defn update-forms
   "Similar to update-in, but walks your form declaration to affect all (initialized and preset) nested forms.
@@ -358,13 +366,16 @@
   "INTERNAL METHOD. Get the default state configuration for the given field definitions.
    MUST ONLY BE PASSED PURE FIELDS. Not subforms."
   [fields]
-  (let [names (map :input/name fields)
-        parsed-fields (map (fn [f] (if (= ::identity (:input/type f))
-                                     {:value (om/tempid) :valid :valid}
-                                     {:value (:input/default-value f) :valid :unchecked}))
-                        fields)]
-    {:state (zipmap names (map :value parsed-fields))
-     :validation (zipmap names (map :valid parsed-fields))}))
+  (let [parse-field
+        (fn [f] (if (= ::identity (:input/type f))
+                  {:value (om/tempid) :valid :valid}
+                  {:value (:input/default-value f) :valid :unchecked}))]
+    (reduce (fn [acc field]
+              (let [{:keys [value valid]} (parse-field field)]
+                (-> acc
+                  (assoc-in [:state (:input/name field)] value)
+                  (assoc-in [:validation (:input/name field)] valid))))
+      {} fields)))
 
 (defn initialized-state
   "INTERNAL. Get the initialized state of the form based on default state of the fields and the current entity state"
@@ -531,19 +542,17 @@
 
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."
-  [form]
-  (let [field-ids (validatable-fields form)]
-    (reduce (fn [form field-id] (validate-field form field-id))
-      form field-ids)))
+  [form & [{:keys [skip-unchanged?]}]]
+  (transduce (filter (if skip-unchanged? (dirty-field? form) identity))
+    validate-field
+    form (validatable-fields form)))
 
 (defn dirty?
   "Returns true if the entity state does not match the form state, or if it contains a tempid.
    Does NOT recurse into subforms"
   [form]
   (boolean
-    (some #(let [curr (current-value form %)]
-             (or (om/tempid? curr)
-                 (not= curr (get-original-data form %))))
+    (some (dirty-field? form)
           (validatable-fields form))))
 
 (defn any-dirty?
@@ -554,14 +563,14 @@
 
 (defn validate-forms
   "Run validation on an entire form (by ident) with subforms. Returns an updated app-state."
-  [app-state form-id]
+  [app-state form-id & [opts]]
   (let [form (get-in app-state form-id)
         form-class (form-component form)]
     (if form-class
-      (update-forms app-state form (comp validate-fields :form))
-      (do
-        (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?")
-        app-state))))
+      (update-forms app-state form
+        (comp #(validate-fields % opts)
+          :form))
+      (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))
 
 ;; TODO: TESTME
 #?(:cljs (defmethod m/mutate `validate-field [{:keys [state]} k {:keys [form-id field]}]
@@ -569,13 +578,9 @@
             :action #(swap! state update-in form-id validate-field field)}))
 
 ;; TODO: TESTME
-#?(:cljs (defmethod m/mutate `validate-form [{:keys [state]} k {:keys [form-id]}]
+#?(:cljs (defmethod m/mutate `validate-form [{:keys [state]} k {:as opts :keys [form-id]}]
            {:doc "Mutation to run validation on an entire form"
-            :action (fn []
-                      (let [form (get-in @state form-id)]
-                        (if form
-                          (swap! state update-forms form (comp validate-fields :form))
-                          (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))}))
+            :action (fn [] (swap! state validate-forms form-id opts))}))
 
 ;; TODO: TESTME
 (defn validate-entire-form!
@@ -584,9 +589,9 @@
    the state of the form to obtain an updated validated form. If you want to trigger validation as *part* of your
    own transaction (so your mutation can see the validated form), you may use the underlying
    `(f/validate-form {:form-id fident})` mutation in your own call to `transact!`."
-  [comp-or-reconciler form]
+  [comp-or-reconciler form & {:as opts}]
   (om/transact! comp-or-reconciler
-    `[(validate-form ~{:form-id (form-ident form)})
+    `[(validate-form ~(merge opts {:form-id (form-ident form)}))
       ~form-root-key]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -755,26 +760,24 @@
       (let [fields (element-names form)]
         (if (om/tempid? (second ident))
           (assoc-in diff [:tx/new ident] (select-keys form fields))
-          (transduce (remove (partial ui-field? form))
+          (transduce (comp (remove (ui-field? form))
+                       (filter (dirty-field? form)))
             (completing
               (fn [acc field]
                 (let [curr (current-value form field)
-                      orig (get-original-data form field)]
-                  (cond
-                    (= curr orig) acc
-                    :else
-                    (let [cfg (field-config form field)]
-                      (case (:input/cardinality cfg)
-                        :many (let [additions (set/difference (set curr) (set orig))
-                                    removals  (set/difference (set orig) (set curr))]
-                                (cond-> acc
-                                  (seq removals)  #_=> (assoc-in [:tx/rem ident field] (vec removals))
-                                  (seq additions) #_=> (assoc-in [:tx/add ident field] (vec additions))))
-                        (cond
-                          curr #_=> (assoc-in acc [:tx/set ident field] curr)
-                          (and (not curr) orig)
-                          #_=> (assoc-in acc [:tx/del ident field] orig)
-                          :else acc)))))))
+                      orig (get-original-data form field)
+                      cfg (field-config form field)]
+                  (case (:input/cardinality cfg)
+                    :many (let [additions (set/difference (set curr) (set orig))
+                                removals  (set/difference (set orig) (set curr))]
+                            (cond-> acc
+                              (seq removals)  #_=> (assoc-in [:tx/rem ident field] (vec removals))
+                              (seq additions) #_=> (assoc-in [:tx/add ident field] (vec additions))))
+                    (cond
+                      curr #_=> (assoc-in acc [:tx/set ident field] curr)
+                      (and (not curr) orig)
+                      #_=> (assoc-in acc [:tx/del ident field] orig)
+                      :else acc)))))
             diff fields))))))
 
 (defn reset-from-entity!
@@ -784,7 +787,6 @@
   (let [form-id (form-ident form)]
     (om/transact! comp-or-reconciler
       `[(reset-from-entity ~{:form-id form-id})
-        (validate-form ~{:form-id form-id})
         ~form-root-key])))
 
 (defn commit-to-entity!
