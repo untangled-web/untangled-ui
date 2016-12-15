@@ -584,28 +584,28 @@
 (defn fix-tx "hack/fix for github.com/untangled-web/untangled-spec/issues/6"
   [tx] (mapcat #(if (seq? %) (vec %) [%]) tx))
 
-(let [app-state (-> person-db
-                  (f/init-form Phone [:phone/by-id 1])
-                  (f/init-form Phone [:phone/by-id 2])
-                  (f/init-form Person [:people/by-id 7])
-                  (f/init-form Person [:people/by-id 3])
-                  (f/init-form PolyPerson [:people/by-id 4])
-                  (f/init-form PolyPerson [:people/by-id 5])
-                  (f/init-form PolyPerson [:people/by-id 6]))
-      basic-person (get-in app-state [:people/by-id 3])
-      one-number-person (get-in app-state [:people/by-id 7])
-      no-number-person (get-in app-state [:people/by-id 5])
-      many-number-person (get-in app-state [:people/by-id 4])
-      one-many-number-person (get-in app-state [:people/by-id 6])
+(specification "Form entity commit/reset"
+  (let [app-state (-> person-db
+                    (f/init-form Phone [:phone/by-id 1])
+                    (f/init-form Phone [:phone/by-id 2])
+                    (f/init-form Person [:people/by-id 7])
+                    (f/init-form Person [:people/by-id 3])
+                    (f/init-form PolyPerson [:people/by-id 4])
+                    (f/init-form PolyPerson [:people/by-id 5])
+                    (f/init-form PolyPerson [:people/by-id 6]))
+        basic-person (get-in app-state [:people/by-id 3])
+        one-number-person (get-in app-state [:people/by-id 7])
+        no-number-person (get-in app-state [:people/by-id 5])
+        many-number-person (get-in app-state [:people/by-id 4])
+        one-many-number-person (get-in app-state [:people/by-id 6])
 
-      tempids (repeatedly om/tempid)
+        tempids (repeatedly om/tempid)
 
-      test-diff-form
-      (fn [form f path & args]
-        (-> app-state
-          (#(apply f % (vec (concat (f/form-ident form) path)) args))
-          (f/diff-form form)))]
-  (specification "Form entity commit/reset"
+        test-diff-form
+        (fn [form f path & args]
+          (-> app-state
+            (#(apply f % (vec (concat (f/form-ident form) path)) args))
+            (f/diff-form form)))]
     (component "commit-to-entity"
       (component "diff-form"
         (assertions
@@ -802,3 +802,54 @@
       (get-in [:mutant/by-id 1])
       f/get-on-form-change-mut-sym)
     => 'mutant/changed))
+
+(specification "validate-field mutation"
+  (let [thing-1 [:thing/by-id 1]
+        db (-> {:thing/by-id {1 {:db/id 1}}}
+                (f/init-form Thing thing-1))]
+    (provided "outsources work to validate-field"
+      (f/validate-field form field) => ::ok
+      (assertions
+        (get-in (test-mutate-action {:state (atom db)}
+                  `f/validate-field {:form-id thing-1 :field :thing/name})
+                thing-1)
+        => ::ok))))
+
+(specification "validate-form mutation"
+  (let [thing-1 [:thing/by-id 1]
+        db (-> {:thing/by-id {1 {:db/id 1}}}
+             (f/init-form Thing thing-1))]
+    (provided "outsources work to validate-field"
+      (f/validate-forms state form-id opts)
+      => (do (assertions (contains? opts :form-id) => false) ::ok)
+      (assertions
+        (test-mutate-action {:state (atom db)}
+          `f/validate-form {:form-id thing-1})
+        => ::ok))))
+
+(specification "validate-entire-form!"
+  (let [thing-1 [:thing/by-id 1]
+        db (-> {:thing/by-id {1 {:db/id 1}}}
+             (f/init-form Thing thing-1))]
+    (when-mocking
+      (om/transact! _ tx) => (fix-tx tx)
+      (assertions
+        (f/validate-entire-form! :fake/this (get-in db thing-1))
+        => `[f/validate-form {:form-id ~thing-1}
+             ~f/form-root-key]))))
+
+(specification "form field rendering"
+  (component "extend using form-field* & render using form-field"
+    (defmethod f/form-field* :fake/type [component form field-name]
+      ::ok)
+    (when-mocking
+      (f/field-config :fake/form :fake/field) =1x=> {:input/type :fake/type}
+      (assertions
+        (f/form-field :fake/this :fake/form :fake/field)
+        => ::ok))
+    (when-mocking
+      (log/error _ _) => nil
+      (assertions
+        "if it fails to dispatch it at least shows you the invalid form & field"
+        (f/form-field :fake/this :bad/form :bad/field)
+        =throws=> (ExceptionInfo #":bad/form.*:bad/field")))))

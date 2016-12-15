@@ -57,8 +57,9 @@
                   (let [spec-key (if (= form-key (:input/type field))
                                    :form :elements)]
                     (update-in acc [spec-key (:input/name field)]
-                      (assert-no-duplicate (cond-> field (= :form spec-key)
-                                             (dissoc :input/name :input/type))))))
+                      (assert-no-duplicate
+                        (cond-> field (= :form spec-key)
+                          (dissoc :input/name :input/type))))))
           {} (form-spec this))
       (update :elements vals))))
 
@@ -572,17 +573,14 @@
           :form))
       (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))
 
-;; TODO: TESTME
 #?(:cljs (defmethod m/mutate `validate-field [{:keys [state]} k {:keys [form-id field]}]
            {:doc "Mutation to run validation on a specific field"
             :action #(swap! state update-in form-id validate-field field)}))
 
-;; TODO: TESTME
 #?(:cljs (defmethod m/mutate `validate-form [{:keys [state]} k {:as opts :keys [form-id]}]
            {:doc "Mutation to run validation on an entire form"
-            :action (fn [] (swap! state validate-forms form-id opts))}))
+            :action (fn [] (swap! state validate-forms form-id (dissoc opts :form-id)))}))
 
-;; TODO: TESTME
 (defn validate-entire-form!
   "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
    but the UI will update after validation is complete. If you want to test if a form is valid use validate-fields on
@@ -608,7 +606,6 @@
 ;; FORM FIELD RENDERING
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TODO: TESTME
 (defmulti form-field*
   "Multimethod for rendering field types. Dispatches on field :input/type."
   (fn [component form field-name & params]
