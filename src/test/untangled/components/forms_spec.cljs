@@ -181,7 +181,7 @@
 
 (defui Phone
   static om/IQuery
-  (query [this] [:db/id :phone/number])
+  (query [this] [f/form-key :db/id :phone/number])
   static om/Ident
   (ident [this props] [:phone/by-id (:db/id props)])
   static f/IForm
@@ -189,7 +189,8 @@
 
 (defui Person
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}
+  (query [this] [f/form-key :db/id :person/name
+                 {:person/number (om/get-query Phone)}
                  :ui.person/client-only])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
@@ -230,7 +231,7 @@
 
 (defui PolyPerson
   static om/IQuery
-  (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
+  (query [this] [f/form-key :db/id :person/name {:person/number (om/get-query Phone)}])
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
@@ -525,8 +526,8 @@
                       (f/init-form CPerson [:people/by-id 5]))
         unchecked-person (get-in app-state [:people/by-id 5])
         c-person (get-in app-state [:people/by-id 4])
-        valid-person (f/validate-field c-person :person/name)
-        invalid-person (f/validate-field unchecked-person :person/name)
+        valid-person (f/validate-field* c-person :person/name)
+        invalid-person (f/validate-field* unchecked-person :person/name)
         validated-person (f/validate-fields unchecked-person)]
     (component "Update validation (on a field)"
       (assertions
@@ -556,16 +557,19 @@
       "Can find the validation trigger symbol for a field"
       (f/validator invalid-person :person/name) => 'is-named?
       "Can find the validation trigger args for a field"
-      (f/validator-args invalid-person :person/name) => {:name "C"}
-      "Can see if a field is clean on the form"
-      (f/dirty? valid-person) => false
-      "Can see if a field is dirty on the form"
-      (f/dirty? (assoc-in valid-person [:person/name] "X")) => true
-      "Can recursively check for dirty data on a form"
-      (f/any-dirty? app-state c-person) => false
-      (f/any-dirty? (assoc-in app-state [:people/by-id 4 :person/name] "X") c-person) => true
-      (f/any-dirty? (assoc-in app-state [:phone/by-id 1 :phone/number] "222") c-person) => true
-      (f/any-dirty? (assoc-in app-state [:phone/by-id 2 :phone/number] "4") c-person) => true))
+      (f/validator-args invalid-person :person/name) => {:name "C"})
+    (component "dirty checking"
+      (let [clean-person (om/db->tree (om/get-query Person) c-person app-state)]
+        (assertions
+          "Can see if a field is clean on the form"
+          (f/dirty-form? clean-person) => false
+          "Can see if a field is dirty on the form"
+          (f/dirty-form? (assoc-in clean-person [:person/name] "X")) => true
+          "Can recursively check for dirty data on a form"
+          (f/dirty? clean-person) => false
+          (f/dirty? (assoc clean-person :person/name "X")) => true
+          (f/dirty? (assoc-in clean-person [:person/number 0 :phone/number] "222")) => true
+          (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true))))
 
   (component "validate-forms"
     (let [app-state (f/init-form person-db CPerson [:people/by-id 4])
@@ -587,86 +591,95 @@
 (specification "Form entity commit/reset"
   (let [app-state (-> person-db
                     (f/init-form Phone [:phone/by-id 1])
-                    (f/init-form Phone [:phone/by-id 2])
-                    (f/init-form Person [:people/by-id 7])
-                    (f/init-form Person [:people/by-id 3])
-                    (f/init-form PolyPerson [:people/by-id 4])
-                    (f/init-form PolyPerson [:people/by-id 5])
-                    (f/init-form PolyPerson [:people/by-id 6]))
-        basic-person (get-in app-state [:people/by-id 3])
-        one-number-person (get-in app-state [:people/by-id 7])
-        no-number-person (get-in app-state [:people/by-id 5])
-        many-number-person (get-in app-state [:people/by-id 4])
-        one-many-number-person (get-in app-state [:people/by-id 6])
+                    (f/init-form Phone [:phone/by-id 2]))
 
-        tempids (repeatedly om/tempid)
+        get-entity (fn [class ident]
+                     (let [state (f/init-form app-state class ident)]
+                       (om/db->tree (om/get-query class) (get-in state ident) state)))
+        basic-person (get-entity Person [:people/by-id 3])
+        one-number-person (get-entity Person [:people/by-id 7])
+        no-number-person (get-entity PolyPerson [:people/by-id 5])
+        many-number-person (get-entity PolyPerson [:people/by-id 4])
+        one-many-number-person (get-entity PolyPerson [:people/by-id 6])
 
-        test-diff-form
-        (fn [form f path & args]
-          (-> app-state
-            (#(apply f % (vec (concat (f/form-ident form) path)) args))
-            (f/diff-form form)))]
+        [t1] (repeatedly om/tempid)]
+    (component "form-reduce"
+      (assertions
+        (f/form-reduce basic-person (map f/form-ident) [] conj)
+        => [[:people/by-id 3]]
+        "we reduce over ref ones"
+        (-> basic-person
+          (assoc :person/number (f/build-form Phone {:db/id 1 :phone/number "987-6543"}))
+          (f/form-reduce (map f/form-ident) [] conj))
+        => [[:people/by-id 3] [:phone/by-id 1]]
+        "we reduce over ref manys"
+        (-> no-number-person
+          (assoc :person/number (mapv (partial f/build-form Phone)
+                                  [{:db/id 1 :phone/number "987-6543"}
+                                   {:db/id 2 :phone/number "987-6543"}]))
+          (f/form-reduce (map f/form-ident) [] conj))
+        => [[:people/by-id 5] [:phone/by-id 1] [:phone/by-id 2]]))
     (component "commit-to-entity"
       (component "diff-form"
         (assertions
           "sanity check"
-          (f/diff-form app-state basic-person) => {}
+          (f/diff-form basic-person) => {}
           "we can pick up an update to a form"
-          (test-diff-form basic-person assoc-in [:person/name] "Foo Bar")
+          (f/diff-form (assoc basic-person :person/name "Foo Bar"))
           => {:tx/set {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
           "we can pick up a creation of a reference"
-          (-> app-state
-            (assoc-in (conj (f/form-ident basic-person) :person/number) [:phone/by-id (first tempids)])
-            (assoc-in [:phone/by-id (first tempids)]
-              {:db/id (first tempids) :phone/number "123-4567"})
-            (f/init-form Phone [:phone/by-id (first tempids)])
-            (f/diff-form basic-person))
-          => {:tx/new {[:phone/by-id (first tempids)] {:phone/number "123-4567"}}
-              :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id (first tempids)]}}}
+          (-> basic-person
+            (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
+            f/diff-form)
+          => {:tx/new {[:phone/by-id t1] {:phone/number "123-4567"}}
+              :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}}
           "we can pick up a deletion of a reference"
-          (test-diff-form one-number-person
-            update-in [] dissoc :person/name)
+          (-> one-number-person
+            (dissoc :person/name)
+            f/diff-form)
           => {:tx/del {(f/form-ident one-number-person) {:person/name "A"}}}
+          "we can pick up a deletion of an entity"
+          (-> one-number-person
+            (dissoc :person/number)
+            f/diff-form)
+          => {:tx/del {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
           "we can pick up changes to subforms"
-          (-> app-state
-            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
-            (f/diff-form one-number-person))
+          (-> one-number-person
+            (assoc-in [:person/number :phone/number] "123-4567")
+            f/diff-form)
           => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          (-> app-state
-            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
-            (f/diff-form many-number-person))
+          (-> many-number-person
+            (assoc-in [:person/number 0 :phone/number] "123-4567")
+            f/diff-form)
           => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          "^-> but *only* those we reference"
-          (-> app-state
-            (assoc-in [:phone/by-id 1 :phone/number] "123-4567")
-            (f/diff-form no-number-person))
-          => {}
-          "we send a minimal delta for modification of refs (ie idents)"
-          (test-diff-form no-number-person
-            assoc-in [:phone/by-id 1 :phone/number] "123-4567")
-          => {}
           "^-> new ref one"
-          (test-diff-form basic-person
-            assoc-in [:person/number] [:phone/by-id 1])
+          (-> basic-person
+            (assoc :person/number (f/build-form Phone {:db/id 1}))
+            f/diff-form)
           => {:tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
           "^-> add ref one"
-          (test-diff-form one-number-person
-            assoc-in [:person/number] [:phone/by-id 2])
+          (-> one-number-person
+            (assoc :person/number (f/build-form Phone {:db/id 2}))
+            f/diff-form)
           => {:tx/set {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
           "^-> rem ref many"
-          (test-diff-form one-many-number-person
-            assoc-in [:person/number] [])
+          (-> one-many-number-person
+            (assoc :person/number [])
+            f/diff-form)
           => {:tx/rem {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
           "^-> add ref many"
-          (test-diff-form no-number-person
-            update-in [:person/number] conj [:phone/by-id 1])
+          (-> no-number-person
+            (update :person/number conj (f/build-form Phone {:db/id 1}))
+            f/diff-form)
           => {:tx/add {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
-          (test-diff-form many-number-person
-            update-in [:person/number] conj [:phone/by-id 3])
+          (-> many-number-person
+            (update :person/number conj (f/build-form Phone {:db/id 3}))
+            f/diff-form)
           => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
           "^-> del & add ref many"
-          (test-diff-form many-number-person
-            assoc-in [:person/number 0] [:phone/by-id 3])
+          (-> many-number-person
+            (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
+            f/diff-form)
           => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
               :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
@@ -674,13 +687,14 @@
                                                 form-id => [:people/by-id 3]
                                                 xf => f/commit-state)
                                             ::ok)
-        (f/diff-form _ _) => :fake/delta
+        (f/diff-form _) => :fake/delta
         (let [commit-mut
               (m/mutate {:state (atom app-state)
+                         :target :remote
                          :ast {:params {:remote true}}}
                 `f/commit-to-entity
                 {:remote true
-                 :form-id (f/form-ident basic-person)})]
+                 :form basic-person})]
           (assertions
             "only optionally `:remote`s the result of diff-form to the server"
             (:remote commit-mut) => {:params {:delta :fake/delta}}
@@ -708,7 +722,7 @@
               (f/valid? :fake/props) => true
               (assertions
                 (f/commit-to-entity! :fake/component)
-                => `[f/commit-to-entity {:form-id :fake/form-ident :remote false}
+                => `[f/commit-to-entity {:form :fake/props :remote false}
                      ~f/form-root-key]))
             (when-mocking
               (f/valid? :fake/props) => false
@@ -719,12 +733,7 @@
           (behavior "optional `:rerender` key"
             (assertions
               (last (f/commit-to-entity! :fake/component :rerender [:fake/rerender]))
-              => :fake/rerender))
-          (behavior "optional `:remote` key"
-            (assertions
-              (-> (f/commit-to-entity! :fake/component :remote true)
-                second :remote)
-              => true))))
+              => :fake/rerender))))
       (component "commit-state - helper"
         (assertions
           (f/get-original-data basic-person :person/name)
@@ -743,12 +752,10 @@
                                             ::ok)
         (let [reset-mut
               (m/mutate {:state (atom app-state)
-                         :ast {:params {:remote true :form-id :fake/form-id}}}
+                         :ast {:params {:form-id :fake/form-id}}}
                 `f/reset-from-entity
-                {:remote true
-                 :form-id :fake/form-id})]
+                {:form-id :fake/form-id})]
           (assertions
-            (:remote reset-mut) => {:params {:form-id :fake/form-id}}
             ((:action reset-mut)) => ::ok)))
       (component "reset-from-entity! - api/public function"
         (when-mocking
@@ -800,15 +807,15 @@
     (-> mutant-db
       (f/init-form Mutant [:mutant/by-id 1])
       (get-in [:mutant/by-id 1])
-      f/get-on-form-change-mut-sym)
-    => 'mutant/changed))
+      (f/on-form-change :fake/params))
+    => '(mutant/changed :fake/params)))
 
 (specification "validate-field mutation"
   (let [thing-1 [:thing/by-id 1]
         db (-> {:thing/by-id {1 {:db/id 1}}}
                 (f/init-form Thing thing-1))]
-    (provided "outsources work to validate-field"
-      (f/validate-field form field) => ::ok
+    (provided "outsources work to validate-field*"
+      (f/validate-field* form field) => ::ok
       (assertions
         (get-in (test-mutate-action {:state (atom db)}
                   `f/validate-field {:form-id thing-1 :field :thing/name})
@@ -819,7 +826,7 @@
   (let [thing-1 [:thing/by-id 1]
         db (-> {:thing/by-id {1 {:db/id 1}}}
              (f/init-form Thing thing-1))]
-    (provided "outsources work to validate-field"
+    (provided "outsources work to validate-forms"
       (f/validate-forms state form-id opts)
       => (do (assertions (contains? opts :form-id) => false) ::ok)
       (assertions

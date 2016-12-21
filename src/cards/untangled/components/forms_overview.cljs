@@ -1,4 +1,4 @@
-(ns untangled.components.forms-guide
+(ns untangled.components.forms-overview
   (:require-macros
     [untangled.client.cards :refer [untangled-app]])
   (:require
@@ -271,12 +271,8 @@
   (ident [this props] [:people/by-id (:db/id props)])
   Object
   (render [this]
-    (let [{:keys [person/phone-numbers] :as props} (om/props this)
-          ;; FIXME: should be able to make dirty automatically recurse using declared subforms
-          dirty? (or (f/dirty? props) (some #(f/dirty? %) phone-numbers))]
+    (let [{:keys [person/phone-numbers] :as props} (om/props this)]
       (dom/div #js {:className "form-horizontal"}
-        (when (f/valid? props)
-          (dom/div nil "READY to submit!"))
         (field-with-label this props :person/name "Full Name:" "Please enter your first and last name.")
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
         (checkbox-with-label this props :person/registered-to-vote? "Registered?")
@@ -284,6 +280,8 @@
           (dom/div nil "Good on you!"))
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
+        (when (f/valid? props)
+          (dom/div nil "READY to submit!"))
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-primary"
                            :onClick #(om/transact! this
@@ -293,17 +291,11 @@
           (dom/button #js {:className "btn btn-default"
                            :onClick #(f/validate-entire-form! this props)}
             "Validate")
-          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
-                           :onClick   (fn []
-                                        ;; FIXME: Should be able to use fields, subform, and meta on query to focus query
-                                        ;; and run post mutations that re-initialize the form state on entities just loaded
-                                        (f/reset-from-entity! this props))}
+          (dom/button #js {:className "btn btn-default", :disabled (not (f/dirty? props))
+                           :onClick #(f/reset-from-entity! this props)}
             "UNDO")
-          (dom/button #js {:className "btn btn-default" :disabled (not dirty?)
-                           :onClick   (fn []
-                                        ;; FIXME: Commit should ONLY send delta (dirty fields) to server
-                                        ;; FIXME: Do we want to add support to trigger follow-on remote read of entity, perhaps as an option?
-                                        (f/commit-to-entity! this))}
+          (dom/button #js {:className "btn btn-default", :disabled (not (f/dirty? props))
+                           :onClick #(f/commit-to-entity! this)}
             "Save to entity!"))))))
 
 (def ui-person-form (om/factory PersonForm))
@@ -398,7 +390,7 @@
 
   ### Compositional Dirty-Checking, Validation, and Submission
 
-  The code also shows how you would compose the checks. The `dirty?` definition combines the results of the nested forms
+  The code also shows how you would compose the checks. The `dirty?` function combines the results of the nested forms
   together with the top form. You could do the same for validations.
 
   The `Save` button does a similar thing: it submits the phone numbers, and then the top. Note that Untangled combines
@@ -473,48 +465,3 @@
   - `f/validate-fields` : returns a new version of the form with the fields marked with validation. Pure function.
   - `f/validate-entire-form!` : Transacts a mutation that runs and sets validation markers on the form (which will update UI)
    ")
-
-(defmethod m/mutate 'form-changed/notify [{:keys [state]} k {:as params :keys [form-id field value]}]
-  {:action
-   (fn []
-     (swap! state assoc-in (conj form-id :form-change/notification)
-       (str "Field: " field " changed to: " value)))})
-
-(defui ^:once ChangePlexer
-  static uc/InitialAppState
-  (initial-state [this _] (f/build-form this {:db/id 1}))
-  static f/IForm
-  (form-spec [this]
-    [(f/on-form-change 'form-changed/notify)
-     (f/id-field :db/id)
-     (f/text-input :some/text :default-value "some text")])
-  static om/IQuery
-  (query [this] [f/form-key f/form-root-key :ui/react-key
-                 :db/id :some/text :form-change/notification])
-  static om/Ident
-  (ident [this props] [:change-plexer/by-id (:db/id props)])
-  Object
-  (render [this]
-    (let [{:keys [ui/react-key form-change/notification] :as props} (om/props this)]
-      (dom/div #js {:key react-key}
-        (when notification (dom/p nil (str "on-form-change notification: " notification)))
-        (f/form-field this props :some/text)))))
-
-(def ui-change-plexer (om/factory ChangePlexer))
-
-(defui ^:once ChangeRoot
-  static uc/InitialAppState
-  (initial-state [this _] {:change-plexer (uc/initial-state ChangePlexer {})})
-  static om/IQuery
-  (query [this] [:ui/react-key {:change-plexer (om/get-query ChangePlexer)}])
-  Object
-  (render [this]
-    (let [{:keys [ui/react-key change-plexer]} (om/props this)]
-      (dom/div #js {:key react-key}
-        (ui-change-plexer change-plexer)))))
-
-(defcard on-form-change-sample
-  "This card shows example usage of the on-form-change form-spec fn."
-  (untangled-app ChangeRoot)
-  {}
-  {:inspect-data true})
