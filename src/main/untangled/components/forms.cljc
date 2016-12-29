@@ -25,8 +25,6 @@
   (when-not (pred obj)
     (fail! obj msg ex-data)))
 
-(def P partial)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FORM PROTOCOL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,7 +149,13 @@
    :input/name          name})
 
 (defn dropdown-input
-  "Declare a dropdown menu selector."
+  "Declare a dropdown menu selector.
+
+  name is the keyword property name of the field
+  options is a vector of f/option items to display
+
+  Additional (optional) named parameters are `default-value` and `className`. The
+  default-value should be the `:key` of one of the options (defaults to :f/none)."
   [name options & {:keys [default-value className]
                    :or {default-value ::none className ""}}]
   {:pre [(or (= default-value ::none)
@@ -165,7 +169,9 @@
    :input/name          name})
 
 (defn option
-  "Create an option for use in a dropdown"
+  "Create an option for use in a dropdown. The key is used as your app database value, and label as the label.
+
+  TODO: support lambda as label for i18n"
   [key label]
   {:option/key   key
    :option/label label})
@@ -222,13 +228,21 @@
   "Gets the current value of a field in a form."
   [form field] (get form field))
 
+(declare set-validation)
+
 (defn update-current-value
-  "Updates the current value of a field in a form (with a fn)."
-  [form field f & args] (apply update form field f args))
+  "Updates the current value of a field in a form (with a fn) and marks it as :unchecked."
+  [form field f & args]
+  (as-> form the-form
+        (apply update the-form field f args)
+        (set-validation the-form field :unchecked)))
 
 (defn set-current-value
-  "Sets the current value of a field in a form."
-  [form field value] (assoc form field value))
+  "Sets the current value of a field in a form, and marks it as :unchecked."
+  [form field value]
+  (-> form
+      (assoc field value)
+      (set-validation field :unchecked)))
 
 (defn css-class
   "Gets the css class for the form field"
@@ -392,7 +406,7 @@
   (concat [form]
     (sequence
       (comp
-        (filter (P is-subform? form))
+        (filter (partial is-subform? form))
         (mapcat #(let [curr (current-value form %)]
                    (cond-> curr
                      (and curr (= :one (:input/cardinality (field-config form %))))
@@ -437,8 +451,8 @@
 (defn initialized-state
   "INTERNAL. Get the initialized state of the form based on default state of the fields and the current entity state"
   [empty-form-state field-keys-to-initialize entity]
-  (assert-or-fail field-keys-to-initialize (every-pred seq (P every? keyword?))
-    "Empty or invalid field keys")
+  (assert-or-fail field-keys-to-initialize (every-pred seq (partial every? keyword?))
+                  "Empty or invalid field keys")
   (reduce (fn [s k] (if-let [v (get entity k)]
                       (assoc s k v)
                       s))
@@ -620,20 +634,20 @@
 (defn validate-fields
   "Runs validation on the defined fields and returns a new form with them properly marked."
   [form & [{:keys [skip-unchanged?]}]]
-  (transduce (filter (if skip-unchanged? (P dirty-field? form) identity))
-    validate-field*
-    form (validatable-fields form)))
+  (transduce (filter (if skip-unchanged? (partial dirty-field? form) identity))
+             validate-field*
+             form (validatable-fields form)))
 
 (defn dirty-form?
   "Returns true if the entity state does not match the form state, or if it contains a tempid.
    Does NOT recurse into subforms."
   [form]
   (boolean
-    (some (P dirty-field? form)
+    (some (partial dirty-field? form)
           (validatable-fields form))))
 
 (defn dirty?
-  "Checks if the top-level form, or any of the subforms, are dirty."
+  "Checks if the top-level form, or any of the subforms, are dirty. NOTE: Forms remain dirty as long as they have tempids."
   [form]
   (form-reduce form false (fn [_ form] (reduced-if true? (dirty-form? form)))))
 
@@ -861,11 +875,11 @@
       (let [[_ id :as ident] (form-ident form)
             fields (element-names form)]
         (if (om/tempid? id)
-          (assoc-in diff [:tx/new ident] (select-keys form (remove (P ui-field? form) fields)))
+          (assoc-in diff [:tx/new ident] (select-keys form (remove (partial ui-field? form) fields)))
           (transduce (comp
-                       (remove (P ui-field? form))
-                       (filter (P dirty-field? form)))
-            (completing (P field-diff form))
+                       (remove (partial ui-field? form))
+                       (filter (partial dirty-field? form)))
+                     (completing (partial field-diff form))
             diff fields))))))
 
 (defn reset-from-entity!
@@ -896,7 +910,7 @@
          form-root-key]
         rerender))))
 
-(defn entity-x-form
+(defn entity-xform
   "Modify the form's (under `form-id`) using `update-forms` and a passed in transform `xf`"
   [state form-id xf]
   (update-forms state
@@ -906,16 +920,16 @@
 #?(:cljs (defmethod m/mutate `commit-to-entity
            [{:keys [state ast target] :as env} k {:keys [form remote]}]
            (let [delta (when target (diff-form form))]
-             {:doc "Mutation for moving form data from the form into an entity
+             {:doc    "Mutation for moving form data from the form into an entity
                     eg: commit an entity to storage & make it the new origin for the entity"
               :remote (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))
-              :action (fn [] (swap! state entity-x-form (form-ident form) commit-state))})))
+              :action (fn [] (swap! state entity-xform (form-ident form) commit-state))})))
 
 #?(:cljs (defmethod m/mutate `reset-from-entity
            [{:keys [state ast]} k {:keys [form-id]}]
-           {:doc "Mutation for moving form data from the entity into the form
+           {:doc    "Mutation for moving form data from the entity into the form
                   eg: reset an entity to its original value"
             ;; TODO: Should be able to use fields, subform, and meta on query to focus query
             ;; and run post mutations that re-initialize the form state on entities just loaded
             :remote false
-            :action (fn [] (swap! state entity-x-form form-id reset-entity))}))
+            :action (fn [] (swap! state entity-xform form-id reset-entity))}))

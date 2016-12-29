@@ -299,14 +299,14 @@ TODO: remove the need to pass the component? The form is just om/props of the co
         (dom/div nil
           (mapv ui-vphone-form phone-numbers))
         (when (f/valid? props)
-          (dom/div nil "READY to submit!"))
+          (dom/div nil "All fields have had been validated, and are valid"))
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-primary"
                            :onClick   #(om/transact! this
                                         `[(sample/add-phone ~{:id     (om/tempid)
                                                               :person (:db/id props)})])}
             "Add Phone")
-          (dom/button #js {:className "btn btn-default"
+          (dom/button #js {:className "btn btn-default" :disabled (f/valid? props)
                            :onClick   #(f/validate-entire-form! this props)}
             "Validate")
           (dom/button #js {:className "btn btn-default", :disabled (not (f/dirty? props))
@@ -314,7 +314,7 @@ TODO: remove the need to pass the component? The form is just om/props of the co
             "UNDO")
           (dom/button #js {:className "btn btn-default", :disabled (not (f/dirty? props))
                            :onClick   #(f/commit-to-entity! this)}
-            "Save to entity!"))))))
+            "Submit"))))))
 
 (def ui-person-form (om/factory PersonForm))
 
@@ -348,11 +348,12 @@ TODO: remove the need to pass the component? The form is just om/props of the co
   "
   ## State Evolution
 
-  A form will initially have the field values set to the entity state (passed to `build-form`). As you interact with
-  the form the form fields will change, but **the entity itself does not update in the database table**. This allows you to:
+  A form will initially record the pristine state of field values during `build-form`. As you interact with
+  the form the entity data will change (locally only). This allows the library to support:
 
-  - Reset the form from the entity (optionally triggering a (re)read from the server)
-  - Commit the form changes to the entity (local and optionally remote)
+  - The ability to compare the original entity state with the current (edited) state
+  - Reset the entity state from the pristine condition
+  - Commit *just* the actual changes to the entity to a remote
 
   **This, combined with a little server code, makes the form support full stack!**
 
@@ -365,16 +366,23 @@ TODO: remove the need to pass the component? The form is just om/props of the co
 
   ### State evolution within your own transactions
 
-  All of the functions described above trigger underlying Om `transact!`. Feel free to read the source of those functions
-  and compose the mutations into your own transactions.
+  Any changes you make to your entity after `build-form` are technically considered form edits (and make the form *dirty*
+  and possibly *invalid*).  The built-in form fields just change the state of the entity, and you can too.
+
+  Commits will copy the entity state into the form's pristine holding area, and resets will copy from this pristine area
+  back to your entity.
+
+  The primary concern is that any custom fields that you create should be careful to only populate the value of fields
+  with things that are serializable via transit, since their updated values will need to be transmitted across the wire
+  for full-stack operation.
 
   ## Composition
 
   Form support augments normalized entities in your app database, so they can be easily composed! They are UI components, and have nothing special
-  about them other than the `f/form-key` state that is added to the entity (though your call of `build-form`).
+  about them other than the `f/form-key` state that is added to the entity (through your call of `build-form`).
   You can convert any entity in your database to a form using the `build-form` function, meaning that you can load
   entities as normal, and as you want to edit them
-  in a form, simple mutate them into form-compatible entities with `build-form` (which will not touch the original
+  in a form, first mutate them into form-compatible entities with `build-form` (which will not touch the original
   properties of the entity, just add `f/form-key`). Then render them with a UI component that shares your entity Ident,
   but has a render method that renders the form fields with `form-field`.
 
@@ -389,10 +397,10 @@ TODO: remove the need to pass the component? The form is just om/props of the co
 
   ### Composition and Rendering Refresh
 
-  The one caveat is that when forms are nested, the mutations on the nested fields cannot (due to the design of Om) refresh
+  The one caveat is that when forms are nested the mutations on the nested fields cannot (due to the design of Om) refresh
   the parent automatically. To work around this, all built-in form mutations will trigger follow-on reads of
   the special property `f/form-root-key`. So, if you add that to your parent form's query, rendering of the top-level
-  form elements (e.g. buttons that control submission) will properly update.
+  form elements (e.g. buttons that control submission) will properly update when any element of a subform changes.
 
   ### Adding Sub-form Elements
 

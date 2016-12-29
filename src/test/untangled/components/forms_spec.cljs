@@ -444,32 +444,40 @@
         app-state (f/init-form person-db Person ident-under-test)
         person-form (get-in app-state ident-under-test)]
     (assertions
-      "Can access the component for the form"
+      "form-component returns the defui React component of the form"
       (f/form-component person-form) => Person
-      "Can access the ident of the form's location in the state"
+      "form-ident returns the ident of the form"
       (f/form-ident person-form) => ident-under-test
-      "Can access the config of a given field on a form"
+      "field-config accesses the config of a given field on a form"
       (get (f/field-config person-form :person/number) :input/name) => :person/number
-      "Can access the type of a given field on a form"
+      "field-type return the type of a given field on a form"
       (f/field-type person-form :person/number) => ::f/subform
-      "Can identify a subform field"
+      "is-subform? identifies a subform field"
       (f/is-subform? person-form :person/number) => true
       (f/is-subform? {f/form-key {:elements/by-name {:person/mate {:input/is-form? true}}}} :person/mate) => true
-      "Can access the current (edited) value"
+      "current-value gives the current (edited) value"
       (f/current-value person-form :person/name) => "A"
-      "Can modify the current value"
-      (f/current-value person-form :person/name) =fn=> (comp not #{"QQ" "JJ"})
+      "update-current-value modifies the current field value via a function"
       (-> person-form
-        (f/update-current-value :person/name (constantly "QQ"))
-        (f/current-value :person/name))
-      => "QQ"
+          (f/update-current-value :person/name (constantly "new-value"))
+          (f/current-value :person/name)) => "new-value"
+      "set-current-value modifies the current field value"
       (-> person-form
-        (f/set-current-value :person/name "JJ")
-        (f/current-value :person/name))
-      => "JJ"
-      "Can access the desired CSS class of a field"
+          (f/set-current-value :person/name "new-value")
+          (f/current-value :person/name)) => "new-value"
+      "update-current-value marks field validation as :unchecked"
+      (-> person-form
+          (f/set-validation :person/name :valid)
+          (f/update-current-value :person/name (constantly "do-not-care"))
+          (f/current-validity :person/name)) => :unchecked
+      "set-current-value marks field validation as :unchecked"
+      (-> person-form
+          (f/set-validation :person/name :valid)
+          (f/set-current-value :person/name "do-not-care")
+          (f/current-validity :person/name)) => :unchecked
+      "css-class can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
-      "Can access field names for all validatable fields"
+      "validatable-fields give field names for all validatable fields"
       (set (f/validatable-fields person-form)) => #{:person/name :ui.person/client-only})))
 
 (defn test-mutate-action [env disp params]
@@ -487,27 +495,38 @@
   (ident [this props] [:thing/by-id (:db/id props)]))
 
 (specification "Form state mutations"
-  (let [db (-> {:thing/by-id {1 {:db/id 1}}}
-             (f/init-form Thing [:thing/by-id 1]))
-        test-mutate-field (partial test-mutate-action {:state (atom db)})
-
-        thing-1 (get-in db [:thing/by-id 1])]
+  (let [state (atom (-> {:thing/by-id {1 {:db/id 1 :thing/name "Original" :thing/ok? false}}}
+                        (f/init-form Thing [:thing/by-id 1])))
+        test-mutate-field (partial test-mutate-action {:state state})
+        get-thing (fn [] (get-in @state [:thing/by-id 1]))
+        validate (fn [] (swap! state update-in [:thing/by-id 1] f/validate-fields))]
     (component "set-field"
+      (validate)
       (assertions
-        (f/current-value thing-1 :thing/name) =fn=> #(not= % "asdf")
-        (-> (test-mutate-field `f/set-field
-              {:form-id [:thing/by-id 1] :field :thing/name :value "asdf"})
-          (get-in [:thing/by-id 1])
-          (f/current-value :thing/name))
-        => "asdf"))
+        "Assuming the field is already valid"
+        (f/current-validity (get-thing) :thing/name) => :valid)
+
+      (test-mutate-field `f/set-field
+                         {:form-id [:thing/by-id 1] :field :thing/name :value "asdf"})
+
+      (assertions
+        "Modifies the field"
+        (f/current-value (get-thing) :thing/name) => "asdf"
+        "Sets validation to :unchecked"
+        (f/current-validity (get-thing) :thing/name) => :unchecked))
     (component "toggle-field"
+      (validate)
       (assertions
-        (f/current-value thing-1 :thing/ok?) =fn=> not
-        (-> (test-mutate-field `f/toggle-field
-              {:form-id [:thing/by-id 1] :field :thing/ok?})
-          (get-in [:thing/by-id 1])
-          (f/current-value :thing/ok?))
-        => true))))
+        "Assuming the field is already valid"
+        (f/current-validity (get-thing) :thing/name) => :valid)
+
+      (test-mutate-field `f/toggle-field {:form-id [:thing/by-id 1] :field :thing/ok?})
+
+      (assertions
+        "Toggles the field"
+        (f/current-value (get-thing) :thing/ok?) => true
+        "Sets validation to :unchecked"
+        (f/current-validity (get-thing) :thing/ok?) => :unchecked))))
 
 (defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
 
@@ -683,10 +702,10 @@
           => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
               :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
-        (f/entity-x-form _ form-id xf) => (do (assertions
+        (f/entity-xform _ form-id xf) => (do (assertions
                                                 form-id => [:people/by-id 3]
                                                 xf => f/commit-state)
-                                            ::ok)
+                                             ::ok)
         (f/diff-form _) => :fake/delta
         (let [commit-mut
               (m/mutate {:state (atom app-state)
@@ -746,10 +765,10 @@
 
     (component "reset-from-entity"
       (when-mocking
-        (f/entity-x-form _ form-id xf) => (do (assertions
+        (f/entity-xform _ form-id xf) => (do (assertions
                                                 form-id => :fake/form-id
                                                 xf => f/reset-entity)
-                                            ::ok)
+                                             ::ok)
         (let [reset-mut
               (m/mutate {:state (atom app-state)
                          :ast {:params {:form-id :fake/form-id}}}
