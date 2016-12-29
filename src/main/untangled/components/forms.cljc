@@ -114,27 +114,32 @@
    :input/type ::identity})
 
 (defn text-input
-  "Declare a text input on a form"
-  [name & {:keys [validator validator-args className default-value placeholder]
-           :or {placeholder "" default-value "" className ""}}]
-  (cond-> {:input/name           name
-           :input/default-value  default-value
-           :input/placeholder    placeholder
-           :input/css-class      className
-           :input/type           ::text}
+  "Declare a text input on a form. The allowed options are named parameters:
+
+  :className nm    Additional CSS classnames to include on the input (as a string)
+  :validator sym   A symbol to target the dispatch of validation
+  :validator-args  Arguments that will be passed to the validator
+  :placeholder     The input placeholder. Supports a lambda or string
+  :default-value   A value to use in the field if the app-state value is nil
+  :validate-on-blur? Should the field be validated on a blur event (default = true)
+  "
+  [name & {:keys [validator validator-args className default-value placeholder validate-on-blur?]
+           :or   {placeholder "" default-value "" className "" validate-on-blur? true}}]
+  (cond-> {:input/name              name
+           :input/default-value     default-value
+           :input/placeholder       placeholder
+           :input/css-class         className
+           :input/validate-on-blur? validate-on-blur?
+           :input/type              ::text}
     validator      (assoc :input/validator validator)
     validator-args (assoc :input/validator-args validator-args)))
 
 (defn integer-input
-  "Declare an integer input on a form"
-  [name & {:keys [validator validator-args className default-value]
-           :or {default-value 0 className ""}}]
-  (cond-> {:input/name           name
-           :input/default-value  default-value
-           :input/css-class      className
-           :input/type           ::integer}
-    validator      (assoc :input/validator validator)
-    validator-args (assoc :input/validator-args validator-args)))
+  "Declare an integer input on a form. See text-input for additional options."
+  [name & options]
+  (-> (apply text-input name options)
+      (assoc :input/type ::integer)
+      (update :input/default-value (fn [v] (if (integer? v) v 0)))))
 
 (defn checkbox-input
   "Declare a checkbox on a form"
@@ -186,6 +191,14 @@
 (defn field-type
   "Get the configuration for the given field in the form."
   [form name] (:input/type (field-config form name)))
+
+(defn placeholder
+  "Returns the current value of the placeholder, which may be a lambda or a string."
+  [form field]
+  (let [{:keys [:input/placeholder] :or {placeholder ""}} (field-config form field)]
+    (if (string? placeholder)
+      placeholder
+      (placeholder))))
 
 (defn is-subform?
   "Returns whether the element, or the field-key in the form, is a subform."
@@ -682,24 +695,31 @@
   [component form field-name & params]
   (apply form-field* component form field-name params))
 
+
 (defn render-text-field [component form field-name]
   (let [id (form-ident form)
         text-value (or (current-value form field-name) "")
         cls (or (css-class form field-name) "form-control")]
     (dom/input #js
-      {:type      "text"
-       :name      field-name
-       :value     text-value
-       :className cls
-       :onChange  (fn [event]
-                    (let [value (.. event -target -value)
-                          field-info {:form-id id
-                                      :field field-name
-                                      :value value}]
-                      (om/transact! component
-                        `[(set-field ~field-info)
-                          ~(on-form-change form field-info)
-                          ~form-root-key])))})))
+                   {:type        "text"
+                    :name        field-name
+                    :value       text-value
+                    :placeholder (placeholder form field-name)
+                    :className   cls
+                    :onBlur      (fn [_]
+                                   (om/transact! component
+                                     `[(validate-field
+                                         ~{:form-id id :field field-name})
+                                       ~form-root-key]))
+                    :onChange    (fn [event]
+                                   (let [value (.. event -target -value)
+                                         field-info {:form-id id
+                                                     :field   field-name
+                                                     :value   value}]
+                                     (om/transact! component
+                                       `[(set-field ~field-info)
+                                         ~(on-form-change form field-info)
+                                         ~form-root-key])))})))
 
 (defmethod form-field* ::text [component form field-name]
   (render-text-field component form field-name))
