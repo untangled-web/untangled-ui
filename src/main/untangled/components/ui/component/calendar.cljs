@@ -1,6 +1,5 @@
 (ns untangled.components.ui.component.calendar
   (:require [clojure.set :refer [difference]]
-            [untangled.components.ui.dom :as n]
             [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
             [untangled.client.mutations :as m]
@@ -8,6 +7,22 @@
             [untangled.client.logging :as log]))
 
 (defonce ms-in-a-day 86400000)
+
+(defn get-icon
+  "Returns an icon tag that automates adding Google material icons
+
+   @param iconName: name of the Google material icon
+   @param attributes: an optional argument of JS attributes and values"
+  ([iconName]
+   (get-icon iconName nil))
+
+  ([iconName attributes]
+   (let [add-material-class
+         (fn [attrs]
+           (clj->js (update attrs :className #(str "material-icons " %))))]
+
+     (dom/i (add-material-class attributes) iconName))))
+
 
 (defn- make-callbacks [id parent-component]
   {
@@ -168,46 +183,46 @@
               (when overlay-visible?
                 (dom/div #js {:className "c-calendar c-card"}
                   (dom/header #js {:className "c-calendar__control u-middle"}
-                    (dom/div #js {:className "u-column--2"}
-                      (dom/button #js {:className "c-calendar__button"
-                                       :title     "Last Month"
-                                       :onClick   onPriorMonth
-                                       } (n/get-icon "arrow_back")))
-                    (dom/div #js {:className "u-column--8"}
-                      (dom/span #js {:className "current"
-                                     :onClick   onToggleOverlay
-                                     } (displayed-date calendar))
-                      (dom/button #js {:className "control"
-                                       :title     "Today"
-                                       :onClick   #(onSetDate (js/Date.))
-                                       } (n/get-icon "today")))
-                    (dom/div #js {:className "u-column--2"}
-                      (dom/button #js {:className "c-calendar__button"
-                                       :title     "Next Month"
-                                       :onClick   onNextMonth
-                                       } (n/get-icon "arrow_forward"))))
+                              (dom/div #js {:className "u-column--2"}
+                                (dom/button #js {:className "c-calendar__button"
+                                                 :title     "Last Month"
+                                                 :onClick   onPriorMonth
+                                                 } (get-icon "arrow_back")))
+                              (dom/div #js {:className "u-column--8"}
+                                (dom/span #js {:className "current"
+                                               :onClick   onToggleOverlay
+                                               } (displayed-date calendar))
+                                (dom/button #js {:className "control"
+                                                 :title     "Today"
+                                                 :onClick   #(onSetDate (js/Date.))
+                                                 } (get-icon "today")))
+                              (dom/div #js {:className "u-column--2"}
+                                (dom/button #js {:className "c-calendar__button"
+                                                 :title     "Next Month"
+                                                 :onClick   onNextMonth
+                                                 } (get-icon "arrow_forward"))))
 
                   (dom/div #js {:className "c-calendar__month o-overlay"}
                     (dom/hr nil)
                     (dom/table nil
-                      (dom/thead nil
-                        (dom/tr nil
-                          (for [label days-of-week]
-                            (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
-                      (dom/tbody nil
-                        (for [week weeks]
-                          (dom/tr #js {:key (.getDate (first week)) :className "week"}
-                            (for [day week]
-                              (dom/td #js {
-                                           :key       (str "d" (.getMonth day) "-" (.getDate day))
-                                           ;; TODO If a day is selected, then it should also have the .is-active class for .o-day. Likewise for off-month days (not for current month), it should also have .is-inactive.
-                                           :className (cond-> "o-day"
-                                                        (not (in-month? calendar day)) (str " is-inactive")
-                                                        (selected-day? calendar day) (str " is-active"))
-                                           :onClick   (fn []
-                                                        (onSetDate day)
-                                                        (om/transact! this '[(cal/close-overlay)]))
-                                           } (.getDate day)))))))))))))))))
+                               (dom/thead nil
+                                          (dom/tr nil
+                                                  (for [label days-of-week]
+                                                    (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
+                               (dom/tbody nil
+                                          (for [week weeks]
+                                            (dom/tr #js {:key (.getDate (first week)) :className "week"}
+                                                    (for [day week]
+                                                      (dom/td #js {
+                                                                   :key       (str "d" (.getMonth day) "-" (.getDate day))
+                                                                   ;; TODO If a day is selected, then it should also have the .is-active class for .o-day. Likewise for off-month days (not for current month), it should also have .is-inactive.
+                                                                   :className (cond-> "o-day"
+                                                                                      (not (in-month? calendar day)) (str " is-inactive")
+                                                                                      (selected-day? calendar day) (str " is-active"))
+                                                                   :onClick   (fn []
+                                                                                (onSetDate day)
+                                                                                (om/transact! this '[(cal/close-overlay)]))
+                                                                   } (.getDate day)))))))))))))))))
 
 (def calendar-factory (om/factory Calendar {:keyfn :id}))
 
