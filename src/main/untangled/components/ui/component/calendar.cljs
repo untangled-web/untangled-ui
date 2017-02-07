@@ -211,8 +211,7 @@
                                                     (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
                                (dom/tbody nil
                                           (for [week weeks]
-                                            (dom/tr #js {:key (str (.getDate (first week)) "-" (.getMonth (first week)))
-                                                         :className "week"}
+                                            (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
                                                     (for [day week]
                                                       (dom/td #js {
                                                                    :key       (str "d" (.getMonth day) "-" (.getDate day))
