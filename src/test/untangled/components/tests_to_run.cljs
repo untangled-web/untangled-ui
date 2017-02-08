@@ -2,7 +2,7 @@
   (:require
     untangled.components.forms-spec
     untangled.components.ui.component.table-spec
-    untangled.components.ui.component.calendar-spec))
+    untangled.components.calendar-spec))
 
 ;********************************************************************************
 ; IMPORTANT:

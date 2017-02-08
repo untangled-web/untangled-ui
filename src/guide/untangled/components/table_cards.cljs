@@ -1,4 +1,4 @@
-(ns untangled.components.tables
+(ns untangled.components.table-cards
   (:require-macros
     [untangled.client.cards :refer [untangled-app]])
   (:require

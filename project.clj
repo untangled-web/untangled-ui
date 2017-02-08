@@ -15,7 +15,7 @@
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
                  [navis/untangled-client "0.7.0" :scope "provided"]
-                 [untangled-stylekit "0.1.0-SNAPSHOT"]
+                 [navis/untangled-stylekit "0.1.0-SNAPSHOT"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
@@ -25,7 +25,7 @@
             [lein-cljsbuild "1.1.4"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/main" "src/cards"]
+  :source-paths ["dev" "src/main" "src/guide" "src/visuals"]
   :test-paths ["src/test"]
   :jar-exclusions [#".DS_Store" #"public" #"cards" #"user.clj"]
 
@@ -41,13 +41,21 @@
         :paths {:karma "node_modules/karma/bin/karma"}}
 
   :cljsbuild {:builds
-              [{:id           "cards"
-                :source-paths ["src/main" "src/cards"]
+              [{:id           "guide"
+                :source-paths ["src/main" "src/guide"]
                 :figwheel     {:devcards true}
-                :compiler     {:main          untangled.components.cards-ui
-                               :asset-path    "js/cards"
-                               :output-to     "resources/public/js/cards.js"
-                               :output-dir    "resources/public/js/cards"
+                :compiler     {:main          untangled.components.guide-ui
+                               :asset-path    "js/guide"
+                               :output-to     "resources/public/js/guide.js"
+                               :output-dir    "resources/public/js/guide"
+                               :optimizations :none}}
+               {:id           "visuals"
+                :source-paths ["src/main" "src/visuals"]
+                :figwheel     {:devcards true}
+                :compiler     {:main          untangled.components.visuals-ui
+                               :asset-path    "js/visuals"
+                               :output-to     "resources/public/js/visuals.js"
+                               :output-dir    "resources/public/js/visuals"
                                :optimizations :none}}
                {:id           "test"
                 :source-paths ["src/test" "src/main" "dev"]

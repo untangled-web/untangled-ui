@@ -1,4 +1,4 @@
-(ns untangled.components.ui.component.image-library
+(ns untangled.components.image-library
   (:require [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
             [untangled.i18n :refer-macros [tr trf]]

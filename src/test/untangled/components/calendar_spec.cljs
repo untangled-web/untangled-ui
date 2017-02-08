@@ -1,11 +1,11 @@
-(ns untangled.components.ui.component.calendar-spec
+(ns untangled.components.calendar-spec
   (:require [untangled-spec.core :refer-macros [behavior specification assertions component]]
             yahoo.intl-messageformat-with-locales
             [untangled.components.ui.component.table :as t :refer [sort-table money-formatter number-formatter]]
             [untangled.i18n.core :as i18n]
             [cljs.test :refer-macros [is]]
             [om.next :as om :refer-macros [defui]]
-            [untangled.components.ui.component.calendar :as c]
+            [untangled.components.calendar :as c]
             [om.dom :as dom]))
 
 

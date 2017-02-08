@@ -1,4 +1,4 @@
-(ns untangled.components.calendar
+(ns untangled.components.calendar-cards
   (:require-macros
     [untangled.client.cards :refer [untangled-app]]
     [devcards.core :refer [defcard]])
@@ -8,7 +8,7 @@
     [om.dom :as dom]
     [untangled.i18n.core :as i18n]
     [untangled.client.core :as uc]
-    [untangled.components.ui.component.calendar :as c]))
+    [untangled.components.calendar :as c]))
 
 (defui ^:once CalRoot
   static om/IQuery

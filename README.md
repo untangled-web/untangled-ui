@@ -25,6 +25,38 @@ describes the use of the component.
 Please contact us on the `#untangled` channel of clojurians.slack.com if you 
 want to help.
 
+### Contribution Standards/Guidelines
+
+### Write in CLJC
+
+To support server-side rendering all code should be written in CLJC files. 
+
+- Rendering must be pure! Don't use `js/setTimout` or other js-only things in your UI. That stuff belongs in mutations.
+If your lifecycle (e.g. componentWillMount) or something needs js things, make a clj/cljs function where the clj version 
+is a no-op, and call *that* from the UI.
+- Untangled mutations can be set to cljs-only. They'll never be attempted on server-side code anyhow.
+
+### Create a Card for Visual Regression Tests
+
+All components must have a devcard in the `visuals` source directory that show their various states 
+statically (for visual regression testing). Use the same package structure, and name that namespace with a -cards suffix.
+E.g. src/untangled.components.buttons.cljs -> visuals/untangled.components.buttons-cards.cljs
+
+### Create a Card for Live Documentation/Usage
+
+All components must have a devcard in the `guide` source directory that documents/demonstrates
+your live working component with callbacks, etc. Use MockNetwork for simulating full stack.
+
+### Naming Conventions
+
+- The factory method should be prefixed with `ui-`, e.g. `ui-button`.
+- Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.components.buttons/by-id`)
+
+### API Standards
+
+- Your factory method should deal with the om/computed bits. 
+For example `(ui-button props :style :large :onClick f)`
+
 # Running:
 
 To see the devcard demos of the components:
