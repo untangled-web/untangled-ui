@@ -3,26 +3,11 @@
             [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
             [untangled.client.mutations :as m]
+            [untangled.icons :refer [icon]]
             [untangled.i18n :refer-macros [tr-unsafe tr trc trf]]
             [untangled.client.logging :as log]))
 
 (defonce ms-in-a-day 86400000)
-
-(defn get-icon
-  "Returns an icon tag that automates adding Google material icons
-
-   @param iconName: name of the Google material icon
-   @param attributes: an optional argument of JS attributes and values"
-  ([iconName]
-   (get-icon iconName nil))
-
-  ([iconName attributes]
-   (let [add-material-class
-         (fn [attrs]
-           (clj->js (update attrs :className #(str "material-icons " %))))]
-
-     (dom/i (add-material-class attributes) iconName))))
-
 
 (defn- make-callbacks [id parent-component]
   {
@@ -41,12 +26,12 @@
   [month year]
   (letfn [(prior-day [dt] (js/Date. (- (.getTime dt) ms-in-a-day)))
           (next-day [dt] (js/Date. (+ (.getTime dt) ms-in-a-day)))]
-    (let [zero-based-month (- month 1)
-          first-day-of-month (js/Date. year zero-based-month 1 1 0 0 0)
-          all-prior-days (iterate prior-day first-day-of-month)
-          prior-sunday (first (drop-while #(not= 0 (.getDay %)) all-prior-days))
-          all-weeks-from-prior-sunday (partition 7 (iterate next-day prior-sunday))
-          contains-this-month? (fn [week] (some #(= zero-based-month (.getMonth %)) week))
+    (let [zero-based-month               (- month 1)
+          first-day-of-month             (js/Date. year zero-based-month 1 1 0 0 0)
+          all-prior-days                 (iterate prior-day first-day-of-month)
+          prior-sunday                   (first (drop-while #(not= 0 (.getDay %)) all-prior-days))
+          all-weeks-from-prior-sunday    (partition 7 (iterate next-day prior-sunday))
+          contains-this-month?           (fn [week] (some #(= zero-based-month (.getMonth %)) week))
           all-weeks-from-starting-sunday (drop-while (comp not contains-this-month?) all-weeks-from-prior-sunday)]
       (take-while contains-this-month? all-weeks-from-starting-sunday))))
 
@@ -55,8 +40,8 @@
   ([id label-lambda] (initial-calendar id label-lambda (js/Date.)))
   ([id label-lambda starting-js-date]
    (let [month (+ 1 (.getMonth starting-js-date))
-         day (.getDate starting-js-date)
-         year (.getFullYear starting-js-date)]
+         day   (.getDate starting-js-date)
+         year  (.getFullYear starting-js-date)]
      {:id               id
       :labeller         label-lambda
       :month            month
@@ -88,9 +73,9 @@
   [calendar new-dt]
   (try
     (let [is-js-date? (= js/Date (type new-dt))
-          month (if is-js-date? (+ 1 (.getMonth new-dt)) (:month new-dt))
-          day (if is-js-date? (.getDate new-dt) (:day new-dt))
-          year (if is-js-date? (.getFullYear new-dt) (:year new-dt))]
+          month       (if is-js-date? (+ 1 (.getMonth new-dt)) (:month new-dt))
+          day         (if is-js-date? (.getDate new-dt) (:day new-dt))
+          year        (if is-js-date? (.getFullYear new-dt) (:year new-dt))]
       (assoc calendar :month month :day day :year year :weeks (weeks-of-interest month year)))
     (catch :default e (log/info "Failed to set date: " e))))
 
@@ -113,10 +98,10 @@
   [calendar]
   (let [
         {:keys [month year]} calendar
-        this-month month
+        this-month  month
         prior-month (if (= this-month 1) 12 (- this-month 1))
-        this-year year
-        year (if (= 12 prior-month) (- this-year 1) this-year)]
+        this-year   year
+        year        (if (= 12 prior-month) (- this-year 1) this-year)]
     (assoc calendar :month prior-month :year year :weeks (weeks-of-interest prior-month year))))
 
 (defn next-month
@@ -125,8 +110,8 @@
   (let [{:keys [month year]} calendar
         this-month month
         next-month (if (= this-month 12) 1 (+ 1 this-month))
-        this-year year
-        year (if (= 1 next-month) (+ 1 this-year) this-year)]
+        this-year  year
+        year       (if (= 1 next-month) (+ 1 this-year) this-year)]
     (assoc calendar :month next-month :year year :weeks (weeks-of-interest next-month year))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,7 +154,6 @@
                             (trc "Abbrev for tuesday" "Tu") (trc "Abbrev for wednesday" "W") (trc "Abbrev for thursday" "Th")
                             (trc "Abbrev for friday" "F") (trc "Abbrev for saturday" "Sa")]]
           (dom/div #js {:className "o-calendar-container"}
-            (js/console.log calendar)
             (dom/span #js {:className "o-button-group-label"} (cond
                                                                 (string? labeller) labeller
                                                                 labeller (labeller)
@@ -181,48 +165,48 @@
                               :value     (displayed-date calendar)})
 
               (when overlay-visible?
-                (dom/div #js {:className "c-calendar c-card"}
-                  (dom/header #js {:className "c-calendar__control u-middle"}
-                              (dom/div #js {:className "u-column--2"}
-                                (dom/button #js {:className "c-calendar__button"
-                                                 :title     "Last Month"
-                                                 :onClick   onPriorMonth
-                                                 } (get-icon "arrow_back")))
-                              (dom/div #js {:className "u-column--8"}
-                                (dom/span #js {:className "current"
-                                               :onClick   onToggleOverlay
-                                               } (displayed-date calendar))
-                                (dom/button #js {:className "control"
-                                                 :title     "Today"
-                                                 :onClick   #(onSetDate (js/Date.))
-                                                 } (get-icon "today")))
-                              (dom/div #js {:className "u-column--2"}
-                                (dom/button #js {:className "c-calendar__button"
-                                                 :title     "Next Month"
-                                                 :onClick   onNextMonth
-                                                 } (get-icon "arrow_forward"))))
+                (dom/div #js {:className "o-calendar c-card"}
+                  (dom/header #js {:className "o-calendar__control u-middle"}
+                    (dom/div #js {:className "u-column--2"}
+                      (dom/button #js {:className "o-calendar__button"
+                                       :title     "Last Month"
+                                       :onClick   onPriorMonth
+                                       } (icon :arrow_back)))
+                    (dom/div #js {:className "u-column--8"}
+                      (dom/span #js {:className "current"
+                                     :onClick   onToggleOverlay
+                                     } (displayed-date calendar))
+                      (dom/button #js {:className "control"
+                                       :title     "Today"
+                                       :onClick   #(onSetDate (js/Date.))
+                                       } (icon :today)))
+                    (dom/div #js {:className "u-column--2"}
+                      (dom/button #js {:className "o-calendar__button"
+                                       :title     "Next Month"
+                                       :onClick   onNextMonth
+                                       } (icon :arrow_forward))))
 
-                  (dom/div #js {:className "c-calendar__month o-overlay"}
+                  (dom/div #js {:className "o-calendar__month o-overlay"}
                     (dom/hr nil)
                     (dom/table nil
-                               (dom/thead nil
-                                          (dom/tr nil
-                                                  (for [label days-of-week]
-                                                    (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
-                               (dom/tbody nil
-                                          (for [week weeks]
-                                            (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
-                                                    (for [day week]
-                                                      (dom/td #js {
-                                                                   :key       (str "d" (.getMonth day) "-" (.getDate day))
-                                                                   ;; TODO If a day is selected, then it should also have the .is-active class for .o-day. Likewise for off-month days (not for current month), it should also have .is-inactive.
-                                                                   :className (cond-> "o-day"
-                                                                                      (not (in-month? calendar day)) (str " is-inactive")
-                                                                                      (selected-day? calendar day) (str " is-active"))
-                                                                   :onClick   (fn []
-                                                                                (onSetDate day)
-                                                                                (om/transact! this '[(cal/close-overlay)]))
-                                                                   } (.getDate day)))))))))))))))))
+                      (dom/thead nil
+                        (dom/tr nil
+                          (for [label days-of-week]
+                            (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
+                      (dom/tbody nil
+                        (for [week weeks]
+                          (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
+                            (for [day week]
+                              (dom/td #js {
+                                           :key       (str "d" (.getMonth day) "-" (.getDate day))
+                                           ;; TODO If a day is selected, then it should also have the .is-active class for .o-day. Likewise for off-month days (not for current month), it should also have .is-inactive.
+                                           :className (cond-> "o-day"
+                                                        (not (in-month? calendar day)) (str " is-inactive")
+                                                        (selected-day? calendar day) (str " is-active"))
+                                           :onClick   (fn []
+                                                        (onSetDate day)
+                                                        (om/transact! this '[(cal/close-overlay)]))
+                                           } (.getDate day)))))))))))))))))
 
 (def calendar-factory (om/factory Calendar {:keyfn :id}))
 

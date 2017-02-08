@@ -39,11 +39,11 @@
   the new table. Refuses to sort a table if it is in top-headings mode, since that would make no sense."
   [table key direction]
   (if (:left-headings table)
-    (let [cmp-k (cond->> (fn [k a b] (compare (get a k) (get b k)))
-                  (= :descending direction) (comp -))
-          cmp (partial cmp-k key)
-          sort-rows (fn [rows] (into [] (sort cmp rows)))
-          sort-body (fn [body] (update body :rows sort-rows))
+    (let [cmp-k         (cond->> (fn [k a b] (compare (get a k) (get b k)))
+                          (= :descending direction) (comp -))
+          cmp           (partial cmp-k key)
+          sort-rows     (fn [rows] (into [] (sort cmp rows)))
+          sort-body     (fn [body] (update body :rows sort-rows))
           sort-sections (fn [b] (mapv sort-body b))]
       (-> table
         (update :sections sort-sections)
@@ -110,7 +110,7 @@
 (defn column-label [columns key sort-key sort-direction]
   (let [label (get columns key)]
     (if (= key sort-key)
-      (dom/a #js {:className (str "is-"(name sort-direction))} label)
+      (dom/a #js {:className (str "is-" (name sort-direction))} label)
       (dom/a #js {} label))))
 
 (defn- left-grouped-body [table onSort]
@@ -124,9 +124,9 @@
 
 (defn- top-grouped-body [table]
   (let [{:keys [sections columns visible-columns]} table
-        all-labels (into (sorted-set) (flatten (for [section sections row (:rows section)] (:label row))))
+        all-labels    (into (sorted-set) (flatten (for [section sections row (:rows section)] (:label row))))
         rows-by-label (fn [section] (reduce (fn [acc row] (assoc acc (:label row) row)) {} (:rows section)))
-        section-rows (map rows-by-label sections)]
+        section-rows  (map rows-by-label sections)]
     (dom/tbody nil
       (map (fn [label]
              (dom/tr #js {:key label}
@@ -146,9 +146,9 @@
 
 (defn- top-grouped-heading [table]
   (let [{:keys [sections visible-columns]} table
-        columns (map :columns sections)
-        ncols (count visible-columns)
-        group-heading (fn [s] (dom/th #js {:colSpan ncols} (:section-label s)))
+        columns          (map :columns sections)
+        ncols            (count visible-columns)
+        group-heading    (fn [s] (dom/th #js {:colSpan ncols} (:section-label s)))
         section-headings (fn [heading] (mapv #(colh (get heading %)) visible-columns))]
     (dom/thead nil
       (dom/tr nil (dom/th nil "") (map group-heading sections))
@@ -187,7 +187,7 @@
 (defmethod m/mutate 'table/sort
   [{:keys [state]} k {:keys [sort-by direction id]}]
   {:action (fn []
-             (let [old-sort (get-in @state [:tables/by-id id :table/data :sort-key])
+             (let [old-sort      (get-in @state [:tables/by-id id :table/data :sort-key])
                    old-direction (get-in @state [:tables/by-id id :table/data :sort-direction])
                    new-direction (cond
                                    direction direction

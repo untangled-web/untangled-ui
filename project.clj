@@ -10,11 +10,12 @@
                  [com.andrewmcveigh/cljs-time "0.3.14"]
                  [image-resizer "0.1.9"]
                  [lein-doo "0.1.7" :scope "test"]
-                 [org.clojure/clojure "1.9.0-alpha13" :scope "provided"]
-                 [org.clojure/clojurescript "1.9.229" :scope "provided"]
+                 [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
+                 [org.clojure/clojurescript "1.9.456" :scope "provided"]
                  [org.clojure/core.async "0.2.391"]
-                 [org.omcljs/om "1.0.0-alpha46" :scope "provided"]
-                 [navis/untangled-client "0.6.0" :scope "provided"]
+                 [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
+                 [navis/untangled-client "0.7.0" :scope "provided"]
+                 [untangled-stylekit "0.1.0-SNAPSHOT"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
@@ -32,9 +33,9 @@
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
 
-  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+  :test-refresh {:report       untangled-spec.reporters.terminal/untangled-report
                  :changes-only true
-                 :with-repl true}
+                 :with-repl    true}
 
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}
@@ -64,11 +65,12 @@
                                :optimizations :none
                                }}]}
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:server-port 8080
+             :css-dirs ["resources/public/css"]}
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.5.2"]
+  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]
                                   [criterium "0.4.3"]
-                                  [figwheel-sidecar "0.5.7"]
+                                  [figwheel-sidecar "0.5.9"]
                                   [com.cemerick/piggieback "0.2.1"]
                                   [org.clojure/tools.namespace "0.2.11"]
                                   [org.clojure/tools.nrepl "0.2.12"]

@@ -59,9 +59,9 @@
 
 (defn add-phone-mutation [{:keys [state]} k {:keys [id person]}]
   {:action (fn []
-             (let [new-phone (f/build-form ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
+             (let [new-phone    (f/build-form ValidatedPhoneForm {:db/id id :phone/type :home :phone/number ""})
                    person-ident [:people/by-id person]
-                   phone-ident (om/ident ValidatedPhoneForm new-phone)]
+                   phone-ident  (om/ident ValidatedPhoneForm new-phone)]
                (swap! state assoc-in phone-ident new-phone)
                (uc/integrate-ident! state phone-ident :append (conj person-ident :person/phone-numbers))))})
 
@@ -277,7 +277,7 @@ TODO: remove the need to pass the component? The form is just om/props of the co
                      (f/subform-element :person/phone-numbers ValidatedPhoneForm :many)
                      (f/text-input :person/name :validator 'name-valid?)
                      (f/integer-input :person/age :validator 'in-range?
-                                      :validator-args {:min 1 :max 110})
+                       :validator-args {:min 1 :max 110})
                      (f/checkbox-input :person/registered-to-vote?)])
   static om/IQuery
   ; NOTE: f/form-root-key so that sub-forms will trigger render here
@@ -303,8 +303,8 @@ TODO: remove the need to pass the component? The form is just om/props of the co
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-primary"
                            :onClick   #(om/transact! this
-                                        `[(sample/add-phone ~{:id     (om/tempid)
-                                                              :person (:db/id props)})])}
+                                         `[(sample/add-phone ~{:id     (om/tempid)
+                                                               :person (:db/id props)})])}
             "Add Phone")
           (dom/button #js {:className "btn btn-default" :disabled (f/valid? props)
                            :onClick   #(f/validate-entire-form! this props)}

@@ -13,16 +13,16 @@
 (defn test-image-library [& [opts [meta blob]]]
   (-> (src.lib/image-library
         (merge {:owner-fn src.lib/example-owner-fn}
-               (or opts {})))
+          (or opts {})))
     (assoc ::src.storage/meta
-      (component/start (or meta (src.storage/map->InMemMetaStore {}))))
+           (component/start (or meta (src.storage/map->InMemMetaStore {}))))
     (assoc ::src.storage/blob
-      (component/start (or blob (src.storage/map->FileStore {}))))))
+           (component/start (or blob (src.storage/map->FileStore {}))))))
 
 (defn store-image [img-lib params]
   (with-redefs
     [src.img/infer-img-ext (constantly "TEST")]
-    (let [api-mutate (.api-mutate img-lib)
+    (let [api-mutate    (.api-mutate img-lib)
           base64-encode #(.encodeToString (Base64/getEncoder) (.getBytes %))
           {:keys [tempids]} ((:action (api-mutate img-lib 'untangled.component.image-library/store
                                         (update params :content/data base64-encode))))]
@@ -36,7 +36,7 @@
         [src.img/infer-img-ext (constantly "TEST")]
         (let [img-lib (test-image-library)]
           ((:action ((.api-mutate img-lib) img-lib 'untangled.component.image-library/store
-                     {:db/id (rand-int 1e6) :content/data "(*&@#%NM<DSV:SL#PO%_@"})))))
+                      {:db/id (rand-int 1e6) :content/data "(*&@#%NM<DSV:SL#PO%_@"})))))
       =throws=> (IllegalArgumentException #"Illegal base64 character")
       "returns a tempids mapping"
       (store-image (test-image-library) {:db/id (rand-int 1e6) :content/data "hello"}) => 0
@@ -44,14 +44,14 @@
       (let [owner-fn (fn [_ im]
                        (assertions (:id im) => 42)
                        (assoc im :owner "test owner"))
-            auth-fn (fn [_ im loc]
-                      (assertions
-                        (:id im) => 42
-                        (:owner im) => "test owner"
-                        loc => :store))]
+            auth-fn  (fn [_ im loc]
+                       (assertions
+                         (:id im) => 42
+                         (:owner im) => "test owner"
+                         loc => :store))]
         (store-image (test-image-library
                        {:owner-fn owner-fn
-                        :auth-fn auth-fn})
+                        :auth-fn  auth-fn})
           {:db/id 42 :content/data "hello"}))
       => 0
       "if it does not handle the dispatch-key it return nil"
@@ -66,26 +66,26 @@
   (component ":images"
     (let [owner-fn (fn [_ im]
                      (assoc im :owner "test owner"))
-          auth-fn (fn [_ im loc]
-                    (assertions
-                      (:owner im) => "test owner"
-                      loc =fn=> #{:store :read-all}))]
+          auth-fn  (fn [_ im loc]
+                     (assertions
+                       (:owner im) => "test owner"
+                       loc =fn=> #{:store :read-all}))]
       (assertions
         "reads all the images currently stored"
         0 => 0
         "relies on owner-fn and auth-fn for ownership and authorization"
         (let [img-lib (test-image-library
                         {:owner-fn owner-fn
-                         :auth-fn auth-fn})]
+                         :auth-fn  auth-fn})]
           (store-image img-lib
             {:db/id 42 :content/data "hello"})
           (read-images img-lib))
-        => [{:db/id 0
-             :image/owner "test owner"
-             :image/name nil
-             :image/size nil
+        => [{:db/id            0
+             :image/owner      "test owner"
+             :image/name       nil
+             :image/size       nil
              :image/dimensions nil
-             :image/extension "TEST"}]
+             :image/extension  "TEST"}]
         "if it does not handle the dispatch-key it return nil"
         (let [img-lib (test-image-library)]
           ((.api-read img-lib) img-lib ::should-not-handle {})) => nil))))

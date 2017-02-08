@@ -46,8 +46,8 @@
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-default"
-                           :disabled (not (f/dirty-form? props))
-                           :onClick #(f/commit-to-entity! this :remote true)}
+                           :disabled  (not (f/dirty-form? props))
+                           :onClick   #(f/commit-to-entity! this :remote true)}
             "Save!"))))))
 
 (def ui-person (om/factory Person {:keyfn :db/id}))
@@ -55,7 +55,7 @@
 (defui ^:once CommitRoot
   static uc/InitialAppState
   (initial-state [this _] {:new-person (uc/initial-state Person {:db/id 2346})
-                           :person (uc/initial-state Person {})})
+                           :person     (uc/initial-state Person {})})
   static om/IQuery
   (query [this] [:ui/react-key
                  {:new-person (om/get-query Person)}
@@ -80,7 +80,7 @@
 (defcard mock-server-state
   "This card shows the server state atom *live*!"
   server-state
-  {:watch-atom true
+  {:watch-atom   true
    :inspect-data true})
 
 (defcard CommitEntity

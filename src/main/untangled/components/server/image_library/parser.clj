@@ -14,7 +14,7 @@
       {:action
        (fn []
          (let [params (update params :content/data decode-base64)
-               im (owner-fn env (storage/make-image-meta params))]
+               im     (owner-fn env (storage/make-image-meta params))]
            (auth-fn env im :store)
            (let [img-meta (storage/save (::storage/meta env) im)]
              (storage/store (::storage/blob env) img-meta (:content/data params))

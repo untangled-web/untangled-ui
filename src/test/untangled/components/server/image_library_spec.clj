@@ -22,11 +22,11 @@
 (defn test-image-library [& [opts [meta blob]]]
   (-> (src/image-library
         (merge {:owner-fn src/example-owner-fn}
-               (or opts {})))
+          (or opts {})))
     (assoc ::src.storage/meta
-      (component/start (or meta (src.storage/map->InMemMetaStore {}))))
+           (component/start (or meta (src.storage/map->InMemMetaStore {}))))
     (assoc ::src.storage/blob
-      (component/start (or blob (src.storage/map->FileStore {}))))))
+           (component/start (or blob (src.storage/map->FileStore {}))))))
 
 (specification "image-library"
   (behavior "implements component/Lifecycle"
@@ -55,12 +55,12 @@
       (component/start
         (usc/untangled-system
           {:components {}
-           :modules [(test-image-library)]}))
+           :modules    [(test-image-library)]}))
       =throws=> (ExceptionInfo #"Missing dependency.*blob")
       (component/start
         (usc/untangled-system
           {:components {::src.storage/blob {}}
-           :modules [(test-image-library)]}))
+           :modules    [(test-image-library)]}))
       =throws=> (ExceptionInfo #"Missing dependency.*meta")))
   (behavior "must take an :owner-fn"
     (assertions
@@ -76,7 +76,7 @@
 (defn store-image [img-lib params]
   (with-redefs
     [src.img/infer-img-ext (constantly "TEST")]
-    (let [api-mutate (.api-mutate img-lib)
+    (let [api-mutate    (.api-mutate img-lib)
           base64-encode #(.encodeToString (Base64/getEncoder) (.getBytes %))
           {:keys [tempids]} ((:action (api-mutate img-lib 'untangled.component.image-library/store
                                         (update params :content/data base64-encode))))]
@@ -94,22 +94,22 @@
           (test-img-middleware {:uri "/assets/0"})
           => {:status 404}
           (let [img-lib (test-image-library)
-                id (store-image img-lib {:db/id (rand-int 1e5) :content/data test-string})]
+                id      (store-image img-lib {:db/id (rand-int 1e5) :content/data test-string})]
             (test-img-middleware {:uri (str "/assets/" id)} img-lib))
-          => {:status 200
+          => {:status  200
               :headers {"Content-Type" "image/TEST"}
-              :body test-string}))))
+              :body    test-string}))))
   (behavior "can request an image to have an certain extension"
     (when-mocking
       (src.img/crop-image-from x _) => x
       (src.img/as-stream-with-format _ img-ext) => img-ext
       (assertions
         (let [img-lib (test-image-library)
-              id (store-image img-lib {:db/id (rand-int 1e5) :content/data "TEST CONTENT PLEASE IGNORE"})]
+              id      (store-image img-lib {:db/id (rand-int 1e5) :content/data "TEST CONTENT PLEASE IGNORE"})]
           (test-img-middleware {:uri (str "/assets/" id ".png")} img-lib))
-        => {:status 200
+        => {:status  200
             :headers {"Content-Type" "image/png"}
-            :body "png"})))
+            :body    "png"})))
   (behavior "image path prefix is modifiable"
     (assertions
       (test-img-middleware {:uri "/assets/0"}
@@ -128,21 +128,21 @@
                                 (set (keys this)) => #{:request :assets-root :auth-fn :owner-fn
                                                        ::src.storage/meta ::src.storage/blob})
                               (assoc im :owner ::test-owner))
-              test-auth-fn (fn [this im loc]
-                             (assertions ":auth-fn asserts that the request is auth(enticat|oriz)ed"
-                               (:owner im) => ::test-owner)
-                             (assert (= (:owner im) ::test-owner)))
-              test-meta (reify
-                          src.storage/IMetaStorage
-                          (grab [this im]
-                            (assertions (:owner im) => ::test-owner)
-                            im))
-              test-blob (reify
-                          src.storage/IBlobStorage
-                          (fetch [this im]
-                            (assertions (:owner im) => ::test-owner)
-                            (io/input-stream (.getBytes "PLEASE IGNORE"))))
-              img-lib (test-image-library {:owner-fn test-owner-fn :auth-fn test-auth-fn}
-                        [test-meta test-blob])]
+              test-auth-fn  (fn [this im loc]
+                              (assertions ":auth-fn asserts that the request is auth(enticat|oriz)ed"
+                                (:owner im) => ::test-owner)
+                              (assert (= (:owner im) ::test-owner)))
+              test-meta     (reify
+                              src.storage/IMetaStorage
+                              (grab [this im]
+                                (assertions (:owner im) => ::test-owner)
+                                im))
+              test-blob     (reify
+                              src.storage/IBlobStorage
+                              (fetch [this im]
+                                (assertions (:owner im) => ::test-owner)
+                                (io/input-stream (.getBytes "PLEASE IGNORE"))))
+              img-lib       (test-image-library {:owner-fn test-owner-fn :auth-fn test-auth-fn}
+                              [test-meta test-blob])]
           (:status (test-img-middleware {:uri "/assets/1337"} img-lib)))
         => 200))))

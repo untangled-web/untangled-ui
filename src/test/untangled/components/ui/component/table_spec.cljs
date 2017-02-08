@@ -25,8 +25,8 @@
                        ]})
 
 (specification "Table Sorting"
-  (let [table table-state
-        sorted-table (sort-table table :a :ascending)
+  (let [table          table-state
+        sorted-table   (sort-table table :a :ascending)
         sorted-table-b (sort-table table :b :descending)]
     (assertions
       "Sorts data by proper columns (ascending)"
@@ -38,33 +38,33 @@
       )))
 
 #_(specification "Column Formatters"
-  (component "Money"
-    (assertions
-      "Is rounded properly"
-      (t/money-formatter 833.20123) => "$833.20"
-      (t/money-formatter 833.20823) => "$833.21"
-      "Zero formats with proper placeholders"
-      (t/money-formatter 0) => "$0.00"
-      "Negatives include sign"
-      (t/money-formatter -233) => "-$233.00"
-      "Digit groupings appear"
-      (t/money-formatter 277833.20) => "$277,833.20"))
+    (component "Money"
+      (assertions
+        "Is rounded properly"
+        (t/money-formatter 833.20123) => "$833.20"
+        (t/money-formatter 833.20823) => "$833.21"
+        "Zero formats with proper placeholders"
+        (t/money-formatter 0) => "$0.00"
+        "Negatives include sign"
+        (t/money-formatter -233) => "-$233.00"
+        "Digit groupings appear"
+        (t/money-formatter 277833.20) => "$277,833.20"))
 
-  (component "Number formatters"
-    (assertions
-      "Show groupings"
-      (t/number-formatter 277833.20) => "277,833.2"))
+    (component "Number formatters"
+      (assertions
+        "Show groupings"
+        (t/number-formatter 277833.20) => "277,833.2"))
 
-  (component "Percent formatter"
-    (assertions
-      "formats to two significant digits between 0 and 100"
-      (t/percent-formatter 0.01) => "1%"
-      (t/percent-formatter 0.1) => "10%"
-      (t/percent-formatter 0.115) => "12%"
-      (t/percent-formatter 0.89) => "89%"
-      (t/percent-formatter 1) => "100%"
-      "Supports percentages over 100"
-      (t/percent-formatter 3.45) => "345%")))
+    (component "Percent formatter"
+      (assertions
+        "formats to two significant digits between 0 and 100"
+        (t/percent-formatter 0.01) => "1%"
+        (t/percent-formatter 0.1) => "10%"
+        (t/percent-formatter 0.115) => "12%"
+        (t/percent-formatter 0.89) => "89%"
+        (t/percent-formatter 1) => "100%"
+        "Supports percentages over 100"
+        (t/percent-formatter 3.45) => "345%")))
 
 (specification "Summary Row Calculations"
   (let [new-table (t/add-summary-rows table-state {:a :sum :b :avg})]

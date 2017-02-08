@@ -21,7 +21,7 @@
 
 (defn get-img-sizes [file cb]
   (let [create-object-url #(.createObjectURL (or js/window.URL js/window.webkitURL) %)
-        img (new js/Image)]
+        img               (new js/Image)]
     (.addEventListener img "load"
       #(this-as this
          (cb (.-width this) (.-height this))))
@@ -31,21 +31,21 @@
   (let [files (.. fileEvt -target -files)]
     (doseq [file (array-seq files)]
       (let [read-method #(.readAsBinaryString %1 %2)
-            reader (new js/FileReader)]
+            reader      (new js/FileReader)]
         (.addEventListener reader "load"
           (comp (fn [data]
                   (get-img-sizes file
                     (fn [width height]
                       (callback (.-name file) (.-size file)
                         [width height] data))))
-                #(js/window.btoa %)
-                #(.. % -target -result)))
+            #(js/window.btoa %)
+            #(.. % -target -result)))
         (read-method reader file)))))
 
 (defn store-file [image-library-component file-name file-size file-dimensions data]
   (om/transact! image-library-component
     `[(untangled.component.image-library/store
-        ~{:db/id (om/tempid) :content/data data :image/name file-name
+        ~{:db/id      (om/tempid) :content/data data :image/name file-name
           :image/size file-size :image/dimensions file-dimensions})
       (untangled.component.image-library/refresh
         ~{:picker (:id (om/props image-library-component))})]))
@@ -77,34 +77,34 @@
   "Returns a new application state-db with the indicated image-library updated to have its current page filled."
   [state-db picker-id & {:keys [show-more]}]
   (let [{:keys [images search-string page-size current-page]} (get-in state-db [:image-pickers/by-id picker-id])
-        xf (comp
-             (map #(get-in state-db %))
-             (filter (fn [{:keys [image/name] :as img}]
-                       (str/includes? (str/lower-case name) (str/lower-case search-string))))
-             (map (fn [img] (with-meta [:image/by-id (:db/id img)] img))))
+        xf                      (comp
+                                  (map #(get-in state-db %))
+                                  (filter (fn [{:keys [image/name] :as img}]
+                                            (str/includes? (str/lower-case name) (str/lower-case search-string))))
+                                  (map (fn [img] (with-meta [:image/by-id (:db/id img)] img))))
         current-page-normalized (into [] xf images)]
     (-> state-db
-        (assoc-in [:image-pickers/by-id picker-id :current-page]
-          (->> current-page-normalized
-            (sort-by meta
-                     (fn [{:as l recent-l :ui.image/recent} {:as r recent-r :ui.image/recent}]
-                       (let [compare-img (fn [l r]
-                                           (compare
-                                             (str/lower-case (:image/name l))
-                                             (str/lower-case (:image/name r))))]
-                         (cond
-                           (and recent-l recent-r) #_>> (compare-img l r)
-                           (and recent-l (not recent-r)) #_>> -1
-                           (and (not recent-l) recent-r) #_>> 1
-                           true #_>> (compare-img l r)))))
-            (take (cond-> page-size
-                    show-more (+ (count current-page))))
-            vec)))))
+      (assoc-in [:image-pickers/by-id picker-id :current-page]
+        (->> current-page-normalized
+          (sort-by meta
+            (fn [{:as l recent-l :ui.image/recent} {:as r recent-r :ui.image/recent}]
+              (let [compare-img (fn [l r]
+                                  (compare
+                                    (str/lower-case (:image/name l))
+                                    (str/lower-case (:image/name r))))]
+                (cond
+                  (and recent-l recent-r) #_>> (compare-img l r)
+                  (and recent-l (not recent-r)) #_>> -1
+                  (and (not recent-l) recent-r) #_>> 1
+                  true #_>> (compare-img l r)))))
+          (take (cond-> page-size
+                  show-more (+ (count current-page))))
+          vec)))))
 
 (defn search [picker-id pattern state-db]
   (-> state-db
-      (assoc-in [:image-pickers/by-id picker-id :search-string] pattern)
-      (update-current-page picker-id)))
+    (assoc-in [:image-pickers/by-id picker-id :search-string] pattern)
+    (update-current-page picker-id)))
 
 (defmethod m/mutate 'untangled.component.image-library/search
   [{:as env :keys [state]} _ {:keys [picker pattern]}]
@@ -157,7 +157,7 @@
           (if (om/tempid? id)
             (dom/span nil (tr "Uploading..."))
             (dom/a #js {:className "c-card__thumb"
-                        :onClick (onSelect {:id id})}
+                        :onClick   (onSelect {:id id})}
               (dom/img #js {:src (or image-path (path image-cdn id))
                             :alt name})))
           (dom/div #js {:className "c-card__meta"}
@@ -204,19 +204,19 @@
     (let [{:keys [id search-string]} (om/props this)]
       (dom/div #js {:className "o-modal__toolbar"}
         (dom/div #js {:className "u-start"}
-         (dom/div #js {:className "o-input"}
-           (dom/input #js {:className   "o-input__box"
-                           :onChange    (.search this id)
-                           :value       (or search-string "")
-                           :placeholder (tr "Search your images")})
-           ((.getIconFn this) :search)))
+          (dom/div #js {:className "o-input"}
+            (dom/input #js {:className   "o-input__box"
+                            :onChange    (.search this id)
+                            :value       (or search-string "")
+                            :placeholder (tr "Search your images")})
+            ((.getIconFn this) :search)))
         (dom/div #js {:className "u-end"}))))
   (componentDidMount [this newprops]
     (let [image-list (om/get-state this :image-list)]
       (goog.events.listen image-list goog.events.EventType.SCROLL
         (debounce 150 (fn [_]
                         (when (<= (.-scrollHeight image-list)
-                                  (+ (.-offsetHeight image-list) (.-scrollTop image-list)))
+                                (+ (.-offsetHeight image-list) (.-scrollTop image-list)))
                           (.show-more this)))))))
   (getIconFn [this]
     (om/get-computed this :icon-fn))
@@ -225,41 +225,41 @@
           {:keys [image-cdn]} (om/get-computed this)
           {:keys [image-list]} (om/get-state this)]
       (dom/div #js {:className "o-modal__content"
-                     :ref #(when % (om/update-state! this assoc :image-list (js/ReactDOM.findDOMNode %)))}
+                    :ref       #(when % (om/update-state! this assoc :image-list (js/ReactDOM.findDOMNode %)))}
         (dom/div #js {:className "u-row"}
-         (if (empty? current-page) (dom/span nil "No Images found!")
-             (map (fn [img]
-                    (ui-image-media
-                      (om/computed img {:image-cdn image-cdn :onSelect #(.select this %)})))
-               current-page))
-         (dom/div #js {:className "u-center"}
-           (when-not (= (count current-page) (count images))
-             (dom/button #js {:className "c-button"
-                              :onClick #(.show-more this)}
-               "Show more")))))))
+          (if (empty? current-page) (dom/span nil "No Images found!")
+                                    (map (fn [img]
+                                           (ui-image-media
+                                             (om/computed img {:image-cdn image-cdn :onSelect #(.select this %)})))
+                                      current-page))
+          (dom/div #js {:className "u-center"}
+            (when-not (= (count current-page) (count images))
+              (dom/button #js {:className "c-button"
+                               :onClick   #(.show-more this)}
+                "Show more")))))))
   (render-page-control [this]
     (let [{:keys [id current-page selected]} (om/props this)
           {:keys [image-cdn onClose onSelect]} (om/get-computed this)]
       (dom/div #js {:className "o-modal__footer"}
-        (dom/input #js {:type     "file"
+        (dom/input #js {:type      "file"
                         :className "u-hide"
-                        :multiple true
-                        :accept   "image/*"
-                        :ref      #(when % (om/update-state! this assoc :file-input (js/ReactDOM.findDOMNode %)))
-                        :onChange (.on-upload this)})
+                        :multiple  true
+                        :accept    "image/*"
+                        :ref       #(when % (om/update-state! this assoc :file-input (js/ReactDOM.findDOMNode %)))
+                        :onChange  (.on-upload this)})
         (dom/div #js {:className "u-start"}
           (dom/button #js {:className "c-button"
-                          :onClick #(.click (om/get-state this :file-input))}
-           ((.getIconFn this) :cloud_upload)
-           (dom/span nil (tr "Upload image"))))
+                           :onClick   #(.click (om/get-state this :file-input))}
+            ((.getIconFn this) :cloud_upload)
+            (dom/span nil (tr "Upload image"))))
         (dom/div #js {:className "u-end"}
           (dom/button #js {:className "c-button c-button--text"
-                           :onClick onClose}
+                           :onClick   onClose}
             (tr "Cancel"))
           (dom/button #js {:className "c-button c-button--secondary"
-                           :disabled (when-not selected true)
-                           :onClick #(onSelect {:id (:db/id selected)
-                                                :path (path image-cdn (:db/id selected))})}
+                           :disabled  (when-not selected true)
+                           :onClick   #(onSelect {:id   (:db/id selected)
+                                                  :path (path image-cdn (:db/id selected))})}
             (tr "Insert image"))))))
 
   (render-header [this]
@@ -272,18 +272,18 @@
 
   (render-backdrop [this]
     (let [{:keys [onClose]} (om/get-computed this)]
-     (dom/div #js {:className "c-backdrop is-active" :onClick onClose})))
+      (dom/div #js {:className "c-backdrop is-active" :onClick onClose})))
 
   ;; You will want to add a button to the devcard that toggles both "is-active" classnames to make devcards usable again
   (render [this]
     (dom/div nil
-     (dom/div #js {:className "o-modal is-active"}
-       (dom/div #js {:className "o-modal__card o-modal__card--wide"}
-         (.render-header this)
-         (.render-toolbar this)
-         (.render-images this)
-         (.render-page-control this)))
-     (.render-backdrop this))))
+      (dom/div #js {:className "o-modal is-active"}
+        (dom/div #js {:className "o-modal__card o-modal__card--wide"}
+          (.render-header this)
+          (.render-toolbar this)
+          (.render-images this)
+          (.render-page-control this)))
+      (.render-backdrop this))))
 
 (def ui-image-library
   "Render an image library. This component supports the following computed parameters:

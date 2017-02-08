@@ -111,7 +111,7 @@
         "CSS class defaults to empty string"
         (:input/css-class field) => "")))
   (component "checkbox-input"
-    (let [field (f/checkbox-input :name)
+    (let [field   (f/checkbox-input :name)
           field-1 (f/checkbox-input :name :default-value true)]
       (assertions
         "has a name"
@@ -137,8 +137,8 @@
         "Has the correct type"
         (:input/type field) => ::f/dropdown))
     (let [field (f/dropdown-input :name [(f/option :a "A") (f/option :b "B")]
-                                  :default-value :a
-                                  :className "fld")]
+                  :default-value :a
+                  :className "fld")]
       (assertions
         "CSS class defaults to empty string"
         (:input/css-class field) => "fld"
@@ -150,7 +150,7 @@
 (specification "Building a Form"
   (component "The default state of a form"
     (component "id fields"
-      (let [fields [(f/id-field :db/id)]
+      (let [fields        [(f/id-field :db/id)]
             default-state (f/default-state fields)]
         (assertions
           "are marked as valid to start"
@@ -158,7 +158,7 @@
           "are given an Om tempid by default"
           (-> default-state :state :db/id) =fn=> om/tempid?)))
     (component "non-id fields"
-      (let [fields [(f/text-input :name :default-value :ABC)]
+      (let [fields        [(f/text-input :name :default-value :ABC)]
             default-state (f/default-state fields)]
         (assertions
           "are marked as validation :unchecked to start"
@@ -166,8 +166,8 @@
           "are given a default value defined by the field type"
           (-> default-state :state :name) => :ABC))))
   (component "The initialized state of a form"
-    (let [entity {:a 1}
-          field-keys [:a :b]
+    (let [entity        {:a 1}
+          field-keys    [:a :b]
           default-state {:a 0 :b "X"}
           initial-state (f/initialized-state default-state [:a :b] entity)]
       (assertions
@@ -210,7 +210,7 @@
 (specification "Initializing a to-one form relation"
   (let [app-state person-db
         base-form (get-in app-state [:people/by-id 7])
-        spec (-> (f/form-spec Person) first)]
+        spec      (-> (f/form-spec Person) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
@@ -239,7 +239,7 @@
 
 (specification "Initializing a to-many form relation"
   (let [base-form (get-in person-db [:people/by-id 4])
-        spec (-> (f/form-spec PolyPerson) first)]
+        spec      (-> (f/form-spec PolyPerson) first)]
     (when-mocking
       (f/init-form* state class ident v) =1x=> (do
                                                  (assertions
@@ -404,9 +404,9 @@
     "Obtains a list of nested forms and idents that are BOTH declared as subforms AND are present (others are skipped)."
     (f/get-forms nested-form-db Level3Form [:level3 1])
     => [{:ident [:level3 1] :class Level3Form
-         :form {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
+         :form  {:id 1 :level3 true :other-root [:other 100] :level2 [:level2 2]}}
         {:ident [:level2 2] :class Level2Form
-         :form {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
+         :form  {:id 2 :value 1 :level2 true :leaf1 [:leaf 5] :leaf2 [:leaf 6]}}
         {:ident [:leaf 5] :class LeafForm :form {:id 5 :value 1 :leaf true}}
         {:ident [:leaf 6] :class LeafForm :form {:id 6 :value 1 :leaf true}}]
     "Can pull to-many relations of sub-forms"
@@ -422,8 +422,8 @@
          :form  {:id 4 :value 1 :leaf true}}]))
 
 (specification "update-forms"
-  (let [state (f/init-form nested-form-db Level3Form [:level3 1])
-        form (get-in state [:level3 1])
+  (let [state     (f/init-form nested-form-db Level3Form [:level3 1])
+        form      (get-in state [:level3 1])
         new-state (f/update-forms state form (fn [{:keys [form]}] (assoc form :touched true)))]
     (assertions
       "Updates the state of the correct forms using a supplied function."
@@ -436,13 +436,13 @@
 (specification "reduce-forms"
   (assertions "Can accumulate values from all forms"
     (let [state (f/init-form nested-form-db Level3Form [:level3 1])
-          form (get-in state [:level3 1])]
+          form  (get-in state [:level3 1])]
       (f/reduce-forms state form 0 (fn [acc spec] (+ acc (get-in spec [:form :value]))))) => 3))
 
 (specification "Form config and state helpers"
   (let [ident-under-test [:people/by-id 7]
-        app-state (f/init-form person-db Person ident-under-test)
-        person-form (get-in app-state ident-under-test)]
+        app-state        (f/init-form person-db Person ident-under-test)
+        person-form      (get-in app-state ident-under-test)]
     (assertions
       "form-component returns the defui React component of the form"
       (f/form-component person-form) => Person
@@ -459,22 +459,22 @@
       (f/current-value person-form :person/name) => "A"
       "update-current-value modifies the current field value via a function"
       (-> person-form
-          (f/update-current-value :person/name (constantly "new-value"))
-          (f/current-value :person/name)) => "new-value"
+        (f/update-current-value :person/name (constantly "new-value"))
+        (f/current-value :person/name)) => "new-value"
       "set-current-value modifies the current field value"
       (-> person-form
-          (f/set-current-value :person/name "new-value")
-          (f/current-value :person/name)) => "new-value"
+        (f/set-current-value :person/name "new-value")
+        (f/current-value :person/name)) => "new-value"
       "update-current-value marks field validation as :unchecked"
       (-> person-form
-          (f/set-validation :person/name :valid)
-          (f/update-current-value :person/name (constantly "do-not-care"))
-          (f/current-validity :person/name)) => :unchecked
+        (f/set-validation :person/name :valid)
+        (f/update-current-value :person/name (constantly "do-not-care"))
+        (f/current-validity :person/name)) => :unchecked
       "set-current-value marks field validation as :unchecked"
       (-> person-form
-          (f/set-validation :person/name :valid)
-          (f/set-current-value :person/name "do-not-care")
-          (f/current-validity :person/name)) => :unchecked
+        (f/set-validation :person/name :valid)
+        (f/set-current-value :person/name "do-not-care")
+        (f/current-validity :person/name)) => :unchecked
       "css-class can access the desired CSS class of a field"
       (f/css-class person-form :person/name) => "name-class"
       "validatable-fields give field names for all validatable fields"
@@ -495,11 +495,11 @@
   (ident [this props] [:thing/by-id (:db/id props)]))
 
 (specification "Form state mutations"
-  (let [state (atom (-> {:thing/by-id {1 {:db/id 1 :thing/name "Original" :thing/ok? false}}}
-                        (f/init-form Thing [:thing/by-id 1])))
+  (let [state             (atom (-> {:thing/by-id {1 {:db/id 1 :thing/name "Original" :thing/ok? false}}}
+                                  (f/init-form Thing [:thing/by-id 1])))
         test-mutate-field (partial test-mutate-action {:state state})
-        get-thing (fn [] (get-in @state [:thing/by-id 1]))
-        validate (fn [] (swap! state update-in [:thing/by-id 1] f/validate-fields))]
+        get-thing         (fn [] (get-in @state [:thing/by-id 1]))
+        validate          (fn [] (swap! state update-in [:thing/by-id 1] f/validate-fields))]
     (component "set-field"
       (validate)
       (assertions
@@ -507,7 +507,7 @@
         (f/current-validity (get-thing) :thing/name) => :valid)
 
       (test-mutate-field `f/set-field
-                         {:form-id [:thing/by-id 1] :field :thing/name :value "asdf"})
+        {:form-id [:thing/by-id 1] :field :thing/name :value "asdf"})
 
       (assertions
         "Modifies the field"
@@ -530,7 +530,7 @@
 
 (defmethod f/form-field-valid? 'is-named? [sym v {:keys [name]}] (= v name))
 
-(defui CPerson ; only valid if name is 'C'
+(defui CPerson                                              ; only valid if name is 'C'
   static om/IQuery
   (query [this] [:db/id :person/name {:person/number (om/get-query Phone)}])
   static om/Ident
@@ -540,13 +540,13 @@
                      (f/subform-element :person/number Phone :many)]))
 
 (specification "Form Validation"
-  (let [app-state (-> person-db
-                      (f/init-form CPerson [:people/by-id 4])
-                      (f/init-form CPerson [:people/by-id 5]))
+  (let [app-state        (-> person-db
+                           (f/init-form CPerson [:people/by-id 4])
+                           (f/init-form CPerson [:people/by-id 5]))
         unchecked-person (get-in app-state [:people/by-id 5])
-        c-person (get-in app-state [:people/by-id 4])
-        valid-person (f/validate-field* c-person :person/name)
-        invalid-person (f/validate-field* unchecked-person :person/name)
+        c-person         (get-in app-state [:people/by-id 4])
+        valid-person     (f/validate-field* c-person :person/name)
+        invalid-person   (f/validate-field* unchecked-person :person/name)
         validated-person (f/validate-fields unchecked-person)]
     (component "Update validation (on a field)"
       (assertions
@@ -560,7 +560,7 @@
         ((juxt f/valid? f/invalid?) validated-person) => [false true]
         "can supply option to skip unchanged fields"
         ((juxt f/valid? f/invalid?)
-         (f/validate-fields unchecked-person {:skip-unchanged? true}))
+          (f/validate-fields unchecked-person {:skip-unchanged? true}))
         => [false false]))
     (assertions
       "Can query the tri-state validity of a specific field (which defaults to unchecked)"
@@ -591,10 +591,10 @@
           (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true))))
 
   (component "validate-forms"
-    (let [app-state (f/init-form person-db CPerson [:people/by-id 4])
+    (let [app-state       (f/init-form person-db CPerson [:people/by-id 4])
           validated-state (f/validate-forms app-state [:people/by-id 4])
-          get-person (fn [id] (get-in validated-state [:people/by-id id]))
-          get-phone (fn [id] (get-in validated-state [:phone/by-id id]))]
+          get-person      (fn [id] (get-in validated-state [:people/by-id id]))
+          get-phone       (fn [id] (get-in validated-state [:phone/by-id id]))]
       (assertions
         "recursively walks an entire form in app state and updates all fields validity to proper valid/invalid."
         (f/valid? (get-person 4) :person/name) => true
@@ -608,17 +608,17 @@
   [tx] (mapcat #(if (seq? %) (vec %) [%]) tx))
 
 (specification "Form entity commit/reset"
-  (let [app-state (-> person-db
-                    (f/init-form Phone [:phone/by-id 1])
-                    (f/init-form Phone [:phone/by-id 2]))
+  (let [app-state              (-> person-db
+                                 (f/init-form Phone [:phone/by-id 1])
+                                 (f/init-form Phone [:phone/by-id 2]))
 
-        get-entity (fn [class ident]
-                     (let [state (f/init-form app-state class ident)]
-                       (om/db->tree (om/get-query class) (get-in state ident) state)))
-        basic-person (get-entity Person [:people/by-id 3])
-        one-number-person (get-entity Person [:people/by-id 7])
-        no-number-person (get-entity PolyPerson [:people/by-id 5])
-        many-number-person (get-entity PolyPerson [:people/by-id 4])
+        get-entity             (fn [class ident]
+                                 (let [state (f/init-form app-state class ident)]
+                                   (om/db->tree (om/get-query class) (get-in state ident) state)))
+        basic-person           (get-entity Person [:people/by-id 3])
+        one-number-person      (get-entity Person [:people/by-id 7])
+        no-number-person       (get-entity PolyPerson [:people/by-id 5])
+        many-number-person     (get-entity PolyPerson [:people/by-id 4])
         one-many-number-person (get-entity PolyPerson [:people/by-id 6])
 
         [t1] (repeatedly om/tempid)]
@@ -703,17 +703,17 @@
               :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
-                                                form-id => [:people/by-id 3]
-                                                xf => f/commit-state)
+                                               form-id => [:people/by-id 3]
+                                               xf => f/commit-state)
                                              ::ok)
         (f/diff-form _) => :fake/delta
         (let [commit-mut
-              (m/mutate {:state (atom app-state)
+              (m/mutate {:state  (atom app-state)
                          :target :remote
-                         :ast {:params {:remote true}}}
+                         :ast    {:params {:remote true}}}
                 `f/commit-to-entity
                 {:remote true
-                 :form basic-person})]
+                 :form   basic-person})]
           (assertions
             "only optionally `:remote`s the result of diff-form to the server"
             (:remote commit-mut) => {:params {:delta :fake/delta}}
@@ -724,9 +724,9 @@
               (m/mutate {:state (atom (-> app-state
                                         (assoc-in (conj (f/form-ident basic-person) :ui.person/client-only) "SHOULDNT_APPEAR")
                                         (assoc-in (conj (f/form-ident basic-person) :person/name) "NEW_NAME")))
-                         :ast {:params {:remote true}}}
+                         :ast   {:params {:remote true}}}
                 `f/commit-to-entity
-                {:remote true
+                {:remote  true
                  :form-id (f/form-ident basic-person)})]
           (assertions "we dont send them to the server"
             (get-in (:remote commit-mut) [:params :delta (f/form-ident basic-person) :ui.person/client-only] ::nil) => ::nil)))
@@ -766,12 +766,12 @@
     (component "reset-from-entity"
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
-                                                form-id => :fake/form-id
-                                                xf => f/reset-entity)
+                                               form-id => :fake/form-id
+                                               xf => f/reset-entity)
                                              ::ok)
         (let [reset-mut
               (m/mutate {:state (atom app-state)
-                         :ast {:params {:form-id :fake/form-id}}}
+                         :ast   {:params {:form-id :fake/form-id}}}
                 `f/reset-from-entity
                 {:form-id :fake/form-id})]
           (assertions
@@ -818,7 +818,7 @@
      (f/subform-element :mutant/mutations Mutation :many)]))
 
 (def mutant-db
-  {:mutant/by-id {1 {:db/id 1
+  {:mutant/by-id {1 {:db/id       1
                      :mutant/name "Professor X"}}})
 
 (specification "on-form-change"
@@ -831,20 +831,20 @@
 
 (specification "validate-field mutation"
   (let [thing-1 [:thing/by-id 1]
-        db (-> {:thing/by-id {1 {:db/id 1}}}
-                (f/init-form Thing thing-1))]
+        db      (-> {:thing/by-id {1 {:db/id 1}}}
+                  (f/init-form Thing thing-1))]
     (provided "outsources work to validate-field*"
       (f/validate-field* form field) => ::ok
       (assertions
         (get-in (test-mutate-action {:state (atom db)}
                   `f/validate-field {:form-id thing-1 :field :thing/name})
-                thing-1)
+          thing-1)
         => ::ok))))
 
 (specification "validate-form mutation"
   (let [thing-1 [:thing/by-id 1]
-        db (-> {:thing/by-id {1 {:db/id 1}}}
-             (f/init-form Thing thing-1))]
+        db      (-> {:thing/by-id {1 {:db/id 1}}}
+                  (f/init-form Thing thing-1))]
     (provided "outsources work to validate-forms"
       (f/validate-forms state form-id opts)
       => (do (assertions (contains? opts :form-id) => false) ::ok)
@@ -855,8 +855,8 @@
 
 (specification "validate-entire-form!"
   (let [thing-1 [:thing/by-id 1]
-        db (-> {:thing/by-id {1 {:db/id 1}}}
-             (f/init-form Thing thing-1))]
+        db      (-> {:thing/by-id {1 {:db/id 1}}}
+                  (f/init-form Thing thing-1))]
     (when-mocking
       (om/transact! _ tx) => (fix-tx tx)
       (assertions

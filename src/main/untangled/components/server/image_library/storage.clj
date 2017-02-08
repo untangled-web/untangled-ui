@@ -68,7 +68,7 @@
   (grab [this im]
     (cond (:id im) (get @value (:id im))
           (:owner im) (filter (comp #{(:owner im)} :owner)
-                              (vals (dissoc @value ::counter)))
+                        (vals (dissoc @value ::counter)))
           :else (throw (ex-info (str "InMemMetaStore failed to grab for " im)
                          {:this this :im im :value @value}))))
   component/Lifecycle

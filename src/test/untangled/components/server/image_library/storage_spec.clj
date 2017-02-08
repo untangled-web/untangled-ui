@@ -7,20 +7,20 @@
     [untangled.server.core :as usc]))
 
 (def example-image-meta-params
-  {:db/id 123 :image/owner "owner"
-   :image/name "name" :image/size "size"
+  {:db/id            123 :image/owner "owner"
+   :image/name       "name" :image/size "size"
    :image/dimensions "dimensions"
-   :image/extension "extension"})
+   :image/extension  "extension"})
 
 (specification "make-image-meta"
   (assertions "makes an ImageMeta w/ inferred image extension"
     (src/make-image-meta
       example-image-meta-params)
     => (src/map->ImageMeta
-         {:id 123 :owner "owner"
-          :name "name" :size "size"
+         {:id         123 :owner "owner"
+          :name       "name" :size "size"
           :dimensions "dimensions"
-          :extension "extension"})))
+          :extension  "extension"})))
 (specification "unravel-image-meta"
   (assertions "turns the ImageMeta back into params"
     (src/unravel-image-meta
@@ -69,7 +69,7 @@
     => [0 "test"]
     "has an :id counter that auto increments on save"
     (let [ms (test-meta-store)
-          _ (src/save ms (src/make-image-meta {:db/id 0 :image/name "really :id 0"}))
+          _  (src/save ms (src/make-image-meta {:db/id 0 :image/name "really :id 0"}))
           im (src/save ms (src/make-image-meta {:db/id 0 :image/name "really :id 1"}))]
       ((juxt :id :name) (src/grab ms im)))
     => [1 "really :id 1"]))

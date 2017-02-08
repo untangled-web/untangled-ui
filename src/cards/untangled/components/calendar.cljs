@@ -26,5 +26,5 @@
   (untangled-app CalRoot)
   {:start-date     [:calendar/by-id :start-date]
    :calendar/by-id {:start-date (c/initial-calendar :start-date #(str "Start Date")
-                                                    (js/Date. "2013-09-03 12:00:00"))}}
+                                  (js/Date. "2013-09-03 12:00:00"))}}
   {:inspect-data false})
