@@ -74,12 +74,11 @@ Approaches to this are:
 - Manually add the missing values to your translation files by hand
 - Add a function to your code base that never gets called, and just calls `tr` with the missing ones to aid in extraction.
 This results in automatic extraction and serves as documentation you can put "near" the uses of `tr-unsafe`. 
-- Have the user pass you a lambda for doing the label generation. This approach is a problem with Om, because we cannot 
-store a function in app state (it breaks serialization of history). So,
-we could, for example, allow them to drop in a unique keyword and define some multimethod for the component:
 - Have labels be something that are not ever stored in state. This is ok (probably preferable) for things like Button, 
 but more complex things like menu's are probably declared with labels when defined, not when used.
-- Use multimethods?
+- Have the user pass you a lambda for doing the label generation. This approach is a problem with Om, because we cannot 
+store a function in app state (it breaks serialization of history). So,
+we could, for example, allow them to drop in a unique keyword and define some multimethod for the component.
 
 ```clj
 (defmulti render-button-label (fn [k] k))
