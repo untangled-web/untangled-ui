@@ -1,5 +1,4 @@
 (ns styles.utilities
-  (:require-macros user)
   (:require [om.next :as om :refer-macros [defui]]
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample]]
             [om.dom :as dom]))

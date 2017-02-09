@@ -1,5 +1,4 @@
 (ns styles.getting-started
-  (:require-macros user)
   (:require [om.next :as om :refer-macros [defui]]
     ;; NOTE: This is where the interesting macros and such are at:
             [styles.util :as util

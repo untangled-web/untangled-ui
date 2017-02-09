@@ -21,7 +21,7 @@
                  [com.taoensso/timbre "4.7.4"]]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
-            [lein-cljsbuild "1.1.4"]
+            [lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.7"]]
 
   :source-paths ["dev" "src/main" "src/guide" "src/visuals"]
@@ -69,7 +69,7 @@
                 :compiler     {:asset-path           "js/css-guide"
                                :optimizations        :none
                                :recompile-dependents true
-                               :main                 cljs.user
+                               :main                 guideui.main
                                :output-dir           "resources/public/js/css-guide"
                                :output-to            "resources/public/js/css-guide.js"
                                :preloads             [devtools.preload]
@@ -92,6 +92,7 @@
                                   [com.cemerick/piggieback "0.2.1"]
                                   [org.clojure/tools.namespace "0.2.11"]
                                   [org.clojure/tools.nrepl "0.2.12"]
+                                  [hickory "0.7.0"]
                                   [devcards "0.2.2" :exclusions [org.omcljs/om]]]
                    :repl-options {:init-ns          clj.user
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
