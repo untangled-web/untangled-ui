@@ -123,17 +123,19 @@ local state except in performance hotspots (e.g. animations like panning an imag
 
 There are three builds: test, visuals, and guide. Select them via `JVM_OPTS` with `-D`
 
-The visuals build is for the visual regression cards that show each possible visible state of a component, and are
+The `visuals` build is for the visual regression cards that show each possible visible state of a component, and are
 (TODO) run through a browser-based image capture diff to detect visual regressions due to code and CSS changes.
 
-The guide build is the development guide cards. These cards demonstrate live examples of the components and have full
+The `guide` build is the development guide cards. These cards demonstrate live examples of the components and have full
 markdown documentation. The hope is to evolve this to a better UI, but devcards allows for rapid development at the 
 moment.
 
-The test build is for untangled-specs. Those adding component that have any algorithms with complexity are encourage to
+The `test` build is for untangled-specs. Those adding component that have any algorithms with complexity are encourage to
 write specifications around those algorithms to help ensure correctness. Many of the components are quite simple, so
 most components probably will not have specs; however, things like the forms support include a number of more interesting
 behaviors that need full testing support.
+
+The `css-guide` build is for the raw CSS with examples of the DOM/CSS rules to do raw rendering.
 
 ```
 JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj
@@ -141,7 +143,9 @@ JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj
 
 Open a browser on (port settable `:figwheel` section of `project.clj`):
 
+http://localhost:8001/     - Index of the pages below, with their JVM OPT for running
 http://localhost:8001/guide.html
+http://localhost:8001/css-guide.html
 http://localhost:8001/visuals.html
 http://localhost:8001/test.html
 
