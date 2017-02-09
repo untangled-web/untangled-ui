@@ -224,17 +224,17 @@
           part-names (map :part/title parts)]
       (dom/div nil
         (dom/div #js {:className "o-toolbar u-row--collapse u-trailer--half"}
-          (dom/div #js {:className "u-column--2 u-middle"}
+          (dom/div #js {:className "u-column--4 u-column--3@md u-column--2@lg u-middle"}
             (dom/div #js {:className "o-toolbar__tile"}
               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:marginTop "2px"}})
               (dom/span #js {:className "u-font-size--semi-medium"
                              :style     #js {:position   "relative"
                                              :top        "-12px"
-                                             :marginLeft "10px"}} "Stylekit")))
-          (dom/div #js {:className "u-column--7"
+                                             :marginLeft "10px"}} "UI Styleguide")))
+          (dom/div #js {:className "u-column"
                         :style     #js {:marginTop "20px"}}
             (tabs this :parts/selected-part part-names))
-          (dom/div #js {:className "u-column u-end"}
+          (dom/div #js {:className "u-column--3 u-end u-hide@sm u-hide@md"}
             (ui-search searchbar))
           )
         (dom/div #js {:className "ui-parts"}

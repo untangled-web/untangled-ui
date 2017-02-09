@@ -49,24 +49,20 @@
     ))
 
 (defexample icon-button
-            "## Buttons with icons"
-            (dom/div nil
-                     (dom/button #js {:className "c-button"}
-      (dom/span #js {:className "c-icon"}
-        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-          (dom/path #js {:d "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"})))
+"## Buttons with icons"
+  (dom/div nil
+    (dom/button #js {:className "c-button"}
+      (icons/icon :arrow_back)
       (dom/span #js {:className "c-button__content"} "Left Icon"))
-                     (dom/button #js {:className "c-button"}
+    (dom/button #js {:className "c-button"}
       (dom/span #js {:className "c-button__content"} "Right Icon")
-      (dom/span #js {:className "c-icon"}
-        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-          (dom/path #js {:d "M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"}))))
-                     (dom/button #js {:title "Icon Button" :className "c-button c-button--icon"}
+      (icons/icon :arrow_forward))
+    (dom/button #js {:title "Icon Button" :className "c-button c-button--icon"}
       (dom/span #js {:className "c-icon"}
         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
           (dom/path #js {:d "M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"}))))
-                     )
-            )
+    )
+  )
 
 (defexample button-color
   "## Button Color"
@@ -79,7 +75,9 @@
     (dom/button #js {:className "c-button c-button--anchor"} "Anchor")))
 
 (defexample button-postfix
-  "## Button Postfix"
+  "## Button Postfix
+
+  This pattern is mainly for demonstration purposes only, as this is a specific technique that can be accomplished through a simple collapsed grid and a button modifier class."
   (dom/div #js {:className "u-row u-row--collapse"}
     (dom/div #js {:className "u-column--9"}
       (dom/input #js {:type "text" :placeholder "Search for..." :className "c-input"}))
@@ -646,6 +644,44 @@
                       :checked (= 5 selection) :onClick #(select 5)})
       (dom/label #js {:htmlFor "sr5"} "5"))))
 
+(def switch-header
+  "# Switch
+
+  A simple control to indicate if somehting is on or off.
+  ")
+
+(defexample switch
+  "### Simple
+  Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`.
+  "
+  (let [active (boolean (om/get-state this :active))]
+    (dom/div #js {:className "c-switch"
+                  :onClick #(om/update-state! this update :active not)}
+      (dom/input #js {:className "c-switch__input"
+                      :id        "h-switch-input-1"
+                      :type      "checkbox"
+                      :checked   (= active true)})
+      (dom/span #js {:className "c-switch__paddle"
+                     :htmlFor "h-switch-input-1"}))))
+
+(defexample switch-icon
+  "### Icons
+
+  You can put up to 2 icons inside the `.c-switch__paddle` that represent what off and on actually do.
+  "
+  (let [active (boolean (om/get-state this :active))]
+    (dom/div #js {:className "c-switch"
+                  :onClick #(om/update-state! this update :active not)}
+      (dom/input #js {:className "c-switch__input"
+                      :id        "h-switch-input-1"
+                      :type      "checkbox"
+                      :checked   (= active true)})
+      (dom/span #js {:className "c-switch__paddle"
+                     :htmlFor "h-switch-input-1"}
+        (icons/icon :clear)
+        (icons/icon :done)
+        ))))
+
 (defexample tables
   "# Table Example"
   (let [kind (or (om/get-state this :kind))
@@ -829,6 +865,7 @@
   (vec (sort-by :title
                 [
                  ; NOTE: :examples is a list of example names, rendered in order given
+                 {:id :switch :title "Switch" :examples [switch switch-icon] :documentation switch-header}
                  {:id :tooltip :title "Tool Tips" :examples [tooltip-directions tooltip-sizes]
                   :documentation
                       "Tool tips are based on `data` attributes. "}

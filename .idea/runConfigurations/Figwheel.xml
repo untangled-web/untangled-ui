@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Figwheel" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
     <setting name="replType" value="2" />
-    <module name="untangled-components" />
-    <setting name="jvmArgs" value="-Dvisuals -Dguide" />
+    <module name="untangled-ui" />
+    <setting name="jvmArgs" value="-Dvisuals -Dguide -Dcss-guide" />
     <setting name="parameters" value="script/figwheel.clj" />
     <setting name="workingDir" value="$PROJECT_DIR$" />
     <setting name="profiles" value="" />

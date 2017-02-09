@@ -87,6 +87,7 @@
 @import 'components/menu';
 @import 'components/message';
 @import 'components/notification';
+@import 'components/switch';
 @import 'components/table';
 @import 'components/tooltip';
 

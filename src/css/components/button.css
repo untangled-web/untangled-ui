@@ -62,7 +62,7 @@ section: Components
   font-size: var(--fontSize--small);
   height: var(--height-button);
   line-height: var(--height-button);
-  margin: 0 var(--frame-half) var(--frame-half) 0;
+  margin: 0;
   max-width: 100%;
   outline: 0;
   overflow: visible; /* Internet Explorer 12- */
@@ -118,7 +118,7 @@ section: Components
   @media print { display: none; }
 
   :--fullscreen & { font-size: 1rem; }
-  
+
   .c-field & {
     height: 28px;
     line-height: 28px;
@@ -127,11 +127,7 @@ section: Components
 }
 
 
-  .c-button__content {
-    @apply --ellipsis;
-    @apply --start;
-    display: inline-block;
-  }
+  .c-button__content { @apply --start; }
 
 
 .c-button--wide { @apply --button--wide; }

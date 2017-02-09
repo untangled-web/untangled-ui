@@ -39,5 +39,6 @@
 @import 'menu';
 @import 'message';
 @import 'notification';
+@import 'switch';
 @import 'table';
 @import 'tooltip';
