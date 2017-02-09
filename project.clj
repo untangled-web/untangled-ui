@@ -67,12 +67,12 @@
                {:id           "css-guide"
                 :figwheel     true
                 :source-paths ["dev" "src/main" "src/css-guide"]
-                :compiler     {:asset-path           "js/cards"
+                :compiler     {:asset-path           "js/css-guide"
                                :optimizations        :none
                                :recompile-dependents true
                                :main                 cljs.user
-                               :output-dir           "resources/public/js/cards"
-                               :output-to            "resources/public/js/cards.js"
+                               :output-dir           "resources/public/js/css-guide"
+                               :output-to            "resources/public/js/css-guide.js"
                                :preloads             [devtools.preload]
                                :source-map-timestamp true}}
                {:id           "automated-tests"

@@ -1,22 +1,3 @@
-/**
- *
- *  Web Starter Kit
- *  Copyright 2016 Beuhner-Fry Inc. All rights reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License
- *
- */
-
 'use strict';
 
 // This gulpfile makes use of new JavaScript features.
@@ -73,7 +54,7 @@ gulp.task('styles', () => {
     postcssReporter({clearMessages: true})
   ];
 // For best performance, don't add Sass partials to `gulp.src`
-return gulp.src(['src/main/css/*.css'])
+return gulp.src(['src/css/*.css'])
   .pipe($.sourcemaps.init())
   .pipe($.postcss(PROCESSORS)).on('error', gutil.log)
   .pipe($.sourcemaps.write('./'))
@@ -100,7 +81,7 @@ gulp.task('dist', () => {
     cssnano,
     postcssReporter({clearMessages: true})
   ];
-return gulp.src(['src/main/css/*.css'])
+return gulp.src(['src/css/*.css'])
   .pipe($.postcss(PROCESSORS)).on('error', gutil.log)
   .pipe(gulp.dest('dist'));
 })
@@ -112,7 +93,7 @@ gulp.task('clean', () => del(['.tmp', 'resources/public/*', '!resources/public/.
 
 // Watch files for changes & recompile
 gulp.task('watch', ['styles'], () => {
-  gulp.watch(['src/main/css/**/*.css', 'src/main/css/stylekit.css'], ['styles']);
+  gulp.watch(['src/css/**/*.css', 'src/css/stylekit.css'], ['styles']);
 });
 
 
