@@ -1,0 +1,129 @@
+/*---
+section: Utilities
+title: Visibility
+---*/
+
+/* DEPRECATED
+   .has-pulse */
+
+
+.s-healthcheck {
+  [class] { outline: 5px solid lightgrey; }
+
+  [class*='__'] { outline: 5px solid grey; }
+
+  [class*='--'] { outline: 5px solid darkgrey; }
+
+  [class^='o-'],
+  [class*=' o-'] { outline: 5px solid orange; }
+
+  [class^='c-'],
+  [class*=' c-'] { outline: 5px solid cyan; }
+
+  [class*='@'] { outline: 5px solid rosybrown; }
+
+  [class^='_'] { outline: 5px solid red; }
+}
+
+
+.u-pulse,
+.has-pulse {
+  animation: pulse 2s infinite;
+  will-change: box-shadow;
+
+  &:hover { animation: none; }
+}
+
+
+.u-fade-out { @apply --fade-out; }
+.u-fade-in { @apply --fade-in; }
+.u-slide-out { @apply --slide-out; }
+.u-slide-out--inv { @apply --slide-out-inv; }
+.u-slide-out--short { @apply --slide-out-short; }
+.u-slide-in { @apply --slide-in; }
+
+
+.u-hide,
+[hidden] { display: none !important; }
+
+
+[hidden][aria-hidden='false'],
+.u-show\@reader {
+  clip: rect(0 0 0 0);
+  display: inherit;
+  height: 1px;
+  overflow: hidden;
+  position: absolute !important;
+  width: 1px;
+
+  &:focus { clip: auto; }
+}
+
+
+@media (--sm) {
+  .u-hide\@sm { display: none !important; }
+}
+
+
+@media (--md) {
+  .u-hide\@md { display: none !important; }
+}
+
+
+@media (--md-up) {
+  .u-hide\@md-up { display: none !important; }
+}
+
+
+@media (--lg) {
+  .u-hide\@lg { display: none !important; }
+}
+
+
+@media (--lg-up) {
+  .u-hide\@lg-up { display: none !important; }
+}
+
+
+@media (--xl) {
+  .u-hide\@xl { display: none !important; }
+}
+
+
+@media (--xl-up) {
+  .u-hide\@xl-up { display: none !important; }
+}
+
+
+@media print {
+  .u-hide\@print { display: none !important; }
+}
+
+
+@media (--landscape) {
+  .u-hide\@landscape { display: none !important; }
+}
+
+
+@media (--portrait) {
+  .u-hide\@portrait { display: none !important; }
+}
+
+
+@keyframes pulse {
+  0% {
+    box-shadow:
+    0 0 0 0 var(--pulse-color--start),
+    0 0 0 0 var(--pulse-color--start);
+  }
+  70% {
+    box-shadow:
+    0 0 0 10px var(--pulse-color--end),
+    0 0 0 10px var(--pulse-color--end);
+  }
+  100% {
+    box-shadow:
+    0 0 0 0 var(--pulse-color--end),
+    0 0 0 0 var(--pulse-color--end);
+  }
+}

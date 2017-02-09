@@ -1,0 +1,66 @@
+/*---
+import: ../README.md
+---*/
+
+@import 'stylekit';
+
+/* stylelint-disable */
+.box-row { margin-bottom: 1rem; }
+
+.box,
+.box-first,
+.box--large,
+.box-nested,
+.box-row {
+  background-color: var(--blue-600);
+  color: var(--white);
+  font-size: var(--fontSize--tiny);
+  min-height: 2em;
+  overflow: hidden;
+  padding: .75em 0;
+  position: relative;
+  text-align: center;
+}
+
+.box-first { background-color: var(--blue-700); }
+
+.box-nested { background-color: var(--blue-800); }
+
+.box--large { height: 5rem; }
+
+.box-tall { padding: 200px 0; }
+
+.ui-example__description {
+  h1 {
+    font-size: var(--fontSize--medium);
+  }
+
+  h2 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    line-height: 1.25;
+  }
+
+  code {
+    background-color: var(--grey-50);
+    font-size: 90%;
+    border-radius: 2px;
+    padding: .2em 0;
+    margin: 0;
+  }
+}
+
+.ui-example__figure {
+  border: 3px solid var(--grey-50);
+  padding: 1em 5px;
+}
+
+.ui-example__source {
+  background-color: var(--grey-50);
+  font-size: 16px;
+  line-height: 22px;
+  padding: 5px 0;
+  overflow-x: scroll;
+}
+
+/* stylelint-enable */

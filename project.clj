@@ -58,12 +58,23 @@
                                :output-dir    "resources/public/js/visuals"
                                :optimizations :none}}
                {:id           "test"
-                :source-paths ["src/test" "src/main" "dev"]
+                :source-paths ["src/test" "src/main"]
                 :figwheel     {:on-jsload "cljs.user/on-load"}
                 :compiler     {:main       cljs.user
                                :output-to  "resources/public/js/specs.js"
                                :output-dir "resources/public/js/specs"
                                :asset-path "js/specs"}}
+               {:id           "css-guide"
+                :figwheel     true
+                :source-paths ["dev" "src/main" "src/css-guide"]
+                :compiler     {:asset-path           "js/cards"
+                               :optimizations        :none
+                               :recompile-dependents true
+                               :main                 cljs.user
+                               :output-dir           "resources/public/js/cards"
+                               :output-to            "resources/public/js/cards.js"
+                               :preloads             [devtools.preload]
+                               :source-map-timestamp true}}
                {:id           "automated-tests"
                 :source-paths ["src/test" "src/main"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"

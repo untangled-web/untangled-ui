@@ -1,0 +1,110 @@
+/*---
+title: Icon
+section: Components
+---*/
+
+/* --icon-dimensions - A temporary hack that can be removed once our supported browser target has native support for custom properties. Usually you just define a new property value and the relevant properties update with the new value. */
+
+:root {
+  --color-icon: currentColor;
+  --color-icon--passive: var(--grey-200);
+  --color-icon--active: var(--blue-400);
+  --margin-button__icon: 7px;
+  --opacity-button--disabled: .35;
+  --size-button__icon: 20px;
+  --size-icon--small: 17px;
+  --size-icon--normal: 24px;
+  --size-icon--medium: 35px;
+  --size-icon--large: 48px;
+  --size-icon--xlarge: 64px;
+  --size-icon--huge: 128px;
+  --size-icon: var(--size-icon--normal);
+
+  --icon-dimensions: {
+    height: initial !important;
+    max-height: var(--size-icon) !important;
+    max-width: var(--size-icon) !important;
+    width: 100% !important;
+  };
+}
+
+
+.c-icon {
+  display: inline-block;
+  fill: var(--color-icon);
+  height: var(--size-icon);
+  user-select: none;
+  vertical-align: middle;
+  width: var(--size-icon);
+
+  svg {
+    height: inherit;
+    width: inherit;
+  }
+
+  &:--disabled { opacity: var(--opacity-button--disabled); }
+
+  &.is-active { fill: var(--color-icon--active); }
+
+  &.is-passive { fill: var(--color-icon--passive); }
+
+  &.is-selectable {
+    cursor: pointer;
+    padding: 4px;
+    transition: all var(--global-duration) ease;
+
+    &:hover {
+      background-color: var(--color-icon);
+      border-radius: var(--global-rounded);
+      fill: var(--white);
+    }
+  }
+
+  .c-button & {
+    height: var(--size-button__icon);
+    margin-top: -3px;
+    width: var(--size-button__icon);
+
+    &:first-child { margin-right: var(--margin-button__icon); }
+
+    &:last-child { margin-left: var(--margin-button__icon); }
+  }
+
+  @media print {
+    &--help { display: none; }
+  }
+}
+
+
+.c-icon--small {
+  --size-icon: var(--size-icon--small);
+  @apply --icon-dimensions;
+}
+
+
+.c-icon--medium {
+  --size-icon: var(--size-icon--medium);
+  @apply --icon-dimensions;
+}
+
+
+.c-icon--large {
+  --size-icon: var(--size-icon--large);
+  @apply --icon-dimensions;
+}
+
+
+.c-icon--xlarge {
+  --size-icon: var(--size-icon--xlarge);
+  @apply --icon-dimensions;
+}
+
+
+.c-icon--huge {
+  --size-icon: var(--size-icon--huge);
+  @apply --icon-dimensions;
+}
+
+.c-icon--round { border-radius: var(--global-rounded); }
+.c-icon--radial { border-radius: var(--global-radial); }
+.c-icon--circular { border-radius: var(--global-circular); }

@@ -1,0 +1,356 @@
+/*---
+title: Colour
+section: Settings
+---*/
+
+/*------------------------------------*\
+  #COLOUR PALETTE
+\*------------------------------------*/
+
+/* Setup a colour palette which allows us to theme the entire project from one location */
+
+/* stylelint-disable rule-properties-order */
+
+:root {
+  --orange-50:  #ffcc80;
+  --orange-100: #ffc16d;
+  --orange-200: #ffb75c;
+  --orange-300: #ffad4a;
+  --orange-400: #fea139;
+  --orange-500: #ff9800;
+  --orange-600: #f98d1d;
+  --orange-700: #f6820f;
+  --orange-800: #f37703;
+  --orange-900: #ef6c00;
+
+  --blue-50:  #b3dbff;
+  --blue-100: #9cccfc;
+  --blue-200: #84bdfa;
+  --blue-300: #6aaff7;
+  --blue-400: #47a0f4;
+  --blue-500: #2196f3;
+  --blue-600: #1e82de;
+  --blue-700: #1a6dc9;
+  --blue-800: #155ab5;
+  --blue-900: #0d47a1;
+
+  --yellow-50:  #fff59d;
+  --yellow-100: #fff390;
+  --yellow-200: #fff27f;
+  --yellow-300: #ffef6d;
+  --yellow-400: #ffed58;
+  --yellow-500: #ffeb3b;
+  --yellow-600: #fee037;
+  --yellow-700: #fdd534;
+  --yellow-800: #fcca30;
+  --yellow-900: #fbc02d;
+
+  --red-50:  #ef9a9a;
+  --red-100: #f28b86;
+  --red-200: #f47c72;
+  --red-300: #f56b5d;
+  --red-400: #f5584a;
+  --red-500: #f44336;
+  --red-600: #e53a2f;
+  --red-700: #d53029;
+  --red-800: #c62622;
+  --red-900: #b71c1c;
+
+  --green-50:  #c5e1a5;
+  --green-100: #badb93;
+  --green-200: #afd581;
+  --green-300: #a3cf70;
+  --green-400: #97c95e;
+  --green-500: #8bc34a;
+  --green-600: #74ac3e;
+  --green-700: #5e9433;
+  --green-800: #487e28;
+  --green-900: #33691e;
+
+  --purple-50:  #ce9ed8;
+  --purple-100: #c57fd0;
+  --purple-200: #bb6bc8;
+  --purple-300: #b158c0;
+  --purple-400: #a741b8;
+  --purple-500: #9c27b0;
+  --purple-600: #9024aa;
+  --purple-700: #8321a5;
+  --purple-800: #771e9f;
+  --purple-900: #6a1b9a;
+
+  --grey-50:  #f5f5f0;
+  --grey-100: #eeeee7;
+  --grey-200: #ddddd4;
+  --grey-300: #ccccc2;
+  --grey-400: #b3b2a8;
+  --grey-500: #9a998f;
+  --grey-600: #818076;
+  --grey-700: #6a695f;
+  --grey-800: #535348;
+  --grey-900: #3d3d33;
+
+  --black:      #000;
+  --white:      #fff;
+}
+
+
+
+
+
+/*------------------------------------*\
+  #COLOUR THEME
+\*------------------------------------*/
+
+/* Reassign literal variables to meaningful ones. */
+
+/* Type and Globals */
+
+:root {
+  --color-page: var(--grey-800);
+  --color-placeholder: var(--grey-500);
+  --color-positive: var(--green-600);
+  --color-informative: var(--blue-900);
+  --color-neutral: var(--grey-500);
+  --color-live: var(--yellow-800);
+  --color-alterable: var(--orange-800);
+  --color-negative: var(--red-700);
+
+  --color-shadow: rgba(51, 51, 42, .6);
+  --color-backdrop: rgba(0, 0, 0, .6);
+  --color-backdrop--inverted: rgba(255, 255, 255, .6);
+  --color-primary: var(--blue-900);
+  --color-secondary: var(--orange-800);
+}
+
+/* Backgrounds and Borders */
+
+:root {
+
+  /* Globals */
+
+  --backgroundColor-page: var(--white);
+
+  --borderColor: var(--grey-300);
+  --borderColor-inactive: var(--grey-500);
+
+
+  /* Accoridon */
+
+  --backgroundColor-accordion: transparent;
+  --backgroundColor-accordion__action--informative: var(--blue-600);
+  --backgroundColor-accordion__action--informative--hover: var(--blue-700);
+  --backgroundColor-accordion__action--success: var(--green-600);
+  --backgroundColor-accordion__action--success--hover: var(--green-700);
+  --backgroundColor-accordion--hover: var(--blue-50);
+  --backgroundColor-accordion--selected: var(--blue-800);
+  --borderColor-accordion__title: var(--grey-900);
+  --borderColor-accordion__group: var(--grey-200);
+  --borderColor-accordion--nav: var(--grey-100);
+  --borderColor-accordion--nav__group: transparent;
+  --color-accordion__action--alt: var(--white);
+  --color-accordion--selected: var(--white);
+
+
+  /* Aside */
+
+  --backgroundColor-aside: var(--white);
+  --border-aside__section: var(--grey-100);
+  --color-aside__item: var(--blue-500);
+  --color-aside__title: var(--blue-900);
+  --color-aside__title--section: var(--grey-400);
+
+
+  /* Button */
+
+  --backgroundColor-button: var(--blue-900);
+  --backgroundColor-button--hover: var(--blue-500);
+  --backgroundColor-button-alert: var(--red-800);
+  --backgroundColor-button-alert--hover: var(--red-700);
+  --backgroundColor-button-anchor: transparent;
+  --backgroundColor-button-passive: var(--blue-100);
+  --backgroundColor-button-passive--hover: var(--white);
+  --backgroundColor-button-secondary: var(--orange-800);
+  --backgroundColor-button-secondary--hover: var(--orange-700);
+  --backgroundColor-button-text: transparent;
+  --backgroundColor-button-text--hover: var(--grey-100);
+  --border-button: 1px solid var(--grey-600);
+  --color-button: var(--white);
+  --color-button-anchor: var(--blue-700);
+  --color-button-anchor--active: var(--blue-800);
+  --color-button-passive: var(--grey-800);
+  --color-button-text: currentColor;
+  --color-button-text--hover: var(--blue-700);
+
+
+  /* Control */
+
+  --color-control-background: var(--white);
+  --color-control-background--alterable: var(--yellow-100);
+  --color-control-background--negative: var(--red-100);
+  --color-control-background--positive: var(--green-100);
+  --color-control-border: var(--grey-500);
+  --color-control-border--alterable: var(--orange-600);
+  --color-control-border--negative: var(--red-500);
+  --color-control-border--positive: var(--green-500);
+
+
+  /* Dropdown */
+
+  --color-dropdown-menu: var(--color-page);
+  --color-dropdown-menu-background: var(--white);
+  --color-dropdown-link-background: transparent;
+  --color-dropdown-link-background-enter: var(--blue-100);
+  --color-dropdown-link-active: var(--white);
+  --color-dropdown-link-background-active: var(--color-primary);
+  --color-dropdown-data-select: var(--grey-600);
+
+
+  /* Form */
+
+  --backgroundColor-form: var(--white);
+  --borderColor-form: var(--grey-600);
+
+
+  /* Iconbar */
+
+  --color-iconbar-background: var(--white);
+  --color-iconbar-border: var(--borderColor);
+  --color-iconbar-item: var(--grey-700);
+  --color-iconbar-item-active: var(--color-primary);
+
+
+  /* Input */
+
+  --backgroundColor-input--note: var(--yellow-100);
+  --borderColor-input--note: var(--yellow-400);
+
+
+  /* Label */
+
+  --color-label: var(--black);
+  --color-label-background: var(--white);
+  --color-label-grey-background: var(--grey-300);
+  --color-label-blue-background: var(--blue-200);
+  --color-label-orange-background: var(--orange-400);
+  --color-label-green-background: var(--green-400);
+  --color-label-red-background: var(--red-700);
+  --color-label-purple-background: var(--purple-500);
+  --color-label-magenta-background: var(--color-label-purple-background);
+  --color-label-orange-background: var(--orange-500);
+  --color-label-gold-background: var(--yellow-300);
+  --color-label-icon: var(--white);
+
+
+  /* Loader */
+
+  --color-loader: var(--color-secondary);
+  --color-loader--alt: var(--grey-200);
+  --color-loader-secondary: var(--blue-300);
+
+
+  /* Modal */
+
+  --backgroundColor-modal: var(--white);
+  --backgroundColor-modal__title: var(--grey-200);
+  --backgroundColor-modal--primary:  var(--blue-800);
+  --backgroundColor-modal--success: var(--green-800);
+  --backgroundColor-modal--warning: var(--yellow-700);
+  --color-modal__title: var(--color-page);
+  --color-modal__action: rgba(255, 255, 255, .5);
+
+}
+
+/* Navigation Colours */
+
+:root {
+  --backgroundColor-nav-active: var(--orange-900);
+  --backgroundColor-sidebar: var(--white);
+  --backgroundColor-sidebar__toggle: var(--grey-200);
+  --backgroundColor-sidebar__toggle--hover: var(--grey-300);
+  --backgroundColor-toolbar: var(--color-primary);
+  --backgroundColor-toolbar-secondary: var(--color-primary);
+  --backgroundColor-toolbar-small: var(--blue-50);
+  --borderColor-nav-active: var(--blue-900);
+  --borderColor-nav-hover: var(--blue-900);
+  --color-link: var(--blue-700);
+  --color-nav-active: var(--blue-900);
+  --color-nav-hover: var(--white);
+  --color-sidebar__toggle: var(--white);
+  --color-toolbar-secondary: var(--grey-500);
+  --color-toolbar-small: var(--grey-900);
+  --shadow-sidebar: rgba(0, 0, 0, .3);
+}
+
+/* Shadows */
+
+:root {
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  --shadow-2: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);
+  --shadow-3: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23);
+  --shadow-4: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
+  --shadow-5: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
+  --shadow-dropdown: var(--shadow-2);
+  --shadow-dropdown-picker: inset 0 10px 11px -7px rgba(0, 0, 0, .5), inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
+  --toggle-focus-shadow: 0 0 6px var(--blue-600);
+}
+
+/* Highlight */
+
+:root {
+  --highlight-announcement: var(--blue-50);
+  --highlight-error: var(--red-50);
+  --highlight-success: var(--green-50);
+  --highlight-warning: var(--yellow-50);
+}
+
+/* Survey Themes */
+
+:root {
+  --theme-purple-text: #735d85;
+  --theme-purple-fill: var(--purple-900);
+}
+
+/* Social Media */
+
+:root {
+  --facebook: #4c66a4;
+  --google-plus: #dd4b39;
+  --linkedin: #0077b5;
+  --pinterest: #cb2027;
+  --stumbleupon: #ff4522;
+  --tripadvisor: #629d2a;
+  --trustyou: #3498db;
+  --tumblr: #35465c;
+  --twitter: #2fc2ef;
+}
+
+/* DEPRECATED Colors */
+
+:root {
+  /* Legacy Colors */
+  --purple-a100: var(--purple-900);
+  --magenta-500: var(--purple-500);
+
+  --background-color: var(--backgroundColor-page);
+  --body-copy: var(--color-page);
+  --placeholder-copy: var(--grey-500);
+  --positive-copy: var(--green-600);
+  --informative-copy: var(--blue-700);
+  --neutral-copy: var(--grey-700);
+  --live-copy: var(--yellow-700);
+  --alterable-copy: var(--orange-700);
+  --negative-copy: var(--red-600);
+  --shadow-color: var(--color-shadow);
+  --primary-color: var(--color-primary);
+  --secondary-color: var(--color-secondary);
+
+  --nav-color: var(--primary-color);
+  --nav-copy: var(--grey-500);
+  --nav-active-color: var(--blue-500);
+  --nav-active-copy: var(--white);
+  --link-color: var(--blue-700);
+  --bar-color: var(--primary-color);
+  --bar-border-color: var(--nav-active-color);
+}
+
+/* stylelint-enable */

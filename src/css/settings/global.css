@@ -1,0 +1,110 @@
+/*---
+title: Global
+section: Settings
+---*/
+
+/* Project-level settings and setup */
+
+:root {
+  /* Typographical styles and baseline grid */
+  --global-font-size: 1rem;
+  --global-line-height: 32px;
+
+  /* Standardized treatments */
+  --global-duration: .1s;
+  --global-margin: 8px;
+  --global-rounded: 4px;
+  --global-radial: 100px;
+  --global-circular: 50%;
+
+  /* z-index scale */
+  --zIndex-switch: 1;
+  --zIndex-sidebar: 2;
+  --zIndex-search: 2;
+  --zIndex-search--scrolled: calc(var(--zIndex-search) + 1);
+  --zIndex-card: 2;
+  --zIndex-card--pickedUp: calc(var(--zIndex-card) * 4);
+  --zIndex-buttonRaised: 2;
+  --zIndex-buttonRaised--pressed: calc(var(--zIndex-buttonRaised) * 4);
+  --zIndex-loader: 3;
+  --zIndex-appBar: 4;
+  --zIndex-snackbar: 6;
+  --zIndex-buttonFloat: 6;
+  --zIndex-buttonFloat--pressed: calc(var(--zIndex-buttonFloat) * 2);
+  --zIndex-bottomNav: 8;
+  --zIndex-menu: 8;
+  --zIndex-subMenu: calc(var(--zIndex-menu) + 1);
+  --zIndex-backdrop: 15;
+  --zIndex-modal: 16;
+  --zIndex-drawer: 16;
+  --zIndex-picker: 24;
+  --zIndex-dialog: 24;
+
+  /* Framed sizes */
+  --frame-quarter: calc(var(--global-line-height) / 4); /* 8px */
+  --frame-third: calc(var(--global-line-height) / 3); /* 10.6px */
+  --frame-half: calc(var(--global-line-height) / 2); /* 16px or 1em */
+  --frame: var(--global-line-height); /* 32px */
+  --frame-double: calc(var(--global-line-height) * 2); /* 64px */
+  --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
+
+  --assert-selector: {
+    outline: 2px solid var(--red-600);
+  };
+}
+
+/* Custom Media Queries */
+@custom-media --sm only screen and (max-width: 47.999em);
+@custom-media --md only screen and (min-width: 48em) and (max-width: 62em);
+@custom-media --md-up only screen and (min-width: 48em);
+@custom-media --lg only screen and (min-width: 62em) and (max-width: 75em);
+@custom-media --lg-up only screen and (min-width: 62em);
+@custom-media --xl only screen and (min-width: 75em) and (max-width: 90em);
+@custom-media --xl-up only screen and (min-width: 75em);
+@custom-media --landscape only screen and (orientation: landscape);
+@custom-media --portrait only screen and (orientation: portrait);
+@custom-media --fullscreen (device-width: 100vw) and (device-height: 100vh);
+@custom-media --ipad only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2);
+
+@custom-media --ie6-7 screen\9;
+@custom-media --ie8 \0screen;
+@custom-media --ie8-10 screen\0;
+@custom-media --ie9-10 screen and (min-width:0{{ content }});
+@custom-media --ie10-11 all and (-ms-high-contrast: none), (-ms-high-contrast: active);
+/* For Edge 12, use @supports (-ms-accelerator: true) { ... } */
+
+@custom-media --browser all and (display-mode: browser);
+@custom-media --standalone all and (display-mode: standalone);
+
+/* DEPRECATED Media Queries using max-width */
+@custom-media --tn only screen and (max-width: 34em);
+@custom-media --sm-up only screen and (min-width: 34em);
+@custom-media --sm-down only screen and (max-width: 47.999em) and (max-height: 63.999em);
+@custom-media --md-down only screen and (max-width: 62em);
+@custom-media --lg-down only screen and (max-width: 75em);
+@custom-media --xl-down only screen and (max-width: 90em);
+
+
+/* Custom Element Selectors */
+@custom-selector :--anchor-default a[href]:not([class]);
+@custom-selector :--app-blocks .s-app, .s-app__containers, .s-app__body;
+@custom-selector :--blocks article, aside, figcaption, figure, footer, header, hgroup, main, menu, nav, section;
+@custom-selector :--button button, .c-button, input[type='submit'];
+@custom-selector :--clickable a, area, button, input, label, select, textarea, [tabindex];
+@custom-selector :--code code, kbd, pre, samp;
+@custom-selector :--control input, select, textarea;
+@custom-selector :--control-text [type="button"], [type="date"], [type="datetime"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="reset"], [type="search"], [type="submit"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], select, textarea;
+@custom-selector :--control-button button, [type="button"], [type="reset"], [type="submit"];
+@custom-selector :--headings h1, h2, h3, h4, h5, h6;
+@custom-selector :--lists ul, ol, dl;
+@custom-selector :--list-items li, dt, dd;
+@custom-selector :--media audio, canvas, iframe, img, svg, video;
+@custom-selector :--fullscreen .o-article:fullscreen;
+
+
+/* Custom Pseudo Class Selectors */
+@custom-selector :--active :active, .is-active;
+@custom-selector :--enter :hover, :focus, .is-hover;
+@custom-selector :--any-link :link, :visited;
+@custom-selector :--disabled :disabled, [disabled], .is-disabled;
+@custom-selector :--invalid :invalid, .is-invalid;

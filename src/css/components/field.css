@@ -1,0 +1,112 @@
+/*---
+title: Field
+section: Components
+---*/
+
+:root {
+  --borderColor-field: var(--grey-300);
+  --borderColor-field--focus: var(--blue-400);
+  --borderColor-field--invalid: var(--orange-500);
+  --borderColor-field--error: var(--red-400);
+  --field-font-size: var(--fontSize--small);
+  --field-min-height: 30px;
+}
+
+.c-field {
+  background-color: transparent;
+  border-bottom: solid var(--borderColor-field);
+  border-width: 0 0 2px;
+  border-radius: 0;
+  color: var(--color-page);
+  display: flex;
+  font-family: inherit;
+  font-size: var(--field-font-size);
+  margin: 0 0 16px 0;
+  min-height: var(--field-min-height); /* IE11 Input Height */
+  padding: 2px 4px;
+  transition: border var(--global-duration) ease-in-out;
+  width: 100%;
+
+
+  &:focus,
+  &.has-focus {
+    border-bottom-color: var(--borderColor-field--focus);
+    outline: none;
+  }
+
+
+  &:focus:invalid,
+  &:focus.is-invalid { border-bottom-color: var(--borderColor-field--invalid); }
+
+
+  &:invalid,
+  &.is-invalid { border-bottom-color: var(--borderColor-field--invalid); }
+
+
+  &:focus.is-error { border-bottom-color: var(--borderColor-field--error); }
+
+
+  &.is-error { border-bottom-color: var(--color-negative); }
+
+
+  .c-button { margin-bottom: 0 !important; }
+}
+
+
+  .c-field__input {
+    border: none;
+    display: inline-block;
+    margin-bottom: 0;
+    width: auto;
+  }
+
+
+.c-field--block {
+  margin-left: 1em;
+  margin-right: 1em;
+  width: calc(100% - 2em);
+  margin-bottom: .5em;
+  padding: 0;
+
+  .c-field__input { padding: 0; }
+}
+
+
+.c-field--small {
+  font-size: var(--fontSize--tiny);
+
+  .c-field__input { font-size: inherit; }
+}
+
+
+.c-field--medium {
+  font-size: var(--fontSize--semiMedium);
+  height: auto;
+  min-height: 34px;
+
+  .c-field__input { font-size: inherit; }
+
+  & > .c-icon { margin: 4px 0; }
+}
+
+
+.c-field--large {
+  font-size: var(--fontSize--semiLarge);
+
+  .c-field__input { font-size: inherit; }
+}
+
+
+.c-field--stamped {
+  color: var(--white);
+  font-family: monospace;
+  font-weight: bold;
+
+  & + .c-button--icon .c-icon { color: var(--white); }
+}
+
+
+.c-field--inset { text-indent: 30px; }
+
+
+.c-field--inlay { padding-left: 35px; }

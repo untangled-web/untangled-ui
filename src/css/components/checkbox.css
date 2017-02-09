@@ -1,0 +1,108 @@
+/*---
+title: Checkbox
+section: Components
+---*/
+
+:root {
+  --color-checkbox: var(--grey-400);
+  --color-checkbox--checked: var(--green-500);
+  --color-checkbox--indeterminate: var(--grey-400);
+  --color-checkbox--informative: var(--blue-400);
+}
+
+.c-checkbox { @apply --hide-a11y; }
+
+.c-checkbox:checked + label {
+  &::before { @apply --fade-in; }
+  &::after {
+    background-color: var(--color-checkbox--checked);
+    border: 2px solid var(--color-checkbox--checked);
+  }
+}
+
+.c-checkbox + label {
+  cursor: pointer;
+  display: inline-block;
+  font-size: var(--fontSize--small);
+  margin-right: 5px;
+  padding-left: 19px;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+  }
+
+  &::before {
+    @apply --checkmark;
+    @apply --fade-out;
+    left: 5px;
+    position: absolute;
+    top: 5px;
+    z-index: 1;
+  }
+
+  &::after {
+    border: 2px solid var(--color-checkbox);
+    border-radius: 2px;
+    float: left;
+    height: 14px;
+    left: 0;
+    position: absolute;
+    top: 4px;
+    transition: border var(--global-duration) ease;
+    width: 14px;
+  }
+}
+
+.c-checkbox:focus + label,
+.c-checkbox + label:active,
+.c-checkbox:checked + label:active {
+  box-shadow: var(--toggle-focus-shadow);
+}
+
+.c-checkbox:indeterminate + label,
+.c-checkbox.is-indeterminate + label,
+.c-checkbox:indeterminate:checked + label,
+.c-checkbox.is-indeterminate:checked + label {
+  pointer-events: none;
+  user-select: none;
+
+  &::before {
+    @apply --fade-in;
+    height: 2px;
+    left: 2px;
+    top: 10px;
+    transform: rotate(0);
+    width: calc(16px - 6px);
+  }
+
+  &::after {
+    background-color: var(--color-checkbox--indeterminate);
+    border: 2px solid var(--color-checkbox--indeterminate);
+  }
+}
+
+.c-checkbox--informative + label {
+  &::after {
+    border-width: 1px;
+  }
+}
+
+.c-checkbox--informative:checked + label {
+  &::before {
+    border-color: var(--color-checkbox--informative);
+  }
+  &::after {
+    background-color: transparent;
+    border: 1px solid var(--color-checkbox--informative);
+  }
+}
+
+.c-checkbox--stacked {
+  & + label {
+    display: block;
+    margin-bottom: 1em;
+  }
+}

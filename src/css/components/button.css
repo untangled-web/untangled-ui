@@ -1,0 +1,338 @@
+/*---
+title: Buttons
+section: Components
+---*/
+
+:root {
+  --boxShadow-button--hover: 0 0 6px var(--shadow-color);
+  --height-button: 30px;
+  --height-button--large: 36px;
+  --height-button--small: 22px;
+  --height-button--xlarge: 68px;
+  --opacity-button--disabled: .35;
+  --transitionDuration-button: .1s;
+
+  --button--wide: {
+    display: block;
+    width: 100%;
+  };
+
+  --button--small: {
+    font-size: 12px;
+    height: var(--height-button--small);
+    line-height: var(--height-button--small);
+  };
+
+  --button--large: {
+    font-size: var(--fontSize--normal) !important;
+    height: var(--height-button--large);
+    line-height: var(--height-button--large);
+  };
+
+  --button--xlarge: {
+    @apply --middle;
+    display: flex;
+    font-size: var(--fontSize--normalPlus) !important;
+    height: var(--height-button--xlarge);
+    line-height: var(--height-button--xlarge);
+    padding: 0 var(--frame-half);
+  };
+
+  --button--postfix: {
+    border-radius: 0 var(--global-rounded) var(--global-rounded) 0;
+    margin-left: -4px;
+  };
+
+  --button--postinset: {
+    background-color: transparent;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  };
+}
+
+.c-button {
+  background-color: var(--backgroundColor-button);
+  border-radius: var(--global-rounded);
+  border-width: 0;
+  color: var(--color-button);
+  display: inline-block;
+  font-family: inherit;
+  font-size: var(--fontSize--small);
+  height: var(--height-button);
+  line-height: var(--height-button);
+  margin: 0 var(--frame-half) var(--frame-half) 0;
+  max-width: 100%;
+  outline: 0;
+  overflow: visible; /* Internet Explorer 12- */
+  padding: 0 var(--frame-quarter);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: background var(--transitionDuration-button) ease, color var(--transitionDuration-button) ease;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  will-change: opacity;
+
+  &:--active {
+    background-color: var(--backgroundColor-button--hover);
+
+    &::after { opacity: 0 !important; }
+  }
+
+  &:--enter {
+    & .u-fade-out { @apply --fade-in; }
+  }
+
+  &:hover::after { opacity: 1; }
+
+  &::-moz-focus-inner {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  &:--disabled {
+    opacity: var(--opacity-button--disabled);
+    -ms-pointer-events: none;
+    pointer-events: none;
+  }
+
+  &::after {
+    border-radius: inherit;
+    bottom: 0;
+    box-shadow: var(--boxShadow-button--hover);
+    content: '';
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity var(--transitionDuration-button) ease;
+    z-index: 5;
+  }
+
+  &:last-child { margin-right: 0 !important; }
+
+  @media print { display: none; }
+
+  :--fullscreen & { font-size: 1rem; }
+  
+  .c-field & {
+    height: 28px;
+    line-height: 28px;
+    margin-right: 5px;
+  }
+}
+
+
+  .c-button__content {
+    @apply --ellipsis;
+    @apply --start;
+    display: inline-block;
+  }
+
+
+.c-button--wide { @apply --button--wide; }
+.c-button--rounded { border-radius: var(--global-rounded) !important; }
+.c-button--round,
+.c-button--radial { border-radius: var(--global-radial) !important; }
+
+.c-button--small {
+  @apply --button--small;
+
+  .c-icon {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+.c-button--large { @apply --button--large; }
+.c-button--xlarge { @apply --button--xlarge; }
+.c-button--postfix { @apply --button--postfix; }
+.c-button--postinset { @apply --button--postinset; }
+
+
+@media (--sm) {
+  .c-button--wide\@sm { @apply --button--wide; }
+  .c-button--rounded\@sm { border-radius: var(--global-rounded) !important; }
+  .c-button--radial\@sm { border-radius: var(--global-radial) !important; }
+  .c-button--small\@sm { @apply --button--small; }
+  .c-button--large\@sm { @apply --button--large; }
+  .c-button--xlarge\@sm { @apply --button--xlarge; }
+  .c-button--postfix\@sm { @apply --button--postfix; }
+  .c-button--postinset\@sm { @apply --button--postinset; }
+}
+
+
+@media (--md-up) {
+  .c-button--wide\@md { @apply --button--wide; }
+  .c-button--rounded\@md { border-radius: var(--global-rounded) !important; }
+  .c-button--radial\@md { border-radius: var(--global-radial) !important; }
+  .c-button--small\@md { @apply --button--small; }
+  .c-button--large\@md { @apply --button--large; }
+  .c-button--xlarge\@md { @apply --button--xlarge; }
+  .c-button--postfix\@md { @apply --button--postfix; }
+  .c-button--postinset\@md { @apply --button--postinset; }
+}
+
+
+@media (--lg-up) {
+  .c-button--wide\@lg { @apply --button--wide; }
+  .c-button--rounded\@lg { border-radius: var(--global-rounded) !important; }
+  .c-button--radial\@lg { border-radius: var(--global-radial) !important; }
+  .c-button--small\@lg { @apply --button--small; }
+  .c-button--large\@lg { @apply --button--large; }
+  .c-button--xlarge\@lg { @apply --button--xlarge; }
+  .c-button--postfix\@lg { @apply --button--postfix; }
+  .c-button--postinset\@lg { @apply --button--postinset; }
+}
+
+
+@media (--xl-up) {
+  .c-button--wide\@xl { @apply --button--wide; }
+  .c-button--rounded\@xl { border-radius: var(--global-rounded) !important; }
+  .c-button--radial\@xl { border-radius: var(--global-radial) !important; }
+  .c-button--small\@xl { @apply --button--small; }
+  .c-button--large\@xl { @apply --button--large; }
+  .c-button--xlarge\@xl { @apply --button--xlarge; }
+  .c-button--postfix\@xl { @apply --button--postfix; }
+  .c-button--postinset\@xl { @apply --button--postinset; }
+}
+
+
+.c-button--icon {
+  background-color: transparent;
+  color: var(--grey-700);
+  display: inline-block;
+  height: auto;
+  margin: 0;
+  min-width: auto;
+
+  &:hover { color: var(--grey-800); }
+
+  &:--active {
+    background-color: transparent;
+    color: var(--backgroundColor-button--hover);
+  }
+
+  &::after { opacity: 0 !important; }
+
+  .c-icon {
+    height: 24px; /* IE11 Hack instead of inherit */
+    margin: 0 !important;
+    width: 24px; /* IE11 Hack instead of inherit */
+  }
+}
+
+
+.c-button--block {
+  border-radius: 0;
+  margin-bottom: 9px;
+  padding-left: 1em;
+  text-align: left;
+
+  & .c-icon:last-child {
+    float: right;
+    margin-top: 5px;
+  }
+
+  .c-icon--close { display: none; }
+}
+
+
+.c-button--dropdown {
+  margin-bottom: 0;
+
+  &::before {
+    @apply --triangle;
+    @apply --triangle-bottom;
+    border-width: 5px 4px 0;
+    content: '';
+    float: right;
+    margin: .85em 0 .85em .425rem;
+    position: relative;
+    vertical-align: middle;
+  }
+
+  &:empty::before {
+    margin: .85em 0;
+  }
+}
+
+
+.c-button--secondary {
+  background-color: var(--backgroundColor-button-secondary);
+
+  &:--active { background-color: var(--backgroundColor-button-secondary--hover); }
+
+  & .c-badge { color: var(--backgroundColor-button-secondary); }
+}
+
+
+.c-button--alert {
+  background-color: var(--backgroundColor-button-alert);
+
+  &:--active { background-color: var(--backgroundColor-button-alert--hover); }
+
+  & .c-badge { color: var(--backgroundColor-button-alert); }
+}
+
+
+.c-button--passive {
+  background-color: var(--backgroundColor-button-passive);
+  border: var(--border-button);
+  color: var(--color-button-passive);
+
+  &:--active { background-color: var(--backgroundColor-button-passive--hover); }
+
+  & .c-badge { color: var(--backgroundColor-button-passive); }
+}
+
+
+.c-button--text {
+  background-color: var(--backgroundColor-button-text);
+  border: 1px solid transparent;
+  color: var(--color-button-text);
+
+  &:--enter { color: var(--color-button-text--hover); }
+
+  &:--active {
+    background-color: var(--backgroundColor-button-text--hover);
+    border: var(--border-button);
+    color: var(--color-button-text--hover);
+  }
+
+  & .c-badge { color: var(--backgroundColor-button-text); }
+
+  .o-toolbar--secondary & {
+    &:--enter {
+      border: 1px inset var(--grey-600);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .5);
+    }
+  }
+}
+
+
+.c-button--anchor {
+  background-color: var(--backgroundColor-button-anchor);
+  box-shadow: none;
+  color: var(--color-button-anchor);
+  text-transform: uppercase;
+
+  &:--active {
+    background-color: var(--backgroundColor-button-anchor);
+    color: var(--color-button-anchor--active);
+    text-decoration: underline !important;
+  }
+
+  & .c-badge { color: var(--backgroundColor-button-anchor); }
+}
+
+
+.c-button--informative {
+  background-color: var(--blue-100);
+  border: 1px solid var(--blue-300);
+  color: var(--color-page);
+}

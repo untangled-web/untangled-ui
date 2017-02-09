@@ -1,0 +1,291 @@
+/*---
+title: Containment
+section: Settings
+---*/
+
+
+:root {
+  --margin-outter: 1rem;
+  --minHeight-media--small: 64; /* 1024px */
+  --minWidth-media--small: 48;  /*  768px */
+  --minWidth-media--medium: 62; /*  992px */
+  --minWidth-media--large: 75;  /* 1200px */
+  --minWidth-media--xlarge: 90; /* 1440px */
+  --width-gutter: 1rem;
+  --width-gutter--half: calc((var(--width-gutter) * .5));
+  --width-gutter--compensation: calc((var(--width-gutter) * .5) * -1);
+  --width-container--small: calc(var(--minWidth-media--small) + var(--width-gutter));
+  --width-container--medium: calc(var(--minWidth-media--medium) + var(--width-gutter));
+  --width-container--large: calc(var(--minWidth-media--large) + var(--width-gutter));
+  --width-container--xlarge: calc(var(--minWidth-media--xlarge) + var(--width-gutter));
+  --width-column: calc(100% / 12);
+  --reset-box: {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  };
+
+  --spacer: {
+    flex: auto;
+  };
+
+  --container: {
+    margin-left: auto;
+    margin-right: auto;
+  };
+
+  --container-flex: {
+    align-items: center;
+    border: 0;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  };
+
+  --container-fluid: {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--margin-outter);
+    padding-right: var(--margin-outter);
+  };
+
+  --row: {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  };
+
+  --width-column: {
+    box-sizing: border-box;
+    min-width: 0;
+    padding-left: var(--width-gutter--half);
+    padding-right: var(--width-gutter--half);
+  };
+
+  --width-column-auto: {
+    @apply --width-column;
+    flex: 1 0 0%;
+    max-width: 100%;
+  };
+
+  --width-column-1: {
+    @apply --width-column;
+    flex: 1 0 var(--width-column) !important; /* IE11 */
+    max-width: var(--width-column) !important;
+  };
+
+  --width-column-2: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 2) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 2) !important;
+  };
+
+  --width-column-3: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 3) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 3) !important;
+  };
+
+  --width-column-4: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 4) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 4) !important;
+  };
+
+  --width-column-5: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 5) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 5) !important;
+  };
+
+  --width-column-6: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 6) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 6) !important;
+  };
+
+  --width-column-7: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 7) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 7) !important;
+  };
+
+  --width-column-8: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 8) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 8) !important;
+  };
+
+  --width-column-9: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 9) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 9) !important;
+  };
+
+  --width-column-10: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 10) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 10) !important;
+  };
+
+  --width-column-11: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 11) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 11) !important;
+  };
+
+  --width-column-12: {
+    @apply --width-column;
+    flex: 1 0 calc(var(--width-column) * 12) !important; /* IE11 */
+    max-width: calc(var(--width-column) * 12) !important;
+  };
+
+  --start: {
+    justify-content: flex-start !important;
+    text-align: start;
+  };
+
+  --center: {
+    justify-content: center !important;
+    text-align: center;
+  };
+
+  --end: {
+    justify-content: flex-end !important;
+    text-align: end;
+  };
+
+  --text-center: {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  };
+
+  --text-middle: {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+  };
+
+  --top: {
+    align-items: flex-start;
+  };
+
+  --middle: {
+    align-items: center;
+  };
+
+  --bottom: {
+    align-items: flex-end;
+  };
+
+  --center-middle: {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+  };
+
+  --width-column-bar: {
+    @apply --width-column-auto;
+    @apply --middle;
+    display: flex;
+    padding: 0;
+  };
+
+  --row-break: {
+    margin-left: calc(-1rem - 1px) !important;
+    margin-right: calc(-1rem - 1px) !important;
+  };
+
+  --row-collapse: {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  };
+
+  --row-wide: {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1600px;
+  };
+
+  --flex-layout: {
+    display: flex;
+    flex-direction: column;
+  };
+
+  --reset-text-border: {
+    border-style: solid;
+    border-width: 0;
+    box-sizing: inherit;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  };
+
+  --egrid-reset: {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  };
+
+
+  --position-bottom: {
+    bottom: 0;
+    left: 0;
+    right: 0;
+  };
+  --position-bottom-left: {
+    bottom: 0;
+    left: 0;
+  };
+  --position-bottom-right: {
+    bottom: 0;
+    right: 0;
+  };
+  --position-middle: {
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    /* Hack to fix text rendering in blink */
+    transform:
+      translateY(calc(-50% - .5px))
+      translateX(calc(-50% - 1px))
+      translateZ(0) scale(1, 1);
+
+    *,
+    *::before,
+    *::after {
+      /* Hack to fix "font-smoothing vs translate" */
+      transition: none !important;
+    }
+  };
+  --position-top: {
+    left: 0;
+    right: 0;
+    top: 0;
+  };
+  --position-top-left: {
+    left: 0;
+    top: 0;
+  };
+  --position-top-right: {
+    right: 0;
+    top: 0;
+  };
+  --position-full: {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+  };
+}

@@ -1,0 +1,139 @@
+/*---
+title: Tables
+section: Components
+---*/
+
+:root {
+  --borderColor-table: var(--grey-300);
+}
+
+.c-table {
+  border-bottom: 1px solid var(--borderColor-table);
+  border-collapse: collapse;
+  border-spacing: 0;
+  display: table;
+  empty-cells: show;
+  max-width: 100%;
+  width: 100%;
+
+  tbody {
+    tr:not(:first-child) {
+      border-top: 1px solid var(--borderColor-table);
+
+      th,
+      td { font-weight: normal; }
+    }
+
+    tr td:first-child {
+      @media (--md-up) { max-width: 12em; }
+    }
+
+    tr:first-child {
+      border-bottom: 1px solid var(--black);
+      border-top: 1px solid var(--black);
+
+      th,
+      td { font-weight: bold; }
+    }
+
+    th,
+    td {
+      border-right: 1px solid var(--borderColor-table);
+      padding: 0 5px;
+
+      @media (--md-up) { text-align: right; }
+
+      &:first-child { text-align: left; }
+    }
+  }
+
+  &__label {
+    color: var(--grey-700);
+    display: none;
+    font-weight: bold;
+    padding: 0 .6em 0 0;
+    width: 30%;
+  }
+
+  &__content { font-weight: normal; }
+}
+
+.c-table--stack {
+  tr {
+    clear: both;
+    display: table-row;
+
+    @media (--md-up) { display: table-row; }
+  }
+
+  th,
+  td {
+    border-right: none !important;
+    display: block;
+    text-align: left;
+
+    @media (--md-up) {
+      display: table-cell;
+      margin: 0;
+    }
+  }
+
+  thead {
+    th,
+    td {
+      @media (--sm) { display: none; }
+    }
+  }
+
+  tbody {
+    th,
+    td {
+      @media (--sm) {
+        clear: left;
+        float: left;
+        width: 100%;
+      }
+    }
+  }
+
+  .c-table__label {
+    display: inline-block;
+
+    @media (--md-up) { display: none; }
+  }
+
+  .c-table__content { font-size: var(--fontSize--semiMedium); }
+}
+
+.c-table--toggle {
+  .c-table__priority-6,
+  .c-table__priority-5,
+  .c-table__priority-4,
+  .c-table__priority-3,
+  .c-table__priority-2,
+  .c-table__priority-1 { display: none; }
+
+  .c-table__priority-1 {
+    @media (min-width: 20em) { display: table-cell; }
+  }
+
+  .c-table__priority-2 {
+    @media (min-width: 30em) { display: table-cell; }
+  }
+
+  .c-table__priority-3 {
+    @media (min-width: 40em) { display: table-cell; }
+  }
+
+  .c-table__priority-4 {
+    @media (min-width: 50em) { display: table-cell; }
+  }
+
+  .c-table__priority-5 {
+    @media (min-width: 60em) { display: table-cell; }
+  }
+
+  .c-table__priority-6 {
+    @media (min-width: 70em) { display: table-cell; }
+  }
+}

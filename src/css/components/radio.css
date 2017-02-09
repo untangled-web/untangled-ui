@@ -1,0 +1,111 @@
+/*---
+title: Radio
+section: Components
+---*/
+
+:root {
+  --backgroundColor-radio: var(--grey-200);
+  --backgroundColor-radio--checked: var(--green-300);
+  --backgroundColor-radio--informative: transparent;
+  --backgroundColor-radio--informative--checked: var(--blue-400);
+  --borderColor-radio: var(--grey-600);
+  --borderColor-radio--checked: var(--green-700);
+  --borderColor-radio--informative: var(--grey-600);
+  --borderColor-radio--informative--checked: var(--blue-400);
+}
+
+.c-radio { @apply --hide-a11y; }
+
+.c-radio:checked + label {
+  &::before {
+    background-color: var(--backgroundColor-radio--checked);
+    border: 2px solid var(--borderColor-radio--checked);
+    transition: all var(--global-duration) ease;
+  }
+  &::after { @apply --fade-in; }
+}
+
+.c-radio + label {
+  cursor: pointer;
+  display: inline-block;
+  line-height: 19px;
+  margin-right: 10px;
+  padding-left: 19px;
+  position: relative;
+
+  &::before {
+    background-color: var(--backgroundColor-radio);
+    border: 2px solid var(--borderColor-radio);
+    border-radius: 50px;
+    content: '';
+    display: inline-block;
+    float: left;
+    font-size: var(--fontSize--small);
+    height: 12px;
+    left: 0;
+    margin-bottom: 0;
+    margin-right: 8px;
+    position: absolute;
+    top: 4px;
+    width: 12px;
+  }
+}
+
+.c-radio:focus + label,
+.c-radio + label:active,
+.c-radio:checked + label:active {
+  box-shadow: var(--toggle-focus-shadow);
+}
+
+
+/* Alternate Blue */
+
+.c-radio--informative + label {
+  padding-left: 27px;
+
+  &::before {
+    background-color: var(--backgroundColor-radio--informative);
+    border: 1px solid var(--borderColor-radio--informative);
+    border-radius: 50px;
+    content: '';
+    height: 20px;
+    top: 0;
+    width: 20px;
+  }
+
+  &::after {
+    @apply --fade-out;
+    background-color: var(--backgroundColor-radio--informative--checked);
+    border-radius: 50px;
+    content: '';
+    height: 6px;
+    left: 7px;
+    position: absolute;
+    top: 7px;
+    width: 6px;
+    z-index: 5;
+  }
+}
+
+.c-radio--informative:checked + label {
+  &::before {
+    background-color: transparent;
+    border: 1px solid var(--borderColor-radio--informative--checked);
+  }
+}
+
+
+/* Stacked Orientation */
+
+.c-radio--stacked {
+  & + label {
+    padding-left: 0;
+    text-align: center;
+    width: 20px;
+  }
+
+  & + label::before {
+    margin-bottom: .5em;
+    position: relative;
+  }
+}

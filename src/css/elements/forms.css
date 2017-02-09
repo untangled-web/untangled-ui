@@ -1,0 +1,67 @@
+/*---
+title: Forms
+section: Elements
+---*/
+
+:root {
+  --borderRadius-form: var(--global-rounded);
+  --fontSize-form: var(--fontSize--small);
+  --height-form: 30px;
+  --lineHeight-form: 1.5;
+  --outline-focus: 0;
+}
+
+
+/* specify the progress cursor of updating elements */
+[aria-busy='true'] { cursor: progress; }
+
+
+/* specify the pointer cursor of trigger elements */
+[aria-controls] { cursor: pointer; }
+
+
+/* specify the unstyled cursor of disabled, not-editable, or otherwise inoperable elements */
+[aria-disabled] { cursor: default; }
+
+
+*:focus { outline: var(--outline-focus); }
+
+
+:--control {
+  background-color: var(--backgroundColor-form);
+  border: 1px solid var(--borderColor-form);
+  border-radius: var(--borderRadius-form);
+  color: inherit;
+  display: flex;
+  font-family: inherit;
+  font-size: var(--fontSize-form);
+  margin-bottom: var(--frame-half);
+  min-height: var(--height-form); /* IE11 Input Height */
+  padding-left: 4px;
+  position: relative;
+  width: 100%;
+
+  &::-ms-value {
+    color: currentColor; /* Edge 12+, Internet Explorer 11- */
+  }
+}
+
+
+select {
+  height: var(--height-form);
+  &::-ms-expand {
+    display: none !important; /* Edge 12+, Internet Explorer 11- */
+  }
+}
+
+
+label {
+  display: inline-block;
+  font-size: var(--fontSize-form);
+  font-weight: bold;
+  line-height: var(--lineHeight-form);
+  margin-bottom: 5px;
+  max-width: 100%;
+
+  &.is-optional { font-weight: normal; }
+}

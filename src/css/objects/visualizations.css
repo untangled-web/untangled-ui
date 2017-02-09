@@ -1,0 +1,114 @@
+/*---
+title: Visualizations
+section: Objects
+---*/
+
+
+/*------------------------------------*\
+  #LINE-GRAPH
+\*------------------------------------*/
+
+.o-line-graph {
+  font-size: 3em;
+  max-height: 170px;
+  overflow: visible;
+
+  > svg { overflow: visible; }
+
+  /* Deprecate o-path--1 */
+  .o-path--1,
+  .domain { fill: var(--grey-300); }
+}
+
+
+  .o-line-graph__value-line {
+    fill: none;
+    stroke: var(--blue-600);
+    stroke-linecap: round;
+    stroke-linejoin: bevel;
+    stroke-width: 16px;
+  }
+
+
+  .previous-valueline,
+  .o-line-graph__value-line--previous {
+    fill: none;
+    stroke: #a3a396;
+    stroke-dasharray: 20, 20;
+    stroke-width: 12px;
+  }
+
+
+  .o-line-graph__horizontal-guide {
+    stroke: var(--black);
+    stroke-width: 1px;
+  }
+
+
+  .o-line-graph__end-domain { display: none; }
+
+
+
+
+
+/*------------------------------------*\
+  #PIE-CHART
+\*------------------------------------*/
+
+.o-donut-chart,
+.donut-chart,
+.o-pie-chart {
+  font-size: 100%;
+  max-height: 170px;
+  padding-bottom: 40px;
+}
+
+
+  .o-pie-chart__percentage {
+    fill: var(--grey-800);
+    font-size: 3.5em;
+    font-weight: bold;
+  }
+
+
+  .o-pie-chart__type { font-size: 1.5em; }
+
+
+  .o-pie-chart__metric {
+    font-size: 1.25em;
+    font-weight: bold;
+  }
+
+
+.tick { font-size: 1.75em; }
+
+
+
+
+
+/*------------------------------------*\
+  #STACKED-BAR
+\*------------------------------------*/
+
+.o-stacked-bar {
+  font-size: 12px;
+  max-height: 170px;
+  max-width: 650px;
+
+
+  /* TODO Endline shouldn't be visible */
+
+  .domain {
+    fill: transparent;
+    stroke: var(--grey-500);
+    stroke-width: 1px;
+  }
+}
+
+
+  .o-stacked-bar__axis--x {
+    line {
+      stroke: var(--grey-200);
+      stroke-width: 1px;
+    }
+  }

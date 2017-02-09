@@ -1,0 +1,145 @@
+/*---
+title: Alignment
+section: Utilities
+---*/
+
+:root {
+  --tenth: .1;
+  --eighth: .125;
+  --sixth: .1666;
+  --fifth: .2;
+  --quarter: .25;
+  --third: .3;
+  --half: .5;
+  --double: 2;
+  --triple: 3;
+}
+
+
+/*------------------------------------*\
+  #GENERAL-ALIGNMENT
+\*------------------------------------*/
+
+.u-start { @apply --start; }
+.u-center { @apply --center; }
+.u-end { @apply --end; }
+.u-text-center { @apply --text-center; }
+.u-text-middle { @apply --text-middle; }
+.u-top { align-items: flex-start; }
+.u-middle { align-items: center; }
+.u-bottom { align-items: flex-end; }
+.u-around { justify-content: space-around; }
+.u-between { justify-content: space-between; }
+.u-center-middle { @apply --center-middle; }
+
+
+/*------------------------------------*\
+  #LEADER-MARGIN
+\*------------------------------------*/
+
+.u-leader--tenth { margin-top: calc(var(--global-line-height) * .1) !important; }
+.u-leader--eighth { margin-top: calc(var(--global-line-height) * var(--eighth)) !important; }
+.u-leader--sixth { margin-top: calc(var(--global-line-height) * .1666) !important; }
+.u-leader--fifth { margin-top: calc(var(--global-line-height) * .2) !important; }
+.u-leader--quarter { margin-top: calc(var(--global-line-height) * .25) !important; }
+.u-leader--third { margin-top: calc(var(--global-line-height) * .3) !important; }
+.u-leader--half { margin-top: calc(var(--global-line-height) * .5) !important; }
+.u-leader { margin-top: var(--global-line-height) !important; }
+.u-leader--double { margin-top: calc(var(--global-line-height) * 2) !important; }
+.u-leader--triple { margin-top: calc(var(--global-line-height) * 3) !important; }
+
+
+/*------------------------------------*\
+  #TRAILER-MARGIN
+\*------------------------------------*/
+
+.u-trailer--tenth { margin-bottom: calc(var(--global-line-height) * .1) !important; }
+.u-trailer--eighth { margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important; }
+.u-trailer--sixth { margin-bottom: calc(var(--global-line-height) * .1666) !important; }
+.u-trailer--fifth { margin-bottom: calc(var(--global-line-height) * .2) !important; }
+.u-trailer--quarter { margin-bottom: calc(var(--global-line-height) * .25) !important; }
+.u-trailer--third { margin-bottom: calc(var(--global-line-height) * .3) !important; }
+.u-trailer--half { margin-bottom: calc(var(--global-line-height) * .5) !important; }
+.u-trailer { margin-bottom: var(--global-line-height) !important; }
+.u-trailer--double { margin-bottom: calc(var(--global-line-height) * 2) !important; }
+.u-trailer--triple { margin-bottom: calc(var(--global-line-height) * 3) !important; }
+
+
+/*------------------------------------*\
+  #RESPONSIVE-ALIGNMENT
+\*------------------------------------*/
+
+@media (--sm) {
+  .u-start\@sm { @apply --start; }
+  .u-center\@sm { @apply --center; }
+  .u-end\@sm { @apply --end; }
+  .u-text-center\@sm { @apply --text-center; }
+  .u-text-middle\@sm { @apply --text-middle; }
+  .u-top\@sm { align-items: flex-start; }
+  .u-middle\@sm { align-items: center; }
+  .u-bottom\@sm { align-items: flex-end; }
+  .u-around\@sm { justify-content: space-around; }
+  .u-between\@sm { justify-content: space-between; }
+  .u-leader--tenth\@sm { margin-top: calc(var(--global-line-height) * .1) !important; }
+  .u-leader--eighth\@sm { margin-top: calc(var(--global-line-height) * var(--eighth)) !important; }
+  .u-leader--sixth\@sm { margin-top: calc(var(--global-line-height) * .1666) !important; }
+  .u-leader--fifth\@sm { margin-top: calc(var(--global-line-height) * .2) !important; }
+  .u-leader--quarter\@sm { margin-top: calc(var(--global-line-height) * .25) !important; }
+  .u-leader--third\@sm { margin-top: calc(var(--global-line-height) * .3) !important; }
+  .u-leader--half\@sm { margin-top: calc(var(--global-line-height) * .5) !important; }
+  .u-leader\@sm { margin-top: var(--global-line-height) !important; }
+  .u-leader--double\@sm { margin-top: calc(var(--global-line-height) * 2) !important; }
+  .u-leader--triple\@sm { margin-top: calc(var(--global-line-height) * 3) !important; }
+  .u-trailer--tenth\@sm { margin-bottom: calc(var(--global-line-height) * .1) !important; }
+  .u-trailer--eighth\@sm { margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important; }
+  .u-trailer--sixth\@sm { margin-bottom: calc(var(--global-line-height) * .1666) !important; }
+  .u-trailer--fifth\@sm { margin-bottom: calc(var(--global-line-height) * .2) !important; }
+  .u-trailer--quarter\@sm { margin-bottom: calc(var(--global-line-height) * .25) !important; }
+  .u-trailer--third\@sm { margin-bottom: calc(var(--global-line-height) * .3) !important; }
+  .u-trailer--half\@sm { margin-bottom: calc(var(--global-line-height) * .5) !important; }
+  .u-trailer\@sm { margin-bottom: var(--global-line-height) !important; }
+  .u-trailer--double\@sm { margin-bottom: calc(var(--global-line-height) * 2) !important; }
+  .u-trailer--triple\@sm { margin-bottom: calc(var(--global-line-height) * 3) !important; }
+}
+
+
+@media (--md-up) {
+  .u-start\@md { @apply --start; }
+  .u-center\@md { @apply --center; }
+  .u-end\@md { @apply --end; }
+  .u-text-center\@md { @apply --text-center; }
+  .u-text-middle\@md { @apply --text-middle; }
+  .u-top\@md { align-items: flex-start; }
+  .u-middle\@md { align-items: center; }
+  .u-bottom\@md { align-items: flex-end; }
+  .u-around\@md { justify-content: space-around; }
+  .u-between\@md { justify-content: space-between; }
+}
+
+
+@media (--lg-up) {
+  .u-start\@lg { @apply --start; }
+  .u-center\@lg { @apply --center; }
+  .u-end\@lg { @apply --end; }
+  .u-text-center\@lg { @apply --text-center; }
+  .u-text-middle\@lg { @apply --text-middle; }
+  .u-top\@lg { align-items: flex-start; }
+  .u-middle\@lg { align-items: center; }
+  .u-bottom\@lg { align-items: flex-end; }
+  .u-around\@lg { justify-content: space-around; }
+  .u-between\@lg { justify-content: space-between; }
+}
+
+
+@media (--xl-up) {
+  .u-start\@xl { @apply --start; }
+  .u-center\@xl { @apply --center; }
+  .u-end\@xl { @apply --end; }
+  .u-text-center\@xl { @apply --text-center; }
+  .u-text-middle\@xl { @apply --text-middle; }
+  .u-top\@xl { align-items: flex-start; }
+  .u-middle\@xl { align-items: center; }
+  .u-bottom\@xl { align-items: flex-end; }
+  .u-around\@xl { justify-content: space-around; }
+  .u-between\@xl { justify-content: space-between; }
+}

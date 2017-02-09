@@ -1,0 +1,42 @@
+/*---
+title: Loader
+section: Components
+---*/
+
+:root {
+  --size-loader: 2em;
+}
+
+.c-loader {
+  animation: 1.15s cubic-bezier(.215, .61, .355, 1) 0s infinite ripple;
+  border: 0 solid var(--color-loader);
+  border-radius: 50%;
+  width: auto;
+  z-index: var(--zIndex-loader);
+
+  &::before,
+  &::after { content: initial; }
+}
+
+@keyframes ripple {
+  0% {
+    height: 0;
+    width: 0;
+  }
+  30% {
+    border-width: calc(var(--size-loader) / 1.9);
+    height: var(--size-loader);
+    opacity: 1;
+    width: var(--size-loader);
+  }
+  100% {
+    border-width: 0;
+    height: var(--size-loader);
+    opacity: 0;
+    width: var(--size-loader);
+  }
+}
+
+.c-loader--neutral {
+  border-color: var(--color-neutral);
+}

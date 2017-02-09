@@ -1,0 +1,141 @@
+/*---
+title: Composition
+section: Utilities
+---*/
+
+.u-font-size--tiny { font-size: var(--fontSize--tiny); }
+
+
+.u-font-size--small { font-size: var(--fontSize--small); }
+
+
+.u-font-size--semi-normal { font-size: var(--fontSize--semiNormal); }
+
+
+.u-font-size--normal { font-size: var(--fontSize--normal); }
+
+
+.u-font-size--normal-plus { font-size: var(--fontSize--normalPlus); }
+
+
+.u-font-size--semi-medium { font-size: var(--fontSize--semiMedium); }
+
+
+.u-font-size--medium { font-size: var(--fontSize--medium); }
+
+
+.u-font-size--semi-large { font-size: var(--fontSize--semiLarge); }
+
+
+.u-font-size--large { font-size: var(--fontSize--large); }
+
+
+.u-font-size--xlarge { font-size: var(--fontSize--xlarge); }
+
+
+.u-no-bullet { @apply --no-bullet; }
+
+
+.u-no-bullets {
+  list-style: none;
+
+  &__item { @apply --no-bullet; };
+}
+
+
+.u-list-horizontal { @apply --list-horizontal; }
+
+
+.u-ellipsis { @apply --ellipsis; }
+
+
+.u-break-word { @apply --break-word; }
+
+
+.u-text-overlay {
+  position: relative !important;
+
+  img {
+    filter: none;
+    transition: filter .3s ease;
+  }
+
+  &::before {
+    @apply --fade-out;
+    bottom: 0;
+    color: var(--white);
+    content: attr(data-overlay);
+    font-weight: bold;
+    height: 100%;
+    left: 0;
+    margin: auto;
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    text-shadow: 0 1px 1px var(--black);
+    top: 0;
+    width: 50%;
+    z-index: 100;
+
+  }
+
+  &:hover {
+    &::before { @apply --fade-in; }
+
+    img { filter: blur(1px) brightness(80%) grayscale(80%); }
+
+  }
+}
+
+
+.is-positive {
+  color: var(--color-positive) !important;
+  fill: var(--color-positive) !important;
+
+  .c-icon {
+    color: currentColor !important;
+    fill: currentColor !important;
+  }
+
+  :--fullscreen & {
+    color: green !important;
+    fill: green !important;
+  }
+}
+
+
+.is-informative {
+  color: var(--color-informative) !important;
+  fill: var(--color-informative) !important;
+}
+
+
+.is-neutral {
+  color: var(--grey-300) !important;
+  fill: var(--grey-300) !important;
+}
+
+
+.is-live {
+  color: var(--color-live) !important;
+  fill: var(--color-live) !important;
+}
+
+
+.is-alterable {
+  color: var(--color-alterable) !important;
+  fill: var(--color-alterable) !important;
+}
+
+
+.is-negative {
+  color: var(--color-negative) !important;
+  fill: var(--color-negative) !important;
+
+  :--fullscreen & {
+    color: red !important;
+    fill: red !important;
+  }
+}
+

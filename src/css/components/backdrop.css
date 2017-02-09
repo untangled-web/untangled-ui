@@ -1,0 +1,34 @@
+/*---
+title: Backdrop
+section: Components
+---*/
+
+/* DEPRECATED
+   .o-backdrop */
+
+.o-backdrop,
+.c-backdrop {
+  @apply --fade-out;
+  @apply --position-full;
+  background-color: var(--color-backdrop);
+  position: fixed;
+
+
+  &:--active {
+    @apply --fade-in;
+    z-index: var(--zIndex-backdrop);
+  }
+
+  &:--disabled {
+    height: 0 !important;
+    width: 0 !important;
+  }
+}
+
+
+.c-backdrop--blur > :not(.c-backdrop) {
+  filter: blur(5px) grayscale(.7);
+}
+
+
+.c-backdrop--inverted { background-color: var(--color-backdrop--inverted); }

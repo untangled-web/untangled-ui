@@ -1,0 +1,122 @@
+/*---
+title: Positioning
+section: Utilities
+---*/
+
+.u-fixed--top-center {
+  @apply --position-top;
+  position: fixed !important;
+  width: calc(100% - 1em);
+  z-index: 100;
+}
+
+
+.u-fixed--top {
+  @apply --position-top;
+  position: fixed !important;
+}
+
+
+.u-fixed--top-right {
+  @apply --position-top-right;
+  position: fixed !important;
+}
+
+
+.u-fixed--top-left {
+  @apply --position-top-left;
+  position: fixed !important;
+}
+
+
+.u-fixed--bottom {
+  @apply --position-bottom;
+  position: fixed !important;
+}
+
+
+.u-fixed--bottom-right {
+  @apply --position-bottom-right;
+  position: fixed !important;
+}
+
+
+.u-fixed--bottom-left {
+  @apply --position-bottom-left;
+  position: fixed !important;
+}
+
+
+.u-fixed--middle {
+  @apply --position-middle;
+  position: fixed !important;
+}
+
+
+.u-fixed--middle-center {
+  @apply --position-middle;
+  @apply --center;
+  position: fixed !important;
+}
+
+
+.u-absolute--top {
+  @apply --position-top;
+  position: absolute !important;
+}
+
+
+.u-absolute--top-right {
+  @apply --position-top-right;
+  position: absolute !important;
+}
+
+
+.u-absolute--top-left {
+  @apply --position-top-left;
+  position: absolute !important;
+}
+
+
+.u-absolute--bottom {
+  @apply --position-bottom;
+  position: absolute !important;
+}
+
+
+.u-absolute--bottom-right {
+  @apply --position-bottom-right;
+  position: absolute !important;
+}
+
+
+.u-absolute--bottom-left {
+  @apply --position-bottom-left;
+  position: absolute !important;
+}
+
+
+.u-absolute--middle {
+  @apply --position-middle;
+  position: absolute !important;
+}
+
+
+.u-absolute--middle-center {
+  @apply --position-middle;
+  @apply --center;
+  position: absolute !important;
+}
+
+
+.u-absolute--middle-right {
+  bottom: auto;
+  position: absolute !important;
+  right: 0;
+  top: 50%;
+  transform: translateY(calc(-50% - .5px));
+}
+
+
+.u-rotate--cw { transform: rotate(90deg); }
+.u-rotate--ccw { transform: rotate(-90deg); }

@@ -1,0 +1,121 @@
+/*---
+title: Notification
+section: Components
+---*/
+
+@import "card";
+
+:root {
+  --backgroundColor-notification--negative: var(--yellow-200);
+  --backgroundColor-notification--informative: var(--blue-400);
+  --color-notification--informative: var(--white);
+  --color-notification-icon: var(--blue-500);
+  --color-notification-icon--success: var(--green-700);
+  --color-notification-icon--warning: var(--orange-700);
+  --color-notification-icon--error: var(--red-700);
+}
+
+.c-notification {
+  @apply --card;
+  box-shadow: var(--shadow-2);
+  padding: .5em 2.5rem .5em .5rem !important;
+  position: relative;
+  text-align: left;
+  transition-duration: var(--global-duration);
+  z-index: 200;
+
+  @media (--md-up) {
+    margin: 0 auto;
+    width: 400px;
+  }
+
+  & > .c-icon {
+    color: var(--color-notification-icon);
+    left: 16px;
+    position: absolute;
+    top: 12px;
+
+    @media (--md-up) {
+      font-size: var(--fontSize--semiMedium);
+      margin-top: .25rem;
+    }
+  }
+
+  .c-button--icon {
+    padding: 0;
+    position: absolute;
+    right: 12px;
+    top: 12px;
+  }
+
+  &.u-fixed--top { border-radius: 0 0 var(--global-rounded) var(--global-rounded); }
+  &.u-fixed--bottom { border-radius: var(--global-rounded) var(--global-rounded) 0 0; }
+}
+
+
+  .c-notification_heading,
+  .c-notification__heading {
+    font-size: var(--fontSize--small);
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 7px 0 0;
+  }
+
+
+  .c-notification_content,
+  .c-notification__content {
+    display: inline-block;
+    font-size: var(--fontSize--small);
+    left: 40px;
+    position: relative;
+    width: 87%;
+  }
+
+
+.c-notification--wide {
+  @apply --row;
+  @apply --middle;
+  min-height: 48px;
+
+  @media (--md-up) { width: auto; }
+
+  & > .c-icon {
+    @media (--md-up) { margin-top: 0; }
+  }
+
+  .c-notification__heading,
+  .c-notification__content p {
+    display: inline;
+  }
+
+  .c-button--icon {
+    opacity: .6;
+    top: auto;
+  }
+}
+
+
+.c-notification--success > .c-icon { color: var(--color-notification-icon--success); }
+
+
+.c-notification--warning {
+  background-color: var(--backgroundColor-notification--negative);
+
+  & > .c-icon { color: var(--color-notification-icon--warning); }
+}
+
+
+.c-notification--error {
+  background-color: var(--backgroundColor-notification--negative);
+
+  & > .c-icon { color: var(--color-notification-icon--error); }
+}
+
+
+.c-notification--informative {
+  background-color: var(--backgroundColor-notification--informative);
+  color: var(--color-notification--informative);
+
+  & > .c-icon,
+  .c-button--icon { color: var(--color-notification--informative); }
+}
