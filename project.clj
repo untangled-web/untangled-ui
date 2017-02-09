@@ -73,7 +73,7 @@
                                :optimizations :none
                                }}]}
 
-  :figwheel {:server-port 8080
+  :figwheel {:server-port 8001
              :css-dirs ["resources/public/css"]}
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]

@@ -31,7 +31,7 @@ More guidelines below:
 
 ### Contribution Standards/Guidelines
 
-### Write in CLJC
+#### Write in CLJC
 
 To support server-side rendering all code should be written in CLJC files. 
 
@@ -40,23 +40,23 @@ If your lifecycle (e.g. componentWillMount) or something needs js things, make a
 is a no-op, and call *that* from the UI.
 - Untangled mutations can be set to cljs-only. They'll never be attempted on server-side code anyhow.
 
-### Create a Card for Visual Regression Tests
+#### Create a Card for Visual Regression Tests
 
 All components must have a devcard in the `visuals` source directory that show their various states 
 statically (for visual regression testing). Use the same package structure, and name that namespace with a -cards suffix.
 E.g. src/untangled.components.buttons.cljs -> visuals/untangled.components.buttons-cards.cljs
 
-### Create a Card for Live Documentation/Usage
+#### Create a Card for Live Documentation/Usage
 
 All components must have a devcard in the `guide` source directory that documents/demonstrates
 your live working component with callbacks, etc. Use MockNetwork for simulating full stack interactions.
 
-### Naming Conventions
+#### Naming Conventions
 
 - The factory method should be prefixed with `ui-`, e.g. `ui-button`.
 - Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.components.buttons/by-id`)
 
-### Ensure Internationalization Will Work (IN PROGRESS)
+#### Ensure Internationalization Will Work (IN PROGRESS)
 
 These are thoughts on how this should work...evolving.
 
@@ -91,31 +91,46 @@ This is extensible, but I don't love it.
 Comments/ideas welcome.
 
 
-### API Standards
+#### API Standards
 
 These are thoughts...interested in input at this early stage:
 
 - Your app-state constructor (e.g. `make-menu`) should allow the specification for most of the visual representation. For
 example `(make-menu :id :ok-button :style large :icon :warning)`
-- The factory method might deal with om/computed bits via named parameters. 
-For example `(ui-button props :onClick do-my-thing)`. Changes to appearance should go through mutations:
-`(om/transact! this [(button/change-style {:id :ok-button :icon :help})])`
-
-Lean towards having all of the UI components interact nicely with the VCR support viewer, so avoid using component
+- We might wrap the react factory method so the user can more easily deal with om/computed bits via named parameters. 
+For example `(ui-button props :onClick do-my-thing)`. 
+- Changes to appearance should go through mutations: `(om/transact! this [(button/change-style {:id :ok-button :icon :help})])`
+- Mutations should be written in an IDE-friendly way. For example, namespace the mutation symbols to your namespace, and
+use tricks like placeholder functions of the same name so the IDE will give doc-strings and jump assistance.
+- Lean towards having all of the UI components interact nicely with the VCR support viewer, so avoid using component
 local state except in performance hotspots (e.g. animations like panning an image might not be fast if they use 
 `transact!`)
 
 # Running:
 
-To see the devcard demos of the components:
+There are three builds: test, visuals, and guide. Select them via `JVM_OPTS` with `-D`
+
+The visuals build is for the visual regression cards that show each possible visible state of a component, and are
+(TODO) run through a browser-based image capture diff to detect visual regressions due to code and CSS changes.
+
+The guide build is the development guide cards. These cards demonstrate live examples of the components and have full
+markdown documentation. The hope is to evolve this to a better UI, but devcards allows for rapid development at the 
+moment.
+
+The test build is for untangled-specs. Those adding component that have any algorithms with complexity are encourage to
+write specifications around those algorithms to help ensure correctness. Many of the components are quite simple, so
+most components probably will not have specs; however, things like the forms support include a number of more interesting
+behaviors that need full testing support.
 
 ```
-lein run -m clojure.main script/figwheel.clj
+JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj
 ```
 
-Open a browser on:
+Open a browser on (port settable `:figwheel` section of `project.clj`):
 
-http://localhost:3449
+http://localhost:8001/guide.html
+http://localhost:8001/visuals.html
+http://localhost:8001/test.html
 
 ## Form Support (Nearly Complete)
 
