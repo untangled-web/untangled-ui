@@ -13,17 +13,21 @@ without copying/pasting DOM.
 
 To Help:
 
-1. Pick a component in untangled-stylekit that has CSS/layout, but is not yet here.
+1. Pick a component in untangled-stylekit that has CSS/layout, but is not yet here. The style kit is going to be 
+combined with this project, and some of the stuff has gotten out of sync. So, only implement things that are currently
+rendering correctly. Best to ask "is anyone working on/can I work on X?"
 2. Write the defui/model/mutations, probably all together in a single new namespace.
 Components that interact full-stack (like image library) need more thought.
 2. Make devcards for the rendering of that component in various states (for
-visual regression testing).
+visual regression testing) in the `visuals` source folder.
 3. Make a devcard that wraps the component in an untangled-app (see examples)
 to show the callback/interactions working. Include devcard documentation that
-describes the use of the component.
+describes the use of the component. These go in the `guide` source folder.
 
 Please contact us on the `#untangled` channel of clojurians.slack.com if you 
 want to help.
+
+More guidelines below:
 
 ### Contribution Standards/Guidelines
 
@@ -56,11 +60,37 @@ your live working component with callbacks, etc. Use MockNetwork for simulating 
 
 These are thoughts on how this should work...evolving.
 
-- If the component's label might be changeable dynamically (e.g. a button), I think we want to have them pass the label
-as computed data from the parent (not be in state)
-- For things like menus, where the labels are static, probably use `tr-unsafe` within the components renderer, and have
-the static labels stored in app state. The trick will be to make sure string extract can occur. I'm thinking we
-add `tr-extract` which is `identity`, but can be used to pull the string for `gettext`.
+First you should understand how Untangled does i18n:
+
+We use GNU gettext to extract strings from the source by compiling the source to js, and using `xgettext`. So, any
+calls to, say, `(tr "Hello")` turn into `tr("Hello")` in Javascript, which the predefined tools for gettext can work with
+(extraction, message merging, translator tools like POEdit). If you call tr on a variable, this doesn't work, since the
+js ends up as `tr(v)`. We have a function called `tr-unsafe` that allows you to use a varaible (`tr` will intentionally
+crash the compile if you use anything but a literal string for the reason), but since `tr-unsafe` will result in a js call that 
+cannot be extracted statically from source you must somehow tell gettext about the possible values that variable can have, 
+or your i18n will fail.
+
+Approaches to this are:
+- Manually add the missing values to your translation files by hand
+- Add a function to your code base that never gets called, and just calls `tr` with the missing ones to aid in extraction.
+This results in automatic extraction and serves as documentation you can put "near" the uses of `tr-unsafe`. 
+- Have the user pass you a lambda for doing the label generation. This approach is a problem with Om, because we cannot 
+store a function in app state (it breaks serialization of history). So,
+we could, for example, allow them to drop in a unique keyword and define some multimethod for the component:
+- Have labels be something that are not ever stored in state. This is ok (probably preferable) for things like Button, 
+but more complex things like menu's are probably declared with labels when defined, not when used.
+- Use multimethods?
+
+```clj
+(defmulti render-button-label (fn [k] k))
+
+(defmethod render-button-label :ok [k] (tr "OK"))
+```
+
+This is extensible, but I don't love it.
+
+Comments/ideas welcome.
+
 
 ### API Standards
 
