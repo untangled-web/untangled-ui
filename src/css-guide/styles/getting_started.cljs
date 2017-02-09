@@ -7,31 +7,32 @@
             [om.dom :as dom]))
 
 (defarticle intro
-"# What is Untangled Stylekit?
+"# What is this?
 
-Stylekit is a user interface library of patterns for web applications and websites built with a custom PostCSS preprocessor.
-
-
-
-#### History of Stylekit
+A styleguide of user interface patterns for web applications and websites built with a custom PostCSS preprocessor
+rendered with ClojureScript.
 
 
 
-## What is Stylekit for?
+#### History of this project
+
+
+
+## What is this for?
 
 This project is meant to suppliment your next project with a wide array of components that are styled for your HTML or
 Clojurescript project. If you are using Untangled UI, you will automatically get these styles by default.
 
-## What problem does Stylekit solve?
+## What problem does this solve?
 
 
 
-## What design principles underlie Stylekit?
+## What design principles underlie this UI?
 
 Based on the ITCSS methodology by Harry Roberts, this project is composed by settings, elements, components, objects and
 utilities and produces a stylesheet that has a healthy inclining specificity graph.
 
-## How does Stylekit accomplish it's goals?
+## How does this UI accomplish it's goals?
 
 # Getting Started
 
