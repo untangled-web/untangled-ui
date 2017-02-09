@@ -1,5 +1,5 @@
-(defproject navis/untangled-components "0.1.0-SNAPSHOT"
-  :description "Untangled Components is a library of pre-built components for use with Untangled and Om Next"
+(defproject navis/untangled-ui "0.1.0-SNAPSHOT"
+  :description "Untangled Components is a library of pre-built CSS and active components for use with Untangled and Om Next"
   :url ""
   :license {:name "MIT"
             :url  "https://opensource.org/licenses/MIT"}
@@ -15,7 +15,6 @@
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
                  [navis/untangled-client "0.7.0" :scope "provided"]
-                 [navis/untangled-stylekit "0.1.0-SNAPSHOT"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]

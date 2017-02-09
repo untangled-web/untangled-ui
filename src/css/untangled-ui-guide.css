@@ -2,7 +2,7 @@
 import: ../README.md
 ---*/
 
-@import 'stylekit';
+@import 'untangled-ui-stylekit';
 
 /* stylelint-disable */
 .box-row { margin-bottom: 1rem; }

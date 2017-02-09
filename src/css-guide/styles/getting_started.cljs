@@ -49,7 +49,7 @@ You can get straight to the point and get a simple CSS file with only what you n
 ## PostCSS
 
 Style like a pro with future spec-compliant CSS that lets you write variables, applys and nesting in your CSS. This is
-the easiest way to modify and extend stylekit.
+the easiest way to modify and extend the styles.
   ")
 
 (def sections

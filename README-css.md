@@ -11,13 +11,17 @@ same level for synced releases.
 
 ### Install
 
+COMING SOON (ignore this for now)
+
 - **Soon** Download the latest release
-- Clone the repo: `git clone https://github.com/untangled-web/untangled-stylekit.git`
-- Install with [npm](https://www.npmjs.com): `npm i untangled-stylekit`
-- Install with [yarn](https://yarnpkg.com): `yarn add untangled-stylekit`
+- Clone the repo: `git clone https://github.com/untangled-web/untangled-ui.git`
+- Install with [npm](https://www.npmjs.com): TODO
+- Install with [yarn](https://yarnpkg.com): TODO
 
 ### Development
-For development of this project you will want to clone and run these commands
+
+If you're actively working on chaning CSS rules in this library, you
+will want to clone this repository and run these commands:
 
 ``` shell
 npm i -g gulp
@@ -26,6 +30,7 @@ gulp watch
 ```
 
 ## Publishing
+
 For now, I think a PR for version bump is good enough.
 
 ### index.html

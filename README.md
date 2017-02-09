@@ -20,14 +20,14 @@ See the README-css.md for more details on working with the CSS itself.
 ## CALL FOR CONTRIBUTIONS.
 
 Adding something to this library should be quick and easy. The DOM/CSS 
-for a ton of these is already worked out in untangled-stylekit. What we
+for a ton of these is already worked out. What we
 need here are active defui versions of those that can be used easily 
 without copying/pasting DOM.
 
 To Help:
 
-1. Pick a component in untangled-stylekit that has CSS/layout, but is not yet here. The style kit is going to be 
-combined with this project, and some of the stuff has gotten out of sync. So, only implement things that are currently
+1. Pick a component that has CSS/layout, but is not yet here. 
+some of the stuff has gotten out of sync. So, only implement things that are currently
 rendering correctly. Best to ask "is anyone working on/can I work on X?"
 2. Write the defui/model/mutations, probably all together in a single new namespace.
 Components that interact full-stack (like image library) need more thought.

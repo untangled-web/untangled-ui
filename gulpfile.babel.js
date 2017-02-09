@@ -93,7 +93,7 @@ gulp.task('clean', () => del(['.tmp', 'resources/public/*', '!resources/public/.
 
 // Watch files for changes & recompile
 gulp.task('watch', ['styles'], () => {
-  gulp.watch(['src/css/**/*.css', 'src/css/stylekit.css'], ['styles']);
+  gulp.watch(['src/css/**/*.css'], ['styles']);
 });
 
 
