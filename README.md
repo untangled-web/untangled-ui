@@ -103,6 +103,23 @@ This is extensible, but I don't love it.
 
 Comments/ideas welcome.
 
+#### Thoughts about Implementation of Elements/Components/Layouts
+
+Some components have no real active nature (e.g. buttons): they just have things like properties and callbacks and no need 
+for an Om query. For those it seems best to just do normal React kinds of things (pass parameters in a map, and children 
+via varargs).
+
+Other components like checkboxes need to manage state. For simple ones it may make sense to let the user completely manage
+the state (e.g. the boolean as to the checked state of a box). 
+
+In more complex components, like menus, there may be some significant advantage
+to making them full-on Om components. For example, a `close-all-menus` mutation is impossible to write unless the menus 
+are represented in the app state.
+
+In utilities like layout helpers: These are probably plain React components (or even just functions).
+
+We expect standards around this to resolve rapidly, but please participate in the discussion as we progress.
+
 
 #### API Standards
 
