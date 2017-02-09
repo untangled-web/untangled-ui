@@ -1,8 +1,21 @@
-# Untangled Components
+# Untangled UI
 
-This library is meant to become a set of components that use
-untangled-stylekit and provide active UI elements and layouts for rapid application
-development.
+Reusable CSS and components for the Untangled Web Framework. These components are usable from stock Om, but their mutations
+assume you at least are willing to use the Untangled `mutate` multimethod for your application and are using
+the standard Om database format (e.g. you don't have to use anything else from Untangled, just the 
+default Om database format and one `defmulti`).
+
+The CSS is similar to other frameworks like Bootstrap. It can be styled, *is prefixed to prevent CSS name collisions* with other
+CSS (so it can be used with others), and is responsive. We chose to make our own CSS because:
+
+1. So that the component library is not a moving target subject to breakage from outside (CSS and components evolve in
+lock step with visual regression tests).
+2. We needed features not provided by stock libraries.
+
+The CSS can be used in a standalone fashion, but it's primary purpose is to allow us to make a complete set of active
+reusable Untangled components for rapid application development.
+
+See the README-css.md for more details on working with the CSS itself. 
 
 ## CALL FOR CONTRIBUTIONS.
 
