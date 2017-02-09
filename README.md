@@ -28,12 +28,13 @@ To Help:
 
 1. Pick a component that has CSS/layout, but is not yet here. 
 some of the stuff has gotten out of sync. So, only implement things that are currently
-rendering correctly. Best to ask "is anyone working on/can I work on X?"
-2. Write the defui/model/mutations, probably all together in a single new namespace.
-Components that interact full-stack (like image library) need more thought.
-2. Make devcards for the rendering of that component in various states (for
+rendering correctly. 
+2. Ask "is anyone working on/can I work on X?" and create an Issue on GitHub
+3. Write the defui/model/mutations, probably all together in a single new namespace.
+Components that interact full-stack (like image library) need more thought/discussion.
+4. Make devcards for the rendering of that component in various states (for
 visual regression testing) in the `visuals` source folder.
-3. Make a devcard that wraps the component in an untangled-app (see examples)
+5. Make a devcard that wraps the component in an untangled-app (see examples)
 to show the callback/interactions working. Include devcard documentation that
 describes the use of the component. These go in the `guide` source folder.
 
