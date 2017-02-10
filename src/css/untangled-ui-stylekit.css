@@ -71,6 +71,7 @@
 @import 'elements/layout';
 @import 'elements/typography';
 
+@import 'components/avatar';
 @import 'components/backdrop';
 @import 'components/badge';
 @import 'components/button';

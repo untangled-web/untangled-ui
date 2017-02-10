@@ -9,6 +9,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; -------------------------
+;; Avatar
+;; -------------------------
+
+(def avatar-header
+  "# Avatar")
+
+(defexample avatar
+  "An avatar is a round symbol to represent a person's identity. When there is no visual, we use the first and last
+   initial of their name."
+  (dom/div #js {:className "u-row"}
+    (dom/div #js {:className "u-column--1"}
+      (dom/span #js {:className "c-avatar"} "AV"))
+    (dom/div #js {:className "u-column--1"}
+      (dom/span #js {:className "c-avatar"} (icons/icon :help)))
+    (dom/div #js {:className "u-column--1"}
+      (dom/span #js {:className "c-avatar c-avatar--support"} "KB"))
+    (dom/div #js {:className "u-column--1"}
+      (dom/span #js {:className "c-avatar c-avatar--informative"} (icons/icon :supervisor_account)))
+    (dom/div #js {:className "u-column--1"}
+      (dom/span #js {:className "c-avatar c-avatar--huge"} "AV"))))
+
+;; -------------------------
 ;; Badges
 ;; -------------------------
 
@@ -1070,7 +1092,12 @@
           ;; NOTE: :examples is a list of example names, rendered in order given
           ;; First show the basic pattern, then modifiers, then elements.
           ;; This order is important to the learning process.
-
+          {:id :avatar
+           :title "Avatar"
+           :documentation avatar-header
+           :examples [
+                      avatar
+                      ]}
           {:id :badges
            :title "Badges"
            :documentation badge-header

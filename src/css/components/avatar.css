@@ -1,0 +1,53 @@
+.c-avatar {
+  @apply --top;
+  --size: 40px;
+  --scale: calc(var(--size) / 2.5);
+  border-radius: 100px;
+  background-color: var(--grey-200);
+  color: var(--grey-700);
+  display: inline-block;
+  font-size: var(--scale);
+  font-weight: bold;
+  height: var(--size);
+  line-height: var(--size);
+  text-align: center;
+  width: var(--size);
+
+  & > .c-icon {
+    fill: var(--grey-700);
+    margin-top: 7.5px;
+  }
+
+  & + .c-icon {
+    bottom: -2px;
+    position: absolute;
+    right: -3px;
+    text-shadow: 0 0 3px var(--white);
+  }
+}
+
+
+.c-avatar--huge {
+  --size: 110px;
+  --scale: calc(var(--size) / 2.5);
+  font-size: var(--scale);
+  height: var(--size);
+  line-height: var(--size);
+  width: var(--size);
+}
+
+
+.c-avatar--support {
+  border: 2px solid var(--orange-700);
+  box-shadow: 0 0 0 1px var(--white);
+  line-height: calc(39px - 3px);
+}
+
+
+.c-avatar--informative {
+  background-color: var(--blue-700);
+  color: var(--white);
+
+  & > .c-icon { fill: var(--white); }
+}
+

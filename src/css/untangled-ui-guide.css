@@ -49,6 +49,14 @@ import: ../README.md
     padding: .2em 0;
     margin: 0;
   }
+
+  pre {
+    background-color: var(--grey-50);
+    border-radius: 4px;
+    padding: 1em;
+    line-height: 1.5;
+    margin-bottom: 1em;
+  }
 }
 
 .ui-example__figure {

@@ -23,6 +23,7 @@
  * Tooltip............Short messages for documenting things
  */
 
+@import 'avatar';
 @import 'backdrop';
 @import 'badge';
 @import 'button';

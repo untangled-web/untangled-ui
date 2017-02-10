@@ -1,6 +1,6 @@
 (ns styles.utilities
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle]]
             [om.dom :as dom]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -643,7 +643,7 @@
 
 ;; Size Examples
 
-(def docs-size
+(defarticle docs-size
   "```css
   --global-duration: .1s;
   --global-margin: 8px;
@@ -658,6 +658,83 @@
   --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
   ```
   ")
+
+;; Syntax
+
+(defarticle syntax
+  "# Syntax
+
+  Synopsis - Give developers more knowledge about how the classes behave in a non-relative sense: BEM + ITCSS = BEMIT\n\n
+
+  ###### Sources
+
+  [More Transparent UI Coce with Namespaces](http://csswizardry.com/2015/03/more-transparent-ui-code-with-namespaces/)
+
+  [BEMIT: Taking the BEM Naming Convention a Step Further](http://csswizardry.com/2015/08/bemit-taking-the-bem-naming-convention-a-step-further/)
+
+  #### Anatomy
+
+  ```css
+  .namespace-block__element--modifier [backslash] @media { }
+  ```
+  TODO Clojure thinks the backslash is an escaping character.
+
+  #### Namespaces
+
+  ```
+  /* Object */
+  .o-object-name[<element>/<modifier>] { }
+
+  /* Component */
+  .c-component-name[<element>/<modifier>] { }
+
+ /* Utility */
+ .u-utility-name {}
+
+ /* Theme */
+ .t-theme-name {}
+
+ /* Scope */
+ .s-scope-name {}
+
+ /* State */
+ .[is/has]-state {}
+
+ /* Hack */
+ ._<namespace>hack-name {}
+
+ /* Javascript */
+ .js-component-name {}
+
+ /* Quality Assurance */
+ .qa-node-name {}
+  ```
+
+  #### Responsive Suffixes
+
+  Breakpoints
+
+  ```css
+  .o-object-name [backslash] @sm { }
+
+  .o-object-name [backslash] @md { }
+
+  .o-object-name [backslash] @lg { }
+  ```
+
+  Media type
+
+  ```css
+  .u-utility-name [backslash] @print { }
+  ```
+
+  #### BEMIT Healthcheck
+
+  Enable a new layer of outlines around everything on the DOM that describes and identifies different types of selectors.
+
+  ```html
+  <html class='s-healthcheck'>
+  ```")
 
 ;; Typography Examples
 
@@ -885,9 +962,10 @@
                          :examples [positioning-example-rotate]}
                         {:id       :size
                          :title    "Elements - Size"
-                         :documentation
-                                   docs-size
-                         :examples []}
+                         :examples [docs-size]}
+                        {:id       :syntax
+                         :title    "Syntax"
+                         :examples [syntax]}
                         {:id       :typography
                          :title    "Typography"
                          :examples [typography-font-scale typography-no-bullet typography-no-bullets
