@@ -14,7 +14,7 @@
                  [org.clojure/clojurescript "1.9.456" :scope "provided"]
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
-                 [navis/untangled-client "0.7.0" :scope "provided"]
+                 [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]

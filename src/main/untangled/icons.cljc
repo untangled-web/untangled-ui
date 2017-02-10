@@ -983,8 +983,8 @@ z"
   "Capitalize every word in a string"
   [s]
   (->> (str/split (str s) #"\b")
-       (map str/capitalize)
-       str/join))
+    (map str/capitalize)
+    str/join))
 
 (def state-mods {:is  #{:active :open :optional :collapsed :passive :positive :negative :neutral :live :alterable :informative :featured :disabled :indeterminate :invalid :error}
                  :has #{:descendents :focus :actions}})
@@ -1009,46 +1009,46 @@ z"
                           ((:is state-mods) n) (str acc middle (str "is-" (name n)))
                           ((:has state-mods) n) (str acc middle (str "has-" (name n)))
                           :else acc)))
-          ""
-          states))
+    ""
+    states))
 
-#?(:cljs
-   (defn material-icon
-     "Get a React DOM SVG node for a material 24x24 icon."
-     [k]
-     (let [path (get material-icon-paths k)]
-       (dom/svg #js {:version         "1.1"
-                     :xmlns           "http://www.w3.org/2000/svg"
-                     :width           "24"
-                     :height          "24"
-                     :aria-labelledby "title"
-                     :role            "img"
-                     :viewBox         "0 0 24 24"}
-         (dom/path #js {:d path})))))
+(defn material-icon
+  "Get a React DOM SVG node for a material 24x24 icon."
+  [k]
+  (let [path (get material-icon-paths k)]
+    (dom/svg #js {:version         "1.1"
+                  :xmlns           "http://www.w3.org/2000/svg"
+                  :width           "24"
+                  :height          "24"
+                  :aria-labelledby "title"
+                  :role            "img"
+                  :viewBox         "0 0 24 24"}
+      (dom/path #js {:d path}))))
 
-#?(:cljs
-   (defn icon
-     [iconPath
-      & {:keys [width height modifiers states className onClick]}]
-     (assert (keyword? iconPath) "Must pass a :key")
-     (let [add-class (fn [attrs])
-           path-check (iconPath material-icon-paths)
-           icon-name (str/replace (name iconPath) #"_" "-")]
-       (when-not (str/blank? path-check)
-         (dom/svg (clj->js
-                    (cond->
-                      {:className       (str/join " " [(concat-class-string "c-icon" "--" modifiers)
-                                                       (str "c-icon--" icon-name)
-                                                       (concat-state-string states)
-                                                       (concat-class-string className)])
-                       :version         "1.1"
-                       :xmlns           "http://www.w3.org/2000/svg"
-                       :width           "24"
-                       :height          "24"
-                       :aria-labelledby "title"
-                       :role            "img"
-                       :viewBox         "0 0 24 24"}
-                      onClick (assoc :onClick #(onClick))))
-           (dom/title nil (str (title-case (str/replace (name iconPath) #"_" " "))))
-           (dom/path #js {:d path-check}))))))
+#?(:clj (def clj->js identity))
+
+(defn icon
+  [iconPath
+   & {:keys [width height modifiers states className onClick]}]
+  (assert (keyword? iconPath) "Must pass a :key")
+  (let [add-class  (fn [attrs])
+        path-check (iconPath material-icon-paths)
+        icon-name  (str/replace (name iconPath) #"_" "-")]
+    (when-not (str/blank? path-check)
+      (dom/svg (clj->js
+                 (cond->
+                   {:className       (str/join " " [(concat-class-string "c-icon" "--" modifiers)
+                                                    (str "c-icon--" icon-name)
+                                                    (concat-state-string states)
+                                                    (concat-class-string className)])
+                    :version         "1.1"
+                    :xmlns           "http://www.w3.org/2000/svg"
+                    :width           "24"
+                    :height          "24"
+                    :aria-labelledby "title"
+                    :role            "img"
+                    :viewBox         "0 0 24 24"}
+                   onClick (assoc :onClick #(onClick))))
+        (dom/title nil (str (title-case (str/replace (name iconPath) #"_" " "))))
+        (dom/path #js {:d path-check})))))
 

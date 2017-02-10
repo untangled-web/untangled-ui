@@ -3,6 +3,7 @@
             untangled.components.forms-overview-cards
             untangled.components.forms-advanced-cards
             untangled.components.table-cards
+            untangled.components.pluggable-css-exploration-cards
             untangled.components.calendar-cards
             untangled.components.exploration-cards
             yahoo.intl-messageformat-with-locales))

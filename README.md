@@ -126,20 +126,17 @@ We expect standards around this to resolve rapidly, but please participate in th
 
 These are thoughts...interested in input at this early stage:
 
-- Your app-state constructor (e.g. `make-menu`) should allow the specification for most of the visual representation. For
-example `(make-menu :id :ok-button :style large :icon :warning)`
-- We might wrap the react factory method so the user can more easily deal with om/computed bits via named parameters. 
-For example `(ui-button props :onClick do-my-thing)`. 
-- Changes to appearance should go through mutations: `(om/transact! this [(button/change-style {:id :ok-button :icon :help})])`
-- Mutations should be written in an IDE-friendly way. For example, namespace the mutation symbols to your namespace, and
-use tricks like placeholder functions of the same name so the IDE will give doc-strings and jump assistance.
+- See exploration_cards in the `guide` build.
+- See dropdown_visuals and dropdowns in the `visuals` build.
+- Changes to appearance for stateful components should go through mutations
+- Mutations should be written in an IDE-friendly way using the new 0.7.1-SNAPSHOT+ untangled-client `defmutation`.
 - Lean towards having all of the UI components interact nicely with the VCR support viewer, so avoid using component
 local state except in performance hotspots (e.g. animations like panning an image might not be fast if they use 
-`transact!`)
+`transact!`). Many simple components will be simple stateless functions and not even React components.
 
 # Running:
 
-There are three builds: test, visuals, and guide. Select them via `JVM_OPTS` with `-D`
+There are four builds: `test`, `visuals`, `css-guide`, and `guide`. Select them via `JVM_OPTS` with `-D`
 
 The `visuals` build is for the visual regression cards that show each possible visible state of a component, and are
 (TODO) run through a browser-based image capture diff to detect visual regressions due to code and CSS changes.
