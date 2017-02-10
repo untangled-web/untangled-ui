@@ -27,10 +27,10 @@ section: Objects
   }
 
 
-  &:--enter:--invalid { box-shadow: 0 0 6px var(--orange-600); }
+  &:--enter.is-invalid { box-shadow: 0 0 6px var(--orange-600); }
 
 
-  &:--invalid { border: 1px solid var(--orange-600); }
+  &.is-invalid { border: 1px solid var(--orange-600); }
 
 
   &:--enter.is-error { box-shadow: 0 0 6px var(--color-negative); }
@@ -40,11 +40,15 @@ section: Objects
 
 
   & > .c-icon {
-    fill: var(--blue-800);
+    fill: var(--grey-600);
     height: 18px;
     margin: 5px;
     width: 18px;
   }
+}
+
+.o-input--round {
+  border-radius: 50px;
 }
 
 

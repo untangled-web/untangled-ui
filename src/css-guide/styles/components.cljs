@@ -39,11 +39,16 @@
 (defexample button-shape
   "## Button size and shape"
   (dom/div #js {}
-    (dom/button #js {:className "c-button"} "Regular")
-    (dom/button #js {:className "c-button c-button--large"} "Large")
-    (dom/button #js {:className "c-button c-button--xlarge"} "Extra Large")
-    (dom/button #js {:className "c-button c-button--round"} "Round")
-    (dom/button #js {:className "c-button c-button--wide"} "Wide")
+    (dom/div #js {:className "u-trailer--quarter"}
+      (dom/button #js {:className "c-button"} "Regular"))
+    (dom/div #js {:className "u-trailer--quarter"}
+      (dom/button #js {:className "c-button c-button--large"} "Large"))
+    (dom/div #js {:className "u-trailer--quarter"}
+      (dom/button #js {:className "c-button c-button--xlarge"} "Extra Large"))
+    (dom/div #js {:className "u-trailer--quarter"}
+      (dom/button #js {:className "c-button c-button--round"} "Round"))
+    (dom/div #js {:className "u-trailer--quarter"}
+      (dom/button #js {:className "c-button c-button--wide"} "Wide"))
 
 
     ))
@@ -326,35 +331,41 @@
     (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})))
 
 (defexample input-normal
-  "# Inputs of Various Type"
+  "### Inputs of Various Type"
   (dom/div nil
-    (dom/input #js {:type "text" :className "c-input" :required "true" :placeholder "Required field"})
-    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-input"})
-    (mapv (fn [typ] (dom/input #js {:key typ :type typ :placeholder typ :className "c-input"}))
+    (dom/div #js {:className "o-input is-invalid"}
+      (dom/input #js {:type "text" :className "o-input__box" :required "true" :placeholder "Required field"}))
+    (dom/div #js {:className "o-input"}
+      (dom/input #js {:type "text" :placeholder "Optional field" :className "o-input__box"}))
+    (mapv (fn [typ] (dom/div #js {:className "o-input"}
+                      (dom/input #js {:key typ :type typ :placeholder typ :className "o-input__box"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])))
 
 (defexample input-states
   "# Inputs States"
   (dom/div #js {}
-    (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-input has-focus"})
-    (dom/input #js {:type "text" :placeholder "INVALID" :className "c-input is-invalid"})
-    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-input is-error"})))
+    (dom/div #js {:className "o-input has-focus"}
+      (dom/input #js {:type "text" :placeholder "FOCUSED" :className "o-input__box"}))
+    (dom/div #js {:className "o-input is-invalid"}
+      (dom/input #js {:type "text" :placeholder "INVALID" :className "o-input__box"}))
+    (dom/div #js {:className "o-input is-error"}
+      (dom/input #js {:type "text" :placeholder "ERROR" :className "o-input__box"}))))
 
 (defexample input-round
   "# Rounded Input with Icons"
-  (dom/div #js {:className "u-wrapper"}
-    (dom/input #js {:type "text" :className "c-input c-input--round c-input--inset" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
-    (dom/button #js {:type "submit" :className "c-button c-button--icon u-absolute--top-left" :disabled "" :aria-label "Submit"}
-      (dom/span #js {:className "c-icon c-icon--search"}
-        (icons/material-icon :search)))
-    (dom/button #js {:className "c-button c-button--icon u-absolute--top-right" :aria-label "Close Search"}
-      (dom/span #js {:className "c-icon c-icon--cancel"}
-        (icons/material-icon :cancel)))))
+  (dom/div #js {:className "o-input o-input--round"}
+    (icons/icon :search)
+    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
+    ))
 
 (defexample input-collapsable
-  "# Collapsable Input"
+  "# Collapsable Input
+
+  TODO This needs some love before we show it off
+  "
+
   (let [open? (boolean (om/get-state this :open))]
-    (dom/div #js {}
+    #_(dom/div #js {}
       (dom/button #js {:title     "Open Search"
                        :className (str "c-button c-button--icon" (when open? " u-hide"))
                        :onClick   #(toggle-open this)
@@ -376,18 +387,21 @@
 (defexample input-validation
   "# Input Validation"
   (dom/div #js {}
-    (dom/div #js {:className "u-wrapper"}
-      (dom/input #js {:type "text" :className "c-input has-focus"})
-      (dom/div #js {:className "c-input__validation"} "Validated message"))
-    (dom/div #js {:className "u-wrapper"}
-      (dom/input #js {:type "text" :className "c-input"})
-      (dom/div #js {:className "c-input__validation c-input__validation--neutral"} "Neutral validated message"))
-    (dom/div #js {:className "u-wrapper"}
-      (dom/input #js {:type "email" :value "notauser at clientcom" :required "" :className "c-input"})
-      (dom/div #js {:className "c-input__validation c-input__validation--warning"} "Warning validated message"))
-    (dom/div #js {:className "u-wrapper"}
-      (dom/input #js {:type "text" :placeholder "Placeholder text" :className "c-input is-error"})
-      (dom/div #js {:className "c-input__validation c-input__validation--error"} "Error validated message"))))
+    (dom/div #js {:className "o-input"}
+      (dom/input #js {:type "text" :className "o-input__box"}))
+    (dom/div #js {:className "o-input__validation"} "Validated message")
+
+    (dom/div #js {:className "o-input"}
+      (dom/input #js {:type "text" :className "o-input__box"}))
+    (dom/div #js {:className "o-input__validation o-input__validation--neutral"} "Neutral validated message")
+
+    (dom/div #js {:className "o-input is-invalid"}
+      (dom/input #js {:type "email" :value "notauser at clientcom" :required "" :className "o-input__box"}))
+    (dom/div #js {:className "o-input__validation o-input__validation--warning"} "Warning validated message")
+
+    (dom/div #js {:className "o-input is-error"}
+      (dom/input #js {:type "text" :placeholder "Placeholder text" :className "o-input__box"}))
+    (dom/div #js {:className "o-input__validation o-input__validation--error"} "Error validated message")))
 
 (defexample icons
   "# Basic Icon"
