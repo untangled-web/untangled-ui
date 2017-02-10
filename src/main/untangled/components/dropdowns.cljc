@@ -1,10 +1,15 @@
 (ns untangled.components.dropdowns
+  #?(:cljs (:require-macros
+             [untangled.i18n :refer [tr-unsafe]]
+             [untangled.client.mutations :refer [defmutation]]))
   (:require
     [om.next :as om :refer [defui]]
     [om.dom :as dom]
-    [untangled.i18n :refer [tr-unsafe]]
+    untangled.i18n
     [untangled.client.core :as uc]
-    [untangled.client.mutations :as m :refer [defmutation]]
+    #?(:cljs [untangled.client.mutations :as m]
+       :clj
+    [untangled.client.mutations :as m :refer [defmutation]])
     [untangled.icons :refer [icon]]
     [untangled.client.mutations :as m]))
 
