@@ -337,8 +337,8 @@
       (dom/input #js {:type "text" :className "o-input__box" :required "true" :placeholder "Required field"}))
     (dom/div #js {:className "o-input"}
       (dom/input #js {:type "text" :placeholder "Optional field" :className "o-input__box"}))
-    (mapv (fn [typ] (dom/div #js {:className "o-input"}
-                      (dom/input #js {:key typ :type typ :placeholder typ :className "o-input__box"})))
+    (mapv (fn [typ] (dom/div #js {:key typ :className "o-input"}
+                      (dom/input #js {:type typ :placeholder typ :className "o-input__box"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])))
 
 (defexample input-states
