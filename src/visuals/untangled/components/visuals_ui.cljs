@@ -1,5 +1,5 @@
 (ns untangled.components.visuals-ui
   (:require [devtools.core :as devtools]
-            [yahoo.intl-messageformat-with-locales]))
+            untangled.components.dropdown-visuals))
 
 (devtools/install!)
