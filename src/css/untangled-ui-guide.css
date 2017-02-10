@@ -63,4 +63,35 @@ import: ../README.md
   overflow-x: scroll;
 }
 
+._example-layout {
+
+  .o-header,
+  .o-nav,
+  .o-article,
+  .o-footer { padding: 1em; }
+
+  .o-header {
+    background-color: var(--blue-900);
+    color: var(--white);
+    position: static;
+  }
+
+  .o-nav {
+    background-color: var(--blue-50);
+    flex: 1 6 20%;
+    order: 1;
+  }
+
+  .o-article {
+    background-color: var(--grey-50);
+    margin-left: 0 !important;
+    flex: 3 1 60%;
+    order: 2;
+  }
+
+  .o-footer {
+    background-color: var(--grey-100);
+  }
+}
+
 /* stylelint-enable */

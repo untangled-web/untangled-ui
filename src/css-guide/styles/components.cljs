@@ -8,20 +8,31 @@
 ;; START OF EXAMPLES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Sample Example
-(defexample badge-example-1
-  "## A plain badge"
+;; -------------------------
+;; Badges
+;; -------------------------
+
+(def badge-header
+  "# Badge")
+
+
+(defexample badge
+  "### Basic
+
+  You can make a badge from a `span` or `div` element using the `.c-badge` classname."
   (dom/a #js {:href "#"} "Inbox "
          (dom/span #js {:className "c-badge"} 7)))
 
-(defexample badge-on-button
-  "## A Badge on a Button"
+
+(defexample badge-button
+  "### In a button"
   (dom/p #js {}
     (dom/button #js {:className "c-button"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))))
 
-(defexample badge-with-icon
-  "## A Badge with an Icon"
+
+(defexample badge-icon
+  "### Icon, no text"
   (dom/span #js {:className "c-badge c-badge--round"}
     (dom/span #js {:className "c-icon"}
       (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
@@ -30,14 +41,26 @@
                            9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87
                            0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"})))))
 
-(defexample button-state
-  "## Button States"
-  (dom/div #js {}
-    (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
-    (dom/button #js {:title "Click me to see the active state." :className "c-button is-active"} "Active")))
+
+;; -------------------------
+;; Buttons
+;; -------------------------
+
+(def button-header
+  "# Buttons
+
+     Use these button classes on `<button>` or `<input type='submit'>` element. It's easy to make a new button.")
+
+(defexample button
+  "### Basic"
+  (dom/button #js {:className "c-button"} "Regular")
+  )
 
 (defexample button-shape
-  "## Button size and shape"
+  "### Size and form
+
+  You can optionally use modifier classes that let you manipulate the size and shape of your button.
+  "
   (dom/div #js {}
     (dom/div #js {:className "u-trailer--quarter"}
       (dom/button #js {:className "c-button"} "Regular"))
@@ -49,12 +72,31 @@
       (dom/button #js {:className "c-button c-button--round"} "Round"))
     (dom/div #js {:className "u-trailer--quarter"}
       (dom/button #js {:className "c-button c-button--wide"} "Wide"))
-
-
     ))
 
-(defexample icon-button
-"## Buttons with icons"
+
+(defexample button-color
+  "### Colors
+
+  Stateful color classes are provided to further communicate the intentions of your button action."
+  (dom/div #js {}
+    (dom/button #js {:className "c-button"} "Default")
+    (dom/button #js {:className "c-button c-button--secondary"} "Secondary")
+    (dom/button #js {:className "c-button c-button--alert"} "Alert")
+    (dom/button #js {:className "c-button c-button--passive"} "Passive")
+    (dom/button #js {:className "c-button c-button--text"} "Text")
+    (dom/button #js {:className "c-button c-button--anchor"} "Anchor")))
+
+
+(defexample button-state
+  "### States"
+  (dom/div #js {}
+    (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
+    (dom/button #js {:title "Click me to see the active state." :className "c-button is-active"} "Active")))
+
+
+(defexample button-icon
+"### Buttons with icons"
   (dom/div nil
     (dom/button #js {:className "c-button"}
       (icons/icon :arrow_back)
@@ -69,18 +111,8 @@
     )
   )
 
-(defexample button-color
-  "## Button Color"
-  (dom/div #js {}
-    (dom/button #js {:className "c-button"} "Default")
-    (dom/button #js {:className "c-button c-button--secondary"} "Secondary")
-    (dom/button #js {:className "c-button c-button--alert"} "Alert")
-    (dom/button #js {:className "c-button c-button--passive"} "Passive")
-    (dom/button #js {:className "c-button c-button--text"} "Text")
-    (dom/button #js {:className "c-button c-button--anchor"} "Anchor")))
-
 (defexample button-postfix
-  "## Button Postfix
+  "### Button Postfix
 
   This pattern is mainly for demonstration purposes only, as this is a specific technique that can be accomplished through a simple collapsed grid and a button modifier class."
   (dom/div #js {:className "u-row u-row--collapse"}
@@ -89,61 +121,71 @@
     (dom/div #js {:className "u-column--2"}
       (dom/button #js {:className "c-button c-button--postfix"} "Search"))))
 
-(defexample card-example
-  "## Cards"
+
+;; -------------------------
+;; Card
+;; -------------------------
+
+(def card-header
+  "# Cards")
+
+(defexample card
+  "### Basic"
   (dom/div #js {:className "c-card"}
     (dom/h1 #js {} "Title")
     (dom/p #js {} "Card paragraph text goes here.")))
 
-(defexample rounded-card
-  "## Rounded Card"
+(defexample card-rounded
+  "### Rounded Card"
   (dom/div #js {:className "c-card c-card--round"}
     (dom/h1 #js {} "Title")
     (dom/p #js {} "This is just a monolithic class that rounds off any card you apply it to.")))
 
-(defexample transparent-card
-  "## Transparent Card"
+(defexample card-transparent
+  "### Transparent Card"
   (dom/div #js {:className "c-card c-card--transparent"}
     (dom/h1 #js {} "Title")
     (dom/p #js {} "This gives you the basic box properties without any background color or text color.")))
 
-(defexample ruled-card
-  "## Ruled Card"
+(defexample card-ruled
+  "### Ruled Card"
   (dom/div #js {:className "u-wrapper"}
     (dom/div #js {:className "c-card c-card--ruled"}
       (dom/h1 #js {} "Title")
       (dom/p #js {} "A simple card, horizontal ruled."))))
 
-(defexample card-with-titlebar
-  "## Title Bar Card"
+(defexample card-titlebar
+  "### Title Bar"
   (dom/div #js {:className "c-card"}
     (dom/div #js {:className "c-card__title"}
       (dom/h1 #js {:className "c-card__heading"} "Title"))
     (dom/p #js {} "Add these title and heading modifiers to your card to get a titlebar.")))
 
-(defexample active-card
-  "## Active Card"
+(defexample card-states
+  "### States"
   (dom/div nil
-    (dom/div #js {:className "c-card c-card--row is-active"}
-      (dom/h1 #js {} "Title")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))))
-
-(defexample inactive-card
-  "## Inactive Card"
-  (dom/div nil
+    (dom/div #js {:className "c-card c-card--row is-active u-trailer--half"}
+      (dom/h1 #js {} "Active")
+      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
     (dom/div #js {:className "c-card c-card--row is-inactive"}
-      (dom/h1 #js {} "Title")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))))
+      (dom/h1 #js {} "Inactive")
+      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
+    ))
 
-(defexample zone-card
-  "## Zone Card"
+(defexample card-zone
+  "### Zone Card"
   (dom/div #js {:className "c-card c-card--zone"} "This is a Card Zone component! Drop things on me!"))
 
-(defexample checkboxes
-  "# Checkboxes
 
-  The following examples show the various rendered states of checkboxes.
-  "
+;; -------------------------
+;; Checkboxes
+;; -------------------------
+
+(def checkbox-header
+  "# Checkboxes")
+
+(defexample checkboxes
+  "The following examples show the various rendered states of checkboxes."
   (dom/div #js {}
     (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-1"} "Checkbox")
@@ -160,8 +202,16 @@
 
 (defn toggle-open [this] (om/update-state! this update :open not))
 
+
+;; -------------------------
+;; Dropdown
+;; -------------------------
+
+(def dropdown-header
+  "# Dropdowns")
+
 (defexample dropdown
-  "## Normal Dropdown
+  "### Basic
 
   This example uses component local state to toggle the is-active class to open/close the dropdown."
   (let [open (boolean (om/get-state this :open))
@@ -179,92 +229,94 @@
                                               (om/update-state! this assoc :selection s))}
                  (dom/button #js {:className "c-dropdown__link"} s))) selections)))))
 
-(defexample dropdown-large
-  "## Dropdown with Large Toggle"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))
-        selections ["Apples" "Oranges" "Banannas"]
-        current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className "c-dropdown c-dropdown--large"}
-      (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                       :className "c-dropdown__select js-dropdown-toggle"} current)
-      (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                   :className menu-class}
-        (map (fn [s]
-               (dom/li #js {:key s :onClick (fn [evt]
-                                              (om/update-state! this assoc :open false)
-                                              (om/update-state! this assoc :selection s))}
-                 (dom/button #js {:className "c-dropdown__link"} s))) selections)))))
+(defexample dropdown-shape
+  "### Shape and form"
+  (dom/div nil
+    (let [open       (boolean (om/get-state this :open))
+         menu-class (str "c-dropdown__menu" (if open " is-active" ""))
+         selections ["Apples" "Oranges" "Banannas"]
+         current    (or (om/get-state this :selection) "Large Menu")]
+      (dom/div #js {:className "u-trailer--triple"}
+        (dom/div #js {:className "c-dropdown c-dropdown--large"}
+         (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                          :className "c-dropdown__select js-dropdown-toggle"} current)
+         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                      :className menu-class}
+           (map (fn [s]
+                  (dom/li #js {:key s :onClick (fn [evt]
+                                                 (om/update-state! this assoc :open false)
+                                                 (om/update-state! this assoc :selection s))}
+                    (dom/button #js {:className "c-dropdown__link"} s))) selections)))))
 
-(defexample dropdown-positive
-  "# Dropdown with Positive Color"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {}
-      (dom/div #js {:className "c-dropdown"}
-        (dom/button #js {:onClick   #(toggle-open this)
-                         :className "c-dropdown__select c-dropdown__select--positive js-dropdown-toggle"} "Positive Select")
-        (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-          (dom/li #js {}
-            (dom/button #js {:className "c-dropdown__link"} "Banannas")))))))
-
-(defexample dropdown-alterable
-  "# Dropdown with Alterable Color"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown"}
-      (dom/button #js {:onClick   #(toggle-open this)
-                       :className "c-dropdown__select c-dropdown__select--alterable js-dropdown-toggle"} "Alterable Select")
-      (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        (dom/li #js {}
-          (dom/button #js {:className "c-dropdown__link"} "Apples"))))))
-
-(defexample dropdown-negative
-  "# Dropdown with Negative Color"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown"}
-      (dom/button #js {:onClick   #(toggle-open this)
-                       :className "c-dropdown__select c-dropdown__select--negative js-dropdown-toggle"} "Negative Select")
-      (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        ;; items:
-        (dom/li #js {}
-          (dom/button #js {:className "c-dropdown__link"} "Banannas"))))))
-
-(defexample dropdown-right-aligned
-  "# Right Aligned Dropdown"
-  (let [open (boolean (om/get-state this :open))
+    (let [open (boolean (om/get-state this :open))
         menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
     (dom/div #js {:className "u-end"}
       (dom/div #js {:className "c-dropdown c-dropdown--right"}
         (dom/button #js {:onClick #(toggle-open this) :className "c-dropdown__select c-dropdown__select--right js-dropdown-toggle"} "Right Aligned")
         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
           (dom/li #js {}
-            (dom/button #js {:className "c-dropdown__link"} "Apples")))))))
+            (dom/button #js {:className "c-dropdown__link"} "Apples"))))))
+    ))
 
-(defexample dropdown-button
-  "# Button Dropdown"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown"}
-      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Filter")
-      (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        (dom/li #js {}
-          (dom/button #js {:className "c-dropdown__link"} "Water"))))))
+(defexample dropdown-colors
+  "### Colors"
+  (dom/div nil
+    (let [open       (boolean (om/get-state this :open))
+          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+      (dom/div #js {:className "u-trailer--triple"}
+        (dom/div #js {:className "c-dropdown"}
+          (dom/button #js {:onClick   #(toggle-open this)
+                           :className "c-dropdown__select c-dropdown__select--positive js-dropdown-toggle"} "Positive Select")
+          (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
+            (dom/li #js {}
+              (dom/button #js {:className "c-dropdown__link"} "Banannas"))))))
 
-(defexample dropdown-button-2
-  "# Button Dropdown"
-  (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {:className "o-button-group"}
-      (dom/button #js {:className "c-button"} "Dropdown")
-      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown"})
-      (dom/ul #js {:className menu-class}
-        (dom/li #js {}
-          (dom/button #js {:className "c-dropdown__link"} "Water"))))))
+    (let [open (boolean (om/get-state this :open))
+          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+      (dom/div #js {:className "u-trailer--triple"}
+        (dom/div #js {:className "c-dropdown"}
+         (dom/button #js {:onClick   #(toggle-open this)
+                          :className "c-dropdown__select c-dropdown__select--alterable js-dropdown-toggle"} "Alterable Select")
+         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
+           (dom/li #js {}
+             (dom/button #js {:className "c-dropdown__link"} "Apples"))))))
+
+    (let [open (boolean (om/get-state this :open))
+          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+      (dom/div #js {:className ""}
+        (dom/div #js {:className "c-dropdown"}
+         (dom/button #js {:onClick   #(toggle-open this)
+                          :className "c-dropdown__select c-dropdown__select--negative js-dropdown-toggle"} "Negative Select")
+         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
+           ;; items:
+           (dom/li #js {}
+             (dom/button #js {:className "c-dropdown__link"} "Banannas"))))))
+    ))
+
+(defexample dropdown-buttons
+  "### Buttons"
+  (dom/div nil
+    (let [open       (boolean (om/get-state this :open))
+          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+      (dom/div #js {:className "u-trailer--triple"}
+        (dom/div #js {:className "c-dropdown"}
+         (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Button Dropdown")
+         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
+           (dom/li #js {}
+             (dom/button #js {:className "c-dropdown__link"} "Water"))))))
+
+    (let [open (boolean (om/get-state this :open))
+          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+      (dom/div #js {:className "o-button-group"}
+        (dom/button #js {:className "c-button"} "Button Group Dropdown")
+        (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown"})
+        (dom/ul #js {:className menu-class}
+          (dom/li #js {}
+            (dom/button #js {:className "c-dropdown__link"} "Water")))))
+    ))
 
 (defexample dropdown-search-multi
-  "# Multi-Select, Searchable Dropdown"
+  "### Multi-Select, Searchable Dropdown"
   (let [open (boolean (om/get-state this :open))
         items (mapv #(str "Item " %) (range 1 20))
         menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
@@ -282,7 +334,7 @@
         (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--wide"} "Apply")))))
 
 (defexample dropdown-data
-  "## Dropdown Data
+  "### Dropdown Data
 
   This is a control that is meant to let you view what various dropdowns would show, for example in cases
   of UI that lets you configure UI.
@@ -309,14 +361,22 @@
                (dom/li #js {:key item}
                  (dom/button #js {:className "c-dropdown__link"} item))) menu)))))
 
-(defexample field-normal
-  "# Regular Fields"
+
+;; -------------------------
+;; Field
+;; -------------------------
+
+(def field-header
+  "# Fields")
+
+(defexample field
+  "### Basic"
   (dom/div nil
     (dom/input #js {:type "text" :required "true" :placeholder "Required field" :className "c-field"})
     (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})))
 
 (defexample field-sizes
-  "# Fields of Various Size"
+  "### Sizes"
   (dom/div #js {}
     (dom/input #js {:type "text" :className "c-field c-field--small" :placeholder "The quick brown fox..."})
     (dom/input #js {:type "text" :className "c-field" :placeholder "The quick brown fox..."})
@@ -324,14 +384,26 @@
     (dom/input #js {:type "text" :className "c-field c-field--large" :placeholder "The quick brown fox..."})))
 
 (defexample field-states
-  "# Field States"
+  "### States"
   (dom/div #js {}
     (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus"})
     (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid"})
     (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})))
 
-(defexample input-normal
-  "### Inputs of Various Type"
+
+;; -------------------------
+;; Input
+;; -------------------------
+
+(def input-header
+  "# Inputs
+
+     Input class give support for visualizing various kind of interactions. Supported input types are: `text`,
+     `password`, `date`, `datetime`, `datetime-local`, `month`, `week`, `email`, `number`, `search`, `tel`, `time`,
+     `url`, `color`.")
+
+(defexample input
+  "### All Types"
   (dom/div nil
     (dom/div #js {:className "o-input is-invalid"}
       (dom/input #js {:type "text" :className "o-input__box" :required "true" :placeholder "Required field"}))
@@ -342,7 +414,7 @@
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])))
 
 (defexample input-states
-  "# Inputs States"
+  "### States"
   (dom/div #js {}
     (dom/div #js {:className "o-input has-focus"}
       (dom/input #js {:type "text" :placeholder "FOCUSED" :className "o-input__box"}))
@@ -352,7 +424,7 @@
       (dom/input #js {:type "text" :placeholder "ERROR" :className "o-input__box"}))))
 
 (defexample input-round
-  "# Rounded Input with Icons"
+  "### Rounded with Icons"
   (dom/div #js {:className "o-input o-input--round"}
     (icons/icon :search)
     (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
@@ -371,7 +443,7 @@
     ))
 
 (defexample input-collapsable
-  "# Collapsable Input
+  "### Collapsable
 
   TODO This needs some love before we show it off
   "
@@ -383,14 +455,14 @@
                        :onClick   #(toggle-open this)
                        :type      "submit" :aria-label "Submit"}
         (dom/span #js {:className "c-icon c-icon--search"}
-          (icons/material-icon :search)))
+          (icons/icon :search)))
       (dom/div #js {:className (str "u-wrapper " (when-not open? " u-hide"))}
         (dom/input #js {:className "c-input"})
         (dom/button #js {:aria-label "Close Search"
                          :onClick    #(toggle-open this)
                          :className  "c-button c-button--icon u-absolute--top-right"}
           (dom/span #js {:className "c-icon c-icon--cancel"}
-            (icons/material-icon :search)))))))
+            (icons/icon :search)))))))
 
 (defexample textarea
   "# Text Area"
@@ -415,13 +487,24 @@
       (dom/input #js {:type "text" :placeholder "Placeholder text" :className "o-input__box"}))
     (dom/div #js {:className "o-input__validation o-input__validation--error"} "Error validated message")))
 
+
+;; -------------------------
+;; Icons
+;; -------------------------
+
+(def icon-header
+  "# Icons
+
+  The preferred icon library is Google's <a href='https://design.google.com/icons/'>Material icons</a>. We include the entire library in the UI Components project in the form of svg paths that get inlined into your markup.
+  Use these icon classes on `<span>` elements wrapping your inline svg icons. Here is a simple icon in it's purest form.")
+
 (defexample icons
-  "# Basic Icon"
+  "### Basic"
   (dom/span #js {:className "c-icon c-icon--large"}
-    (icons/material-icon :timer)))
+    (icons/icon :timer)))
 
 (defexample icon-sizes
-  "# Icon Sizes
+  "### Sizes
 
   NOTE: If you would like to include states on the icon itself, you can use
   the helper function `(untangled.icons/icon :icon-name :modifiers [:xlarge])`
@@ -431,23 +514,23 @@
       (mapv (fn [sz]
               (dom/figure #js {:key (str "a" sz)}
                 (dom/span #js {:className (str "c-icon c-icon" sz)}
-                  (icons/material-icon :alarm))
+                  (icons/icon :alarm))
                 (dom/figcaption #js {} (str ".c-icon" sz)))
               ) sizes))))
 
 (defexample icon-colors
-  "# Icon Colors "
+  "### Colors "
   (let [colors ["positive" "informative" "neutral" "live" "alterable" "negative"]]
     (dom/div #js {}
       (mapv (fn [color]
               (dom/figure #js {:key color}
                 (dom/span #js {:className (str "c-icon is-" color)}
-                  (icons/material-icon :alarm))
+                  (icons/icon :alarm))
                 (dom/figcaption #js {} (str "is-" color)))
               ) colors))))
 
 (defexample icon-states
-  "# Icon States
+  "### States
 
   NOTE: If you would like to include states on the icon itself, you can use
   the helper function `(untangled.icons/icon :icon-name :state [:positive])`
@@ -457,12 +540,12 @@
       (mapv (fn [state]
               (dom/figure #js {:key state}
                 (dom/span #js {:className (str "c-icon c-icon--large is-" state)}
-                  (icons/material-icon :alarm))
+                  (icons/icon :alarm))
                 (dom/figcaption #js {} (str "is-" state)))
               ) states))))
 
-(defexample available-icons
-  "# All Available Icons `(untangled.icons/material-icon :name)`
+(defexample icon-library
+  "### All Available Icons `(untangled.icons/icon :name)`
 
   NOTE: Some icons have an additonal CSS set of rules in this style kit, so it
   is recommended that you wrap icons with c-icon-{iconname}."
@@ -470,12 +553,20 @@
     (mapv (fn [nm]
             (dom/figure #js {:key nm}
               (dom/span #js {:className (str "c-icon c-icon-" nm)}
-                (icons/material-icon nm))
+                (icons/icon nm))
               (dom/figcaption #js {} (str nm)))
             ) icons/icon-names)))
 
+
+;; -------------------------
+;; Labels
+;; -------------------------
+
+(def label-header
+  "# Labels")
+
 (defexample labels
-  "# Label Types"
+  "### Types"
   (dom/div #js {}
     (dom/span #js {:className "c-label"} "Default")
     (dom/span #js {:className "c-label c-label--positive"} "Positive")
@@ -487,18 +578,23 @@
     (dom/span #js {:className "c-label c-label--negative"} "Negative")))
 
 (defexample label-icons
-  "# Labels with Icons"
+  "### With Icons"
   (dom/div #js {}
     (dom/span #js {:className "c-label c-label--positive"}
-      (dom/span #js {:className "c-icon"}
-        (icons/material-icon :add)) " Add ")
+      (icons/icon :add) " Add ")
     (dom/span #js {:className "c-label c-label--negative"}
-      (dom/span #js {:className "c-icon"}
-        (icons/material-icon :close)) " Remove ")))
+      (icons/icon :close) " Remove ")))
 
-(defexample component-lists
-  "# Lists
-  Lists present multiple line items vertically as a single continuous element."
+
+;; -------------------------
+;; Lists
+;; -------------------------
+
+(def lists-header
+  "# Lists")
+
+(defexample lists
+  "Lists present multiple line items vertically as a single continuous element."
   (dom/div #js {:className "c-list"}
      (dom/div #js {:className "c-list__row c-list__row--collapse"}
         (dom/div #js {:className "c-list__tile"}
@@ -523,14 +619,46 @@
                                          (dom/div nil (dom/span nil (util/full-name :2))
                                                   (dom/span #js {:className "c-list__subtext"} " - I'll be in your neighborhood"))))))))
 
+;; -------------------------
+;; Loader
+;; -------------------------
+
+(def loader-header
+ "# Loader
+
+    Webapps often need to provide feedback to the user for when things are loading, so we have a few loader components
+    that are animated using only CSS techniques.")
+
+
 (defexample loader
   "# Loader"
   (dom/div #js {:style #js {:height "100px"}}
     (dom/div #js {:className "c-loader"})
     (dom/div #js {:className "c-loader c-loader--neutral"})))
 
-(defexample block-menu
-  "# Block Menu"
+
+;; -------------------------
+;; Menus
+;; -------------------------
+
+(def menu-header
+  "# Menu")
+
+(defexample menu
+  "### Basic"
+  (dom/ul #js {:className "c-menu"}
+    (dom/li #js {}
+      (dom/button #js {:className "c-menu__link"} "Widgets"))
+    (dom/li #js {}
+      (dom/button #js {:className "c-menu__link"} "Doodads"))
+    (dom/li #js {}
+      (dom/button #js {:className "c-menu__link"} "Apparatuses"))
+    (dom/li #js {}
+      (dom/button #js {:className "c-menu__link"} "Things")
+      )))
+
+(defexample menu-block
+  "### Block"
   (dom/ul #js {:className "c-menu c-menu--block"}
     (dom/li #js {}
       (dom/button #js {:className "c-menu__link"} "Widgets"))
@@ -548,8 +676,8 @@
         (dom/li #js {}
           (dom/button #js {:className "c-menu__link"} "Thinger"))))))
 
-(defexample inline-menu
-  "# Inline Menu"
+(defexample menu-inline
+  "### Inline"
   (dom/ul #js {:className "c-menu c-menu--inline"}
     (dom/li #js {}
       (dom/button #js {:className "c-menu__link is-active"} "Link 1"))
@@ -558,8 +686,16 @@
     (dom/li #js {}
       (dom/button #js {:className "c-menu__link"} "Link 3"))))
 
+
+;; -------------------------
+;; Messages
+;; -------------------------
+
+(def messages-header
+  "# Messages")
+
 (defexample messages
-  "# Messages"
+  "A basic message"
   (dom/div #js {}
     (dom/div #js {:className "c-message"} "This is a message")
     (dom/div #js {:className "c-message--neutral"} "This is a neutral message")
@@ -567,8 +703,19 @@
     (dom/div #js {:className "c-message--success"} "This is a successful message")
     (dom/div #js {:className "c-message--warning"} "This is a warning message")))
 
-(defexample info-notification
-  "# Informational Notification"
+;; -------------------------
+;; Notifications
+;; -------------------------
+
+(def notification-header
+  "# Notifications
+  Used to communicate the state of your user's interactions as well as system status.
+
+  In general, use the positioning classes (e.g. `u-absolute--middle-center`) to place these in
+  the UI.")
+
+(defexample notification
+  "### Basic"
   (dom/div #js {:className "c-notification"}
     (icons/icon :info)
     (dom/div #js {:className "c-notification_content"}
@@ -577,8 +724,8 @@
     (dom/button #js {:className "c-button c-button--icon"}
       (icons/icon :close))))
 
-(defexample success-notification
-  "# Success Notification"
+(defexample notification-success
+  "### Success"
   (dom/div #js {:className "c-notification"}
     (icons/icon :check_circle :states [:positive])
     (dom/div #js {:className "c-notification_content"}
@@ -587,8 +734,8 @@
     (dom/button #js {:className "c-button c-button--icon"}
       (icons/icon :close))))
 
-(defexample warning-notification
-  "# Warning Notification"
+(defexample notification-warning
+  "### Warning"
   (dom/div #js {:className "c-notification c-notification--warning"}
     (icons/icon :warning)
     (dom/div #js {:className "c-notification_content"}
@@ -597,8 +744,8 @@
     (dom/button #js {:className "c-button c-button--icon"}
       (icons/icon :close))))
 
-(defexample error-notification
-  "# Error Notification"
+(defexample notification-error
+  "### Error"
   (dom/div #js {:className "c-notification c-notification--error"}
     (icons/icon :error)
     (dom/div #js {:className "c-notification_content"}
@@ -607,8 +754,8 @@
     (dom/button #js {:className "c-button c-button--icon"}
       (icons/icon :close))))
 
-(defexample wide-notification
-  "# Wide Notification"
+(defexample notification-wide
+  "## Wide"
   (dom/div #js {:className "c-notification c-notification--wide c-notification--informative"}
     (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--info" :viewBox "0 0 24 24"}
       (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"}))
@@ -619,8 +766,15 @@
       (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--close" :viewBox "0 0 24 24"}
         (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
 
+;; -------------------------
+;; Radio
+;; -------------------------
+
+(def radio-header
+  "# Radio")
+
 (defexample radio
-  "# Radio Buttons"
+  "### Basic"
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
@@ -635,7 +789,7 @@
       (dom/label #js {:htmlFor "r3"} "C"))))
 
 (defexample radio-informative
-  "# Consumer Blue Radio Buttons"
+  "### Consumer Blue"
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
@@ -650,7 +804,7 @@
       (dom/label #js {:htmlFor "r3i"} "C"))))
 
 (defexample radio-stacked
-  "# Stacked Radio Buttons"
+  "### Stacked"
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
@@ -670,16 +824,19 @@
                       :checked (= 5 selection) :onClick #(select 5)})
       (dom/label #js {:htmlFor "sr5"} "5"))))
 
+
+;; -------------------------
+;; Radio
+;; -------------------------
+
 (def switch-header
   "# Switch
 
-  A simple control to indicate if somehting is on or off.
-  ")
+  A simple control to indicate if somehting is on or off.")
 
 (defexample switch
   "### Simple
-  Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`.
-  "
+  Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`."
   (let [active (boolean (om/get-state this :active))]
     (dom/div #js {:className "c-switch"
                   :onClick #(om/update-state! this update :active not)}
@@ -693,8 +850,7 @@
 (defexample switch-icon
   "### Icons
 
-  You can put up to 2 icons inside the `.c-switch__paddle` that represent what off and on actually do.
-  "
+  You can put up to 2 icons inside the `.c-switch__paddle` that represent what off and on actually do."
   (let [active (boolean (om/get-state this :active))]
     (dom/div #js {:className "c-switch"
                   :onClick #(om/update-state! this update :active not)}
@@ -708,8 +864,16 @@
         (icons/icon :done)
         ))))
 
+
+;; -------------------------
+;; Tables
+;; -------------------------
+
+(def tables-header
+  "# Tables")
+
 (defexample tables
-  "# Table Example"
+  "### Basic"
   (let [kind (or (om/get-state this :kind))
         set-kind (fn [k] (om/update-state! this assoc :kind k))]
     (dom/div #js {}
@@ -857,8 +1021,21 @@
                                             (dom/span #js {:className "c-table__label"} "Unsub %")
                                             (dom/span #js {:className "c-table__content"} "32"))))))))
 
+;; -------------------------
+;; Tooltips
+;; -------------------------
+
+(def tooltips-header
+  "# Tooltips
+
+  Tool tips are based on `data` attributes.")
+
+(defexample tooltips
+  "### Basic"
+  (dom/button #js {:data-tooltip "Hey!" :className "c-button"} "Hover me!"))
+
 (defexample tooltip-directions
-  "# Directional Tool Tips"
+  "### Directions"
   (dom/div #js {}
     (dom/div #js {:className "u-text-center"}
       (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "up" :className "c-button c-button--large"} "Hover me!"))
@@ -870,7 +1047,7 @@
       (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "down" :className "c-button c-button--large"} "Hover me!"))))
 
 (defexample tooltip-sizes
-  "# Tooltip Sizes"
+  "### Sizes"
   (dom/div #js {}
     (dom/div #js {:className "u-text-center"} " "
       (dom/button #js {:data-tooltip "Hey!" :data-tooltip-length "small" :className "c-button c-button--large"} "Small") " ") " "
@@ -889,52 +1066,159 @@
 ;; NOTE: This is where you add the sections for index
 (def sections
   (vec (sort-by :title
-                [
-                 ; NOTE: :examples is a list of example names, rendered in order given
-                 {:id :switch :title "Switch" :examples [switch switch-icon] :documentation switch-header}
-                 {:id :tooltip :title "Tool Tips" :examples [tooltip-directions tooltip-sizes]
-                  :documentation
-                      "Tool tips are based on `data` attributes. "}
-                 {:id :table :title "Tables" :examples [tables]}
-                 {:id :radio :title "Radio Buttons" :examples [radio radio-informative radio-stacked]}
-                 {:id :notifications :examples [info-notification success-notification warning-notification error-notification wide-notification]
-                  :title "Notifications"
-                  :documentation
-                      "Used to communicate the state of your user's interactions as well as system status.
+         [
+          ;; NOTE: :examples is a list of example names, rendered in order given
+          ;; First show the basic pattern, then modifiers, then elements.
+          ;; This order is important to the learning process.
 
-                      In general, use the positioning classes (e.g. `u-absolute--middle-center`) to place these in
-                      the UI.
-                      "}
-                 {:id :messages :title "Messages" :examples [messages]}
-                 {:id :menus :title "Menus" :examples [block-menu inline-menu]}
-                 {:id            :loader :title "Loader" :examples [loader]
-                  :documentation "Webapps often need to provide feedback to the user for when things are loading, so we have a few loader components that are animated using only CSS techniques."}
-
-                 {:id :labels :title "Labels" :examples [labels label-icons]}
-                 {:id :lists :title "Lists" :examples [component-lists]}
-                 {:id            :badges :title "Badges"
-                  :documentation "
-                ## Badges?
-
-                we don't need no stinkin badges!"
-                  :examples      [badge-example-1 badge-on-button badge-with-icon]}
-                 {:id :buttons    :title "Buttons"    :examples [button-shape button-color button-state button-postfix icon-button]}
-                 {:id :card       :title "Card"       :examples [card-example active-card inactive-card card-with-titlebar rounded-card transparent-card ruled-card zone-card]}
-                 {:id :checkboxes :title "Checkboxes" :examples [checkboxes]}
-                 {:id :dropdowns  :title "Dropdowns"  :examples [dropdown dropdown-large dropdown-alterable dropdown-negative dropdown-positive dropdown-right-aligned dropdown-button-2 dropdown-button dropdown-search-multi dropdown-data]}
-                 {:id :fields     :title "Fields"     :examples [field-normal field-states field-sizes]}
-                 {:id :inputs     :title "Form Inputs"
-                  :documentation
-                            "# Inputs
-                            Input class give support for visualizing various kind of interactions.
-                            Supported input types are: `text`, `password`, `date`, `datetime`,
-                            `datetime-local`, `month`, `week`, `email`, `number`, `search`, `tel`, `time`, `url`, `color`.
-                            ```"
-                  :examples [input-normal input-states input-round input-multi-line input-collapsable textarea input-validation]}
-                 {:id       :icons :title "Icons" :documentation
-                            "The preferred icon library is Google's <a href='https://design.google.com/icons/'>Material icons</a>. We include the entire library in the UI Components project in the form of svg paths that get inlined into your markup.
-
-                             Use these icon classes on `<span>` elements wrapping your inline svg icons. Here is a simple icon in it's purest form."
-                  :examples [icons icon-sizes icon-colors icon-states available-icons]}
-                 ])))
+          {:id :badges
+           :title "Badges"
+           :documentation badge-header
+           :examples [
+                      badge
+                      badge-button
+                      badge-icon
+                      ]}
+          {:id :buttons
+           :title "Buttons"
+           :documentation button-header
+           :examples [
+                      button
+                      button-shape
+                      button-color
+                      button-state
+                      button-postfix
+                      button-icon
+                      ]}
+          {:id :card
+           :title "Card"
+           :documentation card-header
+           :examples [
+                      card
+                      card-states
+                      card-titlebar
+                      card-rounded
+                      card-transparent
+                      card-ruled
+                      card-zone
+                      ]}
+          {:id :checkboxes
+           :title "Checkboxes"
+           :documentation checkbox-header
+           :examples [
+                      checkboxes
+                      ]}
+          {:id :dropdowns
+           :title "Dropdowns"
+           :documentation dropdown-header
+           :examples [
+                      dropdown
+                      dropdown-shape
+                      dropdown-colors
+                      dropdown-buttons
+                      dropdown-search-multi
+                      dropdown-data
+                      ]}
+          {:id :fields
+           :title "Fields"
+           :documentation field-header
+           :examples [
+                      field
+                      field-states
+                      field-sizes
+                      ]}
+          {:id :inputs
+           :title "Form Inputs"
+           :documentation input-header
+           :examples [
+                      input
+                      input-states
+                      input-round
+                      input-multi-line
+                      input-collapsable
+                      textarea
+                      input-validation
+                      ]}
+          {:id :icons
+           :title "Icons"
+           :documentation icon-header
+           :examples [
+                      icons
+                      icon-sizes
+                      icon-colors
+                      icon-states
+                      icon-library
+                      ]}
+          {:id :labels
+           :title "Labels"
+           :documentation label-header
+           :examples [
+                      labels
+                      label-icons
+                      ]}
+          {:id :lists
+           :title "Lists"
+           :documentation lists-header
+           :examples [
+                      lists
+                      ]}
+          {:id :loader
+           :title "Loader"
+           :documentation loader-header
+           :examples [
+                      loader
+                      ]}
+          {:id :messages
+           :title "Messages"
+           :documentation messages-header
+           :examples [
+                      messages
+                      ]}
+          {:id :menus
+           :title "Menus"
+           :documentation menu-header
+           :examples [
+                      menu
+                      menu-inline
+                      menu-block
+                      ]}
+          {:id :notifications
+           :title "Notifications"
+           :documentation notification-header
+           :examples [
+                      notification
+                      notification-success
+                      notification-warning
+                      notification-error
+                      notification-wide
+                      ]}
+          {:id :radio
+           :title "Radio Buttons"
+           :documentation radio-header
+           :examples [
+                      radio
+                      radio-informative
+                      radio-stacked]}
+          {:id :switch
+           :title "Switch"
+           :documentation switch-header
+           :examples [
+                      switch
+                      switch-icon
+                      ]}
+          {:id :table
+           :title "Tables"
+           :documentation tables-header
+           :examples [
+                      tables
+                      ]}
+          {:id :tooltip
+           :title "Tooltips"
+           :documentation tooltips-header
+           :examples [
+                      tooltips
+                      tooltip-directions
+                      tooltip-sizes
+                      ]}
+          ])))
 

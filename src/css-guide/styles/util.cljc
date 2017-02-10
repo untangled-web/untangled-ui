@@ -64,13 +64,13 @@
                 (om.dom/div (cljs.core/clj->js {:className "ui-example__description"})
                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
                 (om.dom/div (cljs.core/clj->js {:className "u-row"})
-                  (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12 u-column--6@lg u-column--4@xl"})
+                  (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12"})
                     (om.dom/div (cljs.core/clj->js {:className "ui-example"})
                       (~symfn this#)
                       #_(let [iframe#  (.createElement js/document "IFRAME")
                               example# (.innerHTML iframe# (om.dom/div nil (~symfn this#)))]
                           (.appendChild example# iframe#))))
-                  (om.dom/div (cljs.core/clj->js {:className "ui-example__source u-column--12 u-column--6@lg u-column--8@xl"})
+                  (om.dom/div (cljs.core/clj->js {:className "ui-example__source u-column--12"})
                     (styles.util/source->react ~symfn ~body))))))
           (def ~sym {:name          ~(name sym)
                      :documentation ~doc
