@@ -175,12 +175,13 @@
   Object
   (render [this]
     (let [{:keys [section/selected-example section/documentation section/examples section/title] :or {section/selected-example 0}} (om/props this)
-          example-names (map :example/title examples)]
+          example-names (map :example/title examples)
+          example-num   (count examples)]
       (dom/div #js {:className "ui-section"}
         (when documentation
           (dom/div #js {:className "ui-example__description"} (dc/markdown->react documentation)))
-        (when (> (count examples) 1) (toolbar this :section/selected-example example-names))
-        (ui-example (nth examples selected-example))))))
+        (for [e (range 0 (count examples))]
+          (ui-example (nth examples e)))))))
 
 (def ui-section (om/factory Section {:keyfn :section/title}))
 
