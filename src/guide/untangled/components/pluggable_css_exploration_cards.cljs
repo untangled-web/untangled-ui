@@ -109,3 +109,65 @@
     (for [color [:primary :secondary :passive :text :anchor]
           shape [:large :xlarge :round :wide]]
       (dflt-button {:key (str color shape) :shape shape :color color} (str shape ", " color)))))
+
+(defmulti ui-attr-rewrite (fn [props] @*ui-framework*))
+
+(defmethod ui-attr-rewrite :default [{:keys [color shape] :as props}]
+  (let [base-class  "c-button"
+        color-class (when color (str "c-button--" (name color)))
+        shape-class (when shape (str "c-button--" (name shape)))
+        classes     (str/join " " [base-class color-class shape-class])
+        attrs       (-> props
+                      (assoc :className classes)
+                      (dissoc :color :shape))]
+    attrs))
+
+(defmethod ui-attr-rewrite :bootstrap [{:keys [color shape] :as props}]
+  (let [base-class  "btn"
+        color-class (get {:passive "btn-secondary" :alert "btn-warning" :text "btn-link" :anchor "btn-link"} color "btn-primary")
+        shape-class (get {:large "btn-lg" :xlarge "btn-lg" :wide "btn-block"} shape "")
+        classes     (str/join " " [base-class color-class shape-class])
+        attrs       (-> props
+                      (assoc :className classes :type "button")
+                      (dissoc :color :shape))]
+    attrs))
+
+(defn attr-button [props & children]
+  (let [attrs (-> props (ui-attr-rewrite) clj->js)]
+    (apply dom/button attrs children)))
+
+(defcard attr-button-alternative
+  "Actually, now that I've coded the above it occurs to me that the code re-use is in the javascript hook-ups and callbacks,
+  which don't vary. The main concern for these kinds of elements falls into two operations:
+
+  1. Wrapping the element in extra DOM that is orthogonal to the main element.
+  2. Setting an arbitrary set of attributes, including class
+
+  So, why not abstract those two operations so that we get the shared code?"
+  (fn [state-atom _]
+    (let [re-render (fn [] (swap! state-atom update :x inc))]
+      (dom/div nil
+        (dom/button #js {:className "button c-button" :onClick (fn []
+                                                                 (reset! *ui-framework* :default)
+                                                                 (re-render))} "Default")
+        (dom/button #js {:className "button c-button" :onClick (fn []
+                                                                 (reset! *ui-framework* :bootstrap)
+                                                                 (re-render))} "Bootstrap")
+        (dom/br nil)
+        (for [color [:primary :passive :text :anchor]
+              shape [:large :xlarge :round :wide]]
+          (attr-button {:key (str color shape) :shape shape :color color} (str shape ", " color)))))))
+
+(defcard-doc
+  "# Other Comments
+
+  At the moment I'm probably mostly a fan of having UI-kit specific functions (e.g. bootstrap-button) for the following
+  reasons:
+
+  1. The docstrings work on regular functions
+  2. The components vary enough in features that having a standard set of 'options' is too limiting
+  3. There is no need to support dynamic switching among css frameworks. Design for one.
+  4. We can still get some code reuse by combining common things in to functions, but the cognitive overhead in
+  trying to keep things consistent across css frameworks will limit that ability.
+
+  ")
