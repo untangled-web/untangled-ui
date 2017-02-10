@@ -85,7 +85,7 @@
   (render [this]
     (let [{:keys [ui/react-key dropdown-1 dropdown-2]} (om/props this)]
       (dom/div #js {:key react-key :onClick #(om/transact! this `[(dropdowns/close-all {})])}
-        (dropdowns/ui-dropdown dropdown-1)
+        (dropdowns/ui-dropdown dropdown-1 :onSelect (fn [id] (js/alert (str "Selected " id))))
         (dropdowns/ui-dropdown dropdown-2)))))
 
 (defcard dropdown-active-playground
