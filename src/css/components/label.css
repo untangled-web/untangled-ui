@@ -9,7 +9,7 @@ section: Components
   --margin-label--small: 6px;
   --margin-label--large: 18px;
   --margin-label--nested: 0 0 var(--margin-label--small) var(--margin-label--large);
-  --margin-label: 0 var(--margin-label--large) var(--margin-label--small) 0;
+  --margin-label: 0 var(--margin-label--large) 0 0;
   --size-label-icon: 15px;
   --offset-label-icon: -3px;
   --label-inline: {
@@ -59,8 +59,9 @@ section: Components
   }
 
   .o-input & {
+    /* TODO Add vars to these units */
     height: 16px;
-    margin: 5px;
+    margin: calc((30px - 16px) / 2) 3px;
   }
 }
 

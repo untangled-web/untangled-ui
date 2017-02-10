@@ -358,6 +358,18 @@
     (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
     ))
 
+(defexample input-multi-line
+  "### Multi-line"
+  (dom/div #js {:className "o-input"}
+    (icons/icon :person)
+    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :1))
+    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :2))
+    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :3))
+    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :4))
+    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :5))
+    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
+    ))
+
 (defexample input-collapsable
   "# Collapsable Input
 
@@ -918,7 +930,7 @@
                             Supported input types are: `text`, `password`, `date`, `datetime`,
                             `datetime-local`, `month`, `week`, `email`, `number`, `search`, `tel`, `time`, `url`, `color`.
                             ```"
-                  :examples [input-normal input-states input-round input-collapsable textarea input-validation]}
+                  :examples [input-normal input-states input-round input-multi-line input-collapsable textarea input-validation]}
                  {:id       :icons :title "Icons" :documentation
                             "The preferred icon library is Google's <a href='https://design.google.com/icons/'>Material icons</a>. We include the entire library in the UI Components project in the form of svg paths that get inlined into your markup.
 
