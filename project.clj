@@ -43,7 +43,7 @@
               [{:id           "guide"
                 :source-paths ["src/main" "src/guide"]
                 :figwheel     {:devcards true}
-                :compiler     {:main          untangled.components.guide-ui
+                :compiler     {:main          untangled.ui.guide-ui
                                :asset-path    "js/guide"
                                :output-to     "resources/public/js/guide.js"
                                :output-dir    "resources/public/js/guide"
@@ -51,7 +51,7 @@
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]
                 :figwheel     {:devcards true}
-                :compiler     {:main          untangled.components.visuals-ui
+                :compiler     {:main          untangled.ui.visuals-ui
                                :asset-path    "js/visuals"
                                :output-to     "resources/public/js/visuals.js"
                                :output-dir    "resources/public/js/visuals"
@@ -78,7 +78,7 @@
                 :source-paths ["src/test" "src/main"]
                 :compiler     {:output-to     "resources/private/js/unit-tests.js"
                                :output-dir    "resources/private/js/unit-tests"
-                               :main          untangled.components.all-tests
+                               :main          untangled.ui.all-tests
                                :asset-path    "js/unit-tests"
                                :optimizations :none
                                }}]}
