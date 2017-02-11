@@ -29,6 +29,26 @@
             ~(or code (str "Source not found")))))))
 
 #?(:clj
+   (defmacro defpalette
+     "Define an example that just renders some doc."
+     [sym doc]
+     (let [basename (str sym "-")
+           root     (gensym basename)
+           symfn    (symbol (str (name sym) "-code"))]
+       `(do
+          (om.next/defui ~root
+            ~'Object
+            (~'render [this#]
+              (om.dom/div (cljs.core/clj->js {:className "ui-example"})
+                ;; TODO Figure out how to destructure a color palette collection
+                #_(for [vals (range 0 (count (:value ~doc)))]
+                  (om.dom/div vals)))))
+          (def ~sym {:name          ~(name sym)
+                     :documentation ~doc
+                     :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
+                     :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
+
+#?(:clj
    (defmacro defarticle
      "Define an example that just renders some doc."
      [sym doc]

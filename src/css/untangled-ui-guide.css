@@ -31,6 +31,10 @@ import: ../README.md
 .box-tall { padding: 200px 0; }
 
 .ui-example__description {
+  :--headings {
+    color: var(--grey-900);
+  }
+
   h1 {
     font-size: var(--fontSize--medium);
   }

@@ -3,12 +3,14 @@
     ;; NOTE: This is where the interesting macros and such are at:
             [styles.util :as util
              :refer [to-cljs]
-             :refer-macros [source->react defexample]]
+             :refer-macros [source->react defexample defarticle defpalette]]
             [om.dom :as dom]))
 
 
-(def settings-config
-  "We provide a few custom properties to configure your project.
+(defarticle settings-config
+  "# Config
+
+  We provide a few custom properties to configure your project.
 
   ## Environment
 
@@ -36,12 +38,8 @@
   "
             )
 
-(defexample example-config
-  "# Config"
-  (dom/span nil))
 
-
-(defexample settings-global
+(defarticle settings-global
   "# Global
   This set of custom properties are global to your project, so you can make 'broad stoke' changes.
 
@@ -72,13 +70,24 @@
   .c-input:not([aria-label]) {
     @apply --assert-selector;
   }
-  ```
-  "
+  ```")
 
-            (dom/span nil))
+(defpalette blue
+  {:values {
+          :50  "#f0faff"
+          :100 "#cbdfee"
+          :200 "#a6c6dd"
+          :300 "#81adcc"
+          :400 "#5795bb"
+          :500 "#1c7dab"
+          :600 "#146590"
+          :700 "#0d4d76"
+          :800 "#05375c"
+          :900 "#0d2c54"
+          }}
+  )
 
-
-(defexample settings-colour
+(defarticle settings-colour
   "# Colour
 
 #### Colour Palette
@@ -94,7 +103,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 }
 ```
 
-##### Brand Primary
+##### Blue
 
 ```example:color
 @color: #f0faff @name: --blue-50
@@ -109,7 +118,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 @color: #0d2c54 @name: --blue-900
 ```
 
-##### Brand Secondary
+##### Orange
 
 ```example:color
 @color: #fff3e0 @name: --orange-50
@@ -244,15 +253,12 @@ State classes are provided for colored text in this section so you can apply app
 @color: #3498db @name: --trustyou
 @color: #35465c @name: --tumblr
 @color: #2fc2ef @name: --twitter
-```
-"
-
-            (dom/span nil))
+```")
 
 
 (def sections
   (vec [;; NOTE: :examples is a list of example names, rendered in order given
-        {:id :settings-config :title "Config" :examples [example-config] :documentation settings-config}
+        {:id :settings-config :title "Config" :examples [settings-config]}
         {:id :settings-global :title "Global" :examples [settings-global]}
         {:id :settings-colour :title "Colour" :examples [settings-colour]}
         ]))
