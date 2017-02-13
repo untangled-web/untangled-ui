@@ -903,16 +903,16 @@
         (dom/button #js {:aria-label "Swipe View" :onClick #(set-kind "swipe")
                          :className  (str "c-button c-button--small " (when (= kind "swipe") "is-active"))}
           (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M4 15h16v-2H4v2zm0 4h16v-2H4v2zm0-8h16V9H4v2zm0-6v2h16V5H4z"})))
+            (dom/path #js {:d "M4 15h16v-2H4v2zm0 4h16v-2H4v2zm0-8h16V9H4v2zm0-6v2h16V5H4z"})) "Swipe")
         (dom/button #js {:aria-label "Toggle View" :onClick #(set-kind "toggle")
                          :className  (str "c-button c-button--small " (when (= kind "toggle") "is-active"))}
           (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 18h5V5h-5v13zm-6 0h5V5H4v13zM16 5v13h5V5h-5z"})))
+            (dom/path #js {:d "M10 18h5V5h-5v13zm-6 0h5V5H4v13zM16 5v13h5V5h-5z"})) "Toggle")
         (dom/button #js {:aria-label "Stacked View" :onClick #(set-kind "stacked")
                          :className  (str "c-button c-button--small " (when (= kind "stacked") "is-active"))}
           (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M4 18h17v-6H4v6zM4 5v6h17V5H4z"}))))
-      (dom/table #js {:className (str "c-table c-table--toggle c-table--" kind)}
+            (dom/path #js {:d "M4 18h17v-6H4v6zM4 5v6h17V5H4z"})) "Stacked"))
+      (dom/table #js {:className (str "c-table c-table--" kind)}
                  (dom/thead #js {}
                             (dom/tr #js {}
                                     (dom/th #js {:scope "col"})
