@@ -29,25 +29,31 @@
     (apply dom/span (clj->js props) children)))
 
 
-
 (defn ui-button
   "Render a button. Props is a normal clj(s) map with React/HTML attributes plus:
 
   color (optional): :default, :secondary, :alert, :passive, :text, or :anchor
-  shape (optional): :default, :large, :xlarge, :round, or :wide"
+  shape (optional): :default, :large, :xlarge, :round, or :wide
+  "
   [{:keys [className color shape disabled] :or {className ""} :as attrs} & children]
-  (let [legal-colors #{:secondary :alert :passive :text :anchor}
-        legal-shapes #{:large :xlarge :round :wide}
-        classes      (cond-> className
-                       disabled (str " is-disabled")
-                       (contains? legal-colors color) (str " c-button--" (name color))
-                       (contains? legal-shapes shape) (str " c-button--" (name shape))
-                       :always (str " c-button"))
-        attrs        (cond-> attrs
-                       disabled (assoc :aria-disabled "true")
-                       :always (dissoc :color :shape)
-                       :always (assoc :className classes))]
-    (apply dom/button (clj->js attrs) children)))
+  (let [legal-colors   #{:secondary :alert :passive :text :anchor}
+        legal-shapes   #{:large :xlarge :round :wide}
+        button-label   (fn [text]
+                         (dom/span #js {:className "c-button__content"} text))
+        fixed-children (map (fn [c]
+                              (if (string? c)
+                                (button-label c)
+                                c)) children)
+        classes        (cond-> className
+                         disabled (str " is-disabled")
+                         (contains? legal-colors color) (str " c-button--" (name color))
+                         (contains? legal-shapes shape) (str " c-button--" (name shape))
+                         :always (str " c-button"))
+        attrs          (cond-> attrs
+                         disabled (assoc :aria-disabled "true")
+                         :always (dissoc :color :shape)
+                         :always (assoc :className classes))]
+    (apply dom/button (clj->js attrs) fixed-children)))
 
 (defcard buttons-for-visual-regression-testing
   "Badges are decorated via a normal function. The properties are a normal clj(s) map that can contain any of the normal HTML/React attributes"
