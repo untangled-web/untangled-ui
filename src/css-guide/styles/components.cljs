@@ -912,7 +912,7 @@
                          :className  (str "c-button c-button--small " (when (= kind "stacked") "is-active"))}
           (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
             (dom/path #js {:d "M4 18h17v-6H4v6zM4 5v6h17V5H4z"}))))
-      (dom/table #js {:className (str "c-table c-table--" kind)}
+      (dom/table #js {:className (str "c-table c-table--toggle c-table--" kind)}
                  (dom/thead #js {}
                             (dom/tr #js {}
                                     (dom/th #js {:scope "col"})
