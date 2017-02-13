@@ -11,7 +11,7 @@
                  [image-resizer "0.1.9"]
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
-                 [org.clojure/clojurescript "1.9.456" :scope "provided"]
+                 [org.clojure/clojurescript "1.9.473" :scope "provided"]
                  [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
                  [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
@@ -47,6 +47,9 @@
                                :asset-path    "js/guide"
                                :output-to     "resources/public/js/guide.js"
                                :output-dir    "resources/public/js/guide"
+                               ;:language-in :ecmascript5
+                               ;:verbose true
+                               ;:foreign-libs [{:file "src/extern" :module-type :es6}]
                                :optimizations :none}}
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]

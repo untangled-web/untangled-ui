@@ -52,23 +52,31 @@ To support server-side rendering all code should be written in CLJC files.
 - Rendering must be pure! Don't use `js/setTimout` or other js-only things in your UI. That stuff belongs in mutations.
 If your lifecycle (e.g. componentWillMount) or something needs js things, make a clj/cljs function where the clj version 
 is a no-op, and call *that* from the UI.
-- Untangled mutations can be set to cljs-only. They'll never be attempted on server-side code anyhow.
+- Untangled mutations (via `defmutation`) can be put in cljs-only blocks. They'll never be attempted on server-side code anyhow.
 
 #### Create a Card for Visual Regression Tests
 
-All components must have a devcard in the `visuals` source directory that show their various states 
+All components must have one or more devcards in the `visuals` source directory that show their various states 
 statically (for visual regression testing). Use the same package structure, and name that namespace with a -cards suffix.
-E.g. src/untangled.components.buttons.cljs -> visuals/untangled.components.buttons-cards.cljs
+E.g. src/untangled.ui.calendar.cljs -> visuals/untangled.ui.calendar-cards.cljs
 
 #### Create a Card for Live Documentation/Usage
 
 All components must have a devcard in the `guide` source directory that documents/demonstrates
-your live working component with callbacks, etc. Use MockNetwork for simulating full stack interactions.
+your live working component with callbacks, etc. Use MockNetwork or real server-side code for simulating full stack 
+interactions (examples coming soon).
 
 #### Naming Conventions
 
-- The factory method should be prefixed with `ui-`, e.g. `ui-button`.
-- Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.components.buttons/by-id`)
+- Things that generate DOM should be prefixed with `ui-`, e.g. `ui-button`. This will help with naming conflicts and
+helps the user understand what generates UI and what does not.
+- Mutations should be written with `defmutation` so that their symbols end up in the namespace of the components.
+- Mutations should be written via helper functions of `(f state-map args)` that can be composed into other people's
+mutations, if necessary. The name of these helpers should be suffixed with `impl` (e.g. `close-all-impl`)
+- Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.ui.dropdowns/by-id`)
+    - Make this DRY. Define a table-name symbol as ::id. One stateful component per namespace.
+
+SEE COMMENTS IN `dropdowns.cljc`
 
 #### Ensure Internationalization Will Work (IN PROGRESS)
 
@@ -117,6 +125,14 @@ In more complex components, like menus, there may be some significant advantage
 to making them full-on Om components. For example, a `close-all-menus` mutation is impossible to write unless the menus 
 are represented in the app state.
 
+It is common for a parent component to want to look at the state of some child component. For example, what is the current
+date selected in that calendar? If there is user-usable state within your component, you might choose to make simple helper
+methods for asking for that data, or you can simply let them access your component's props by keyword. The former is better
+for complex components (e.g. calendar) and the latter is probably fine for simple ones. In both cases these functions
+should be `(f component-props)`. E.g., they should be usable from the parent that has that component's properties locally. These
+are also easy enough to use from custom mutations since the ident is supposed to be standardized and well-known for all
+components (e.g. getting a component's state is just a `(get-in state-map component-ident)`).
+
 In utilities like layout helpers: These are probably plain React components (or even just functions).
 
 We expect standards around this to resolve rapidly, but please participate in the discussion as we progress.
@@ -131,8 +147,10 @@ These are thoughts...interested in input at this early stage:
 - Changes to appearance for stateful components should go through mutations
 - Mutations should be written in an IDE-friendly way using the new 0.7.1-SNAPSHOT+ untangled-client `defmutation`.
 - Lean towards having all of the UI components interact nicely with the VCR support viewer, so avoid using component
-local state except in performance hotspots (e.g. animations like panning an image might not be fast if they use 
-`transact!`). Many simple components will be simple stateless functions and not even React components.
+local state for stateful components except in performance hotspots (e.g. animations like panning an image might not be fast if they use 
+`transact!`). 
+- Many simple components will be simple stateless functions and not even React components. These are easy, in that anything
+they do will be determined directly from arguments.
 
 # Running:
 
