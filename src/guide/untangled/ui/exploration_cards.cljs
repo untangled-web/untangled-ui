@@ -45,6 +45,7 @@
                        :always (str " c-button"))
         attrs        (cond-> attrs
                        disabled (assoc :aria-disabled "true")
+                       :always (dissoc :color :shape)
                        :always (assoc :className classes))]
     (apply dom/button (clj->js attrs) children)))
 
@@ -53,7 +54,7 @@
   (dom/div nil
     (for [shape #{:default :large :xlarge :round :wide}
           color #{:default :secondary :alert :passive :text :anchor}]
-      (ui-button {:shape shape :color color} (str shape color)))
+      (ui-button {:className "extra" :shape shape :color color} (str shape color)))
     (ui-button {} "Label" (icon :arrow_forward))
     (ui-button {} (icon :arrow_back) "Label")))
 

@@ -425,10 +425,10 @@ TODO: remove the need to pass the component? The form is just om/props of the co
   ")
 
 (defcard sample-form-1
-  "This card shows a very simple form in action."
+  "This card shows a very simple form in action. (Edit the code and set :inspect-data to true to watch app state)"
   (untangled-app Root)
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 
 (defcard-doc
   "## Adding Form Field Types
