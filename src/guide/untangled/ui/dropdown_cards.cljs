@@ -40,10 +40,19 @@
 
   The active dropdowns component allows you to create and use a dropdown component that is tracked in app state.
 
-  See the dropdowns namespace for functions that can be used to use/manipulate the dropdown component without having
-  to know it's internals. See, in particular (in the `dropdowns` namespace):
+  The following Om mutations may be used from anywhere in your application as long as you know the dropdown's ID:
 
-  - dropdown-current-selection
+  - close-all : Close all open dropdowns. Useful from the Root of your app to ensure that clicking outside of a dropdown
+  will cause all dropdowns to close
+  - set-open : Opens/closes a dropdown by ID
+  - select : Causes a particular item within the dropdown to be selected (does not trigger events)
+
+  Components can look up the state of a dropdown at the dropdown ident, which can be found using the `dropdowns/ident`.
+
+  All mutations are implemented using `-impl` functions in dropdown, which allows you to compose dropdown operations
+  within your own mutations without having to know how dropdowns are implemented.
+
+  - current-selection
 
   "
   (dc/mkdn-pprint-source DropdownsRoot))
