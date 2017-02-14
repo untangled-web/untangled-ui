@@ -78,6 +78,36 @@
                      :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
                      :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
 
+
+#?(:clj
+   (defmacro defview
+     "Define a DOM example. The body may reference `this` as if in the body of
+     an Om component `(render [this] ...)`"
+     [sym doc body]
+     (let [basename (str sym "-")
+           root     (gensym basename)
+           symfn    (symbol (str (name sym) "-code"))]
+       `(do
+          (defn ~symfn [~'this] ~body)
+          (om.next/defui ~root
+            ~'Object
+            (~'render [this#]
+              (om.dom/div (cljs.core/clj->js {:className "ui-example"})
+                (om.dom/div (cljs.core/clj->js {:className "ui-example__description"})
+                  (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                (om.dom/div (cljs.core/clj->js {:className "u-row"})
+                  (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12"})
+                    (om.dom/div (cljs.core/clj->js {:className "ui-example"})
+                      (~symfn this#)
+                      #_(let [iframe#  (.createElement js/document "IFRAME")
+                              example# (.innerHTML iframe# (om.dom/div nil (~symfn this#)))]
+                          (.appendChild example# iframe#))))
+                  ))))
+          (def ~sym {:name          ~(name sym)
+                     :documentation ~doc
+                     :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
+                     :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
+
 (def attr-renames {
                    :class        :className
                    :for          :htmlFor

@@ -1,6 +1,6 @@
 (ns styles.utilities
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
             [om.dom :as dom]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -738,46 +738,46 @@
 
 ;; Typography Examples
 
-(defexample typography-font-scale
+(defview typography-font-scale
   "#### Font Scale"
   (dom/div #js {}
-    (dom/div #js {:font-size "4.7rem;"} "X-Large (75.2px)")
+    (dom/div #js {:className "u-font-size--xlarge"} "X-Large (75.2px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--xlarge")
     (dom/p #js {})
-    (dom/div #js {:font-size "3rem;"} "Large (48px)")
+    (dom/div #js {:className "u-font-size--large"} "Large (48px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--large")
     (dom/p #js {})
-    (dom/div #js {:font-size "2.5rem;"} "Semi-Large (40px)")
+    (dom/div #js {:className "u-font-size--semi-large"} "Semi-Large (40px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--semi-large")
     (dom/p #js {})
-    (dom/div #js {:font-size "2rem;"} "Medium (32px)")
+    (dom/div #js {:className "u-font-size--medium"} "Medium (32px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--medium")
     (dom/p #js {})
-    (dom/div #js {:font-size "1.5rem;"} "Semi-Medium (24px)")
+    (dom/div #js {:className "u-font-size--semi-medium"} "Semi-Medium (24px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--semi-medium")
     (dom/p #js {})
-    (dom/div #js {:font-size "1.25rem;"} "Normal Plus (20px)")
+    (dom/div #js {:className "u-font-size--normal-plus"} "Normal Plus (20px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--normal-plus")
     (dom/p #js {})
-    (dom/div #js {:font-size "1.125rem;"} "Normal (18px)")
+    (dom/div #js {:className "u-font-size--normal"} "Normal (18px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--normal")
     (dom/p #js {})
-    (dom/div #js {:font-size "1rem;"} "Semi-Normal (16px)")
+    (dom/div #js {:className "u-font-size--semi-normal"} "Semi-Normal (16px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--semi-normal")
     (dom/p #js {})
-    (dom/div #js {:font-size ".875rem;"} "Small (14px)")
+    (dom/div #js {:className "u-font-size-small"} "Small (14px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--small")
     (dom/p #js {})
-    (dom/div #js {:font-size ".75rem;"} "Tiny (12px)")
+    (dom/div #js {:className "u-font-size--tiny"} "Tiny (12px)")
     (dom/br #js {})
     (dom/code #js {} ".u-font-size--tiny")))
 
@@ -808,19 +808,19 @@
       (dom/div #js {:className "u-column u-push--1"}
         (dom/h1 #js {} "Before")
         (dom/ul #js {:className "is-negative"}
-          (dom/li #js {} "Item 1")
-          (dom/li #js {} "Item 2")
-          (dom/li #js {} "Item 3")))
+          (dom/li #js {} "Bullet")
+          (dom/li #js {} "Bullet")
+          (dom/li #js {} "Bullet")))
       (dom/div #js {:className "u-column"}
         (dom/h1 #js {} "After")
         (dom/ul #js {:className "u-no-bullets is-positive"}
-          (dom/li #js {} "Item 1")
-          (dom/li #js {} "Item 2")
-          (dom/li #js {} "Item 3"))))))
+          (dom/li #js {} "No Bullet")
+          (dom/li #js {} "No Bullet")
+          (dom/li #js {} "No Bullet"))))))
 
 (defexample typography-ellipsis
   "#### Ellipsis"
-  (dom/div #js {}
+  (dom/div #js {:style #js {:width "300px"}}
     (dom/h1 #js {} "Before")
     (dom/p #js {:className "is-negative"} "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to truncate this text.")
     (dom/h1 #js {} "After")
@@ -828,14 +828,16 @@
 
 (defexample typography-break-word
   "#### Break Word"
-  (dom/div #js {}
+  (dom/div #js {:style #js {:width "300px"}}
     (dom/h1 #js {} "Before")
     (dom/p #js {:className "is-negative"} "SupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshious")
     (dom/h1 #js {} "After")
     (dom/p #js {:className "u-break-word is-positive"} "SupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshious")))
 
-(def docs-typography-customize
-  "``` css
+(defarticle docs-typography-customize
+  "#### Customize
+
+  ``` css
   --fontFamily--sans: 'Source Sans Pro', sans-serif;
   --fontFamily--monospaced: Consolas, \"Andale Mono WT\", \"Andale Mono\", \"Lucida Console\", \"Lucida Sans Typewriter\", \"DejaVu Sans Mono\", \"Bitstream Vera Sans Mono\", \"Liberation Mono\", \"Nimbus Mono L\", Monaco, \"Courier New\", Courier, monospace;
   --fontFamily-page: var(--fontFamily--sans);
@@ -911,36 +913,35 @@
 ;; NOTE: This is where you add the sections for index
 
 (def sections
-  (vec (sort-by :title [
-                        ; NOTE: :examples is a list of example names, rendered in order given
+  (vec (sort-by :title [; NOTE: :examples is a list of example names, rendered in order given
+                        {:id       :size
+                         :title    "Elements - Size"
+                         :examples [docs-size]}
                         {:id       :grids
-                         :title    "Grids"
+                         :title    "Grid"
                          :documentation
                                    "Grids are the bread and butter of web design, this one is based on flexbox. Needless to say you will find this grid system a joy to use. [Flexbox Mythbusting](http://jonyablonski.com/2015/flexbox-myth-busting/)\n\n
                                    #### New to grids?\n\n
-                                   Check out my presentation on CSS Grids can help you, complete with a [slide deck](https://speakerdeck.com/stephenway/css-grids-can-help-you), and a [CodePen](http://codepen.io/stephenway/pen/dMKzvy) to play with complex grid layouts.
-                                   "
+                                   Check out my presentation on CSS Grids can help you, complete with a [slide deck](https://speakerdeck.com/stephenway/css-grids-can-help-you), and a [CodePen](http://codepen.io/stephenway/pen/dMKzvy) to play with complex grid layouts."
                          :examples [grid-example-12-column grid-example-learn grid-example-autopilot grid-example-responsive
                                     grid-example-fluid grid-example-column-push grid-example-column-pull
                                     grid-example-column-push-pull grid-example-column-nesting]}
                         {:id       :align
-                         :title    "Align"
-                         :documentation
-                                   "Shortcuts to placing your elements left or right."
+                         :title    "Grid - Align"
+                         :documentation "# Grid - Align
+                         Shortcuts to placing your elements left or right."
                          :examples [grid-example-align-start grid-example-align-center
                                     grid-example-align-end grid-example-align-top
-                                    grid-example-align-middle grid-example-align-bottom]
-                         }
+                                    grid-example-align-middle grid-example-align-bottom]}
                         {:id       :distributed
-                         :title    "Distributed"
-                         :documentation
-                                   "Evenly distribute objects into a row or column."
-                         :examples [grid-example-distributed-around grid-example-distributed-between]
-                         }
+                         :title    "Grid - Distribute"
+                         :documentation "# Grid - Distributed
+                         Evenly distribute objects into a row or column."
+                         :examples [grid-example-distributed-around grid-example-distributed-between]}
                         {:id       :ordering
-                         :title    "Ordering"
-                         :documentation
-                                   "Manipulate the order of objects with special column classes."
+                         :title    "Grid - Ordering"
+                         :documentation "# Grid - Ordering
+                         Manipulate the order of objects with special column classes."
                          :examples [grid-example-ordering-first grid-example-ordering-last
                                     grid-example-ordering-reverse]
                          }
@@ -951,30 +952,18 @@
                          :examples []}
                         {:id       :positioning
                          :title    "Positioning"
+                         :documentation docs-positioning-position
                          :examples [positioning-example-fixed positioning-example-absolute]}
-                        {:id       :positioning2
-                         :title    "Position"
-                         :documentation
-                                   docs-positioning-position
-                         :examples []}
                         {:id       :positioning3
                          :title    "Rotate"
                          :examples [positioning-example-rotate]}
-                        {:id       :size
-                         :title    "Elements - Size"
-                         :examples [docs-size]}
                         {:id       :syntax
                          :title    "Syntax"
                          :examples [syntax]}
                         {:id       :typography
                          :title    "Typography"
                          :examples [typography-font-scale typography-no-bullet typography-no-bullets
-                                    typography-ellipsis typography-break-word]}
-                        {:id       :typography-customize
-                         :title    "Customize"
-                         :documentation
-                                   docs-typography-customize
-                         :examples []}
+                                    typography-ellipsis typography-break-word  docs-typography-customize]}
                         {:id       :visibility
                          :title    "Visibility"
                          :documentation
