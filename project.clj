@@ -18,7 +18,8 @@
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
-                 [com.taoensso/timbre "4.7.4"]]
+                 [com.taoensso/timbre "4.7.4"]
+                 [thi.ng/color "1.2.0"]]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
             [lein-cljsbuild "1.1.5"]

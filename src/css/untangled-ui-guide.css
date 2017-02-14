@@ -109,4 +109,9 @@ import: ../README.md
   }
 }
 
+.swatch {
+  width: 400px;
+  padding: 1em 1rem;
+}
+
 /* stylelint-enable */
