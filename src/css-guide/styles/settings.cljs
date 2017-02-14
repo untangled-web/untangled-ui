@@ -85,6 +85,19 @@
            [:800 "#05375c"]
            [:900 "#0d2c54"]])
 
+
+(def orange [[:50 "#fff3e0"]
+             [:100 "#ffe5c8"]
+             [:200 "#ffd5af"]
+             [:300 "#ffc595"]
+             [:400 "#ffb67c"]
+             [:500 "#fea661"]
+             [:600 "#fa9748"]
+             [:700 "#f5872c"]
+             [:800 "#f07700"]
+             [:900 "#cc5000"]
+             ])
+
 (def digit-values {"0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5
                    "6" 6 "7" 7 "8" 8 "9" 9 "a" 10 "b" 11
                    "c" 12 "d" 13 "e" 14 "f" 15})
@@ -150,26 +163,17 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 
 ##### Blue
-
 "
     (color-palette blue)
+
     "
 
     ##### Orange
+    "
 
-    ```example:color
-    @color: #fff3e0 @name: --orange-50
-    @color: #ffe5c8 @name: --orange-100
-    @color: #ffd5af @name: --orange-200
-    @color: #ffc595 @name: --orange-300
-    @color: #ffb67c @name: --orange-400
-    @color: #fea661 @name: --orange-500
-    @color: #fa9748 @name: --orange-600
-    @color: #f5872c @name: --orange-700
-    @color: #f07700 @name: --orange-800
-    @color: #cc5000 @name: --orange-900
-    ```
+    (color-palette orange)
 
+    "
     ##### Red
 
     ```example:color

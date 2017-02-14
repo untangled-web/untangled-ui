@@ -112,6 +112,10 @@ import: ../README.md
 .swatch {
   width: 400px;
   padding: 1em 1rem;
+
+  &__code {
+    float: right;
+   }
 }
 
 /* stylelint-enable */
