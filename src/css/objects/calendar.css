@@ -102,3 +102,7 @@ section: Objects
   top: auto;
   bottom: 0;
 }
+
+.o-calendar--inline {
+  position: static;
+}
