@@ -257,13 +257,12 @@
   (render [this]
     (dom/div #js {:className ""}
       (let [{:keys [calendar/id calendar/overlay-visible? calendar/label] :as calendar} (om/props this)]
-        (dom/div #js {:key (str "calendar-" id) :className "o-calendar-container"}
+        (dom/div #js {:key (str "calendar-" id) :className "u-wrapper"}
           (dom/span #js {:className "o-button-group-label"} (if label (tr-unsafe label) (tr "Date: ")))
-          (dom/div #js {:className "o-calendar-wrapper"}
-            (when overlay-visible?
-              (dom/div #js {:className "o-calendar c-card"}
-                (calendar-toolbar this)
-                (calendar-month-view this)))))))))
+          (when overlay-visible?
+            (dom/div #js {:className "o-calendar c-card"}
+              (calendar-toolbar this)
+              (calendar-month-view this))))))))
 
 (def ui-calendar-factory (om/factory Calendar))
 

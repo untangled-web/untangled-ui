@@ -6,10 +6,9 @@ section: Objects
 .o-calendar {
   border-radius: var(--global-rounded);
   display: inline-block;
-  left: 50%;
+  left: 0;
   position: absolute !important;
-  top: 45px;
-  transform: translateX(-50%);
+  top: 0;
   z-index: 10 !important;
 
   &.is-active { @apply --fade-in; }
