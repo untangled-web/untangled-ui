@@ -5,7 +5,7 @@
     [om.next :as om :refer [defui]]
     [om.dom :as dom]
     [untangled.i18n.core :as i18n]
-    [untangled.ui.dropdowns :as dropdowns]
+    [untangled.ui.menu :as dropdowns]
     [untangled.client.core :as uc]
     [untangled.icons :refer [icon]]
     [untangled.ui.calendar :as c]

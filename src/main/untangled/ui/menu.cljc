@@ -1,4 +1,4 @@
-(ns untangled.ui.dropdowns
+(ns untangled.ui.menu
   (:require
     [om.next :as om :refer [defui]]
     [om.dom :as dom]
@@ -14,7 +14,7 @@
 (def table-name ::by-id)
 
 ;; Standardize you Om ident, using the table name you decided.
-(defn ident [dropdown-id] [table-name dropdown-id])
+(defn ident [menu-id] [table-name menu-id])
 
 ;; Write mutation helper functions that abstract the om-style mutations you'll want to do, but take either the
 ;; state-map (if they have to have a more global effect) or the component state (for component-centric operations).
@@ -24,58 +24,58 @@
 ;;
 ;; (defmutation my-mutation [params]
 ;;    (action [{:keys [state]}]
-;;        (swap! state (fn [state-map] (-> state-map (dropdowns/set-open-impl dropdown-id false) ...)))))
+;;        (swap! state (fn [state-map] (-> state-map (menu/set-open-impl menu-id false) ...)))))
 ;;
 ;; SEE ALSO `untangled.ui.state/evolve`
 (defn set-open-impl
-  "Set whether or not the dropdown with the given ID is open."
-  [dropdown open?]
-  (assoc dropdown :dropdown/open? open?))
+  "Set whether or not the menu with the given ID is open."
+  [menu open?]
+  (assoc menu :menu/open? open?))
 
 (defn close-all-impl
-  "Close all dropdowns, application wide"
+  "Close all menus, application wide"
   [app-state-map]
-  (reduce (fn [m dropdown-id] (evolve m (ident dropdown-id) set-open-impl false))
+  (reduce (fn [m menu-id] (evolve m (ident menu-id) set-open-impl false))
     app-state-map (keys (get app-state-map table-name))))
 
 ;; Query functions to look at state on things from the UI. Usable from the parent UI, or within the UI
 ;; of the component itself
 (defn select-impl
-  "Select an item in the dropdown"
-  [dropdown item-id]
-  (assoc dropdown :dropdown/selected-item item-id))
+  "Select an item in the menu"
+  [menu item-id]
+  (assoc menu :menu/selected-item item-id))
 
 ;; Functions that take the component props and act as "getters" should not have a suffix/prefix. You never read via
 ;; Om transact!, and a parent is allowed to "look at" the props of a child. However, more local reasoning and
 ;; refactoring power is possible if you abstract these into functions on the state.
 (defn is-open?
-  "Returns true if the dropdown is currently open."
-  [dropdown] (:dropdown/open? dropdown))
+  "Returns true if the menu is currently open."
+  [menu] (:menu/open? menu))
 
 (defn current-selection
   "Returns the ID of the currently selected item, or nil. Useful if you choose not to pay attention to the callback
-  and instead have some other parent UI event (like submit) that needs to gather up the dropdown selection."
-  [dropdown] (:dropdown/selected-item dropdown))
+  and instead have some other parent UI event (like submit) that needs to gather up the menu selection."
+  [menu] (:menu/selected-item menu))
 
 ;; Om Mutations. Use defmutation. This will namespace the symbols to the current namespace, and enable nice IDE
 ;; interaction (doc strings, navigation, etc). Allowing these to be used as:
 ;;
-;; (om/transact this `[(dropdowns/close-all {})]) ; dropdowns MUST be in your :require an an alias, or you have to type out full namespace
+;; (om/transact this `[(menus/close-all {})]) ; menus MUST be in your :require an an alias, or you have to type out full namespace
 ;;
 ;; Note how we use the simpler name (without  the -impl suffix) for the mutation so that developers will be able to
 ;; easily see what is usable. The docstring will also help them know they're using the right thing.
 (defmutation close-all
-  "Om Mutation: Closes all dropdowns application wide."
+  "Om Mutation: Closes all menus application wide."
   [params-ignored]
   (action [{:keys [state]}] (swap! state close-all-impl)))
 
 (defmutation set-open
-  "Om Mutation: Opens/closes a dropdown. Required id and open? parameters."
+  "Om Mutation: Opens/closes a menu. Required id and open? parameters."
   [{:keys [id open?]}]
   (action [{:keys [state]}] (evolve! state (ident id) set-open-impl open?)))
 
 (defmutation select
-  "Om Mutation: Selects an item in the dropdown. Required dropdown id and the selection item-id"
+  "Om Mutation: Selects an item in the menu. Required menu id and the selection item-id"
   [{:keys [id item-id]}]
   (action [{:keys [state]}] (evolve! state (ident id) select-impl item-id)))
 
@@ -84,42 +84,42 @@
 ;; name of the thing being created. These can be used in InitialAppState to
 ;; all your user's to easily construct these without having to think about the map structure, enabling better
 ;; local reasoning.
-(defn dropdown
-  "Build a state tree for a dropdown to use in initial app state. The id of the dropdown should be globally unique."
+(defn menu
+  "Build a state tree for a menu to use in initial app state. The id of the menu should be globally unique."
   [id label items]
-  {:dropdown/id id :dropdown/label label :dropdown/items items :dropdown/open? false})
+  {:menu/id id :menu/label label :menu/items items :menu/open? false})
 
-(defn dropdown-item
-  "Build the state map that can be used in a dropdown as an item. The `id` need only be unique within the dropdown."
+(defn menu-item
+  "Build the state map that can be used in a menu as an item. The `id` need only be unique within the menu."
   [id label]
-  {:dropdown-item/item-id id :dropdown-item/label label})
+  {:menu-item/item-id id :menu-item/label label})
 
 (defn- find-first [key value list] (first (filter #(= (get % key) value) list)))
 
-(defui Dropdown
+(defui Menu
   static om/IQuery
-  (query [this] [:dropdown/id :dropdown/open? :dropdown/label :dropdown/items :dropdown/selected-item])
+  (query [this] [:menu/id :menu/open? :menu/label :menu/items :menu/selected-item])
   static om/Ident
-  (ident [this props] (ident (:dropdown/id props)))
+  (ident [this props] (ident (:menu/id props)))
   Object
   (render [this]
-    (let [{:keys [dropdown/id dropdown/label dropdown/items dropdown/open? dropdown/selected-item]} (om/props this)
+    (let [{:keys [menu/id menu/label menu/items menu/open? menu/selected-item]} (om/props this)
           onSelect       (or (om/get-computed this :onSelect) identity)
-          selected-item  (find-first :dropdown-item/item-id selected-item items)
-          selected-label (get selected-item :dropdown-item/label (tr-unsafe label))
+          selected-item  (find-first :menu-item/item-id selected-item items)
+          selected-label (get selected-item :menu-item/label (tr-unsafe label))
           menu-class     (str "c-dropdown__menu" (if open? " is-active" ""))]
-      (dom/div #js {:key (str "dropdown-" (name id)) :className "c-dropdown"}
+      (dom/div #js {:key (str "menu-" (name id)) :className "c-dropdown"}
         (dom/button #js {:onClick   (fn [evt]
                                       (.stopPropagation evt)
-                                      (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :dropdown/open?])
+                                      (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
                                       false)
                          :className "c-dropdown__select js-dropdown-toggle"} (tr-unsafe selected-label))
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
-          (map (fn [{:keys [dropdown-item/item-id dropdown-item/label]}]
-                 (dom/li #js {:key     (str "dropdown-item-" (name item-id))
+          (map (fn [{:keys [menu-item/item-id menu-item/label]}]
+                 (dom/li #js {:key     (str "menu-item-" (name item-id))
                               :onClick (fn [evt]
                                          (.stopPropagation evt)
-                                         (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :dropdown/open?])
+                                         (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :menu/open?])
                                          (when onSelect (onSelect item-id))
                                          false)}
                    (dom/button #js {:className "c-dropdown__link"} label))) items))))))
@@ -128,13 +128,13 @@
 ;; It is a good idea to include a docstring here to help used understand things about how to use the component.
 ;; When there are special "computed" things to pass in (like callbacks) it is nice to supply a little
 ;; syntactic sugar via named parameters.
-(let [ui-dropdown-factory (om/factory Dropdown)]
-  (defn ui-dropdown
-    "Render a Dropdown. You may use Om's computed facility to add an onSelect callback. The onSelect will be
+(let [ui-menu-factory (om/factory Menu)]
+  (defn ui-menu
+    "Render a Menu. You may use Om's computed facility to add an onSelect callback. The onSelect will be
     called with the id of the item selected. You may also just pass the callback as a named parameter for convenience.
 
     ...
 
     "
     [props & {:keys [style color onSelect] :or {style :normal color :primary}}]
-    (ui-dropdown-factory (om/computed props {:onSelect onSelect}))))
+    (ui-menu-factory (om/computed props {:onSelect onSelect}))))

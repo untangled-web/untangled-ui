@@ -7,7 +7,6 @@
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
     [untangled.i18n.core :as i18n]
-    [untangled.ui.dropdowns :as dropdowns]
     [untangled.client.core :as uc]
     [untangled.icons :refer [icon]]
     [untangled.ui.calendar :as c]
@@ -71,33 +70,4 @@
     (ui-badge {} (icon :arrow_back))
     (ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
-(defui ^:once DropdownsRoot
-  static uc/InitialAppState
-  (initial-state [cls params] {:dropdown-1 (dropdowns/dropdown :mood-filter "Mood Filter"
-                                             [(dropdowns/dropdown-item :happy "Happy")
-                                              (dropdowns/dropdown-item :indifferent "Indifferent")
-                                              (dropdowns/dropdown-item :sad "Sad")])
-                               :dropdown-2 (dropdowns/dropdown :age-filter "Age Filter"
-                                             [(dropdowns/dropdown-item :young "0-10")
-                                              (dropdowns/dropdown-item :older "11-20")
-                                              (dropdowns/dropdown-item :old "20+")])})
-  static om/IQuery
-  (query [this] [:ui/react-key
-                 {:dropdown-1 (om/get-query dropdowns/Dropdown)}
-                 {:dropdown-2 (om/get-query dropdowns/Dropdown)}])
-  Object
-  (render [this]
-    (let [{:keys [ui/react-key dropdown-1 dropdown-2]} (om/props this)
-          mood (dropdowns/current-selection dropdown-1)]
-      (dom/div #js {:key react-key :onClick #(om/transact! this `[(dropdowns/close-all {})])}
 
-        (dropdowns/ui-dropdown dropdown-1
-          :style :button
-          :onSelect (fn [id] (js/console.log (str "Selected " id))))
-        (when (= mood :indifferent)
-          (dropdowns/ui-dropdown dropdown-2))))))
-
-(defcard dropdown-active-playground
-  (untangled-app DropdownsRoot)
-  {}
-  {:inspect-data true})

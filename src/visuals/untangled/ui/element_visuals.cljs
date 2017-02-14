@@ -4,7 +4,7 @@
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]
-    [untangled.ui.dropdowns :as dropdowns :refer [dropdown dropdown-item]]
+    [untangled.ui.menu :as dropdowns :refer [menu menu-item]]
     [untangled.ui.elements :as ele]
     [untangled.i18n :as i :refer [tr trf]]))
 
