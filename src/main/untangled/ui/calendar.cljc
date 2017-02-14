@@ -22,7 +22,7 @@
   ([] #?(:clj (java.util.Date.) :cljs (js/Date.)))
   ([base offset-ms]
     #?(:clj  (java.util.Date. (+ offset-ms (.getTime base)))
-       :cljs (js/Date. (+ (.getTime base) ms-in-a-day))))
+       :cljs (js/Date. (+ (.getTime base) offset-ms))))
   ([y m day]
     #?(:clj  (java.util.Date. (- y 1900) m day 12 0 0)
        :cljs (js/Date. y m day 12 0 0))))
@@ -41,18 +41,18 @@
           all-weeks-from-prior-sunday    (partition 7 (iterate next-day prior-sunday))
           contains-this-month?           (fn [week] (some #(= zero-based-month (.getMonth %)) week))
           all-weeks-from-starting-sunday (drop-while (comp not contains-this-month?) all-weeks-from-prior-sunday)]
+      #?(:cljs (js/console.log first-day-of-month prior-sunday))
       (take-while contains-this-month? all-weeks-from-starting-sunday))))
 
 (defn calendar
   "Create a calendar with the given ID and date (as a JS date object). Note that label will be passed through the untangled
   i18n `tr-unsafe`, so you should do something to ensure that label is extracted if you are supporting more than one locale."
-  ([id label] (calendar id label (date)))
-  ([id label starting-js-date]
+  ([id] (calendar id (date)))
+  ([id starting-js-date]
    (let [month (+ 1 (.getMonth starting-js-date))
          day   (.getDate starting-js-date)
          year  (.getFullYear starting-js-date)]
      {:calendar/id               id
-      :calendar/label            label
       :calendar/month            month
       :calendar/day              day
       :calendar/year             year
@@ -249,23 +249,54 @@
 
 (defui ^:once Calendar
   static om/IQuery
-  (query [this] [:calendar/id :calendar/month :calendar/day :calendar/year :calendar/weeks :calendar/overlay-visible? :calendar/label])
+  (query [this] [:calendar/id :calendar/month :calendar/day :calendar/year :calendar/weeks :calendar/overlay-visible?])
   static om/Ident
   (ident [this {:keys [calendar/id]}] (calendar-ident id))
   Object
   (render [this]
     (dom/div #js {:className ""}
-      (let [{:keys [calendar/id calendar/overlay-visible? calendar/label] :as calendar} (om/props this)]
-        (dom/div #js {:key (str "calendar-" id) :className "u-wrapper"}
-          (dom/span #js {:className "o-button-group-label"} (if label (tr-unsafe label) (tr "Date: ")))
-          (when overlay-visible?
-            (dom/div #js {:className "o-calendar c-card"}
-              (calendar-toolbar this)
-              (calendar-month-view this))))))))
+      (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)
+            {:keys [align overlay-trigger] :or {align :bottom-left-edge}} (om/get-computed this)
+            up?               (#{:top-left-edge :top-right-edge} align)
+            toggle            (fn [evt]
+                                (.stopPropagation evt)
+                                (let [open? (not overlay-visible?)]
+                                  (om/transact! this `[(close-all-overlays {})
+                                                       (set-overlay-visible ~{:calendar-id id :visible? open?})
+                                                       :calendar/id])))
+            alignment-class   (when overlay-trigger
+                                (case align
+                                  :bottom-right-edge "o-calendar--right"
+                                  :top-left-edge "o-calendar--up"
+                                  :top-right-edge "o-calendar--up o-calendar--right"
+                                  ""))
+            calendar-classes  (str "o-calendar c-card " alignment-class (if overlay-trigger
+                                                                          (if up? " u-trailer" " u-leader")
+                                                                          " o-calendar--inline"))
+            overlay-rendering (dom/div #js {:className calendar-classes}
+                                (calendar-toolbar this)
+                                (calendar-month-view this))]
+        (if overlay-trigger
+          (dom/div #js {:key (str "calendar-" id) :className "u-wrapper"}
+            (overlay-trigger toggle calendar)
+            (when overlay-visible? overlay-rendering))
+          overlay-rendering)))))
 
 (def ui-calendar-factory (om/factory Calendar))
 
 (defn ui-calendar
-  "Render a calendar. onDateSelected will be called when a date is selected, and refresh is a sequence of Om keywords to trigger re-render if needed."
-  [props & {:keys [onDateSelected refresh]}]
-  (ui-calendar-factory (om/computed props {:onDateSelected onDateSelected :refresh refresh})))
+  "Render a calendar.
+
+  `onDateSelected` will be called when a date is selected
+  `refresh` is a sequence of Om keywords on which to trigger re-render.
+  `align` Align the overlay such that:
+      :bottom-left-edge (default) The upper left edge of the overlay will align with the bottom left edge of the container.
+      :bottom-right-edge The right edge of the overlay aligns with the lower-right edge of whatever container you put it in.
+      :top-left-edge The upper left edge of the overlay will align with the top left of the container.
+      :top-right-edge The right edge of the overlay aligns with the upper-right edge of whatever container you put it in.
+  `overlay-trigger` is a function `(f [toggle-fn cal-props] ...)` that will receive a toggle function and the calendar
+  properties and should render a DOM element with a click handler that invokes `toggle-fn`
+  to open/close the month-view overlay.
+  "
+  [props & {:keys [onDateSelected refresh overlay-trigger align] :as opts}]
+  (ui-calendar-factory (om/computed props opts)))

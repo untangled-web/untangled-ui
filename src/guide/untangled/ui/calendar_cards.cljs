@@ -13,21 +13,27 @@
 
 (defui ^:once CalRoot
   static uc/InitialAppState
-  (initial-state [cls params] {:start-date (c/calendar :start-date "Start Date")})
+  (initial-state [cls params]
+    {:start-date (c/calendar :start-date)
+     :end-date   (c/calendar :end-date)})
   static om/IQuery
-  (query [this] [{:start-date (om/get-query c/Calendar)}])
+  (query [this] [{:start-date (om/get-query c/Calendar)}
+                 {:end-date (om/get-query c/Calendar)}])
   Object
   (render [this]
-    (let [{:keys [start-date]} (om/props this)]
-      (dom/div nil
-        (dom/button #js {:className "c-button"
-                         :onClick   (fn [evt]
-                                      (.stopPropagation evt)
-                                      (om/transact! this `[(c/toggle-overlay {:calendar-id :start-date})]))}
-          "Start Date: " (c/displayed-date start-date))
+    (let [{:keys [start-date end-date]} (om/props this)]
+      (dom/div #js {:className "u-row"}
+        (dom/div #js {:className "u-column--3"}
         (c/ui-calendar start-date
-          :onDateSelected #(js/alert (str "Selected Date " %))
-          :refresh [:start-date])))))
+            ;:onDateSelected #(js/alert (str "Start " %))
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
+                                                (tr "Start Date: ") (c/displayed-date cal)))))
+        (dom/div #js {:className "u-column--3 u-push--6 u-end"}
+          (c/ui-calendar end-date
+            ;:onDateSelected #(js/alert (str "End " %))
+            :align :bottom-right-edge
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
+                                                (tr "End Date: ") (c/displayed-date cal)))))))))
 
 
 (defcard calendar-viewer
