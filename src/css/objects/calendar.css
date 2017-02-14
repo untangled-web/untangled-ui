@@ -92,3 +92,8 @@ section: Objects
     &.is-inactive { color: var(--grey-600); }
   }
 }
+
+.o-calendar--right {
+  left: auto;
+  right: 0;
+}
