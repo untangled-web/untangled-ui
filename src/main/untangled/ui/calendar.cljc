@@ -200,23 +200,23 @@
   (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)]
     (dom/header #js {:className "o-calendar__control u-middle"}
       (dom/div #js {:className "u-column--2"}
-        (dom/button #js {:className "o-calendar__button"
+        (dom/button #js {:className "c-button c-button--icon"
                          :title     "Last Month"
                          :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
-          (icon :arrow_back)))
-      (dom/div #js {:className "u-column--8"}
+          (icon :keyboard_arrow_left)))
+      (dom/div #js {:className "u-column--8 u-font-size--small"}
         (dom/span #js {:className "current"
                        :onClick   #(om/transact! this `[(set-overlay-visible ~{:calendar-id id :visible? (not overlay-visible?)})])}
           (displayed-date calendar))
-        (dom/button #js {:className "control"
+        (dom/button #js {:className "c-button c-button--icon"
                          :title     "Today"
                          :onClick   #(om/transact! this `[(set-date ~{:date (date) :calendar-id id})])}
           (icon :today)))
       (dom/div #js {:className "u-column--2"}
-        (dom/button #js {:className "o-calendar__button"
+        (dom/button #js {:className "c-button c-button--icon"
                          :title     "Next Month"
                          :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
-          (icon :arrow_forward))))))
+          (icon :keyboard_arrow_right))))))
 
 (def days-of-week-labels
   [(trc "Abbrev for sunday" "Su") (trc "Abbrev for monday" "M") (trc "Abbrev for tuesday" "Tu")
@@ -227,7 +227,6 @@
   (let [{:keys [calendar/id calendar/weeks] :as calendar} (om/props this)
         {:keys [refresh onDateSelected] :or {refresh []}} (om/get-computed this)]
     (dom/div #js {:className "o-calendar__month o-overlay"}
-      (dom/hr nil)
       (dom/table nil
         (dom/thead nil
           (dom/tr nil
@@ -238,7 +237,7 @@
             (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
               (for [day week]
                 (dom/td #js {:key       (str "d" (.getMonth day) "-" (.getDate day))
-                             :className (cond-> "o-day"
+                             :className (cond-> "o-calendar__day"
                                           (not (in-month? calendar day)) (str " is-inactive")
                                           (selected-day? calendar day) (str " is-active"))
                              :onClick   (fn []
@@ -246,7 +245,7 @@
                                                                (close-overlay {:calendar-id ~id})
                                                                ~@refresh])
                                           (when onDateSelected (onDateSelected day)))}
-                  (.getDate day))))))))))
+                  (dom/p nil (.getDate day)))))))))))
 
 (defui ^:once Calendar
   static om/IQuery

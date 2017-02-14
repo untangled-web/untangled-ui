@@ -12,39 +12,18 @@ section: Objects
   z-index: 10 !important;
 
   &.is-active { @apply --fade-in; }
+}
 
-  hr { margin: 1em 0; }
 
-  &__control {
+  .o-calendar__control {
     @apply --row;
     @apply --center;
-  }
+    margin-bottom: 1em;
+   }
 
-  button { cursor: pointer; }
 
-  &__button {
-    background-color: var(--grey-600);
-    border-radius: 50%;
-    height: 26px;
-    margin-top: 5px;
-    padding: 1px;
-    transition: background-color .3s ease-in-out;
-    width: 26px;
+  .o-calendar__month {
 
-    .c-icon {
-      color: var(--white);
-      vertical-align: top;
-    }
-
-    &:hover,
-    &:focus {
-      background-color: var(--grey-700);
-      outline: none;
-    }
-  }
-
-  &__month {
-    max-width: 350px;
     table,
     tr,
     th,
@@ -55,44 +34,34 @@ section: Objects
 
     tr:first-child td { font-weight: normal; }
 
-    th {
-      font-size: var(--fontSize--small);
-      text-transform: uppercase;
+    th,
+    td {
+      font-size: var(--fontSize--tiny);
     }
 
-    th,
-    td { padding: 0 15px !important; }
+    th {
+      text-transform: uppercase;
+    }
 
     td { cursor: pointer; }
   }
 
-  .o-day {
-    height: 46px;
+  .o-calendar__day {
+    --day-height: 32px;
+    height: var(--day-height);
     position: relative;
     transition: color .3s ease-in-out;
-    width: 46px;
+    width: var(--day-height);
 
-    &::after {
-      @apply --fade-out;
-      border: 2px solid transparent;
-      border-radius: 50%;
-      bottom: 0;
-      content: '';
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
+  & > p { margin: 0; }
 
-    &.is-active::after {
-      @apply --fade-in;
-      border: 2px solid var(--red-600) !important;
-    }
+  &.is-active {
+     background-color: var(--highlight-announcement);
+     border-radius: 50px;
+   }
 
-    &.is-inactive { visibility: hidden; }
+  &.is-inactive { visibility: hidden; }
   }
-}
-
 
 .o-calendar--right {
   left: auto;
