@@ -42,6 +42,7 @@
   "Query this in *all* of your form components, else form support will fail!
    (often in subtle/obscure ways, WIP on how to better catch & report this)"
   (ui-ns "form"))
+
 (def form-root-key
   "Query this in your top level form component.
    Is okay to have multiple 'root' components on screen at once,
@@ -457,6 +458,7 @@
                       s))
     empty-form-state field-keys-to-initialize))
 
+; TODO: Not clj compatible. Will cause server-side rendering to fail
 (defn build-form
   "Build an empty form based on the given entity state. Returns an entity that is compatible with the original, but
    that has had form support added. If any fields are declared on
@@ -546,14 +548,18 @@
   "Recursively initialize a form from an app state database. Will follow subforms (even when top-levels are initialized).
   Returns the new app state (can be used to `swap!` on app state atom). Will **not** add forms where there is not
   already an entity in the database. If there are subforms, this function will only initialize those that are present
-  AND uninitialized. Under no circumstances will this function re-initialize a form or subform."
+  AND uninitialized. Under no circumstances will this function re-initialize a form or subform.
+
+  `app-state` The map of the current app state.
+  `form-class` The defui class that defines the top-level form.
+  `form-ident` The ident of the entity's data in app state."
   [app-state form-class form-ident] (init-form* app-state form-class form-ident {}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; VALIDATION SUPPORT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#?(:cljs (defmethod m/mutate `noop [& _] (hash _)))
+#?(:cljs (defmutation noop "Do nothing." [params]))
 
 (defn on-form-change
   "Single arity takes a symbol for a mutation
@@ -569,16 +575,21 @@
    `(~(get-in form [form-key :on-form-change :on-form-change/mut-sym] `noop) ~params)))
 
 (defn current-validity
+  "Returns the current validity from a form's props for the given field. One of :valid, :invalid, or :unchecked"
   [form field]
   (get-in form [form-key :validation field]))
 
-(defn reduced-if [p x]
+(defn- reduced-if [p x]
   (cond-> x (p x) reduced))
 
 (defn invalid?
   "Returns true iff the form or field has been validated, and the validation failed.
    Using this on a form ignores unchecked fields,
-   so you should run validate-entire-form! before trusting this value on a form."
+   so you should run validate-entire-form! before trusting this value on a form.
+
+   `root-form` is the props of a top-level form. Evaluates form recursively.
+   `form` is the props of a specific form
+   `field` is a field to check on a specific form"
   ([root-form] (form-reduce root-form false
                  (fn [inv? form]
                    (reduced-if true?
@@ -589,7 +600,11 @@
 
 (defn valid?
   "Returns true iff the field has been validated, and the validation is ok.
-   Running this on a form is only reliable if you've already validated the entire form (validate-entire-form!)."
+   Running this on a form is only reliable if you've already validated the entire form (validate-entire-form!).
+
+   `root-form` is the props of a top-level form. Evaluates form recursively.
+   `form` is the props of a specific form
+   `field` is a field to check on a specific form"
   ([root-form] (form-reduce root-form true
                  (fn [vld? form]
                    (reduced-if false?
@@ -600,23 +615,30 @@
   ([form field] (= :valid (current-validity form field))))
 
 (defn validator
-  "Returns the validator symbol from the form field"
+  "Returns the validator symbol from the form field.
+
+  `form` The form props
+  `field` The field name"
   [form field]
   (:input/validator (field-config form field)))
 
 (defn validator-args
-  "Returns the validator args from the form field"
+  "Returns the validator args from the form field
+
+  `form` The form props
+  `field` The field name"
   [form field]
   (:input/validator-args (field-config form field) {}))
 
-(defn set-validation [form field value]
+(defn- set-validation
+  [form field value]
   (assoc-in form [form-key :validation field] value))
 
 (defmulti form-field-valid? "Extensible form field validation. Triggered by symbols. Arguments (args) are declared on the fields themselves."
   (fn [symbol value args] symbol))
 
 ;; Sample validator that requires a number be in the (inclusive) range.
-(defmethod form-field-valid? 'in-range? [_ value {:keys [min max]}]
+(defmethod form-field-valid? `in-range? [_ value {:keys [min max]}]
   (let [value (int value)]
     (<= min value max)))
 
@@ -661,13 +683,18 @@
       (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))
 
 #?(:cljs (defmutation validate-field
-           "Om Mutation: run validation on a specific field. form-id is a form ident, field is the field name."
+           "Om Mutation: run validation on a specific field.
+
+           `form-id` is the ident of the entity acting as a form.
+           `field` is the declared name for the field to validate.
+           "
            [{:keys [form-id field]}]
            (action [{:keys [state]}] (swap! state update-in form-id validate-field* field))))
 
 #?(:cljs (defmutation validate-form
-           "Om mutation: Update (recursively) the form and its subforms so that validation markers are correct
-           for the current form state."
+           "Om Mutation: run validation on an entire form.
+
+           `form-id` is the ident of the entity acting as a form."
            [{:as opts :keys [form-id]}]
            (action [{:keys [state]}] (swap! state validate-forms form-id (dissoc opts :form-id)))))
 
@@ -687,7 +714,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #?(:cljs (defmutation toggle-field
-           "Om Mutation: Toggle the `field` on the form with an ident of `form-id`"
+           "Toggle a boolean form field. `form-id` is the ident of the object acting as a form. `field` is the keyword
+           name of the field to toggle."
            [{:keys [form-id field]}]
            (action [{:keys [state]}] (swap! state update-in form-id update-current-value field not))))
 
@@ -712,7 +740,6 @@
   "Function for rendering form fields. Call this to render, but `defmethod` on `form-field*`."
   [component form field-name & params]
   (apply form-field* component form field-name params))
-
 
 (defn render-text-field [component form field-name]
   (let [id         (form-ident form)
@@ -773,11 +800,13 @@
   (render-integer-field component form field-name))
 
 #?(:cljs (defmutation select-option
-           "Om Mutation: Choose the given value as the current selected option"
+           "Om mutation: Select a sepecific option from a selection list. form-id is the ident of the object acting as
+           a form. field is the select field, and value is the value to select."
            [{:keys [form-id field value]}]
-           (action [{:keys [state]}]
-             (let [value (.substring value 1)]
-               (swap! state assoc-in (conj form-id field) (keyword value))))))
+           (action [{:keys [state]}] (let [value (.substring value 1)]
+                                       (swap! state assoc-in
+                                         (conj form-id field)
+                                         (keyword value))))))
 
 (defmethod form-field* ::dropdown [component form field-name]
   (let [id        (form-ident form)
@@ -922,18 +951,24 @@
     (comp xf :form)))
 
 #?(:cljs (defmutation commit-to-entity
-           "Om Mutation: Commit the (recursive) changes on the given form to the prisine local state and (optionally)
-           the remote. `form` is the complete current state (props) of the form."
+           "Om Mutation: Commit the changes on the form. This will cause the state of the pristine cache to match what you see on the
+           form. Note, until tempids are rewritten a form will appear modified (unsaved changes).
+
+           `form` is the COMPLETE PROPS of a form. NOT AN IDENT.
+           `remote` is true if you wish the form to submit changes to the server. If you do not use this option it will
+           be up to you to define how you will persist any data to the server.
+           "
            [{:keys [form remote]}]
-           (action [{:keys [state]}]
-             (swap! state entity-xform (form-ident form) commit-state))
-           (remote [{:keys [ast target]}]
+           (action [{:keys [state]}] (swap! state entity-xform (form-ident form) commit-state))
+           (remote [{:keys [state ast target]}]
              (let [delta (when target (diff-form form))]
-               (and remote (update ast :params #(-> % (dissoc :remote :form) (assoc :delta delta))))))))
+               (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))))))
 
 #?(:cljs (defmutation reset-from-entity
-           "Om Mutation: Reset an entity to its original value (throw away edits since last commit)
+           "Om Mutation: Reset the entity back to its original state before editing. This will be the last state that
+           the entity had just following initialization or the last commit.
 
-           form-id is a complete form ident."
+           `form-id` is the ident of the entity acting as a form.
+           "
            [{:keys [form-id]}]
            (action [{:keys [state]}] (swap! state entity-xform form-id reset-entity))))

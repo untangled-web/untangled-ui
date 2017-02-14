@@ -1,4 +1,4 @@
-(ns untangled.ui.forms-advanced-cards
+(ns untangled.ui.Forms--05-Field-Interactions
   (:require-macros
     [untangled.client.cards :refer [untangled-app]])
   (:require
@@ -12,7 +12,18 @@
     [untangled.ui.forms :as f]
     [untangled.ui.simulated-server :refer [make-mock-network]]))
 
-(defcard-doc "#Advanced Form Usages")
+(defcard-doc
+  "# Forms -- Field Interactions
+
+  Many forms need logic that updates the UI as form interactions take place. Simple field validations can
+  be local to a field, but some UI changes require who-form reasoning or cross-field interactions.
+
+  Some simple examples:
+
+  - Verification fields (two fields must contain the same data to ensure they typed it correctly)
+  -
+
+")
 
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
