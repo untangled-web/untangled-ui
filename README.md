@@ -17,6 +17,32 @@ reusable Untangled components for rapid application development.
 
 See the README-css.md for more details on working with the CSS itself. 
 
+# Project Layout
+
+```
+├── dev
+│   ├── clj
+│   └── cljs
+├── resources
+│   ├── public
+│   │   ├── css  ------------- The output folder for the generated stock CSS
+├── script  ------------------ Location of figwheel convenience script
+├── src
+│   ├── css  ----------------- The CSS source files (which generate the CSS)
+│   │   ├── components
+│   │   ├── elements
+│   │   ├── objects
+│   │   ├── settings
+│   │   └── utilities
+│   ├── css-guide  ----------- An Om-based UI describing the CSS available
+│   │   ├── guideui
+│   │   └── styles
+│   ├── guide  --------------- A devcards-based doc for the React/Om-based elements and components. 
+│   ├── main  ---------------- The Library source (exported as the library untangled-ui. Server and client)
+│   ├── test  ---------------- Untangled specs for anything that merits BDD logic tests (server and client)
+│   └── visuals  ------------- A set of devcards for visual regression testing.
+```
+
 ## CALL FOR CONTRIBUTIONS.
 
 Adding something to this library should be quick and easy. The DOM/CSS 

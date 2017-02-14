@@ -13,7 +13,7 @@
 
 (defui ^:once CalRoot
   static uc/InitialAppState
-  (initial-state [cls params] {:start-date (c/make-calendar :start-date "Start Date")})
+  (initial-state [cls params] {:start-date (c/calendar :start-date "Start Date")})
   static om/IQuery
   (query [this] [{:start-date (om/get-query c/Calendar)}])
   Object
@@ -23,7 +23,7 @@
         (dom/button #js {:className "c-button"
                          :onClick   (fn [evt]
                                       (.stopPropagation evt)
-                                      (om/transact! this `[(c/toggle-overlay {:calendar-id :start-date}) :calendar/overlay-visible?]))}
+                                      (om/transact! this `[(c/toggle-overlay {:calendar-id :start-date})]))}
           "Start Date: " (c/displayed-date start-date))
         (c/ui-calendar start-date
           :onDateSelected #(js/alert (str "Selected Date " %))

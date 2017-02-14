@@ -4,15 +4,21 @@
             [untangled.client.mutations :as m :refer [defmutation]]
             [om.next :as om :refer [defui]]
             [untangled.icons :refer [icon]]
+            [untangled.ui.state :refer [evolve evolve!]]
             [untangled.i18n :refer [tr-unsafe tr trc trf]]
             [untangled.client.logging :as log]))
 
-(def table-name ::by-id)
-(defn calendar-ident [id] [table-name id])
+(def table-name
+  "The Om table name under which calendars are stored."
+  ::by-id)
+
+(defn calendar-ident
+  "Returns the Om ident for a calendar with the given id."
+  [id] [table-name id])
 
 (defonce ms-in-a-day 86400000)
 
-(defn date
+(defn- date
   ([] #?(:clj (java.util.Date.) :cljs (js/Date.)))
   ([base offset-ms]
     #?(:clj  (java.util.Date. (+ offset-ms (.getTime base)))
@@ -21,7 +27,7 @@
     #?(:clj  (java.util.Date. (- y 1900) m day 12 0 0)
        :cljs (js/Date. y m day 12 0 0))))
 
-(defn weeks-of-interest
+(defn- weeks-of-interest
   "Returns a sequence of weeks (each of which contains 7 days) that should be included on a sunday-aligned calendar.
   The weeks are simple lists. The days are javascript Date objects. Their position in the week list indicates their
   day of the week (first position is sunday)."
@@ -37,9 +43,10 @@
           all-weeks-from-starting-sunday (drop-while (comp not contains-this-month?) all-weeks-from-prior-sunday)]
       (take-while contains-this-month? all-weeks-from-starting-sunday))))
 
-(defn make-calendar
-  "Create a calendar with the given ID and date (as a JS date object)"
-  ([id label] (make-calendar id label (date)))
+(defn calendar
+  "Create a calendar with the given ID and date (as a JS date object). Note that label will be passed through the untangled
+  i18n `tr-unsafe`, so you should do something to ensure that label is extracted if you are supporting more than one locale."
+  ([id label] (calendar id label (date)))
   ([id label starting-js-date]
    (let [month (+ 1 (.getMonth starting-js-date))
          day   (.getDate starting-js-date)
@@ -52,134 +59,142 @@
       :calendar/weeks            (weeks-of-interest month year)
       :calendar/overlay-visible? false})))
 
-(defn in-month? [calendar jsdt] (= (:calendar/month calendar) (+ 1 (.getMonth jsdt))))
-(defn selected-day? [calendar jsdt]
+(defn- in-month?
+  "Is the given date in the calendar's currently selected month?"
+  [calendar jsdt]
+  (= (:calendar/month calendar) (+ 1 (.getMonth jsdt))))
+
+(defn- selected-day?
+  "Is the given date the currently selected date of the calendar?"
+  [calendar jsdt]
   (and
     (in-month? calendar jsdt)
     (= (:calendar/day calendar) (.getDate jsdt))))
 
-(defn cal->Date [{:keys [calendar/year calendar/month calendar/day]}] (date year (- month 1) day))
+(defn cal->Date
+  "Convert the calendar's currently selected date to a Date object."
+  [{:keys [calendar/year calendar/month calendar/day]}] (date year (- month 1) day))
 
 ;; Pure calendar operations
 (defn displayed-date
-  "Give back a calendar's current day setting in i18n form."
+  "Give back a calendar's current day setting as an i18n string for the current untangled.i18n locale."
   [calendar]
   (trf "{dt,date}" :dt (cal->Date calendar)))
 
-(defn calendar-set-overlay-visible
-  "Returns an updated app state with the cal overlay toggled."
-  [state-map calendar-id visible?] (assoc-in state-map [table-name calendar-id :calendar/overlay-visible?] visible?))
+(defn set-overlay-visible-impl
+  "Update a calendar to change the overlay visibility."
+  [calendar visible?] (assoc calendar :calendar/overlay-visible? visible?))
 
-(defn calendar-close-overlay
-  "Returns an updated app state with the overlay closed."
-  [state-map calendar-id] (assoc-in state-map [table-name calendar-id :calendar/overlay-visible?] false))
-
-(defn calendar-close-all-overlays
-  "Returns an updated app state with the all calendar overlays closed."
+(defn close-all-overlays-impl
+  "Returns an updated app state with the all calendar overlays closed application-wide."
   [state-map] (reduce (fn [m id] (assoc-in m [table-name id :calendar/overlay-visible?] false))
                 state-map (keys (get state-map table-name))))
 
-(defn calendar-set-date
-  "Returns an updated calendar set to the given date"
-  [state-map calendar-id new-dt]
+(defn set-date-impl
+  "Returns an updated calendar set to the given js/Date object"
+  [calendar new-dt]
   (try
     (let [is-js-date? #?(:cljs (= js/Date (type new-dt)) :clj false)
           month                                               (if is-js-date? (+ 1 (.getMonth new-dt)) (:calendar/month new-dt))
           day                                                 (if is-js-date? (.getDate new-dt) (:calendar/day new-dt))
           year                                                (if is-js-date? (.getFullYear new-dt) (:calendar/year new-dt))]
-      (update-in state-map [table-name calendar-id] assoc :calendar/month month :calendar/day day :calendar/year year :calendar/weeks (weeks-of-interest month year)))
-    (catch #?(:clj Exception :cljs :default) e (log/info "Failed to set date: " e))))
+      (assoc calendar :calendar/month month :calendar/day day :calendar/year year :calendar/weeks (weeks-of-interest month year)))
+    (catch #?(:clj Exception :cljs :default) e
+      (log/info "Failed to set date: " e)
+      calendar)))
 
-(defn calendar-prior-year
+(defn prior-year-impl
   "Returns an updated calendar with the year backed up by one."
-  [state-map calendar-id]
-  (let [{:keys [calendar/month calendar/year]} (get-in state-map [table-name calendar-id])
+  [calendar]
+  (let [{:keys [calendar/month calendar/year]} calendar
         prior-year (- year 1)]
-    (update-in state-map [table-name calendar-id] assoc :calendar/year prior-year :calendar/weeks (weeks-of-interest month prior-year))))
+    (assoc calendar :calendar/year prior-year :calendar/weeks (weeks-of-interest month prior-year))))
 
-(defn calendar-next-year
+(defn next-year-impl
   "Returns an updated calendar with the year moved forward by one."
-  [state-map calendar-id]
-  (let [{:keys [calendar/month calendar/year]} (get-in state-map [table-name calendar-id])
+  [calendar]
+  (let [{:keys [calendar/month calendar/year]} calendar
         next-year (+ year 1)]
-    (update-in state-map [table-name calendar-id] assoc :calendar/year next-year :calendar/weeks (weeks-of-interest month next-year))))
+    (assoc calendar :calendar/year next-year :calendar/weeks (weeks-of-interest month next-year))))
 
 
-(defn calendar-prior-month
+(defn prior-month-impl
   "Returns an updated calendar for the prior month."
-  [state-map calendar-id]
-  (let [{:keys [calendar/month calendar/year]} (get-in state-map [table-name calendar-id])
+  [calendar]
+  (let [{:keys [calendar/month calendar/year]} calendar
         this-month  month
         prior-month (if (= this-month 1) 12 (- this-month 1))
         this-year   year
         year        (if (= 12 prior-month) (- this-year 1) this-year)]
-    (update-in state-map [table-name calendar-id] assoc :calendar/month prior-month :calendar/year year :calendar/weeks (weeks-of-interest prior-month year))))
+    (assoc calendar :calendar/month prior-month :calendar/year year :calendar/weeks (weeks-of-interest prior-month year))))
 
-(defn calendar-next-month
+(defn next-month-impl
   "Returns an updated calendar for the next month."
-  [state-map calendar-id]
-  (let [{:keys [calendar/month calendar/year]} (get-in state-map [table-name calendar-id])
+  [calendar]
+  (let [{:keys [calendar/month calendar/year]} calendar
         this-month month
         next-month (if (= this-month 12) 1 (+ 1 this-month))
         this-year  year
         year       (if (= 1 next-month) (+ 1 this-year) this-year)]
-    (update-in state-map [table-name calendar-id] assoc :calendar/month next-month :calendar/year year :calendar/weeks (weeks-of-interest next-month year))))
+    (assoc calendar :calendar/month next-month :calendar/year year :calendar/weeks (weeks-of-interest next-month year))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Om Mutation methods
 ;; ALL mutations on calendars can be done "remotely" by specifying the ident of the calendar to update via params
 
+
 (defmutation toggle-overlay
   "Om Mutation: Toggle the full calendar overlay visibility. All other overlays are closed."
   [{:keys [calendar-id]}]
   (action [{:keys [state]}]
-    (let [visible-now?    (get-in @state [table-name calendar-id :calendar/overlay-visible?] false)
-          target-visible? (not visible-now?)]
+    (let [ident           (calendar-ident calendar-id)
+          calendar        (get-in @state ident)
+          target-visible? (not (:calendar/overlay-visible? calendar))]
       (swap! state
         (fn [state-map]
           (-> state-map
-            (calendar-close-all-overlays)
-            (calendar-set-overlay-visible calendar-id target-visible?)))))))
+            (close-all-overlays-impl)
+            (evolve ident set-overlay-visible-impl target-visible?)))))))
 
 (defmutation set-overlay-visible
   "Om Mutation: Toggle the full calendar overlay visibility. Pass the calendar ID to be toggled."
   [{:keys [calendar-id visible?]}]
-  (action [{:keys [state]}] (swap! state calendar-set-overlay-visible calendar-id visible?)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) set-overlay-visible-impl visible?)))
 
 (defmutation close-overlay
   "Om Mutation: Close the overlay on the given calendar"
   [{:keys [calendar-id]}]
-  (action [{:keys [state]}] (swap! state calendar-close-overlay calendar-id)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) set-overlay-visible-impl false)))
 
 (defmutation close-all-overlays
   "Om Mutation: Close the overlay on the given calendar"
   [params-ignored]
-  (action [{:keys [state]}] (swap! state calendar-close-all-overlays)))
+  (action [{:keys [state]}] (swap! state close-all-overlays-impl)))
 
 (defmutation next-month
   "Om mutation: Move the calendar with id to the next month."
   [{:keys [calendar-id]}]
-  (action [{:keys [state]}] (swap! state calendar-next-month calendar-id)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) next-month-impl)))
 
 (defmutation prior-month
   "Om mutation: Move the calendar with id to the prior month."
   [{:keys [calendar-id]}]
-  (action [{:keys [state]}] (swap! state calendar-prior-month calendar-id)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) prior-month-impl)))
 
 (defmutation prior-year
   "Om mutation: Move the calendar with id to the prior month."
   [{:keys [calendar-id]}]
-  (action [{:keys [state]}] (swap! state calendar-prior-year calendar-id)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) prior-year-impl)))
 
 (defmutation next-year
   "Om mutation: Move the calendar with id to the prior month."
   [{:keys [calendar-id]}]
-  (action [{:keys [state]}] (swap! state calendar-next-year calendar-id)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) next-year-impl)))
 
 (defmutation set-date
   "Om mutation: Move the calendar with id to the prior month."
   [{:keys [calendar-id date]}]
-  (action [{:keys [state]}] (swap! state calendar-set-date calendar-id date)))
+  (action [{:keys [state]}] (evolve! state (calendar-ident calendar-id) set-date-impl date)))
 
 (defn- calendar-toolbar [this]
   (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)]
@@ -242,7 +257,7 @@
   (render [this]
     (dom/div #js {:className ""}
       (let [{:keys [calendar/id calendar/overlay-visible? calendar/label] :as calendar} (om/props this)]
-        (dom/div #js {:className "o-calendar-container"}
+        (dom/div #js {:key (str "calendar-" id) :className "o-calendar-container"}
           (dom/span #js {:className "o-button-group-label"} (if label (tr-unsafe label) (tr "Date: ")))
           (dom/div #js {:className "o-calendar-wrapper"}
             (when overlay-visible?
@@ -250,7 +265,7 @@
                 (calendar-toolbar this)
                 (calendar-month-view this)))))))))
 
-(def ui-calendar-factory (om/factory Calendar {:keyfn :calendar/id}))
+(def ui-calendar-factory (om/factory Calendar))
 
 (defn ui-calendar
   "Render a calendar. onDateSelected will be called when a date is selected, and refresh is a sequence of Om keywords to trigger re-render if needed."

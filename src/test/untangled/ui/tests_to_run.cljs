@@ -1,7 +1,6 @@
 (ns untangled.ui.tests-to-run
   (:require
     untangled.ui.forms-spec
-    untangled.ui.ui.component.table-spec
     untangled.ui.calendar-spec))
 
 ;********************************************************************************
