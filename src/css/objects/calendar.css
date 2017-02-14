@@ -97,3 +97,8 @@ section: Objects
   left: auto;
   right: 0;
 }
+
+.o-calendar--up {
+  top: auto;
+  bottom: 0;
+}
