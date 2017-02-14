@@ -21,13 +21,12 @@
 (defn ui-badge
   "Render the given children within a badge. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  `(ui-badge {} \"7\")
+  `(ui-badge {} \"7\")`
 
   "
   [{:keys [className] :as props :or {className ""}} & children]
   (let [props (update props :className str " c-badge")]
     (apply dom/span (clj->js props) children)))
-
 
 (defn ui-button
   "Render a button. Props is a normal clj(s) map with React/HTML attributes plus:
