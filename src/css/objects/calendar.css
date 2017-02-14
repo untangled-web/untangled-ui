@@ -105,5 +105,5 @@ section: Objects
 }
 
 .o-calendar--inline {
-  position: static;
+  position: static !important;
 }
