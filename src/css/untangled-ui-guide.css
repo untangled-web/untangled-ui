@@ -46,6 +46,13 @@ import: ../README.md
     line-height: 1.25;
   }
 
+
+  h6 {
+    font-size: var(--fontSize--small);
+    color: var(--grey-700);
+    font-weight: 600;
+  }
+
   code {
     background-color: var(--grey-50);
     font-size: 16px;
@@ -110,12 +117,21 @@ import: ../README.md
 }
 
 .swatch {
-  width: 400px;
   padding: 1em 1rem;
+
+  &__name,
+   &__code {
+      font-size: var(--fontSize--small);
+      font-weight: 600;
+    }
 
   &__code {
     float: right;
    }
+}
+
+.ui-palette {
+  margin-bottom: 1em;
 }
 
 /* stylelint-enable */

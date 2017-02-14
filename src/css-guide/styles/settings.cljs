@@ -74,33 +74,11 @@
   }
   ```")
 
-(def blue [[:50 "#f0faff"]
-           [:100 "#cbdfee"]
-           [:200 "#a6c6dd"]
-           [:300 "#81adcc"]
-           [:400 "#5795bb"]
-           [:500 "#1c7dab"]
-           [:600 "#146590"]
-           [:700 "#0d4d76"]
-           [:800 "#05375c"]
-           [:900 "#0d2c54"]])
-
-
-(def orange [[:50 "#fff3e0"]
-             [:100 "#ffe5c8"]
-             [:200 "#ffd5af"]
-             [:300 "#ffc595"]
-             [:400 "#ffb67c"]
-             [:500 "#fea661"]
-             [:600 "#fa9748"]
-             [:700 "#f5872c"]
-             [:800 "#f07700"]
-             [:900 "#cc5000"]
-             ])
 
 (def digit-values {"0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5
                    "6" 6 "7" 7 "8" 8 "9" 9 "a" 10 "b" 11
                    "c" 12 "d" 13 "e" 14 "f" 15})
+
 
 (defn to-decimal
   "Convert a hex string to a decimal integer (does not check for overflow)"
@@ -111,6 +89,7 @@
                              :value      (+ value (* multiplier (get digit-values digit 0)))}) {:multiplier 1 :value 0} digits)]
     (:value final-acc)))
 
+
 (defn to-rgb
   "Convert a hex string to a map of :r :g :b integers"
   [hex-string]
@@ -118,6 +97,7 @@
         part-to-decimal (fn [quad] (to-decimal (str/join "" quad)))
         quads           (zipmap [:r :g :b] (map part-to-decimal parts))]
     quads))
+
 
 (defn intensity
   "Give an intensity as an integer for a given hex string that can optionally
@@ -130,20 +110,120 @@
                         (* 114 b))
                      1000))))
 
+
 (defn is-dark?
   "Check if the provided hex string is too dark to read text on."
   [color] (< (intensity color) 180))
 
-(defn color-block [color name]
+
+(defn color-block [color name hue-name]
   (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
-  <span class='swatch__name'>--blue-" name "</span>
+  <span class='swatch__name'>--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-") )  name "</span>
   <span class='swatch__code'>" color "</span>
   </div>"))
 
-(defn color-palette [color] :or [color blue]
-  (str/join "\n" (map (fn [[k v]]
-                        (color-block v (name k)))
-                   color)))
+
+(defn color-palette [hue-name color]
+  (str "<div class='ui-palette u-column--12 u-column--4@md'>
+  <h6>" (if (str/blank? hue-name) "Neutral" hue-name)"</h6>"
+    (str/join "\n" (map (fn [[k v]]
+                         (color-block v (name k) hue-name))
+                    color))
+   "</div>"))
+
+
+(defn color-theme-block [color name hue-name]
+  (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
+  <span class='swatch__name'>" name "</span>
+  <span class='swatch__code'>" color "</span>
+  </div>"))
+
+
+(defn color-theme [theme-name color]
+  (str "<div class='ui-palette ui-palette--theme u-column--12 u-column--4@md'>
+  <h6>" theme-name"</h6>"
+    (str/join "\n" (map (fn [[k v]]
+                          (color-theme-block v (name k) theme-name))
+                     color))
+    "</div>"))
+
+(defn get-color [hue weight]
+  (val (nth hue weight)))
+
+
+(def blue [[:50 "#f0faff"]
+           [:100 "#cbdfee"]
+           [:200 "#a6c6dd"]
+           [:300 "#81adcc"]
+           [:400 "#5795bb"]
+           [:500 "#1c7dab"]
+           [:600 "#146590"]
+           [:700 "#0d4d76"]
+           [:800 "#05375c"]
+           [:900 "#0d2c54"]])
+
+(def orange [[:50 "#fff3e0"]
+             [:100 "#ffe5c8"]
+             [:200 "#ffd5af"]
+             [:300 "#ffc595"]
+             [:400 "#ffb67c"]
+             [:500 "#fea661"]
+             [:600 "#fa9748"]
+             [:700 "#f5872c"]
+             [:800 "#f07700"]
+             [:900 "#cc5000"]])
+
+(def red [[:50 "#ffebee"]
+          [:100 "#ffd3d5"]
+          [:200 "#ffbbbb"]
+          [:300 "#faa296"]
+          [:400 "#f38773"]
+          [:500 "#e96d4f"]
+          [:600 "#de512d"]
+          [:700 "#d03000"]
+          [:800 "#b51c01"]
+          [:900 "#990000"]])
+
+(def yellow [[:50 "#fff9e8"]
+             [:100 "#fff3d1"]
+             [:200 "#ffeebb"]
+             [:300 "#ffe49e"]
+             [:400 "#ffdd84"]
+             [:500 "#ffd666"]
+             [:600 "#ffc838"]
+             [:700 "#ffba0a"]
+             [:800 "#fda704"]
+             [:900 "#fa9400"]])
+
+(def green [[:50 "#e6fff8"]
+            [:100 "#b6f5e3"]
+            [:200 "#8adec2"]
+            [:300 "#5ac7a1"]
+            [:400 "#09b081"]
+            [:500 "#00996e"]
+            [:600 "#008962"]
+            [:700 "#007a56"]
+            [:800 "#006d4d"]
+            [:900 "#005f43"]])
+
+(def grey [[:50 "#fcfcf9"]
+           [:100 "#e4e3e0"]
+           [:200 "#cbcbc7"]
+           [:300 "#b4b4ae"]
+           [:400 "#9d9c96"]
+           [:500 "#86857e"]
+           [:600 "#706f68"]
+           [:700 "#5b5b52"]
+           [:800 "#47473e"]
+           [:900 "#33332a"]])
+
+(def magenta [[:500 "#d95db7"]])
+
+(def purple [[:a100 "#831dcb"]])
+
+(def neutral [[:black "#000000"]
+              [:white "#ffffff"]])
+
 
 (defarticle settings-colour
   (str "# Colour
@@ -161,140 +241,80 @@ This collection of CSS colors are intended to serve the interface of all our pro
 }
 ```
 
+<div class='u-row'>
 
-##### Blue
 "
-    (color-palette blue)
+
+    (color-palette "Blue" blue)
+    (color-palette "Orange" orange)
+    (color-palette "Red" red)
+    (color-palette "Yellow" yellow)
+    (color-palette "Green" green)
+    (color-palette "Grey" grey)
+    (color-palette "Magenta" magenta)
+    (color-palette "Purple" purple)
+    (color-palette "" neutral)
+
+
+
+
+
 
     "
-
-    ##### Orange
-    "
-
-    (color-palette orange)
-
-    "
-    ##### Red
-
-    ```example:color
-    @color: #ffebee @name: --red-50
-    @color: #ffd3d5 @name: --red-100
-    @color: #fbb    @name: --red-200
-    @color: #faa296 @name: --red-300
-    @color: #f38773 @name: --red-400
-    @color: #e96d4f @name: --red-500
-    @color: #de512d @name: --red-600
-    @color: #d03000 @name: --red-700
-    @color: #b51c01 @name: --red-800
-    @color: #900    @name: --red-900
-    ```
-
-    ##### Yellow
-
-    ```example:color
-    @color: #fff9e8 @name: --yellow-50
-    @color: #fff3d1 @name: --yellow-100
-    @color: #feb    @name: --yellow-200
-    @color: #ffe49e @name: --yellow-300
-    @color: #ffdd84 @name: --yellow-400
-    @color: #ffd666 @name: --yellow-500
-    @color: #ffc838 @name: --yellow-600
-    @color: #ffba0a @name: --yellow-700
-    @color: #fda704 @name: --yellow-800
-    @color: #fa9400 @name: --yellow-900
-    ```
-
-    ##### Green
-
-    ```example:color
-    @color: #e6fff8 @name: --green-50
-    @color: #b6f5e3 @name: --green-100
-    @color: #8adec2 @name: --green-200
-    @color: #5ac7a1 @name: --green-300
-    @color: #09b081 @name: --green-400
-    @color: #00996e @name: --green-500
-    @color: #008962 @name: --green-600
-    @color: #007a56 @name: --green-700
-    @color: #006d4d @name: --green-800
-    @color: #005f43 @name: --green-900
-    ```
-
-    ##### Other
-
-    ```example:color
-    @color: #d95db7 @name: --magenta-500
-    @color: #831dcb @name: --purple-a100
-    ```
-
-    ##### Gray
-
-    ```example:color
-    @color: #fcfcf9 @name: --grey-50
-    @color: #e4e3e0 @name: --grey-100
-    @color: #cbcbc7 @name: --grey-200
-    @color: #b4b4ae @name: --grey-300
-    @color: #9d9c96 @name: --grey-400
-    @color: #86857e @name: --grey-500
-    @color: #706f68 @name: --grey-600
-    @color: #5b5b52 @name: --grey-700
-    @color: #47473e @name: --grey-800
-    @color: #33332a @name: --grey-900
-    ```
-
-    ```example:color
-    @color: #000 @name: --black
-    @color: #fff @name: --white
-    ```
+</div>
 
     #### Colour Theme
 
-    These colors are intended for very specific parts of the user interface.
+    These colors are intended for very specific parts of the user interface. State classes are provided for colored text in this section so you can apply appropriate emotion to your work, `e.g. <span class='is-positive'>Your file has been saved!</span>`.
 
-    ##### Type Color
+    <div class='u-row'>
 
-    State classes are provided for colored text in this section so you can apply appropriate emotion to your work, `e.g. <span class='is-positive'>Your file has been saved!</span>`.
+"
 
-    ```example:color
-    @color: #33332a @name: --color-page
-    @color: #ccccc2 @name: --color-placeholder
-    @color: #00996e @name: .is-positive
-    @color: #1c7dab @name: .is-informative
-    @color: #77776d @name: .is-neutral
-    @color: #eeb111 @name: .is-live
-    @color: #cc5000 @name: .is-alterable
-    @color: #d03000 @name: .is-negative
-    ```
-    ##### Backgrounds & Borders
+    (color-theme "Backgrounds & Borders" [[:--backgroundColor-page (get-color neutral 1)]
+                                          [:--color-shadow         "rgba(51, 51, 42, .6)"]
+                                          [:--color-primary        (get-color blue 9)]
+                                          [:--color-secondary      (get-color orange 8)]
+                                          [:--highlight-announcement (get-color blue 0)]
+                                          [:--highlight-error        (get-color red 0)]
+                                          [:--highlight-success      (get-color green 0)]
+                                          [:--highlight-warning      (get-color yellow 0)]])
 
-    ```example:color
-    @color: #fcfcf9           @name: --backgroundColor-page
-    @color: rgba(51,51,42,.6) @name: --color-shadow
-    @color: #0d2c54           @name: --color-primary
-    @color: #f07700           @name: --color-secondary
-    ```
 
-    ##### Highlights
 
-    ```example:color
-    @color: #f0faff @name: --highlight-announcement
-    @color: #fbb    @name: --highlight-error
-    @color: #b6f5e3 @name: --highlight-success
-    @color: #feb    @name: --highlight-warning
-    ```
+    (color-theme "Type Colors" [[:--color-page        (get-color grey 8)]
+                                [:--color-placeholder (get-color grey 5)]
+                                [:.is-positive        (get-color green 6)]
+                                [:.is-informative     (get-color blue 9)]
+                                [:.is-neutral         (get-color grey 5)]
+                                [:.is-live            (get-color yellow 8)]
+                                [:.is-alterable       (get-color orange 8)]
+                                [:.is-negative        (get-color red 7)]])
 
-    ##### Social Media
 
-    ```example:color
-    @color: #4c66a4 @name: --facebook
-    @color: #dd4b39 @name: --google-plus
-    @color: #0077b5 @name: --linkedin
-    @color: #cb2027 @name: --pinterest
-    @color: #ff4522 @name: --stumbleupon
-    @color: #629d2a @name: --tripadvisor
-    @color: #3498db @name: --trustyou
-    @color: #35465c @name: --tumblr
-    @color: #2fc2ef @name: --twitter
-    ```"))
+    (color-theme "Social Media" [[:--facebook "#4c66a4"]
+                                 [:--google-plus "#dd4b39"]
+                                 [:--linkedin "#0077b5"]
+                                 [:--pinterest "#cb2027"]
+                                 [:--stumbleupon "#ff4522"]
+                                 [:--tripadvisor "#629d2a"]
+                                 [:--trustyou "#3498db"]
+                                 [:--tumblr "#35465c"]
+                                 [:--twitter "#2fc2ef"]])
+
+
+    #_(color-theme "Highlights" [[:--highlight-announcement (get-color blue 0)]
+                               [:--highlight-error        (get-color red 0)]
+                               [:--highlight-success      (get-color green 0)]
+                               [:--highlight-warning      (get-color yellow 0)]])
+
+
+      "
+
+      </div>
+"
+
+    ))
 
 
 (def sections
