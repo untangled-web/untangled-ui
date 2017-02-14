@@ -4,22 +4,17 @@
   :license {:name "MIT"
             :url  "https://opensource.org/licenses/MIT"}
 
-  :dependencies [[cljsjs/d3 "3.5.7-1"]
-                 [cljsjs/topojson "1.6.18-0"]
-                 [clojurewerkz/money "1.9.0"]
-                 [com.andrewmcveigh/cljs-time "0.3.14"]
+  :dependencies [[clojurewerkz/money "1.9.0"]
                  [image-resizer "0.1.9"]
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
-                 [org.clojure/core.async "0.2.391"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
                  [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
-                 [com.taoensso/timbre "4.7.4"]
-                 [thi.ng/color "1.2.0"]]
+                 [com.taoensso/timbre "4.7.4"]]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
             [lein-cljsbuild "1.1.5"]

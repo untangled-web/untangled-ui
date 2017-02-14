@@ -5,8 +5,7 @@
              :refer [to-cljs]
              :refer-macros [source->react defexample defarticle]]
             [om.dom :as dom]
-            [clojure.string :as str]
-            [thi.ng.color.core :as col]))
+            [clojure.string :as str]))
 
 
 (defarticle settings-config
