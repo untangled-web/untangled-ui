@@ -131,6 +131,15 @@
   ```
 
   `evolve` takes a map and returns a map (is composable in a single swap), whereas
-  `evolve!` does the swap for you.
+  `evolve!` does the swap for you. See the `dropdowns` namespace for a more complete
+  example.
+
+  # Full-Stack Integrations
+
+  This library has components that interact with the server. Two notable examples
+  are an image library and entity-based forms support. The full-stack
+  integrations include pluggable support for almost anything you'd want to
+  customize (for example, image storage mechanism and entity persistence)
+  See the documentation for more details.
 
   ")
