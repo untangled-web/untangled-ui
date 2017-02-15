@@ -36,6 +36,7 @@ title: Visibility
 
 
 .u-fade-out { @apply --fade-out; }
+.u-fade-out\@sm { @media (--sm) {@apply --fade-out;} }
 .u-fade-in { @apply --fade-in; }
 .u-slide-out { @apply --slide-out; }
 .u-slide-out--inv { @apply --slide-out-inv; }
