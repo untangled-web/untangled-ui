@@ -472,6 +472,11 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 ;; Typography Examples
 
+(def typography-header
+  "# Typography
+
+  ##### Source Sans Pro is the font family that Stylekit uses by default")
+
 (defview typography-font-scale
   "#### Font Scale"
   (dom/div #js {}
@@ -669,6 +674,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
                          :examples [syntax]}
                         {:id       :typography
                          :title    "Typography"
+                         :documentation typography-header
                          :examples [typography-font-scale typography-no-bullet typography-no-bullets
                                     typography-ellipsis typography-break-word  docs-typography-customize]}
                         {:id       :visibility
