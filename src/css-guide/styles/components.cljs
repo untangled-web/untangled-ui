@@ -1,6 +1,6 @@
 (ns styles.components
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
             [untangled.icons :as icons]
             [om.dom :as dom]))
 

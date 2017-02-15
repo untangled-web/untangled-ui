@@ -1,26 +1,32 @@
 (ns guideui.ui
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react]]
             [untangled.client.core :as uc]
             [untangled.client.mutations :as m]
             [untangled.icons :as uic]
             [om.dom :as dom]
             goog.string
             styles.getting-started
-            styles.settings
+            styles.style
+            styles.layout
+            styles.elements
             styles.components
             styles.objects
-            styles.elements
-            styles.style
             [untangled.client.mutations :as m]
             [clojure.string :as str]
             [devcards.core :as dc]))
 
-(def parts {"Getting Started" styles.getting-started/sections
+(def parts {"Stylekit" styles.getting-started/sections
             "Style"           styles.style/sections
-            "Elements"        styles.elements/sections
+            "Layout"          styles.layout/sections
+            ;; "Elements"        styles.elements/sections
             "Components"      styles.components/sections
-            "Objects"         styles.objects/sections})
+            ;; "Objects"         styles.objects/sections
+            ;; "Patterns"        styles.patterns/sections
+            ;; "Growth & communications" styles.growth/sections
+            ;; "Usability"       styles.usability/sections
+            ;; "Resources"       styles.resources/sections
+            })
 
 (defn make-section-index [part part-idx sections]
   (map-indexed

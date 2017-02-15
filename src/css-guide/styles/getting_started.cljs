@@ -3,7 +3,7 @@
     ;; NOTE: This is where the interesting macros and such are at:
             [styles.util :as util
              :refer [to-cljs]
-             :refer-macros [source->react defexample defarticle]]
+             :refer-macros [source->react defexample defarticle defview]]
             [om.dom :as dom]))
 
 (defarticle intro
