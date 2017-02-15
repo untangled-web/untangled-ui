@@ -61,27 +61,53 @@ title: Visibility
 }
 
 
+/*
+Show Class Legend for Clarity
+
+small - medium+
+medium - small and large+
+medium+ - small
+large - small, medium, xlarge+
+large+ - small, medium
+xlarge - small, medium, large, [90em+]
+xlarge+ - small, medium, large
+*/
+
 @media (--sm) {
+  .u-show\@md,
+  .u-show\@md-up,
+  .u-show\@lg,
+  .u-show\@lg-up,
+  .u-show\@xl,
+  .u-show\@xl-up,
   .u-hide\@sm { display: none !important; }
 }
 
 
 @media (--md) {
+  .u-show\@lg,
+  .u-show\@lg-up,
+  .u-show\@xl,
+  .u-show\@xl-up,
   .u-hide\@md { display: none !important; }
 }
 
 
 @media (--md-up) {
+  .u-show\@sm,
   .u-hide\@md-up { display: none !important; }
 }
 
 
 @media (--lg) {
+  .u-show\@xl,
+  .u-show\@xl-up,
   .u-hide\@lg { display: none !important; }
 }
 
 
 @media (--lg-up) {
+  .u-show\@md,
   .u-hide\@lg-up { display: none !important; }
 }
 
@@ -92,6 +118,7 @@ title: Visibility
 
 
 @media (--xl-up) {
+  .u-show\@lg,
   .u-hide\@xl-up { display: none !important; }
 }
 
