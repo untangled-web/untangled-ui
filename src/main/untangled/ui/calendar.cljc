@@ -19,6 +19,7 @@
 (defonce ms-in-a-day 86400000)
 
 (defn- date
+  "Create a java/js date. y is 4-digit, m is zero-based, and d is 1-based day"
   ([] #?(:clj (java.util.Date.) :cljs (js/Date.)))
   ([base offset-ms]
     #?(:clj  (java.util.Date. (+ offset-ms (.getTime base)))
@@ -41,7 +42,6 @@
           all-weeks-from-prior-sunday    (partition 7 (iterate next-day prior-sunday))
           contains-this-month?           (fn [week] (some #(= zero-based-month (.getMonth %)) week))
           all-weeks-from-starting-sunday (drop-while (comp not contains-this-month?) all-weeks-from-prior-sunday)]
-      #?(:cljs (js/console.log first-day-of-month prior-sunday))
       (take-while contains-this-month? all-weeks-from-starting-sunday))))
 
 (defn calendar

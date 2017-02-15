@@ -7,8 +7,8 @@
     [untangled.ui.calendar :as c]
     [untangled.i18n :as i :refer [tr trf]]))
 
-(def height "800px")
-(def offset "400px")
+(def height "400px")
+(def offset "300px")
 (def cal-1 (c/calendar :cal1 (js/Date. 1998 1 1)))
 (def cal-1-open (c/set-overlay-visible-impl cal-1 true))
 
@@ -25,14 +25,14 @@
     (c/ui-calendar cal-1)))
 
 (defcard calendar-overlay-tl
-  (dom/div #js {:style #js {:marginTop offset :height height} :className "u-row"}
+  (dom/div #js {:style #js {:marginTop offset} :className "u-row"}
     (dom/div #js {:className "u-column--3 u-push--4"}
       (c/ui-calendar cal-1-open
         :overlay-trigger (fn [t cal] (dom/span nil "TRIGGER"))
         :align :top-left-edge))))
 
 (defcard calendar-overlay-tr
-  (dom/div #js {:style #js {:marginTop offset :height height} :className "u-row"}
+  (dom/div #js {:style #js {:marginTop offset} :className "u-row"}
     (dom/div #js {:className "u-column--3 u-push--4 u-end"}
       (c/ui-calendar cal-1-open
         :overlay-trigger (fn [t cal] (dom/span nil "TRIGGER"))
@@ -51,3 +51,12 @@
       (c/ui-calendar cal-1-open
         :overlay-trigger (fn [t cal] (dom/span nil "TRIGGER"))
         :align :bottom-right-edge))))
+
+(defcard full-year
+  "A full year of calendar overlays."
+  (dom/div nil
+    (for [month (range 0 12)]
+      (let [d   (c/date 2012 month 15)
+            cal (-> (c/calendar (str "cal-" month) d)
+                  (c/set-overlay-visible-impl true))]
+        (c/ui-calendar cal)))))
