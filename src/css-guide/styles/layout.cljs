@@ -112,39 +112,39 @@
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
-          (dom/span #js {:className "u-show@lg"} "1")))
+          (dom/span #js {:className "u-show@lg-up"} "1")))
       (dom/div #js {:className "u-column--6@sm u-column--8@md u-column--10@lg"}
         (dom/div #js {:className "box-row"}
-          (dom/span #js {:className "u-show@sm"} "6")
-          (dom/span #js{:className "u-show@md"} "8")
-          (dom/span #js {:className "u-show@lg"} "10")))
+          (dom/span #js {:className "u-show@sm"} "6 columns")
+          (dom/span #js{:className "u-show@md"} "8 columns")
+          (dom/span #js {:className "u-show@lg-up"} "10 columns")))
       (dom/div #js{:className "u-column--3@sm u-column--2@md u-column--1@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
-          (dom/span #js {:className "u-show@lg"} "1"))))
+          (dom/span #js {:className "u-show@lg-up"} "1"))))
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--3@sm u-column--2@md u-column--1@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
-          (dom/span #js {:className "u-show@lg"} "1")))
+          (dom/span #js {:className "u-show@lg-up"} "1")))
       (dom/div #js {:className "u-column--9@sm u-column--10@md u-column--11@lg"}
         (dom/div #js {:className "box-row"}
-          (dom/span #js {:className "u-show@sm"} "9")
-          (dom/span #js {:className "u-show@md"} "10")
-          (dom/span #js {:className "u-show@lg"} "11"))))
+          (dom/span #js {:className "u-show@sm"} "9 columns")
+          (dom/span #js {:className "u-show@md"} "10 columns")
+          (dom/span #js {:className "u-show@lg-up"} "11 columns"))))
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--6@sm u-column--8@md u-column--10@lg"}
         (dom/div #js {:className "box-row"}
-          (dom/span #js{:className "u-show@sm"} "6")
-          (dom/span #js {:className "u-show@md"} "8")
-          (dom/span #js{:className "u-show@lg"} "10")))
+          (dom/span #js{:className "u-show@sm"} "6 columns")
+          (dom/span #js {:className "u-show@md"} "8 columns")
+          (dom/span #js{:className "u-show@lg-up"} "10 columns")))
       (dom/div #js {:className "u-column--6@sm u-column--4@md u-column--2@lg"}
         (dom/div #js {:className "box-row"}
-          (dom/span #js {:className "u-show@sm"} "6")
-          (dom/span #js {:className "u-show@md"} "4")
-          (dom/span #js {:className "u-show@lg"} "2"))))))
+          (dom/span #js {:className "u-show@sm"} "6 columns")
+          (dom/span #js {:className "u-show@md"} "4 columns")
+          (dom/span #js {:className "u-show@lg-up"} "2"))))))
 
 (defexample grid-example-fluid
   "## Fluid"
