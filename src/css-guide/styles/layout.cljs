@@ -2,6 +2,7 @@
   (:require [om.next :as om :refer-macros [defui]]
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
             [om.dom :as dom]
+            [untangled.icons :as icons]
             [clojure.string :as str]))
 
 
@@ -234,123 +235,77 @@
   "### Column Push
 
   Move back and forth any number of columns wide you need to push the position of your column within the grid."
-  (dom/div #js {}
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--1 u-push--11"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 11"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--2 u-push--10"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 10"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--3 u-push--9"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 9"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--4 u-push--8"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 8"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--5 u-push--7"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 7"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--6 u-push--6"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 6"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--7 u-push--5"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 5"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--8 u-push--4"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 4"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--9 u-push--3"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 3"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--10 u-push--2"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 2"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--11 u-push--1"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 1"))))))
+  (dom/div #js {:className "u-row"}
+    (dom/div #js {:className "u-column--1 u-push--11"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 11"))
+
+    (dom/div #js {:className "u-column--2 u-push--10"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 10"))
+
+    (dom/div #js {:className "u-column--3 u-push--9"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 9"))
+
+    (dom/div #js {:className "u-column--4 u-push--8"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 8"))
+
+    (dom/div #js {:className "u-column--5 u-push--7"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 7"))
+
+    (dom/div #js {:className "u-column--6 u-push--6"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 6"))
+
+    (dom/div #js {:className "u-column--7 u-push--5"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 5"))
+
+    (dom/div #js {:className "u-column--8 u-push--4"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 4"))
+
+    (dom/div #js {:className "u-column--9 u-push--3"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 3"))
+
+    (dom/div #js {:className "u-column--10 u-push--2"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 2"))
+
+    (dom/div #js {:className "u-column--11 u-push--1"}
+      (dom/div #js {:className "box-row"} (icons/icon :keyboard_arrow_right) " 1"))))
 
 (defexample grid-example-column-pull
   "### Column Pull
 
   Move back and forth any number of columns wide you need to pull the position of your column within the grid."
-  (dom/div #js {}
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--1 u-pull--11"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 11"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--2 u-pull--10"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 10"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--3 u-pull--9"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 9"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--4 u-pull--8"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 8"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--5 u-pull--7"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 7"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--6 u-pull--6"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 6"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--7 u-pull--5"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 5"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--8 u-pull--4"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 4"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--9 u-pull--3"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 3"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--10 u-pull--2"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 2"))))
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--11 u-pull--1"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {}
-            (dom/i #js {:className "c-icon-right-dir"}) " 1"))))))
+  (dom/div #js {:className "u-row"}
+    (dom/div #js {:className "u-column--1 u-pull--11"}
+      (dom/div #js {:className "box-row"} "11 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--2 u-pull--10"}
+      (dom/div #js {:className "box-row"} "10 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--3 u-pull--9"}
+      (dom/div #js {:className "box-row"} "9 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--4 u-pull--8"}
+      (dom/div #js {:className "box-row"} "8 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--5 u-pull--7"}
+      (dom/div #js {:className "box-row"} "7 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--6 u-pull--6"}
+      (dom/div #js {:className "box-row"} "6 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--7 u-pull--5"}
+      (dom/div #js {:className "box-row"} "5 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--8 u-pull--4"}
+      (dom/div #js {:className "box-row"} "4 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--9 u-pull--3"}
+      (dom/div #js {:className "box-row"} "3 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--10 u-pull--2"}
+      (dom/div #js {:className "box-row"} "2 " (icons/icon :keyboard_arrow_left)))
+
+    (dom/div #js {:className "u-column--11 u-pull--1"}
+      (dom/div #js {:className "box-row"} "1 " (icons/icon :keyboard_arrow_left)))))
 
 (defexample grid-example-column-push-pull
   "### Column Push/Pull"
@@ -539,35 +494,36 @@
 
 (def sections
   (vec (sort-by :title [
-                        {:id :layouts
-                         :title "Layouts"
-                         :documentation element-layout-header
-                         :examples [element-layout]}
                         {:id       :grids
-                         :title    "Grid"
+                         :title    "Columns & Rows"
                          :documentation
-                                   "Grids are the bread and butter of web design, this one is based on flexbox. Needless to say you will find this grid system a joy to use. [Flexbox Mythbusting](http://jonyablonski.com/2015/flexbox-myth-busting/)\n\n
+                                   "# Columns & Rows
+
+                                   Grids are the bread and butter of web design, this one is based on flexbox. Needless to say you will find this grid system a joy to use. [Flexbox Mythbusting](http://jonyablonski.com/2015/flexbox-myth-busting/)\n\n
                                    #### New to grids?\n\n
                                    Check out my presentation on CSS Grids can help you, complete with a [slide deck](https://speakerdeck.com/stephenway/css-grids-can-help-you), and a [CodePen](http://codepen.io/stephenway/pen/dMKzvy) to play with complex grid layouts."
                          :examples [grid-example-12-column grid-example-learn grid-example-autopilot grid-example-responsive
-                                    grid-example-fluid grid-example-column-push grid-example-column-pull
-                                    grid-example-column-push-pull grid-example-column-nesting]}
+                                    grid-example-fluid  grid-example-column-nesting]}
                         {:id            :align
-                         :title         "Grid - Align"
-                         :documentation "# Grid - Align
+                         :title         "Grid Alignment"
+                         :documentation "# Grid Alignment
                          Shortcuts to placing your elements left or right."
                          :examples      [grid-example-align-start grid-example-align-center
                                          grid-example-align-end grid-example-align-top
                                          grid-example-align-middle grid-example-align-bottom]}
-                        {:id            :distributed
-                         :title         "Grid - Distribute"
-                         :documentation "# Grid - Distributed
-                         Evenly distribute objects into a row or column."
-                         :examples      [grid-example-distributed-around grid-example-distributed-between]}
+                        {:id :layouts
+                         :title "Layouts"
+                         :documentation element-layout-header
+                         :examples [element-layout]}
                         {:id            :ordering
-                         :title         "Grid - Ordering"
-                         :documentation "# Grid - Ordering
-                         Manipulate the order of objects with special column classes."
+                         :title         "Ordering & Distribution"
+                         :documentation "# Ordering & Distribution
+                         Manipulate the order of objects with special column classes or evenly distribute objects into a row or column."
                          :examples      [grid-example-ordering-first grid-example-ordering-last
-                                         grid-example-ordering-reverse]
-                         }])))
+                                         grid-example-ordering-reverse grid-example-distributed-around grid-example-distributed-between]
+                         }
+                        {:id            :columns-layout
+                         :title         "Pushing & Pulling"
+                         :documentation "# Pushing & Pulling Columns"
+                         :examples      [grid-example-column-push grid-example-column-pull grid-example-column-push-pull]}
+                        ])))
