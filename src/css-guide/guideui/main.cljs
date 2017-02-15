@@ -2,7 +2,7 @@
   (:require [styles.components]
             [styles.elements]
             [styles.objects]
-            [styles.utilities]
+            [styles.style]
             [untangled.client.core :as uc]
             [untangled.client.core :as core]
             [guideui.ui :as ui]))

@@ -11,17 +11,16 @@
             styles.components
             styles.objects
             styles.elements
-            styles.utilities
+            styles.style
             [untangled.client.mutations :as m]
             [clojure.string :as str]
             [devcards.core :as dc]))
 
 (def parts {"Getting Started" styles.getting-started/sections
-            "Settings"        styles.settings/sections
+            "Style"           styles.style/sections
             "Elements"        styles.elements/sections
             "Components"      styles.components/sections
-            "Objects"         styles.objects/sections
-            "Utilities"       styles.utilities/sections})
+            "Objects"         styles.objects/sections})
 
 (defn make-section-index [part part-idx sections]
   (map-indexed
