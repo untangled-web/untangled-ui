@@ -35,43 +35,41 @@ section: Objects
     tr:first-child td { font-weight: normal; }
 
     th,
-    td {
-      font-size: var(--fontSize--tiny);
-    }
+    td { font-size: var(--fontSize--tiny); }
 
-    th {
-      text-transform: uppercase;
-    }
-
-    td { cursor: pointer; }
+    th { text-transform: uppercase; }
   }
 
   .o-calendar__day {
     --day-height: 32px;
+    border-radius: 50px;
     height: var(--day-height);
+    min-width: var(--day-height);
     position: relative;
-    transition: color .3s ease-in-out;
+    transition: background-color var(--global-duration) ease-in-out;
     width: var(--day-height);
 
-  & > p { margin: 0; }
+    &:hover { background-color: var(--grey-50); }
 
-  &.is-active {
-     background-color: var(--highlight-announcement);
-     border-radius: 50px;
-   }
+    &.is-active { background-color: var(--highlight-announcement); }
 
-  &.is-inactive { visibility: hidden; }
+    &.is-inactive { visibility: hidden; }
+
+    & > p { margin: 0; }
   }
+
 
 .o-calendar--right {
   left: auto;
   right: 0;
 }
 
+
 .o-calendar--up {
-  top: auto;
   bottom: 0;
+  top: auto;
 }
+
 
 .o-calendar--inline {
   position: static !important;
