@@ -61,6 +61,7 @@ section: Settings
 @custom-media --lg-up only screen and (min-width: 62em);
 @custom-media --xl only screen and (min-width: 75em) and (max-width: 90em);
 @custom-media --xl-up only screen and (min-width: 75em);
+@custom-media --xxl-up only screen and (min-width: 90em);
 @custom-media --landscape only screen and (orientation: landscape);
 @custom-media --portrait only screen and (orientation: portrait);
 @custom-media --fullscreen (device-width: 100vw) and (device-height: 100vh);

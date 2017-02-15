@@ -122,6 +122,10 @@ xlarge+ - small, medium, large
   .u-hide\@xl-up { display: none !important; }
 }
 
+@media (--xxl-up) {
+  .u-show\@lg { display: none !important; }
+}
+
 
 @media print {
   .u-hide\@print { display: none !important; }
