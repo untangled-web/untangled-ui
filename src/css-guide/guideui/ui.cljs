@@ -11,7 +11,7 @@
             styles.layout
             styles.elements
             styles.components
-            styles.objects
+            styles.patterns
             [untangled.client.mutations :as m]
             [clojure.string :as str]
             [devcards.core :as dc]))
@@ -21,8 +21,7 @@
             "Layout"          styles.layout/sections
             ;; "Elements"        styles.elements/sections
             "Components"      styles.components/sections
-            ;; "Objects"         styles.objects/sections
-            ;; "Patterns"        styles.patterns/sections
+            "Patterns"        styles.patterns/sections
             ;; "Growth & communications" styles.growth/sections
             ;; "Usability"       styles.usability/sections
             ;; "Resources"       styles.resources/sections

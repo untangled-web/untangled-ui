@@ -1,7 +1,7 @@
 (ns guideui.main
   (:require [styles.components]
             [styles.elements]
-            [styles.objects]
+            [styles.patterns]
             [styles.style]
             [untangled.client.core :as uc]
             [untangled.client.core :as core]
