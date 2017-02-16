@@ -51,7 +51,12 @@
     (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {}
                                                                               "Inbox " (e/ui-badge {} "6")))))
 (defcard message
-   "Messages are decorated via a normal function.  The properties are a normal clj(s) map that can contain any of the normal HTML/React attributes"
+   "# Messages
+
+   Use `ui-message` to render children within a message. Common children include text and icons.
+
+   Some samples are shown below:
+   "
    (dom/div nil
       (e/ui-message {} "This is default message.")
       (e/ui-message {:color :neutral} "This is neutral message.")
