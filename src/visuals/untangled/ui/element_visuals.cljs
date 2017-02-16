@@ -24,7 +24,7 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
-(defcard messages-for-visual-regressions
+(defcard messages-visual-regressions
          "Messages are decorated via a normal function.  The properties are a normal clj(s) map that can contain any of the normal HTML/React attributes"
          (dom/div nil
                   (e/ui-message {} "This is default message.")
