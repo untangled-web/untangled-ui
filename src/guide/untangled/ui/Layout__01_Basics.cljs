@@ -3,6 +3,7 @@
     [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.dom :as dom]
     [untangled.ui.layout :as l]
+    [untangled.ui.elements :as ele]
     [untangled.client.core :as uc]))
 
 (comment
@@ -252,4 +253,5 @@
 
 
   "
-  (dom/div nil "TODO: needs iframe to demo properly"))
+  (ele/ui-iframe {:width "500px"}
+    (dom/div nil "AN IFrame!!")))
