@@ -79,6 +79,7 @@
 @import 'components/checkbox';
 @import 'components/radio';
 @import 'components/dropdown';
+@import 'components/expansion-panel';
 @import 'components/field';
 @import 'components/icon';
 @import 'components/input';

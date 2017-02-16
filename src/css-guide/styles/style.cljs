@@ -375,23 +375,6 @@ This collection of CSS colors are intended to serve the interface of all our pro
         (dom/div #js {:className "u-rotate--cw"} "Rotate right 90 degrees")
         (dom/div #js {:className "u-rotate--ccw"} "Rotate left -90 degrees")))))
 
-;; Size Examples
-
-(defarticle docs-size
-  "```css
-  --global-duration: .1s;
-  --global-margin: 8px;
-  --global-rounded: 4px;
-  --global-line-height: 32px;
-  --global-z-index: 100;
-  --frame-quarter: calc(var(--global-line-height) / 4); /* 8px */
-  --frame-third: calc(var(--global-line-height) / 3); /* 10.6px */
-  --frame-half: calc(var(--global-line-height) / 2); /* 16px */
-  --frame: var(--global-line-height); /* 32px */
-  --frame-double: calc(var(--global-line-height) * 2); /* 64px */
-  --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
-  ```
-  ")
 
 ;; Syntax
 
@@ -654,9 +637,6 @@ This collection of CSS colors are intended to serve the interface of all our pro
 (def sections
   (vec (sort-by :title [; NOTE: :examples is a list of example names, rendered in order given
                         {:id :settings-colour :title "Colour" :examples [settings-colour]}
-                        {:id       :size
-                         :title    "Elements - Size"
-                         :examples [docs-size]}
                         {:id       :media
                          :title    "Media"
                          :documentation

@@ -113,33 +113,41 @@
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
           (dom/span #js {:className "u-show@lg-up"} "1")))
+
       (dom/div #js {:className "u-column--6@sm u-column--8@md u-column--10@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "6 columns")
           (dom/span #js{:className "u-show@md"} "8 columns")
           (dom/span #js {:className "u-show@lg-up"} "10 columns")))
+
       (dom/div #js{:className "u-column--3@sm u-column--2@md u-column--1@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
           (dom/span #js {:className "u-show@lg-up"} "1"))))
+
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--3@sm u-column--2@md u-column--1@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "3")
           (dom/span #js {:className "u-show@md"} "2")
           (dom/span #js {:className "u-show@lg-up"} "1")))
+
       (dom/div #js {:className "u-column--9@sm u-column--10@md u-column--11@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "9 columns")
           (dom/span #js {:className "u-show@md"} "10 columns")
           (dom/span #js {:className "u-show@lg-up"} "11 columns"))))
+
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--6@sm u-column--8@md u-column--10@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js{:className "u-show@sm"} "6 columns")
           (dom/span #js {:className "u-show@md"} "8 columns")
           (dom/span #js{:className "u-show@lg-up"} "10 columns")))
+
       (dom/div #js {:className "u-column--6@sm u-column--4@md u-column--2@lg"}
         (dom/div #js {:className "box-row"}
           (dom/span #js {:className "u-show@sm"} "6 columns")
@@ -148,88 +156,76 @@
 
 (defexample grid-example-fluid
   "## Fluid"
-  (dom/div #js {}
+  (dom/div nil
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--12"}
-        (dom/div #js{:className "box-row"}
-          (dom/span #js {} "12"))))
+        (dom/div #js{:className "box-row"} "12")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--1"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "1")) "")
+        (dom/div #js {:className "box-row"} "1"))
       (dom/div #js {:className "u-column--11"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "11"))))
+        (dom/div #js {:className "box-row"} "11")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--2"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "2")))
+        (dom/div #js {:className "box-row"} "2"))
       (dom/div #js {:className "u-column--10"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "10"))))
+        (dom/div #js {:className "box-row"} "10")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--3"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "3")))
+        (dom/div #js {:className "box-row"} "3"))
       (dom/div #js {:className "u-column--9"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "9"))))
+        (dom/div #js {:className "box-row"} "9")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--4"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "4")))
+        (dom/div #js {:className "box-row"} "4"))
       (dom/div #js {:className "u-column--8"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "8"))))
+        (dom/div #js {:className "box-row"} "8")))
+
     (dom/div #js{:className "u-row"}
       (dom/div #js {:className "u-column--5"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "5")))
+        (dom/div #js {:className "box-row"} "5"))
       (dom/div #js {:className "u-column--7"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "7"))))
+        (dom/div #js {:className "box-row"} "7")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--6"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "6")))
+        (dom/div #js {:className "box-row"} "6"))
       (dom/div #js{:className "u-column--6"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "6"))))
+        (dom/div #js {:className "box-row"} "6")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--7"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "7")))
+        (dom/div #js {:className "box-row"} "7"))
       (dom/div #js {:className "u-column--5"}
-        (dom/div #js{:className "box-row"}
-          (dom/span #js {} "5"))))
+        (dom/div #js{:className "box-row"} "5")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--8"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "8")))
+        (dom/div #js {:className "box-row"} "8"))
       (dom/div #js {:className "u-column--4"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "4")) ""))
+        (dom/div #js {:className "box-row"} "4")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--9"}
-        (dom/div #js{:className "box-row"}
-          (dom/span #js {} "9")))
+        (dom/div #js{:className "box-row"} "9"))
       (dom/div #js {:className "u-column--3"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "3"))))
+        (dom/div #js {:className "box-row"} "3")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--10"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "10")))
+        (dom/div #js {:className "box-row"} "10"))
       (dom/div #js {:className "u-column--2"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js{} "2"))))
+        (dom/div #js {:className "box-row"} "2")))
+
     (dom/div #js {:className "u-row"}
       (dom/div #js {:className "u-column--11"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "11")))
+        (dom/div #js {:className "box-row"} "11"))
       (dom/div #js {:className "u-column--1"}
-        (dom/div #js {:className "box-row"}
-          (dom/span #js {} "1"))))))
+        (dom/div #js {:className "box-row"} "1")))))
 
 (defexample grid-example-column-push
   "### Column Push
@@ -328,30 +324,30 @@
   "### Nesting
 
   You can setup any number of levels of grids deep you would like."
-  (dom/div #js {}
-    (dom/div #js {:className "u-row"}
-      (dom/div #js {:className "u-column--4"}
-        (dom/div #js {:className "box box-container"}
-          (dom/div #js {:className "u-row"}
-            (dom/div #js {:className "u-column--12"}
-              (dom/div #js {:className "box-first box-container"}
-                (dom/div #js {:className "u-row"}
-                  (dom/div #js {:className "u-column--6"}
-                    (dom/div #js {:className "box-nested"}))
-                  (dom/div #js {:className "u-column--6"}
-                    (dom/div #js {:className "box-nested"}))))))))
-      (dom/div #js {:className "u-column--8"}
-        (dom/div #js {:className "box box-container"}
-          (dom/div #js {:className "u-row"}
-            (dom/div #js {:className "u-column--12"}
-              (dom/div #js {:className "box-first box-container"}
-                (dom/div #js {:className "u-row"}
-                  (dom/div #js {:className "u-column--3"}
-                    (dom/div #js {:className "box-nested"}))
-                  (dom/div #js {:className "u-column--6"}
-                    (dom/div #js {:className "box-nested"}))
-                  (dom/div #js {:className "u-column--3"}
-                    (dom/div #js {:className "box-nested"})))))))))))
+  (dom/div #js {:className "u-row"}
+    (dom/div #js {:className "u-column--4"}
+      (dom/div #js {:className "box box-container"}
+        (dom/div #js {:className "u-row"}
+          (dom/div #js {:className "u-column--12"}
+            (dom/div #js {:className "box-first box-container"}
+              (dom/div #js {:className "u-row"}
+                (dom/div #js {:className "u-column--6"}
+                  (dom/div #js {:className "box-nested"}))
+                (dom/div #js {:className "u-column--6"}
+                  (dom/div #js {:className "box-nested"}))))))))
+
+    (dom/div #js {:className "u-column--8"}
+      (dom/div #js {:className "box box-container"}
+        (dom/div #js {:className "u-row"}
+          (dom/div #js {:className "u-column--12"}
+            (dom/div #js {:className "box-first box-container"}
+              (dom/div #js {:className "u-row"}
+                (dom/div #js {:className "u-column--3"}
+                  (dom/div #js {:className "box-nested"}))
+                (dom/div #js {:className "u-column--6"}
+                  (dom/div #js {:className "box-nested"}))
+                (dom/div #js {:className "u-column--3"}
+                  (dom/div #js {:className "box-nested"}))))))))))
 
 (defexample grid-example-align-start
   "###### START"
@@ -486,6 +482,7 @@
             (dom/div #js {:className "box-first"} "5"))
           (dom/div #js {:className "u-column--2"}
             (dom/div #js {:className "box-first"} "6")))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START OF SECTIONS (within a feature set...e.g. components)

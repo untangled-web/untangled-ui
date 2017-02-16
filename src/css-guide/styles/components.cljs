@@ -376,6 +376,75 @@
 
 
 ;; -------------------------
+;; Expanding Panel
+;; -------------------------
+
+(def expansion-panel-header
+  "# Expansion panels"
+  )
+
+(defexample expansion-panel
+  "### Usage
+
+  This is a collapsed expansion panel"
+
+  (dom/div nil
+    (let [expanded-1 (boolean (om/get-state this :expanded-1))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-1 " is-expanded"))
+                   :onClick #(om/update-state! this update :expanded-1 not)
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"}
+         (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
+         (dom/div #js {:className "c-expansion-panel__info"} "Caribbean cruise")
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for trip name")))
+
+    (let [expanded-2 (boolean (om/get-state this :expanded-2))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
+                   :onClick   #(om/update-state! this update :expanded-2 not)
+                   :tabIndex  "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"}
+         (dom/div #js {:className "c-expansion-panel__title"} "Location")
+         (dom/div #js {:className "c-expansion-panel__info"} "Barbados")
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for location")))
+
+    (let [expanded-3 (boolean (om/get-state this :expanded-3))]
+      (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
+                   :onClick #(om/update-state! this update :expanded-3 not)
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"}
+         (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
+         (dom/div #js {:className "c-expansion-panel__info"} "Start date: Feb 29, 2016")
+         (dom/div #js {:className "c-expansion-panel__info"} "End date: Not set")
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for dates")))
+
+    (let [expanded-4 (boolean (om/get-state this :expanded-4))]
+      (dom/div #js {:className (str "c-expansion-panel" (when expanded-4 " is-expanded"))
+                   :onClick #(om/update-state! this update :expanded-4 not)
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"}
+         (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
+         (dom/div #js {:className "c-expansion-panel__info"} "The best cruise line")
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for carrier")))
+
+    (let [expanded-5 (boolean (om/get-state this :expanded-5))]
+      (dom/div #js {:className (str "c-expansion-panel" (when expanded-5 " is-expanded"))
+                   :onClick #(om/update-state! this update :expanded-5 not)
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"}
+         (dom/div #js {:className "c-expansion-panel__title"}
+           (dom/div nil "Meal preferences")
+           (dom/div #js {:className "c-message--neutral"} "Optional"))
+         (dom/div #js {:className "c-expansion-panel__info"} "Vegetarian")
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
+     )))
+
+
+;; -------------------------
 ;; Field
 ;; -------------------------
 
@@ -2172,6 +2241,13 @@
                       dropdown-search-multi
                       dropdown-data
                       ]}
+          {:id :expanding_panel
+           :title "Expansion panels"
+           :documentation expansion-panel-header
+           :examples [
+                      expansion-panel
+                      ]
+           }
           {:id :fields
            :title "Fields"
            :documentation field-header
