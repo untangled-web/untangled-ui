@@ -3,6 +3,7 @@
     [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.dom :as dom]
     [untangled.ui.layout :as l]
+    [untangled.ui.elements :as ele]
     [untangled.client.core :as uc]))
 
 (comment
@@ -249,7 +250,65 @@
   (rwhen :medium-
      (dom/div nil \"will show on viewports of medium size or smaller\"))
   ```
-
-
   "
-  (dom/div nil "TODO: needs iframe to demo properly"))
+  (dom/div nil
+    (ele/ui-iframe {:width "300px" :height "50px" :scrolling :no}
+      (l/row {:style {:backgroundColor :yellow}}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+        "Width is 300px :"
+        (l/rwhen :small "SMALL ")
+        (l/rwhen :medium "MEDIUM ")
+        (l/rwhen :large "LARGE ")
+        (l/rwhen :xlarge "XLARGE ")
+        (l/rwhen :small+ "SMALL+ ")
+        (l/rwhen :medium+ "MEDIUM+ ")
+        (l/rwhen :large+ "LARGE+ ")
+        (l/rwhen :xlarge+ "XLARGE+ ")))
+    (ele/ui-iframe {:width "800px" :height "50px" :scrolling :no}
+      (l/row {:style {:backgroundColor :yellow}}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+        "Width is 800px :"
+        (l/rwhen :small "SMALL ")
+        (l/rwhen :medium "MEDIUM ")
+        (l/rwhen :large "LARGE ")
+        (l/rwhen :xlarge "XLARGE ")
+        (l/rwhen :small+ "SMALL+ ")
+        (l/rwhen :medium+ "MEDIUM+ ")
+        (l/rwhen :large+ "LARGE+ ")
+        (l/rwhen :xlarge+ "XLARGE+ ")))
+    (ele/ui-iframe {:width "1100px" :height "50px" :scrolling :no}
+      (l/row {:style {:backgroundColor :yellow}}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+        "Width is 1100px :"
+        (l/rwhen :small "SMALL ")
+        (l/rwhen :medium "MEDIUM ")
+        (l/rwhen :large "LARGE ")
+        (l/rwhen :xlarge "XLARGE ")
+        (l/rwhen :small+ "SMALL+ ")
+        (l/rwhen :medium+ "MEDIUM+ ")
+        (l/rwhen :large+ "LARGE+ ")
+        (l/rwhen :xlarge+ "XLARGE+ ")))
+    (ele/ui-iframe {:width "1400px" :height "50px" :scrolling :no}
+      (l/row {:style {:backgroundColor :yellow}}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+        "Width is 1400px :"
+        (l/rwhen :small "SMALL ")
+        (l/rwhen :medium "MEDIUM ")
+        (l/rwhen :large "LARGE ")
+        (l/rwhen :xlarge "XLARGE ")
+        (l/rwhen :small+ "SMALL+ ")
+        (l/rwhen :medium+ "MEDIUM+ ")
+        (l/rwhen :large+ "LARGE+ ")
+        (l/rwhen :xlarge+ "XLARGE+ ")))
+    (ele/ui-iframe {:width "3400px" :height "50px" :scrolling :no}
+      (l/row {:style {:backgroundColor :yellow}}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+        "Width is 3400px :"
+        (l/rwhen :small "SMALL ")
+        (l/rwhen :medium "MEDIUM ")
+        (l/rwhen :large "LARGE ")
+        (l/rwhen :xlarge "XLARGE ")
+        (l/rwhen :small+ "SMALL+ ")
+        (l/rwhen :medium+ "MEDIUM+ ")
+        (l/rwhen :large+ "LARGE+ ")
+        (l/rwhen :xlarge+ "XLARGE+ ")))))

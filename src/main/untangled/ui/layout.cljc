@@ -124,17 +124,17 @@
 
   See also `rwhen` for a more readable alternative.
   "
-  {:small        "u-show@sm"
-   :medium       "u-show@md"
-   :large        "u-show@lg"
-   :extra-large  "u-show@xl"
-   :small+       ""
-   :medium+      "u-show@md-up"
-   :large+       "u-show@lg-up"
-   :extra-large+ "u-show@xl-up"
-   :medium-      "u-show@sm u-show@md"
-   :large-       "u-show@sm u-show@md u-show@md"
-   :extra-large- "u-show@sm u-show@md u-show@lg u-show@xl"})
+  {:small   "u-show@sm"
+   :medium  "u-show@md"
+   :large   "u-show@lg"
+   :xlarge  "u-show@xl"
+   :small+  ""
+   :medium+ "u-show@md-up"
+   :large+  "u-show@lg-up"
+   :xlarge+ "u-show@xl-up"
+   :medium- "u-show@sm u-show@md"
+   :large-  "u-show@sm u-show@md u-show@md"
+   :xlarge- "u-show@sm u-show@md u-show@lg u-show@xl"})
 
 (def when-classes (set (keys when-class)))
 
@@ -152,19 +152,19 @@
   :small  - Show only on screens with width 0-48em (non-inclusive)
   :medium  - Show only on screens with width 48-62em
   :large  - Show only on screens with width 62-75em
-  :extra-large  - Show only on screens with width 75-90em (NOTE this will hide on screens larger than 90em wide!)
+  :xlarge  - Show only on screens with width 75-90em (NOTE this will hide on screens larger than 90em wide!)
   :small+  - Show only on screens with width (all sizes...here for completeness, never used since it is the default)
   :medium+  - Show only on screens with width 48em+
   :large+  - Show only on screens with width 62em+
-  :extra-large+  - Show only on screens with width 75em+
+  :xlarge+  - Show only on screens with width 75em+
   :medium-  - Show only on screens with width 0-60em
   :large-  - Show only on screens with width 0-75em
-  :extra-large-  - Show only on screens with width 0-90em
+  :xlarge-  - Show only on screens with width 0-90em
   ```
   "
   [size & children]
   {:pre [(contains? when-classes size)]}
-  (apply dom/span #js {:className (when-class)} children))
+  (apply dom/span #js {:className (when-class size)} children))
 
 (def css-align-start "The CSS class string u-start for horizontal left alignment. Usable on most layout containers." "u-start")
 (def css-align-center "The CSS class string u-center for horizontal center alignment. Usable on most layout containers." "u-center")
