@@ -50,3 +50,15 @@
     (dom/div #js {:style #js {:marginTop "10px"}} "A plain badge: " (e/ui-badge {} "6"))
     (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {}
                                                                               "Inbox " (e/ui-badge {} "6")))))
+
+(defcard field
+  "# Fields
+
+  Use `ui-field` to render a field. Optionally set the size, state identifiers and provide placeholder text.  Also supports custom classes.
+  "
+  (dom/div nil
+    (e/ui-field {} "Default field")
+    (e/ui-field {:size :small :state #{:required}} "Small required field")
+    (e/ui-field {:size :medium :state #{:focus}} "Medium focused field")
+    (e/ui-field {:size :large :state #{:invalid}} "Large invalid field")
+    (e/ui-field {:state #{:error}} "Error field")))

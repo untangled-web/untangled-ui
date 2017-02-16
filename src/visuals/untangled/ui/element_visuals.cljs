@@ -24,3 +24,11 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
+(defcard field-visual-regressions
+  (dom/div nil
+    (e/ui-field {} "Default field")
+    (e/ui-field {:size :small :state #{:required}} "Small required field")
+    (e/ui-field {:size :medium :state #{:focus}} "Medium focused field")
+    (e/ui-field {:size :large :state #{:invalid}} "Large invalid field")
+    (e/ui-field {:state #{:error}} "Error field")))
+

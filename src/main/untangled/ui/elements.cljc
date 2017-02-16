@@ -54,6 +54,28 @@
   (let [props (update props :className str " c-badge")]
     (apply dom/span (clj->js props) children)))
 
+(defn ui-field
+  "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  size (optional): :small, :medium, :large
+  states that can be implemented (optional) :required, :focus, :invalid, :error"
+  [{:keys [size state] :or {size ""} :as attrs} placeholder]
+  (let [legal-sizes #{:small :medium :large}
+        user-classes (get attrs :className "")
+        has (fn [s] (contains? state s))
+        classes (cond-> (str user-classes " c-field ")
+                        (contains? legal-sizes size) (str "c-field--" (name size))
+                        (has :focus) (str " has-focus")
+                        (has :invalid) (str " is-invalid")
+                        (has :error) (str " is-error"))
+        attrs (cond-> attrs
+                      (contains? state :required) (assoc :required "true")
+                      :always (assoc :type "text")
+                      :always (dissoc :size)
+                      :always (assoc :className classes)
+                      :always (assoc :placeholder (name placeholder)))]
+    (dom/input (clj->js attrs))))
+
 #?(:cljs
    (defn update-frame-content [this child]
      (let [frame-component (om/get-state this :frame-component)]
