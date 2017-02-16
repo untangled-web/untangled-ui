@@ -20,7 +20,7 @@
             [lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/main" "src/guide" "src/visuals"]
+  :source-paths ["dev" "src/main" "src/guide" "src/visuals" "src/css-guide"]
   :test-paths ["src/test"]
   :jar-exclusions [#".DS_Store" #"public" #"cards" #"user.clj"]
 
