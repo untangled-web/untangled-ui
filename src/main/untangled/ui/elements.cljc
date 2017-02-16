@@ -87,7 +87,7 @@
   (dom/div #js {:className "c-card__title"}
            (dom/h1 #js {:className "c-card__heading"} title)))
 
-(defn add-card
+(defn ui-card
   "Render a card. Props is a normal clj(s) map with React/HTML attributes plus:
 
   className (optional): additional class stylings to apply to the top level of the card
