@@ -19,16 +19,18 @@
   `:valign` can be :top, :middle, or :bottom and will affect the vertical positioning of nested cells that do not
   share a common height.
   "
-  [{:keys [distribute-extra-columns halign valign] :as props} & children]
+  [{:keys [distribute-extra-columns halign valign density] :as props} & children]
   {:pre [(contains? #{nil :between :around} distribute-extra-columns)
          (contains? #{nil :start :center :end} halign)
-         (contains? #{nil :top :middle :bottom} valign)]}
+         (contains? #{nil :top :middle :bottom} valign)
+         (contains? #{nil :collapse :wide :break} density)]}
   (let [className (or (:className props) "")
         classes   (cond-> className
                     :always (str " u-row")
                     distribute-extra-columns (str " u-" (name distribute-extra-columns))
                     halign (str " u-" (name halign))
-                    valign (str " u-" (name valign)))
+                    valign (str " u-" (name valign))
+                    density (str " u-row--" (name density)))
         attrs     (-> props
                     (dissoc :distribute-extra-columns)
                     (assoc :className classes)
