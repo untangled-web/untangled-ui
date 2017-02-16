@@ -57,7 +57,6 @@
 #?(:cljs
    (defn update-frame-content [this child]
      (let [frame-component (om/get-state this :frame-component)]
-       (js/console.log :UPDATE frame-component child)
        (when frame-component
          (js/ReactDOM.render child frame-component)))))
 
