@@ -24,3 +24,8 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
+(defcard card
+         (dom/div nil
+                  (e/add-card {:type :round} (dom/p nil "round card no title"))
+                  (e/add-card {:type :transparent :title "Transparent Card Title"})
+                  (e/add-card {:type :ruled :title-bar true :title "Ruled Title"} (dom/p nil "Text for ruled card"))))
