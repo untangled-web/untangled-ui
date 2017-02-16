@@ -17,6 +17,8 @@ reusable Untangled components for rapid application development.
 
 See the README-css.md for more details on working with the CSS itself. 
 
+![](https://clojars.org/navis/untangled-ui/latest-version.svg)
+
 # Project Layout
 
 ```
