@@ -46,7 +46,6 @@
 
   So that any initialized form *could* be dirty (if it has a temp id).
 
-
   ## Temporary IDs
 
   Any entity in a form grouping that contains a temporary ID is always
