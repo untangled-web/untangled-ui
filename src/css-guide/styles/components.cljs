@@ -1,6 +1,7 @@
 (ns styles.components
   (:require [om.next :as om :refer-macros [defui]]
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [untangled.ui.layout :as l]
             [untangled.icons :as icons]
             [om.dom :as dom]))
 
@@ -18,16 +19,16 @@
 (defexample avatar
   "An avatar is a round symbol to represent a person's identity. When there is no visual, we use the first and last
    initial of their name."
-  (dom/div #js {:className "u-row"}
-    (dom/div #js {:className "u-column--1"}
+  (l/row {}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar"} "AV"))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar"} (icons/icon :help)))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--support"} "KB"))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--informative"} (icons/icon :supervisor_account)))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--huge"} "AV"))))
 
 ;; -------------------------
@@ -73,10 +74,16 @@
 
      Use these button classes on `<button>` or `<input type='submit'>` element. It's easy to make a new button.")
 
-(defexample button
-  "### Basic"
-  (dom/button #js {:className "c-button"} "Regular")
-  )
+(defview button
+  "### Button types"
+  (dom/div #js {:className "u-row u-center"}
+    (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--colored c-button--raised"} "Button")
+      (dom/div #js {:className "u-font-size--small u-leader"} "Raised button"))
+    (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--colored"} "Button")
+      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button")
+      )))
 
 (defexample button-shape
   "### Size and form
@@ -84,16 +91,11 @@
   You can optionally use modifier classes that let you manipulate the size and shape of your button.
   "
   (dom/div #js {}
+    (dom/button #js {:className "c-button c-button--raised c-button--colored"} "Regular")
+    (dom/button #js {:className "c-button c-button--raised c-button--colored c-button--round"} "Round")
+    (dom/button #js {:className "c-button c-button--raised c-button--colored c-button--dense"} "Dense")
     (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button"} "Regular"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--large"} "Large"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--xlarge"} "Extra Large"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--round"} "Round"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--wide"} "Wide"))
+      (dom/button #js {:className "c-button c-button--raised c-button--colored c-button--wide"} "Wide"))
     ))
 
 
@@ -103,27 +105,55 @@
   Stateful color classes are provided to further communicate the intentions of your button action."
   (dom/div #js {}
     (dom/button #js {:className "c-button"} "Default")
-    (dom/button #js {:className "c-button c-button--secondary"} "Secondary")
-    (dom/button #js {:className "c-button c-button--alert"} "Alert")
-    (dom/button #js {:className "c-button c-button--passive"} "Passive")
-    (dom/button #js {:className "c-button c-button--text"} "Text")
-    (dom/button #js {:className "c-button c-button--anchor"} "Anchor")))
+    (dom/button #js {:className "c-button c-button--colored"} "Colored")
+    (dom/button #js {:className "c-button c-button--raised"} "Raised")
+    (dom/button #js {:className "c-button c-button--raised c-button--colored"} "Raised Colored")
+    ))
 
 
-(defexample button-state
-  "### States"
-  (dom/div #js {}
-    (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
-    (dom/button #js {:title "Click me to see the active state." :className "c-button is-active"} "Active")))
+(defview button-state
+  "### Flat Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--6"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled"))
+      )
+    (dom/div #js {:className "u-column--6 t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled"))
+      )
+    ))
+
+
+(defview button-state-raised
+  "### Raised Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--6"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised is-disabled"} "Disabled"))
+      )
+    (dom/div #js {:className "u-column--6 t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised c-button--colored is-disabled"} "Disabled"))
+      )
+    ))
 
 
 (defexample button-icon
 "### Buttons with icons"
   (dom/div nil
-    (dom/button #js {:className "c-button"}
+    (dom/button #js {:className "c-button c-button--raised"}
       (icons/icon :arrow_back)
       (dom/span #js {:className "c-button__content"} "Left Icon"))
-    (dom/button #js {:className "c-button"}
+    (dom/button #js {:className "c-button c-button--raised"}
       (dom/span #js {:className "c-button__content"} "Right Icon")
       (icons/icon :arrow_forward))
     (dom/button #js {:title "Icon Button" :className "c-button c-button--icon"}
@@ -395,7 +425,9 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
-         (dom/div #js {:className "c-expansion-panel__info"} "Caribbean cruise")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-1
+             "Caribbean cruise"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for trip name")))
 
@@ -405,9 +437,26 @@
                    :tabIndex  "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Location")
-         (dom/div #js {:className "c-expansion-panel__info"} "Barbados")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2
+             "Barbados"
+             (dom/span nil "Select trip destination" (icons/icon :help_outline))))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
-       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for location")))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (l/row {:density :collapse}
+           (dom/div #js {:className "u-column--12 u-column--8@md u-center@md"}
+             (dom/span #js {:className "c-badge c-badge--large"} "Barbados" (icons/icon :cancel)))
+           (dom/div #js {:className "u-column--12 u-column--4@md"}
+             (dom/div #js {:className "c-message--neutral"} "Select your destination of choice")
+             (dom/div #js {:className "c-message"} "Learn more"))
+           )
+         (l/row {:density :collapse :className "c-expansion-panel__actions"}
+           (dom/div #js {:className "u-column--12 u-end"}
+             (dom/button #js {:className "c-button c-button--text"} "CANCEL")
+             (dom/button #js {:className "c-button c-button--anchor"} "SAVE")
+             )
+           )
+         )))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
@@ -415,8 +464,10 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
-         (dom/div #js {:className "c-expansion-panel__info"} "Start date: Feb 29, 2016")
-         (dom/div #js {:className "c-expansion-panel__info"} "End date: Not set")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-3 "Start date: Feb 29, 2016"))
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-3 "End date: Not set"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for dates")))
 
@@ -426,7 +477,8 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
-         (dom/div #js {:className "c-expansion-panel__info"} "The best cruise line")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-4 "The best cruise line"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for carrier")))
 
@@ -438,7 +490,8 @@
          (dom/div #js {:className "c-expansion-panel__title"}
            (dom/div nil "Meal preferences")
            (dom/div #js {:className "c-message--neutral"} "Optional"))
-         (dom/div #js {:className "c-expansion-panel__info"} "Vegetarian")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-5 "Vegetarian"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
      )))
@@ -2210,6 +2263,7 @@
                       button-shape
                       button-color
                       button-state
+                      button-state-raised
                       button-icon
                       ]}
           {:id :card

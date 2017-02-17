@@ -26,6 +26,7 @@ import postcssCalc from 'postcss-calc';
 import postcssLogicalProps from 'postcss-logical-props';
 import postcssFlexbugsFixes from 'postcss-flexbugs-fixes';
 import postcssReporter from 'postcss-reporter';
+import postcssColor from 'postcss-color-function';
 import gulpLoadPlugins from 'gulp-load-plugins';
 
 const $ = gulpLoadPlugins();
@@ -46,6 +47,7 @@ gulp.task('styles', () => {
     postcssCssVariables,
     postcssSelectorNot,
     postcssCalc,
+    postcssColor,
     postcssLogicalProps,
     postcssFlexbugsFixes,
     autoprefixer({browsers: AUTOPREFIXER_BROWSERS}),
@@ -74,6 +76,7 @@ gulp.task('dist', () => {
     postcssCssVariables,
     postcssSelectorNot,
     postcssCalc,
+    postcssColor,
     postcssLogicalProps,
     postcssFlexbugsFixes,
     autoprefixer({browsers: AUTOPREFIXER_BROWSERS}),

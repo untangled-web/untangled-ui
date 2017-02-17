@@ -68,6 +68,42 @@
                   )]
     (apply dom/span (clj->js props) children)))
 
+(defn ui-field
+  "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  size (optional): :small, :medium, :large
+  states that can be implemented (optional) :required, :focus, :invalid, :error"
+  [{:keys [size state] :or {size ""} :as attrs} placeholder]
+  (let [legal-sizes #{:small :medium :large}
+        user-classes (get attrs :className "")
+        has (fn [s] (contains? state s))
+        classes (cond-> (str user-classes " c-field ")
+                        (contains? legal-sizes size) (str "c-field--" (name size))
+                        (has :focus) (str " has-focus")
+                        (has :invalid) (str " is-invalid")
+                        (has :error) (str " is-error"))
+        attrs (cond-> attrs
+                      (contains? state :required) (assoc :required "true")
+                      :always (assoc :type "text")
+                      :always (dissoc :size)
+                      :always (assoc :className classes)
+                      :always (assoc :placeholder (name placeholder)))]
+    (dom/input (clj->js attrs))))
+
+(defn ui-message
+  "Render the given children within a message. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :neutral, :alert, :success, :warning"
+  [{:keys [className color] :as props :or {className ""}} & children]
+  (let [legal-colors #{:neutral :alert :success :warning}
+        classes (cond-> className
+                        :always (str " c-message")
+                        (contains? legal-colors color) (str "--" (name color)))
+        props (-> props
+                  (assoc :className classes)
+                  (dissoc :color))]
+    (apply dom/div (clj->js props) children)))
+
 #?(:cljs
    (defn update-frame-content [this child]
      (let [frame-component (om/get-state this :frame-component)]
