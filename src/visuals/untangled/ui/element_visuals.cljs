@@ -32,3 +32,12 @@
     (e/ui-field {:size :large :state #{:invalid}} "Large invalid field")
     (e/ui-field {:state #{:error}} "Error field")))
 
+(defcard messages-visual-regressions
+  (dom/div nil
+    (e/ui-message {} "This is default message.")
+    (e/ui-message {:color :neutral} "This is neutral message.")
+    (e/ui-message {:color :alert} "This is an alert message.")
+    (e/ui-message {:color :success} "This is a success message.")
+    (e/ui-message {:color :warning} "This is a warning message.")
+    (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
+    (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))

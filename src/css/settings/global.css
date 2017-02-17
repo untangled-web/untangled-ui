@@ -100,7 +100,7 @@ section: Settings
 @custom-selector :--lists ul, ol, dl;
 @custom-selector :--list-items li, dt, dd;
 @custom-selector :--media audio, canvas, iframe, img, svg, video;
-@custom-selector :--fullscreen .o-article:fullscreen;
+@custom-selector :--fullscreen :fullscreen;
 
 
 /* Custom Pseudo Class Selectors */

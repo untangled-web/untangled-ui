@@ -237,25 +237,10 @@ section: Components
 }
 
 
-.c-card--ruled {
-  @apply --card-reset;
-  border-bottom: 1px solid var(--borderColor-inactive);
-  border-top: 1px solid var(--grey-500);
-  margin: 0;
-
-  &:not(:last-child) { border-top: 1px solid var(--borderColor-inactive); }
-
-  &:last-child { margin-bottom: 1em; }
-
-  :--headings { text-transform: uppercase; }
-}
-
-
 .c-card--round { border-radius: var(--global-rounded); }
 
 
 .c-card--zone {
-  background-color: var(--blue-50);
   border: 1px dashed var(--blue-500);
   border-radius: var(--global-rounded);
   box-shadow: none;
@@ -271,10 +256,4 @@ section: Components
 .c-card--small { padding: 0; }
 
 
-.c-card--bleed { padding: 0 !important; }
-
-
-.c-card--collapse {
-  height: 100%;
-  padding: .5em .5rem;
-}
+.c-card--collapse { padding: 0 !important; }

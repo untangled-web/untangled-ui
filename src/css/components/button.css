@@ -4,130 +4,210 @@ section: Components
 ---*/
 
 :root {
-  --boxShadow-button--hover: 0 0 6px var(--shadow-color);
-  --height-button: 30px;
-  --height-button--large: 36px;
-  --height-button--small: 22px;
-  --height-button--xlarge: 68px;
+  /* Default button colors */
+  --borderRadius-button: 2px;
+  --color-button--primary: color(var(--grey-500) a(20%));
+  --color-button--secondary: var(--black);
+  --color-button--hover: var(--color-button--primary);
+  --color-button--active: color(var(--grey-500) a(30%));
+  --color-button--focus: color(var(--black) a(6%));
+
+  /* Colored buttons */
+  --color-button-alt--primary: var(--color-primary);
+  --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--hover: var(--color-primary-dark);
+  --color-button-alt--active: var(--color-primary-dark);
+  --color-button-alt--focus: var(--white);
+
+  /* Dark theme buttons */
+  --color-button-dark--primary: color(var(--grey-500) a(18%));
+  --color-button-dark--secondary: var(--color-primary-contrast);
+  --color-button-dark--hover: var(--color-button-dark--primary);
+  --color-button-dark--active: color(var(--grey-500) a(18%));
+  --color-button-dark--focus: color(var(--black) a(10%));
+
+  /* Disabled buttons */
+  --color-button-disabled--primary: color(var(--black) a(12%));
+  --color-button-disabled--secondary: color(var(--black) a(26%));
+  --color-button-disabled--dark: color(var(--black) a(30%));
+
+  --fontSize-button: 14px;
+  --fontSize-button--dense: calc(var(--fontSize-button) - 1px);
+  --size-button: 36px;
+  --size-button--dense: calc(var(--size-button) - 4px);
+
   --opacity-button--disabled: .35;
   --transitionDuration-button: .1s;
+
 
   --button--wide: {
     display: block;
     width: 100%;
   };
-
-  --button--small: {
-    font-size: 12px;
-    height: var(--height-button--small);
-    line-height: var(--height-button--small);
-  };
-
-  --button--large: {
-    font-size: var(--fontSize--normal) !important;
-    height: var(--height-button--large);
-    line-height: var(--height-button--large);
-  };
-
-  --button--xlarge: {
-    @apply --middle;
-    display: flex;
-    font-size: var(--fontSize--normalPlus) !important;
-    height: var(--height-button--xlarge);
-    line-height: var(--height-button--xlarge);
-    padding: 0 var(--frame-half);
-  };
-
-  --button--postfix: {
-    border-radius: 0 var(--global-rounded) var(--global-rounded) 0;
-    margin-left: -4px;
-  };
-
-  --button--postinset: {
-    background-color: transparent;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  };
 }
 
+
+/* Button default is flat */
+
 .c-button {
-  background-color: var(--backgroundColor-button);
-  border-radius: var(--global-rounded);
-  border-width: 0;
-  color: var(--color-button);
+  background: transparent;
+  border: none;
+  border-radius: var(--borderRadius-button);
+  color: var(--color-button--secondary);
   display: inline-block;
   font-family: inherit;
-  font-size: var(--fontSize--small);
-  height: var(--height-button);
-  line-height: var(--height-button);
-  margin: 0;
+  font-size: var(--fontSize-button);
+  font-weight: 600;
+  height: var(--size-button);
+  letter-spacing: 0;
+  line-height: var(--size-button);
+  margin: 6px var(--frame-quarter);
   max-width: 100%;
-  outline: 0;
+  min-width: 64px;
+  outline: none;
   overflow: visible; /* Internet Explorer 12- */
   padding: 0 var(--frame-quarter);
   position: relative;
   text-align: center;
   text-decoration: none;
-  transition: background var(--transitionDuration-button) ease, color var(--transitionDuration-button) ease;
+  text-transform: uppercase;
+  transition:
+    box-shadow var(--transitionDuration-button) ease,
+    background-color var(--transitionDuration-button) ease,
+    color var(--transitionDuration-button) ease;
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  will-change: opacity;
-
-  &:--active {
-    background-color: var(--backgroundColor-button--hover);
-
-    &::after { opacity: 0 !important; }
-  }
-
-  &:--enter {
-    & .u-fade-out { @apply --fade-in; }
-  }
-
-  &:hover::after { opacity: 1; }
+  will-change: box-shadow;
 
   &::-moz-focus-inner {
-    border: 0 !important;
-    padding: 0 !important;
-  }
+     border: 0 !important;
+     padding: 0 !important;
+   }
+
+  &[type="submit"] { -webkit-appearance: none; }
+
+  &:hover { background-color: var(--color-button--hover); }
+
+  &:focus:not(:active),
+  &.is-focused {
+     background-color: var(--color-button--focus);
+
+    .t-dark & { background-color: var(--color-button-dark--focus); }
+   }
+
+  &:--active {
+     background-color: var(--color-button--active);
+
+    .t-dark & { background-color: var(--color-button-dark--active); }
+   }
+
 
   &:--disabled {
-    opacity: var(--opacity-button--disabled);
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
     -ms-pointer-events: none;
     pointer-events: none;
-  }
 
-  &::after {
-    border-radius: inherit;
-    bottom: 0;
-    box-shadow: var(--boxShadow-button--hover);
-    content: '';
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: opacity var(--transitionDuration-button) ease;
-    z-index: 5;
+    .t-dark & { color: var(--color-button-disabled--dark); }
   }
-
-  &:last-child { margin-right: 0 !important; }
 
   @media print { display: none; }
 
-  :--fullscreen & { font-size: 1rem; }
+  .t-dark & { color: var(--color-button-dark--secondary); }
 
-  .c-field & {
-    height: 28px;
-    line-height: 28px;
-    margin-right: 5px;
+  :--fullscreen & {
+    color: var(--color-button-dark--secondary);
+    font-size: 1rem;
   }
+
+  & .c-icon { vertical-align: middle; }
 }
 
 
-  .c-button__content { @apply --start; }
+.c-button__content { @apply --start; }
+
+
+.c-button--dense {
+  height: var(--size-button--dense);
+  font-size: var(--fontSize-button--dense);
+  line-height: var(--size-button--dense);
+}
+
+
+.c-button--colored {
+  color: var(--color-button-alt--primary);
+
+  &:focus:not(:active),
+   &.is-focused { background-color: var(--color-button-alt--focus); }
+
+  &:--disabled { color: var(--color-button-disabled--secondary); }
+}
+
+.c-button--raised {
+  background: var(--color-button--primary);
+
+  &::after {
+     border-radius: inherit;
+     bottom: 0;
+     box-shadow: var(--shadow-2);
+     content: '';
+     left: 0;
+     position: absolute;
+     transition: box-shadow var(--global-duration) ease;
+     right: 0;
+     top: 0;
+     z-index: 5;
+   }
+
+
+  &:--active {
+    background-color: var(--color-button--active);
+
+    &::after { box-shadow: var(--shadow-3); }
+  }
+
+  &:focus:not(:active),
+   &.is-focused {
+    background-color: var(--color-button--active);
+
+    &::after { box-shadow: var(--shadow-focus); }
+   }
+
+  &:--disabled {
+     background-color: var(--color-button-disabled--primary);
+     color: var(--color-button-disabled--secondary);
+     -ms-pointer-events: none;
+     pointer-events: none;
+
+    &::after { box-shadow: none; }
+
+     .t-dark & {
+       background-color: var(--color-button-dark--primary);
+       color: var(--color-button-disabled--dark);
+    }
+   }
+
+  &.c-button--colored {
+    background-color: var(--color-button-alt--primary);
+    color: var(--color-button-alt--secondary);
+
+    &:hover { background-color: var(--color-button-alt--hover); }
+
+    &:--active {
+       background-color: var(--color-button-alt--active);
+
+      .t-dark & {
+        background-color: var(--color-button-dark--active);
+      }
+     }
+
+    &:focus:not(:active),
+     &.is-focused { background-color: var(--color-button-alt--active); }
+   }
+
+   .t-dark & { background-color: var(--color-button-alt--primary); }
+}
 
 
 .c-button--wide { @apply --button--wide; }
@@ -135,82 +215,15 @@ section: Components
 .c-button--round,
 .c-button--radial { border-radius: var(--global-radial) !important; }
 
-.c-button--small {
-  @apply --button--small;
-
-  .c-icon {
-    height: 14px;
-    width: 14px;
-  }
-}
-
-.c-button--large { @apply --button--large; }
-.c-button--xlarge { @apply --button--xlarge; }
-.c-button--postfix { @apply --button--postfix; }
-.c-button--postinset { @apply --button--postinset; }
-
-
-@media (--sm) {
-  .c-button--wide\@sm { @apply --button--wide; }
-  .c-button--rounded\@sm { border-radius: var(--global-rounded) !important; }
-  .c-button--radial\@sm { border-radius: var(--global-radial) !important; }
-  .c-button--small\@sm { @apply --button--small; }
-  .c-button--large\@sm { @apply --button--large; }
-  .c-button--xlarge\@sm { @apply --button--xlarge; }
-  .c-button--postfix\@sm { @apply --button--postfix; }
-  .c-button--postinset\@sm { @apply --button--postinset; }
-}
-
-
-@media (--md-up) {
-  .c-button--wide\@md { @apply --button--wide; }
-  .c-button--rounded\@md { border-radius: var(--global-rounded) !important; }
-  .c-button--radial\@md { border-radius: var(--global-radial) !important; }
-  .c-button--small\@md { @apply --button--small; }
-  .c-button--large\@md { @apply --button--large; }
-  .c-button--xlarge\@md { @apply --button--xlarge; }
-  .c-button--postfix\@md { @apply --button--postfix; }
-  .c-button--postinset\@md { @apply --button--postinset; }
-}
-
-
-@media (--lg-up) {
-  .c-button--wide\@lg { @apply --button--wide; }
-  .c-button--rounded\@lg { border-radius: var(--global-rounded) !important; }
-  .c-button--radial\@lg { border-radius: var(--global-radial) !important; }
-  .c-button--small\@lg { @apply --button--small; }
-  .c-button--large\@lg { @apply --button--large; }
-  .c-button--xlarge\@lg { @apply --button--xlarge; }
-  .c-button--postfix\@lg { @apply --button--postfix; }
-  .c-button--postinset\@lg { @apply --button--postinset; }
-}
-
-
-@media (--xl-up) {
-  .c-button--wide\@xl { @apply --button--wide; }
-  .c-button--rounded\@xl { border-radius: var(--global-rounded) !important; }
-  .c-button--radial\@xl { border-radius: var(--global-radial) !important; }
-  .c-button--small\@xl { @apply --button--small; }
-  .c-button--large\@xl { @apply --button--large; }
-  .c-button--xlarge\@xl { @apply --button--xlarge; }
-  .c-button--postfix\@xl { @apply --button--postfix; }
-  .c-button--postinset\@xl { @apply --button--postinset; }
-}
-
-
 .c-button--icon {
-  background-color: transparent;
   color: var(--grey-700);
-  display: inline-block;
-  height: auto;
-  margin: 0;
   min-width: auto;
 
   &:hover { color: var(--grey-800); }
 
   &:--active {
     background-color: transparent;
-    color: var(--backgroundColor-button--hover);
+    color: var(--color-button--hover);
   }
 
   &::after { opacity: 0 !important; }
@@ -255,80 +268,4 @@ section: Components
   &:empty::before {
     margin: .85em 0;
   }
-}
-
-
-.c-button--secondary {
-  background-color: var(--backgroundColor-button-secondary);
-
-  &:--active { background-color: var(--backgroundColor-button-secondary--hover); }
-
-  & .c-badge { color: var(--backgroundColor-button-secondary); }
-}
-
-
-.c-button--alert {
-  background-color: var(--backgroundColor-button-alert);
-
-  &:--active { background-color: var(--backgroundColor-button-alert--hover); }
-
-  & .c-badge { color: var(--backgroundColor-button-alert); }
-}
-
-
-.c-button--passive {
-  background-color: var(--backgroundColor-button-passive);
-  border: var(--border-button);
-  color: var(--color-button-passive);
-
-  &:--active { background-color: var(--backgroundColor-button-passive--hover); }
-
-  & .c-badge { color: var(--backgroundColor-button-passive); }
-}
-
-
-.c-button--text {
-  background-color: var(--backgroundColor-button-text);
-  border: 1px solid transparent;
-  color: var(--color-button-text);
-
-  &:--enter { color: var(--color-button-text--hover); }
-
-  &:--active {
-    background-color: var(--backgroundColor-button-text--hover);
-    border: var(--border-button);
-    color: var(--color-button-text--hover);
-  }
-
-  & .c-badge { color: var(--backgroundColor-button-text); }
-
-  .o-toolbar--secondary & {
-    &:--enter {
-      border: 1px inset var(--grey-600);
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, .5);
-    }
-  }
-}
-
-
-.c-button--anchor {
-  background-color: var(--backgroundColor-button-anchor);
-  box-shadow: none;
-  color: var(--color-button-anchor);
-  text-transform: uppercase;
-
-  &:--active {
-    background-color: var(--backgroundColor-button-anchor);
-    color: var(--color-button-anchor--active);
-    text-decoration: underline !important;
-  }
-
-  & .c-badge { color: var(--backgroundColor-button-anchor); }
-}
-
-
-.c-button--informative {
-  background-color: var(--blue-100);
-  border: 1px solid var(--blue-300);
-  color: var(--color-page);
 }

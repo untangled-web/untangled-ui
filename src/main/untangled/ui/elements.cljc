@@ -76,6 +76,21 @@
                       :always (assoc :placeholder (name placeholder)))]
     (dom/input (clj->js attrs))))
 
+(defn ui-message
+  "Render the given children within a message. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :neutral, :alert, :success, :warning"
+  [{:keys [className color] :as props :or {className ""}} & children]
+  (let [legal-colors #{:neutral :alert :success :warning}
+        classes (cond-> className
+                        :always (str " c-message")
+                        (contains? legal-colors color) (str "--" (name color)))
+        props (-> props
+                  (assoc :className classes)
+                  (dissoc :color))]
+    (apply dom/div (clj->js props) children)))
+
+
 #?(:cljs
    (defn update-frame-content [this child]
      (let [frame-component (om/get-state this :frame-component)]
