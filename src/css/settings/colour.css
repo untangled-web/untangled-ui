@@ -121,6 +121,7 @@ section: Settings
   --color-primary: var(--blue-500);
   --color-primary-dark: var(--blue-700);
   --color-accent: var(--orange-500);
+  --color-accent-dark: var(--orange-700);
   --color-primary-contrast: var(--white);
   --color-accent-contrast: var(--white);
 }
@@ -132,7 +133,6 @@ section: Settings
   /* Globals */
 
   --backgroundColor-page: var(--white);
-
   --borderColor: var(--grey-300);
   --borderColor-inactive: var(--grey-500);
 
@@ -165,22 +165,37 @@ section: Settings
 
   /* Button */
 
-  --backgroundColor-button: var(--blue-700);
-  --backgroundColor-button--hover: var(--blue-500);
-  --backgroundColor-button-alert: var(--red-700);
-  --backgroundColor-button-alert--hover: var(--red-500);
-  --backgroundColor-button-anchor: transparent;
-  --backgroundColor-button-secondary: var(--orange-800);
-  --backgroundColor-button-secondary--hover: var(--orange-700);
-  --backgroundColor-button-text: transparent;
-  --backgroundColor-button-text--hover: var(--grey-100);
-  --border-button: 1px solid var(--grey-600);
-  --color-button: var(--white);
-  --color-button-anchor: var(--blue-700);
-  --color-button-anchor--active: var(--blue-800);
-  --color-button-passive: var(--grey-800);
-  --color-button-text: currentColor;
-  --color-button-text--hover: var(--blue-700);
+  --color-button--primary: color(var(--grey-500) a(20%));
+  --color-button--secondary: var(--black);
+  --color-button--hover: var(--color-button--primary);
+  --color-button--active: color(var(--grey-500) a(30%));
+  --color-button--focus: color(var(--black) a(6%));
+
+  /* Primary buttons */
+  --color-button-alt--primary: var(--color-primary);
+  --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--hover: var(--color-primary-dark);
+  --color-button-alt--active: var(--color-primary-dark);
+  --color-button-alt--focus: var(--white);
+
+  /* Accent buttons */
+  --color-button-accent--primary: var(--color-accent);
+  --color-button-accent--secondary: var(--color-accent-contrast);
+  --color-button-accent--hover: var(--color-accent-dark);
+  --color-button-accent--active: var(--color-accent-dark);
+  --color-button-accent--focus: var(--white);
+
+  /* Dark theme buttons */
+  --color-button-dark--primary: color(var(--grey-500) a(18%));
+  --color-button-dark--secondary: var(--color-primary-contrast);
+  --color-button-dark--hover: var(--color-button-dark--primary);
+  --color-button-dark--active: color(var(--grey-500) a(18%));
+  --color-button-dark--focus: color(var(--black) a(10%));
+
+  /* Disabled buttons */
+  --color-button-disabled--primary: color(var(--black) a(12%));
+  --color-button-disabled--secondary: color(var(--black) a(26%));
+  --color-button-disabled--dark: color(var(--white) a(30%));
 
 
   /* Control */

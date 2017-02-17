@@ -198,10 +198,7 @@
 
 (defn- calendar-toolbar [this]
   (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)]
-    (dom/header #js {:className "o-calendar__control u-middle"}
-      (dom/div #js {:className "u-column--2"}
-        )
-      (dom/div #js {:className "u-column--8 u-font-size--small"}
+    (dom/header #js {:className "c-calendar__control"}
         (dom/button #js {:className "c-button c-button--icon"
                          :title     "Last Month"
                          :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
@@ -217,7 +214,6 @@
                          :title     "Next Month"
                          :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
           (icon :keyboard_arrow_right))
-        )
       )))
 
 (def days-of-week-labels
@@ -228,7 +224,7 @@
 (defn- calendar-month-view [this]
   (let [{:keys [calendar/id calendar/weeks] :as calendar} (om/props this)
         {:keys [refresh onDateSelected] :or {refresh []}} (om/get-computed this)]
-    (dom/div #js {:className "o-calendar__month o-overlay"}
+    (dom/div #js {:className "c-calendar__month"}
       (dom/table nil
         (dom/thead nil
           (dom/tr nil
@@ -239,7 +235,7 @@
             (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
               (for [day week]
                 (dom/td #js {:key       (str "d" (.getMonth day) "-" (.getDate day))
-                             :className (cond-> "o-calendar__day"
+                             :className (cond-> "c-calendar__day"
                                           (not (in-month? calendar day)) (str " is-inactive")
                                           (selected-day? calendar day) (str " is-active"))
                              :onClick   (fn []
@@ -268,13 +264,13 @@
                                                        :calendar/id])))
             alignment-class   (when overlay-trigger
                                 (case align
-                                  :bottom-right-edge "o-calendar--right"
-                                  :top-left-edge "o-calendar--up"
-                                  :top-right-edge "o-calendar--up o-calendar--right"
+                                  :bottom-right-edge "c-calendar--right"
+                                  :top-left-edge "c-calendar--up"
+                                  :top-right-edge "c-calendar--up c-calendar--right"
                                   ""))
-            calendar-classes  (str "o-calendar " alignment-class (when overlay-trigger
-                                                                   (str " o-calendar--raised"
-                                                                     (when-not up? " o-calendar--down"))))
+            calendar-classes  (str "c-calendar " alignment-class (when overlay-trigger
+                                                                   (str " c-calendar--raised"
+                                                                     (when-not up? " c-calendar--down"))))
             overlay-rendering (dom/div #js {:className calendar-classes}
                                 (calendar-toolbar this)
                                 (calendar-month-view this))]

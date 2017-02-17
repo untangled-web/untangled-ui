@@ -6,30 +6,6 @@ section: Components
 :root {
   /* Default button colors */
   --borderRadius-button: 2px;
-  --color-button--primary: color(var(--grey-500) a(20%));
-  --color-button--secondary: var(--black);
-  --color-button--hover: var(--color-button--primary);
-  --color-button--active: color(var(--grey-500) a(30%));
-  --color-button--focus: color(var(--black) a(6%));
-
-  /* Colored buttons */
-  --color-button-alt--primary: var(--color-primary);
-  --color-button-alt--secondary: var(--color-primary-contrast);
-  --color-button-alt--hover: var(--color-primary-dark);
-  --color-button-alt--active: var(--color-primary-dark);
-  --color-button-alt--focus: var(--white);
-
-  /* Dark theme buttons */
-  --color-button-dark--primary: color(var(--grey-500) a(18%));
-  --color-button-dark--secondary: var(--color-primary-contrast);
-  --color-button-dark--hover: var(--color-button-dark--primary);
-  --color-button-dark--active: color(var(--grey-500) a(18%));
-  --color-button-dark--focus: color(var(--black) a(10%));
-
-  /* Disabled buttons */
-  --color-button-disabled--primary: color(var(--black) a(12%));
-  --color-button-disabled--secondary: color(var(--black) a(26%));
-  --color-button-disabled--dark: color(var(--black) a(30%));
 
   --fontSize-button: 14px;
   --fontSize-button--dense: calc(var(--fontSize-button) - 1px);
@@ -136,11 +112,21 @@ section: Components
 }
 
 
+.c-button--primary,
 .c-button--colored {
   color: var(--color-button-alt--primary);
 
   &:focus:not(:active),
    &.is-focused { background-color: var(--color-button-alt--focus); }
+
+  &:--disabled { color: var(--color-button-disabled--secondary); }
+}
+
+.c-button--accent {
+  color: var(--color-accent);
+
+  &:focus:not(:active),
+  &.is-focused { background-color: var(--color-button-accent--focus); }
 
   &:--disabled { color: var(--color-button-disabled--secondary); }
 }
@@ -189,6 +175,7 @@ section: Components
     }
    }
 
+  &.c-button--primary,
   &.c-button--colored {
     background-color: var(--color-button-alt--primary);
     color: var(--color-button-alt--secondary);
@@ -198,9 +185,7 @@ section: Components
     &:--active {
        background-color: var(--color-button-alt--active);
 
-      .t-dark & {
-        background-color: var(--color-button-dark--active);
-      }
+      .t-dark & { background-color: var(--color-button-alt--active); }
      }
 
     &:focus:not(:active),
@@ -208,6 +193,25 @@ section: Components
    }
 
    .t-dark & { background-color: var(--color-button-alt--primary); }
+
+
+  &.c-button--accent {
+    background-color: var(--color-accent);
+    color: var(--color-button-accent--secondary);
+
+    &:hover { background-color: var(--color-button-accent--hover); }
+
+    &:--active {
+       background-color: var(--color-button-accent--active);
+
+      .t-dark & { background-color: var(--color-button-dark--active); }
+    }
+
+    &:focus:not(:active),
+    &.is-focused { background-color: var(--color-button-accent--active); }
+
+  .t-dark & { background-color: var(--color-button-accent--primary); }
+  }
 }
 
 
@@ -252,21 +256,24 @@ section: Components
 }
 
 
-.c-button--dropdown {
-  margin-bottom: 0;
+.has-menu {
+  display: inline-block;
+  position: relative;
+  width: 100%;
 
-  &::before {
-    @apply --triangle;
-    @apply --triangle-bottom;
-    border-width: 5px 4px 0;
-    content: '';
-    float: right;
-    margin: .85em 0 .85em .425rem;
-    position: relative;
-    vertical-align: middle;
-  }
+  &.c-button {
+   border-bottom: var(--grey-200) 1px solid;
 
-  &:empty::before {
-    margin: .85em 0;
-  }
+      &::before {
+         @apply --triangle;
+         @apply --triangle-bottom;
+         border-width: 5px 4px 0;
+         content: '';
+         float: right;
+         margin: 1em .5rem 1em .75rem;
+         position: relative;
+         vertical-align: middle;
+       }
+   }
 }
+

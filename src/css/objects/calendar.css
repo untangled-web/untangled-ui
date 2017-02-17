@@ -7,6 +7,7 @@ section: Objects
   --padding-calendar: .75em 1rem;
 }
 
+.c-calendar,
 .o-calendar {
   background: var(--white);
   border-radius: var(--global-rounded);
@@ -29,13 +30,18 @@ section: Objects
 
 
 
+  .c-calendar__control,
   .o-calendar__control {
     @apply --row;
+    @apply --row-collapse;
+    @apply --middle;
     @apply --center;
+    font-size: var(--fontSize--small);
     margin-bottom: 1em;
    }
 
 
+  .c-calendar__month,
   .o-calendar__month {
 
     table,
@@ -54,6 +60,7 @@ section: Objects
     th { text-transform: uppercase; }
   }
 
+  .c-calendar__day,
   .o-calendar__day {
     --day-height: 32px;
     border-radius: 50px;
@@ -72,6 +79,8 @@ section: Objects
     & > p { margin: 0; }
   }
 
+
+.c-calendar--raised,
 .o-calendar--raised {
   box-shadow: var(--shadow-3);
   position: absolute !important;
@@ -79,17 +88,21 @@ section: Objects
 }
 
 
+.c-calendar--right,
 .o-calendar--right {
   left: auto;
   right: 0;
 }
 
 
+.c-calendar--up,
 .o-calendar--up {
   bottom: 0;
   top: auto;
 }
 
+.c-calendar--down,
 .o-calendar--down {
   margin-top: 43px;
 }
+
