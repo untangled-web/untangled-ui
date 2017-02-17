@@ -26,13 +26,13 @@
         (dom/div #js {:className "u-column--3"}
         (c/ui-calendar start-date
             ;:onDateSelected #(js/alert (str "Start " %))
-            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button c-button--raised c-button--colored"}
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
                                                 (tr "Start Date: ") (c/displayed-date cal)))))
         (dom/div #js {:className "u-column--3 u-push--6 u-end"}
           (c/ui-calendar end-date
             ;:onDateSelected #(js/alert (str "End " %))
             :align :bottom-right-edge
-            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button c-button--raised c-button--colored"}
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
                                                 (tr "End Date: ") (c/displayed-date cal)))))))))
 
 

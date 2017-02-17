@@ -21,7 +21,7 @@
   (fn [state-atom _]
     (let [{:keys [visible?]} @state-atom]
       (dom/div nil
-        (e/ui-button {:type :raised :colored true :onClick #(swap! state-atom update :visible? not)} (if visible? "Fade Out" "Fade In"))
+        (e/ui-button {:onClick #(swap! state-atom update :visible? not)} (if visible? "Fade Out" "Fade In"))
         (e/ui-fader {:visible visible?}
           (dom/div nil "Child")
           (dom/div nil "Content"))))))
@@ -36,11 +36,8 @@
   "
   (dom/div nil
     (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} "Default Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:colored true} "Default Colored Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:type :raised} "Raised Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:type :raised :colored true} "Raised Colored Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:type :raised :colored true} (icon :arrow_back) "With an icon"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:type :raised :colored true :shape :wide} "Wide Secondary"))))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} (icon :arrow_back) "With an icon"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))))
 
 (defcard badge
   "# Badges
@@ -51,7 +48,7 @@
   "
   (dom/div nil
     (dom/div #js {:style #js {:marginTop "10px"}} "A plain badge: " (e/ui-badge {} "6"))
-    (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {:type :raised :colored true}
+    (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {}
                                                                               "Inbox " (e/ui-badge {} "6")))))
 
 (defcard label

@@ -5,6 +5,10 @@
             :url  "https://opensource.org/licenses/MIT"}
 
   :dependencies [[clojurewerkz/money "1.9.0"]
+                 [ru.yandex.qatools.ashot/ashot "1.5.2" :scope "test"]
+                 [org.seleniumhq.selenium/selenium-java "3.0.1" :scope "test"]
+                 [org.seleniumhq.selenium/htmlunit-driver "2.24" :scope "test"]
+                 [clj-webdriver "0.7.2" :scope "test"]
                  [image-resizer "0.1.9"]
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
@@ -29,7 +33,6 @@
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
 
   :test-refresh {:report       untangled-spec.reporters.terminal/untangled-report
-                 :changes-only true
                  :with-repl    true}
 
   :doo {:build "automated-tests"
@@ -83,8 +86,10 @@
                                }}]}
 
   :figwheel {:server-port 8001
-             :css-dirs ["resources/public/css"]}
+             :css-dirs    ["resources/public/css"]}
 
+  ; TODO: On figwheel startup, run the gulp shell command if the CSS files are missing
+  ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]
                                   [criterium "0.4.3"]
                                   [figwheel-sidecar "0.5.9"]

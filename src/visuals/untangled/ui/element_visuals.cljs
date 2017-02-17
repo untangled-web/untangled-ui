@@ -11,16 +11,33 @@
 
 (defcard buttons-visual-regression-testing
   (dom/div nil
-    (for [shape #{:default :dense :round :wide}
-          type #{:default :raised}
-          colored #{false true}]
-      (e/ui-button {:className "extra" :shape shape :type type :colored colored} (str shape " " type " " colored)))
+    (for [shape    [:rect :round :wide]
+          color    [:neutral :primary :accent]
+          size     [:normal :small]
+          disabled [true false]
+          active   [true false]]
+      (e/ui-button {:className "extra" :color color :active active :disabled disabled
+                    :shape     shape :size size}
+        (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-button {} "Label" (icon :arrow_forward))
     (e/ui-button {} (icon :arrow_back) "Label")))
 
+(defcard flat-buttons-visual-regression-testing
+  (dom/div nil
+    (for [shape    [:rect :round :wide]
+          color    [:neutral :primary :accent]
+          size     [:normal :small]
+          disabled [true false]
+          active   [true false]]
+      (e/ui-flat-button {:className "extra" :color color :active active :disabled disabled
+                         :shape     shape :size size}
+        (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
+    (e/ui-flat-button {} "Label" (icon :arrow_forward))
+    (e/ui-flat-button {} (icon :arrow_back) "Label")))
+
 (defcard badges-visual-regressions
   (dom/div nil
-    (e/ui-button {:type :raised :colored true} "Notifications " (e/ui-badge {} "8"))
+    (e/ui-button {} "Notifications " (e/ui-badge {} "8"))
     (e/ui-badge {:className "hello"} "7")
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
