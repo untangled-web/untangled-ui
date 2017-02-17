@@ -8,12 +8,12 @@
 (defn ui-button
   "Render a button. Props is a normal clj(s) map with React/HTML attributes plus:
 
-  color (optional): :default, :secondary, :alert, :passive, :text, or :anchor
-  shape (optional): :default, :large, :xlarge, :round, or :wide
+  type (optional): :default or :raised
+  shape (optional): :default, :dense, :round, or :wide
   "
-  [{:keys [className color shape disabled] :or {className ""} :as attrs} & children]
-  (let [legal-colors   #{:secondary :alert :passive :text :anchor}
-        legal-shapes   #{:large :xlarge :round :wide}
+  [{:keys [className type shape colored disabled] :or {className ""} :as attrs} & children]
+  (let [legal-types   #{:raised}
+        legal-shapes   #{:dense :round :wide}
         button-label   (fn [text]
                          (dom/span #js {:className "c-button__content"} text))
         fixed-children (map (fn [c]
@@ -22,12 +22,13 @@
                                 c)) children)
         classes        (cond-> className
                          disabled (str " is-disabled")
-                         (contains? legal-colors color) (str " c-button--" (name color))
+                         (contains? legal-types type) (str " c-button--" (name type))
                          (contains? legal-shapes shape) (str " c-button--" (name shape))
+                         colored (str " c-button--colored")
                          :always (str " c-button"))
         attrs          (cond-> attrs
                          disabled (assoc :aria-disabled "true")
-                         :always (dissoc :color :shape)
+                         :always (dissoc :type :shape)
                          :always (assoc :className classes))]
     (apply dom/button (clj->js attrs) fixed-children)))
 

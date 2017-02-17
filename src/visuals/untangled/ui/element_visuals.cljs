@@ -11,9 +11,10 @@
 
 (defcard buttons-visual-regression-testing
   (dom/div nil
-    (for [shape #{:default :large :xlarge :round :wide}
-          color #{:default :secondary :alert :passive :text :anchor}]
-      (e/ui-button {:className "extra" :shape shape :color color} (str shape color)))
+    (for [shape #{:default :dense :round :wide}
+          type #{:default :raised}
+          colored #{false true}]
+      (e/ui-button {:className "extra" :shape shape :type type :colored colored} (str shape " " type " " colored)))
     (e/ui-button {} "Label" (icon :arrow_forward))
     (e/ui-button {} (icon :arrow_back) "Label")))
 
