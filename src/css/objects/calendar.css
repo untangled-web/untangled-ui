@@ -3,16 +3,30 @@ title: Calendar
 section: Objects
 ---*/
 
+:root {
+  --padding-calendar: .75em 1rem;
+}
+
 .o-calendar {
+  background: var(--white);
   border-radius: var(--global-rounded);
+  box-shadow: var(--shadow-1);
   display: inline-block;
   left: 0;
-  position: absolute !important;
+  padding: var(--padding-calendar);
+  position: static !important;
+  margin-bottom: 43px;
   top: 0;
   z-index: 10 !important;
 
   &.is-active { @apply --fade-in; }
+
+   .c-button + & { margin-top: 43px; }
+
+   &--up {margin-bottom: 43px; }
 }
+
+
 
 
   .o-calendar__control {
@@ -58,6 +72,12 @@ section: Objects
     & > p { margin: 0; }
   }
 
+.o-calendar--raised {
+  box-shadow: var(--shadow-3);
+  position: absolute !important;
+  margin-bottom: 0;
+}
+
 
 .o-calendar--right {
   left: auto;
@@ -70,7 +90,6 @@ section: Objects
   top: auto;
 }
 
-
-.o-calendar--inline {
-  position: static !important;
+.o-calendar--down {
+  margin-top: 43px;
 }
