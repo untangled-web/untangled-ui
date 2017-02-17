@@ -24,7 +24,7 @@
 
 (defn capture-cards
   "Take screen shots of every devcard and write them to the output-dir
-  dir. Returns a vector of the file names of all the images captured."
+  dir. Returns a vector of the file names of all the images captured or :FAILED if there was an error."
   [output-dir]
   (try (let [driver             (start-browser)
              _                  (touch-dir output-dir)
@@ -43,12 +43,12 @@
                  card-title (taxi/text (str selector " span:nth-child(2)"))]
              (taxi/click selector)
              (timbre/info "navigated to " selector)
-             (Thread/sleep 300)
+             (Thread/sleep 1000)
              (let [cards     (taxi/elements "div.com-rigsomelight-devcards-panel-heading > a")
                    subtitles (mapv (fn [e] (-> e :webelement .getText)) cards)]
                (timbre/info "found " (count cards) " titled " subtitles)
                (doseq [subtitle subtitles]
-                 (let [ img-path (str output-dir card-title "-" subtitle ".png")]
+                 (let [img-path (str output-dir card-title "-" subtitle ".png")]
                    (timbre/info "navigating to " subtitle)
                    (taxi/get-url (str "http://localhost:8001/visuals.html#!/" card-title "/" subtitle))
                    (Thread/sleep 1000)
@@ -60,7 +60,7 @@
          (taxi/quit)
          @file-names)
        (catch Exception e (taxi/quit)
-                          [{:FAILED e}])))
+                          :FAILED)))
 
 (defn compare-cards
   "Compares screenshots in the expected and actual directories (generates the actual).
@@ -77,21 +77,23 @@
     (timbre/info "Expected directory" expected-dir)
     (timbre/info "Actual directory" actual-dir)
     (timbre/info "Diff directory" diff-dir)
-    (doseq [img-name imgs]
-      (let [expected-file    (io/as-file (str expected-dir img-name))
-            expected-exists? (.exists expected-file)
-            expected         (when expected-exists? (ImageIO/read ^File expected-file))
-            actual           (ImageIO/read ^File (io/as-file (str actual-dir img-name)))
-            differ           (ImageDiffer.)
-            diff             (when expected-exists? (.makeDiff differ expected actual))]
-        (when-not expected-exists?
-          (swap! diffs conj {:img-name img-name :no-expectation "Be sure to copy verified actual images to expected directory."})
-          (timbre/info (str "UNABLE TO DIFF VISUAL REGRESSIONS for " img-name ". Check actual, then copy them to expected.")))
-        (when (and diff (.hasDiff diff))
-          (swap! diffs conj {:img-name img-name})
-          (ImageIO/write (.getMarkedImage diff)
-            "png"
-            (io/as-file (str diff-dir img-name))))))
+    (if (= :FAILED imgs)
+      (reset! diffs [{:no-expectation "Image Capture failed. See log output."}])
+      (doseq [img-name imgs]
+        (let [expected-file    (io/as-file (str expected-dir img-name))
+              expected-exists? (.exists expected-file)
+              expected         (when expected-exists? (ImageIO/read ^File expected-file))
+              actual           (ImageIO/read ^File (io/as-file (str actual-dir img-name)))
+              differ           (ImageDiffer.)
+              diff             (when expected-exists? (.makeDiff differ expected actual))]
+          (when-not expected-exists?
+            (swap! diffs conj {:img-name img-name :no-expectation "Be sure to copy verified actual images to expected directory."})
+            (timbre/warn (str "UNABLE TO DIFF VISUAL REGRESSIONS for " img-name ". Check actual, then copy them to expected.")))
+          (when (and diff (.hasDiff diff))
+            (swap! diffs conj {:img-name img-name})
+            (ImageIO/write (.getMarkedImage diff)
+              "png"
+              (io/as-file (str diff-dir img-name)))))))
     @diffs))
 
 (specification "Visual Regressions"
