@@ -5,31 +5,53 @@
 
 #?(:clj (def clj->js identity))
 
-(defn ui-button
-  "Render a button. Props is a normal clj(s) map with React/HTML attributes plus:
+; (defn ui-fab-button "Render a perfect circle button that contains the given children (typically an icon)." [props & children])
 
-  color (optional): :default, :secondary, :alert, :passive, :text, or :anchor
-  shape (optional): :default, :large, :xlarge, :round, or :wide
+(defn ui-flat-button
+  "Render a button that has no colored background (it is just the children), but renders a hover shape
+  when the mouse if over it.
+
+  :color - :neutral (default), :primary, :accent
+  :shape - :rect (default), :round, or :wide
+  :size  - :normal (default), :small
+  :active - true or false (default) -  Causes the button to look highlighted.
+
+  Any other React properties are allowed, including additional CSS classes.
   "
-  [{:keys [className color shape disabled] :or {className ""} :as attrs} & children]
-  (let [legal-colors   #{:secondary :alert :passive :text :anchor}
-        legal-shapes   #{:large :xlarge :round :wide}
+  [{:keys [className size color shape disabled active] :or {className ""} :as attrs} & children]
+  (let [legal-colors   #{:primary :accent}
+        legal-shapes   #{:round :wide}
+        legal-sizes    #{:small}
         button-label   (fn [text]
                          (dom/span #js {:className "c-button__content"} text))
         fixed-children (map (fn [c]
                               (if (string? c)
                                 (button-label c)
                                 c)) children)
-        classes        (cond-> className
+        classes        (cond-> (str className " c-button")
                          disabled (str " is-disabled")
+                         active (str " is-active")
                          (contains? legal-colors color) (str " c-button--" (name color))
                          (contains? legal-shapes shape) (str " c-button--" (name shape))
-                         :always (str " c-button"))
+                         (contains? legal-sizes size) (str " c-button--" (name size)))
         attrs          (cond-> attrs
                          disabled (assoc :aria-disabled "true")
-                         :always (dissoc :color :shape)
+                         :always (dissoc :type :shape)
                          :always (assoc :className classes))]
     (apply dom/button (clj->js attrs) fixed-children)))
+
+(defn ui-button
+  "Render a raised button. Props is a normal clj(s) map with React/HTML attributes plus:
+
+  :color - :neutral (default), :primary, :accent
+  :shape - :rect (default), :round, or :wide
+  :size  - :normal (default), :small
+  :active - true or false (default) -  Causes the button to look highlighted.
+
+  Any other React properties are allowed, including additional CSS classes.
+  "
+  [{:keys [className size color shape disabled active] :or {className ""} :as attrs} & children]
+  (apply ui-flat-button (update attrs :className str " c-button--raised") children))
 
 (defn ui-fader
   "Wrap children in a div (props is a clj(s) map of normal React attributes) where the :visible attribute
@@ -59,13 +81,13 @@
   color (optional): :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative"
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:positive :informative :informative-alt :neutral :live :alterable :negative}
-        classes (cond-> className
-                        :always (str " c-label")
-                        (contains? legal-colors color) (str " c-label--" (name color)))
-        props (-> props
-                  (dissoc :color)
-                  (assoc :className classes)
-                  )]
+        classes      (cond-> className
+                       :always (str " c-label")
+                       (contains? legal-colors color) (str " c-label--" (name color)))
+        props        (-> props
+                       (dissoc :color)
+                       (assoc :className classes)
+                       )]
     (apply dom/span (clj->js props) children)))
 
 (defn ui-field
@@ -74,20 +96,20 @@
   size (optional): :small, :medium, :large
   states that can be implemented (optional) :required, :focus, :invalid, :error"
   [{:keys [size state] :or {size ""} :as attrs} placeholder]
-  (let [legal-sizes #{:small :medium :large}
+  (let [legal-sizes  #{:small :medium :large}
         user-classes (get attrs :className "")
-        has (fn [s] (contains? state s))
-        classes (cond-> (str user-classes " c-field ")
-                        (contains? legal-sizes size) (str "c-field--" (name size))
-                        (has :focus) (str " has-focus")
-                        (has :invalid) (str " is-invalid")
-                        (has :error) (str " is-error"))
-        attrs (cond-> attrs
-                      (contains? state :required) (assoc :required "true")
-                      :always (assoc :type "text")
-                      :always (dissoc :size)
-                      :always (assoc :className classes)
-                      :always (assoc :placeholder (name placeholder)))]
+        has          (fn [s] (contains? state s))
+        classes      (cond-> (str user-classes " c-field ")
+                       (contains? legal-sizes size) (str "c-field--" (name size))
+                       (has :focus) (str " has-focus")
+                       (has :invalid) (str " is-invalid")
+                       (has :error) (str " is-error"))
+        attrs        (cond-> attrs
+                       (contains? state :required) (assoc :required "true")
+                       :always (assoc :type "text")
+                       :always (dissoc :size)
+                       :always (assoc :className classes)
+                       :always (assoc :placeholder (name placeholder)))]
     (dom/input (clj->js attrs))))
 
 (defn ui-message
@@ -96,12 +118,12 @@
   color (optional): :neutral, :alert, :success, :warning"
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:neutral :alert :success :warning}
-        classes (cond-> className
-                        :always (str " c-message")
-                        (contains? legal-colors color) (str "--" (name color)))
-        props (-> props
-                  (assoc :className classes)
-                  (dissoc :color))]
+        classes      (cond-> className
+                       :always (str " c-message")
+                       (contains? legal-colors color) (str "--" (name color)))
+        props        (-> props
+                       (assoc :className classes)
+                       (dissoc :color))]
     (apply dom/div (clj->js props) children)))
 
 #?(:cljs

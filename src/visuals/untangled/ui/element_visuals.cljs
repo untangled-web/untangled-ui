@@ -11,11 +11,29 @@
 
 (defcard buttons-visual-regression-testing
   (dom/div nil
-    (for [shape #{:default :large :xlarge :round :wide}
-          color #{:default :secondary :alert :passive :text :anchor}]
-      (e/ui-button {:className "extra" :shape shape :color color} (str shape color)))
+    (for [shape    [:rect :round :wide]
+          color    [:neutral :primary :accent]
+          size     [:normal :small]
+          disabled [true false]
+          active   [true false]]
+      (e/ui-button {:className "extra" :color color :active active :disabled disabled
+                    :shape     shape :size size}
+        (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-button {} "Label" (icon :arrow_forward))
     (e/ui-button {} (icon :arrow_back) "Label")))
+
+(defcard flat-buttons-visual-regression-testing
+  (dom/div nil
+    (for [shape    [:rect :round :wide]
+          color    [:neutral :primary :accent]
+          size     [:normal :small]
+          disabled [true false]
+          active   [true false]]
+      (e/ui-flat-button {:className "extra" :color color :active active :disabled disabled
+                         :shape     shape :size size}
+        (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
+    (e/ui-flat-button {} "Label" (icon :arrow_forward))
+    (e/ui-flat-button {} (icon :arrow_back) "Label")))
 
 (defcard badges-visual-regressions
   (dom/div nil
