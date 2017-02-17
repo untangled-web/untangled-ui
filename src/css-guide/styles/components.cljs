@@ -111,20 +111,38 @@
     ))
 
 
-(defexample button-state
-  "### States"
-  (dom/div #js {}
-    (dom/div #js {}
-     (dom/button #js {:className "c-button"} "Normal")
-     (dom/button #js {:className "c-button is-focused"} "Focused")
-     (dom/button #js {:className "c-button is-active"} "Pressed")
-     (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
-     )
-    (dom/div #js {:className "s-dark" :style #js}
-      (dom/button #js {:className "c-button"} "Normal")
-      (dom/button #js {:className "c-button is-focused"} "Focused")
-      (dom/button #js {:className "c-button is-active"} "Pressed")
-      (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
+(defview button-state
+  "### Flat Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--6"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled"))
+      )
+    (dom/div #js {:className "u-column--6 t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled"))
+      )
+    ))
+
+
+(defview button-state-raised
+  "### Raised Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--6"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised is-disabled"} "Disabled"))
+      )
+    (dom/div #js {:className "u-column--6 t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--colored is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised c-button--colored is-disabled"} "Disabled"))
       )
     ))
 
@@ -2245,6 +2263,7 @@
                       button-shape
                       button-color
                       button-state
+                      button-state-raised
                       button-icon
                       ]}
           {:id :card
