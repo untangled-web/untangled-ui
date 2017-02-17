@@ -11,3 +11,4 @@ dist/*.*
 .nrepl*
 /.idea
 !/.idea/runConfigurations/Figwheel.xml
+.lein-failures
