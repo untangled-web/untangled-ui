@@ -12,3 +12,4 @@ dist/*.*
 /.idea
 !/.idea/runConfigurations/Figwheel.xml
 .lein-failures
+screen_shots
