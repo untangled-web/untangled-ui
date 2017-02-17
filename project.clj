@@ -88,6 +88,7 @@
   :figwheel {:server-port 8001
              :css-dirs    ["resources/public/css"]}
 
+  ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]
                                   [criterium "0.4.3"]
                                   [figwheel-sidecar "0.5.9"]

@@ -1,6 +1,7 @@
 target
 resources/private/js
 resources/public/js
+resources/public/css/untangle*
 *.iml
 node_modules
 pom.xml
