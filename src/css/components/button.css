@@ -217,7 +217,7 @@ section: Components
 
 .c-button--icon {
   color: var(--grey-700);
-  min-width: auto;
+  min-width: 36px;
 
   &:hover { color: var(--grey-800); }
 
