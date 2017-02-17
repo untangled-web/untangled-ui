@@ -20,7 +20,7 @@
 
 (defcard badges-visual-regressions
   (dom/div nil
-    (e/ui-button {} "Notifications " (e/ui-badge {} "8"))
+    (e/ui-button {:type :raised :colored true} "Notifications " (e/ui-badge {} "8"))
     (e/ui-badge {:className "hello"} "7")
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
