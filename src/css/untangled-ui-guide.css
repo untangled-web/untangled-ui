@@ -30,6 +30,10 @@ import: ../README.md
 
 .box-tall { padding: 200px 0; }
 
+.ui-example {
+  margin-bottom: var(--frame-half);
+}
+
 .ui-example__description {
   :--headings {
     color: var(--grey-900);
