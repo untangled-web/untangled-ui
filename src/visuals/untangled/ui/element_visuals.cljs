@@ -24,3 +24,15 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
+(defcard labels-visual-regressions
+  (dom/div nil
+    (e/ui-label {} "Default")
+    (e/ui-label {:color :positive} "Positive")
+    (e/ui-label {:color :informative} "Informative")
+    (e/ui-label {:color :informative-alt} "Informative Alt")
+    (e/ui-label {:color :neutral} "Neutral")
+    (e/ui-label {:color :live} "Live")
+    (e/ui-label {:color :alterable} "Alterable")
+    (e/ui-label {:color :negative} "Negative")
+    (e/ui-label {:color :positive} (icon :add) "Add")
+    (e/ui-label {:color :negative} (icon :close) "Remove")))
