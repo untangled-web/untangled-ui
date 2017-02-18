@@ -81,31 +81,45 @@
    (defn ui-iframe [props child]
      ((om/factory IFrame) (assoc props :child child))))
 
-(defn build-title-bar
+(def density-types
+  {:inset    "c-card--inset"
+   :collapse "c-card--collapse"})
+
+(def card-types
+  {:rounded     "c-card--round"
+   :transparent "c-card--transparent"
+   :ruled       "c-card--ruled"
+   :zone        "c-card--zone"
+   :ruled-zone  "c-card--ruled c-card--zone"})
+
+(defn build-title
   "Helper function for building up the title bar of the card."
   [title]
   (dom/div #js {:className "c-card__title"}
            (dom/h1 #js {:className "c-card__heading"} title)))
 
 (defn ui-card
-  "Render a card. Props is a normal clj(s) map with React/HTML attributes plus:
-
-  className (optional): additional class stylings to apply to the top level of the card
-  type:  :round, :transparent, :ruled, or :zone
-     The card type indicates how the card should appear
-  title-bar (optional): this produces a title heading with shading.
-  title (optional): the text to appear as the title of the card
-  "
-  [{:keys [title type className title-bar] :or {title nil title-bar nil text ""} :as attrs} & children]
-  (let [legal-types #{:round :transparent :ruled :zone}
-        classes     (cond-> className
-                            (contains? legal-types type) (str " c-card--" (name type))
-                            :always (str " c-card"))
-        attributes  (cond-> attrs
-                            :always (dissoc :type :title :title-bar :className)
-                            :always (assoc :className classes))
-        title-bar   (if title-bar (build-title-bar title)
-                                  (if title
-                                    (dom/h1 #js {} title)
-                                    ""))]
-    (apply dom/div (clj->js attributes) (if title-bar (build-title-bar title) title-bar) children)))
+  "Card component
+   usage
+   (c/ui-card {:active true/false
+                :title \"Some Title\"
+                :type :rounded | :transparent | :ruled | :zone | :ruled-zone}
+                :density :collapse | inset
+    ...)
+    all paramters optional
+    "
+  [{:keys [active type title density className] :as attrs} & children]
+  {:pre [(contains? #{nil true false} active)
+         (or (nil? type) (keyword? type))
+         (or (nil? title) (string? title))]}
+  (let [className  (or className "")
+        classes    (cond->
+                     (str "c-card " className)
+                     active (str " is-active")
+                     type (str " " (card-types type))
+                     density (str " " (density-types density)))
+        attributes (-> attrs
+                       (merge {:className classes})
+                       (dissoc :active :title :type)
+                       clj->js)]
+    (apply dom/div attributes (when title (build-title title)) children)))
