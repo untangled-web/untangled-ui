@@ -1345,33 +1345,16 @@
             (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})) " Action 1 "))
       (dom/div #js {:className "o-sidebar__toggle"}))))
 
-
-(defexample button-group
-  "# Button Group Example"
-  (dom/div #js {}
-    (dom/div #js {:className "o-button-group"}
-      (dom/button #js {:className "c-button"} "Play")
-      (dom/button #js {:className "c-button"} "Pause")
-      (dom/button #js {:className "c-button"} "Stop"))))
-
-(defexample button-stacked
-  "# Button Group Stacked Example"
-  (dom/div #js {}
-    (dom/div #js {:className "o-button-group--stack"}
-      (dom/button #js {:className "c-button"} "Play")
-      (dom/button #js {:className "c-button"} "Pause")
-      (dom/button #js {:className "c-button"} "Stop"))))
-
 (defn toggle-pause [this] (om/update-state! this update :pause not))
-(defexample button-toggle
-  "# Button Group Toggle Example"
+(defexample button-group
+  "# Button Group"
   (let [pause (boolean (om/get-state this :pause))]
     (dom/div #js {}
-      (dom/span #js {:className "o-button-group__label"} "Control")
+      (dom/label #js {:className ""} "Control")
       (dom/div #js {:className "o-button-group--toggle"}
-        (dom/button #js {:className (str "c-button c-button--small" (if pause " c-button--text" ""))
+        (dom/button #js {:className (str "c-button " (if pause "" " c-button--raised c-button--primary"))
                          :onClick   #(toggle-pause this)} "Play")
-        (dom/button #js {:className (str "c-button c-button--small" (if (not pause) " c-button--text" ""))
+        (dom/button #js {:className (str "c-button " (if (not pause) "" "c-button--raised c-button--primary"))
                          :onClick   #(toggle-pause this)} "Pause")))))
 
 (defexample postfix-group
@@ -2217,6 +2200,7 @@
                       button-state
                       button-state-raised
                       button-icon
+                      button-group
                       ]}
           {:id :card
            :title "Card"
@@ -2359,7 +2343,7 @@
           ;; OBJECTS Start here
 
 
-          {:id :accordion :title "Accordion" :examples [accordion accordion-sidebar accordion-nested]
+          {:id :accordion :title "Accordion [Deprecated]" :examples [accordion accordion-sidebar accordion-nested]
            :documentation
                "# Accordion
 
@@ -2367,18 +2351,17 @@
 
                This object is redesigned to be un-opinionated and flexible for almost any interactive list you might need in your app. The simplified markup resembles this node list:
                ``` shell\n.o-accordion [ --inline | --right | --small ]\n   __title   [ is-active | is-nested | is-selected ]\n   __content [ is-active ]\n     __group\n       __info\n       __actions\n         __action [ --informative | --success ]\n         __meta\n           __meta-item\n```"}
-          {:id :button-group :title "Button Groups" :examples [button-group button-stacked button-toggle postfix-group]}
           {:id :calendar-example :title "Calendar" :examples [calendar-example]
            :documentation
                "# Calendar
 
                This is a month view calendar for overlaying on input fields that control date selection."}
           {:id :drawer :title "Drawer" :examples [drawer]}
-          {:id :editor-inactive :title "Editor" :examples [editor-inactive editor-active]}
+          {:id :editor-inactive :title "Editor [Deprecated]" :examples [editor-inactive editor-active]}
           {:id :icon-bar :title "Icon Bar" :examples [icon-bar icon-rail icon-bar-shifting]}
-          {:id :listing :title "Listing" :examples [listing-begin listing]}
+          {:id :listing :title "Listing [Deprecated]" :examples [listing-begin listing]}
           {:id :modal :title "Modal" :examples [modal-example modal-small modal-large modal-primary modal-success modal-warning]}
-          {:id :sidebar :title "Sidebar" :examples [sidebar sidebar-right]}
+          {:id :sidebar :title "Sidebar [Deprecated]" :examples [sidebar sidebar-right]}
           {:id :toolbar :title "Toolbar" :examples [toolbar toolbar-small toolbar-secondary]}
           ])))
 
