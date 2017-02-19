@@ -42,6 +42,14 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
+(defcard card
+   (dom/div nil
+      (e/ui-card {:title "Card Title"} (dom/p nil "Card with a title"))
+      (e/ui-card {:type :round} (dom/p nil "Round Card, no title"))
+      (e/ui-card {:type :transparent :title "Transparent Card Title"} (dom/p nil "Text for Transparent Card"))
+      (e/ui-card {:type :ruled :title-bar true :title "Ruled Title"} (dom/p nil "Text for Ruled Card"))
+      (e/ui-card {:type :zone} (dom/p nil "Text for Zone Card"))))
+
 (defcard labels-visual-regressions
   (dom/div nil
     (e/ui-label {} "Default")

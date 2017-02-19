@@ -152,3 +152,46 @@
 #?(:cljs
    (defn ui-iframe [props child]
      ((om/factory IFrame) (assoc props :child child))))
+
+(def density-types
+  {:inset    "c-card--inset"
+   :collapse "c-card--collapse"})
+
+(def card-types
+  {:rounded     "c-card--round"
+   :transparent "c-card--transparent"
+   :ruled       "c-card--ruled"
+   :zone        "c-card--zone"
+   :ruled-zone  "c-card--ruled c-card--zone"})
+
+(defn build-title
+  "Helper function for building up the title bar of the card."
+  [title]
+  (dom/div #js {:className "c-card__title"}
+           (dom/h1 #js {:className "c-card__heading"} title)))
+
+(defn ui-card
+  "Card component
+   usage
+   (c/ui-card {:active true/false
+                :title \"Some Title\"
+                :type :rounded | :transparent | :ruled | :zone | :ruled-zone}
+                :density :collapse | inset
+    ...)
+    all paramters optional
+    "
+  [{:keys [active type title density className] :as attrs} & children]
+  {:pre [(contains? #{nil true false} active)
+         (or (nil? type) (keyword? type))
+         (or (nil? title) (string? title))]}
+  (let [className  (or className "")
+        classes    (cond->
+                     (str "c-card " className)
+                     active (str " is-active")
+                     type (str " " (card-types type))
+                     density (str " " (density-types density)))
+        attributes (-> attrs
+                       (merge {:className classes})
+                       (dissoc :active :title :type)
+                       clj->js)]
+    (apply dom/div attributes (when title (build-title title)) children)))
