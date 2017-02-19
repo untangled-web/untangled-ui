@@ -8,8 +8,8 @@
             untangled.ui.menu-cards
             untangled.ui.calendar-cards
             untangled.ui.Layout--01-Basics
+            untangled.ui.card-cards
             yahoo.intl-messageformat-with-locales))
 
-(devtools/enable-feature! :sanity-hints)
 (devtools/install!)
 
