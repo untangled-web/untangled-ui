@@ -22,16 +22,6 @@ section: Objects
   padding: var(--padding-toolbar);
   z-index: var(--zIndex-appBar);
 
-  & .c-button--icon {
-    color: var(--white);
-
-    &:hover { color: var(--white); }
-
-    &:--active { color: var(--backgroundColor-nav-active); }
-  }
-
-  & * { margin-bottom: 0 !important; }
-
   & .u-column--bar {
     &:nth-child(even) { @apply --end; }
 
@@ -61,22 +51,6 @@ section: Objects
     color: var(--color-nav-active);
     display: inline-block;
     text-transform: uppercase;
-  }
-
-
-  .o-toolbar__link {
-    display: inline-block;
-    padding: 0 10px;
-    position: relative;
-    vertical-align: middle;
-
-    &:--disabled {
-      opacity: .5;
-      -ms-pointer-events: none;
-      pointer-events: none;
-    }
-
-    & > .c-icon { fill: var(--grey-600); }
   }
 
   .o-toolbar__view,

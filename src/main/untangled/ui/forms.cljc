@@ -10,7 +10,7 @@
     #?@(:cljs ([untangled.client.core :as uc]
                 [untangled.client.data-fetch :as df]
                 [untangled.client.logging :as log]
-                [untangled.client.mutations :as m]))))
+                [untangled.client.mutations :as m :refer [defmutation]]))))
 
 (defn fail!
   ([msg] (fail! msg nil))
@@ -18,9 +18,7 @@
    (let [message (str obj " failed because of: " msg)
          ex-data (assoc ex-data :failing/obj obj)]
      (fail! message ex-data)))
-  ([msg ex-data]
-   (log/error msg ex-data)
-   (throw (ex-info msg ex-data))))
+  ([msg ex-data] (log/error msg ex-data)))
 
 (defn assert-or-fail [obj pred msg & [ex-data]]
   (when-not (pred obj)
@@ -38,7 +36,7 @@
 
 (defn- ui-ns [kw-name]
   ;; workaround for no *ns* in cljs
-  (keyword (str "ui." (namespace ::_)) kw-name))
+  (keyword (namespace ::_) kw-name))
 
 (def form-key
   "Query this in *all* of your form components, else form support will fail!
@@ -662,15 +660,16 @@
         (comp #(validate-fields % opts) :form))
       (fail! "Unable to validate form. No component associated with form. Did you remember to use build-form?"))))
 
-#?(:cljs (defmethod m/mutate `validate-field
-           [{:keys [state]} k {:keys [form-id field]}]
-           {:doc    "Mutation to run validation on a specific field"
-            :action #(swap! state update-in form-id validate-field* field)}))
+#?(:cljs (defmutation validate-field
+           "Om Mutation: run validation on a specific field. form-id is a form ident, field is the field name."
+           [{:keys [form-id field]}]
+           (action [{:keys [state]}] (swap! state update-in form-id validate-field* field))))
 
-#?(:cljs (defmethod m/mutate `validate-form
-           [{:keys [state]} k {:as opts :keys [form-id]}]
-           {:doc    "Mutation to run validation on an entire form"
-            :action #(swap! state validate-forms form-id (dissoc opts :form-id))}))
+#?(:cljs (defmutation validate-form
+           "Om mutation: Update (recursively) the form and its subforms so that validation markers are correct
+           for the current form state."
+           [{:as opts :keys [form-id]}]
+           (action [{:keys [state]}] (swap! state validate-forms form-id (dissoc opts :form-id)))))
 
 (defn validate-entire-form!
   "Trigger whole-form validation as a TRANSACTION. The form will not be validated upon return of this function,
@@ -687,11 +686,15 @@
 ;; GENERAL FORM MUTATION METHODS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#?(:cljs (defmethod m/mutate `toggle-field [{:keys [state]} k {:keys [form-id field]}]
-           {:action #(swap! state update-in form-id update-current-value field not)}))
+#?(:cljs (defmutation toggle-field
+           "Om Mutation: Toggle the `field` on the form with an ident of `form-id`"
+           [{:keys [form-id field]}]
+           (action [{:keys [state]}] (swap! state update-in form-id update-current-value field not))))
 
-#?(:cljs (defmethod m/mutate `set-field [{:keys [state]} k {:keys [form-id field value]}]
-           {:action #(swap! state update-in form-id set-current-value field value)}))
+#?(:cljs (defmutation set-field
+           "Om Mutation: Set the `field` on the form with an ident of `form-id` to the specified `value`"
+           [{:keys [form-id field value]}]
+           (action [{:keys [state]}] (swap! state update-in form-id set-current-value field value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FORM FIELD RENDERING
@@ -769,12 +772,12 @@
 (defmethod form-field* ::integer [component form field-name]
   (render-integer-field component form field-name))
 
-#?(:cljs (defmethod m/mutate `select-option
-           [{:keys [state]} k {:keys [form-id field value]}]
-           {:action (fn [] (let [value (.substring value 1)]
-                             (swap! state assoc-in
-                               (conj form-id field)
-                               (keyword value))))}))
+#?(:cljs (defmutation select-option
+           "Om Mutation: Choose the given value as the current selected option"
+           [{:keys [form-id field value]}]
+           (action [{:keys [state]}]
+             (let [value (.substring value 1)]
+               (swap! state assoc-in (conj form-id field) (keyword value))))))
 
 (defmethod form-field* ::dropdown [component form field-name]
   (let [id        (form-ident form)
@@ -918,19 +921,19 @@
     (get-in state form-id)
     (comp xf :form)))
 
-#?(:cljs (defmethod m/mutate `commit-to-entity
-           [{:keys [state ast target] :as env} k {:keys [form remote]}]
-           (let [delta (when target (diff-form form))]
-             {:doc    "Mutation for moving form data from the form into an entity
-                    eg: commit an entity to storage & make it the new origin for the entity"
-              :remote (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))
-              :action (fn [] (swap! state entity-xform (form-ident form) commit-state))})))
+#?(:cljs (defmutation commit-to-entity
+           "Om Mutation: Commit the (recursive) changes on the given form to the prisine local state and (optionally)
+           the remote. `form` is the complete current state (props) of the form."
+           [{:keys [form remote]}]
+           (action [{:keys [state]}]
+             (swap! state entity-xform (form-ident form) commit-state))
+           (remote [{:keys [ast target]}]
+             (let [delta (when target (diff-form form))]
+               (and remote (update ast :params #(-> % (dissoc :remote :form) (assoc :delta delta))))))))
 
-#?(:cljs (defmethod m/mutate `reset-from-entity
-           [{:keys [state ast]} k {:keys [form-id]}]
-           {:doc    "Mutation for moving form data from the entity into the form
-                  eg: reset an entity to its original value"
-            ;; TODO: Should be able to use fields, subform, and meta on query to focus query
-            ;; and run post mutations that re-initialize the form state on entities just loaded
-            :remote false
-            :action (fn [] (swap! state entity-xform form-id reset-entity))}))
+#?(:cljs (defmutation reset-from-entity
+           "Om Mutation: Reset an entity to its original value (throw away edits since last commit)
+
+           form-id is a complete form ident."
+           [{:keys [form-id]}]
+           (action [{:keys [state]}] (swap! state entity-xform form-id reset-entity))))

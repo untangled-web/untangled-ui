@@ -118,8 +118,12 @@ section: Settings
   --color-shadow: rgba(51, 51, 42, .6);
   --color-backdrop: rgba(0, 0, 0, .6);
   --color-backdrop--inverted: rgba(255, 255, 255, .6);
-  --color-primary: var(--blue-900);
-  --color-secondary: var(--orange-800);
+  --color-primary: var(--blue-500);
+  --color-primary-dark: var(--blue-700);
+  --color-accent: var(--orange-500);
+  --color-accent-dark: var(--orange-700);
+  --color-primary-contrast: var(--white);
+  --color-accent-contrast: var(--white);
 }
 
 /* Backgrounds and Borders */
@@ -129,7 +133,6 @@ section: Settings
   /* Globals */
 
   --backgroundColor-page: var(--white);
-
   --borderColor: var(--grey-300);
   --borderColor-inactive: var(--grey-500);
 
@@ -151,35 +154,39 @@ section: Settings
   --color-accordion--selected: var(--white);
 
 
-  /* Aside */
-
-  --backgroundColor-aside: var(--white);
-  --border-aside__section: var(--grey-100);
-  --color-aside__item: var(--blue-500);
-  --color-aside__title: var(--blue-900);
-  --color-aside__title--section: var(--grey-400);
-
-
   /* Button */
 
-  --backgroundColor-button: var(--blue-900);
-  --backgroundColor-button--hover: var(--blue-500);
-  --backgroundColor-button-alert: var(--red-800);
-  --backgroundColor-button-alert--hover: var(--red-700);
-  --backgroundColor-button-anchor: transparent;
-  --backgroundColor-button-passive: var(--blue-100);
-  --backgroundColor-button-passive--hover: var(--white);
-  --backgroundColor-button-secondary: var(--orange-800);
-  --backgroundColor-button-secondary--hover: var(--orange-700);
-  --backgroundColor-button-text: transparent;
-  --backgroundColor-button-text--hover: var(--grey-100);
-  --border-button: 1px solid var(--grey-600);
-  --color-button: var(--white);
-  --color-button-anchor: var(--blue-700);
-  --color-button-anchor--active: var(--blue-800);
-  --color-button-passive: var(--grey-800);
-  --color-button-text: currentColor;
-  --color-button-text--hover: var(--blue-700);
+  --color-button--primary: color(var(--grey-500) a(20%));
+  --color-button--secondary: var(--black);
+  --color-button--hover: var(--color-button--primary);
+  --color-button--active: color(var(--grey-500) a(30%));
+  --color-button--focus: color(var(--black) a(6%));
+
+  /* Primary buttons */
+  --color-button-alt--primary: var(--color-primary);
+  --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--hover: var(--color-primary-dark);
+  --color-button-alt--active: var(--color-primary-dark);
+  --color-button-alt--focus: var(--white);
+
+  /* Accent buttons */
+  --color-button-accent--primary: var(--color-accent);
+  --color-button-accent--secondary: var(--color-accent-contrast);
+  --color-button-accent--hover: var(--color-accent-dark);
+  --color-button-accent--active: var(--color-accent-dark);
+  --color-button-accent--focus: var(--white);
+
+  /* Dark theme buttons */
+  --color-button-dark--primary: color(var(--grey-500) a(18%));
+  --color-button-dark--secondary: var(--color-primary-contrast);
+  --color-button-dark--hover: var(--color-button-dark--primary);
+  --color-button-dark--active: color(var(--grey-500) a(18%));
+  --color-button-dark--focus: color(var(--black) a(10%));
+
+  /* Disabled buttons */
+  --color-button-disabled--primary: color(var(--black) a(12%));
+  --color-button-disabled--secondary: color(var(--black) a(26%));
+  --color-button-disabled--dark: color(var(--white) a(30%));
 
 
   /* Control */
@@ -243,7 +250,7 @@ section: Settings
 
   /* Loader */
 
-  --color-loader: var(--color-secondary);
+  --color-loader: var(--color-accent);
   --color-loader--alt: var(--grey-200);
   --color-loader-secondary: var(--blue-300);
 
@@ -289,6 +296,7 @@ section: Settings
   --shadow-3: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23);
   --shadow-4: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
   --shadow-5: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
+  --shadow-focus: 0 0 8px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.36);
   --shadow-dropdown: var(--shadow-2);
   --shadow-dropdown-picker: inset 0 10px 11px -7px rgba(0, 0, 0, .5), inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
   --toggle-focus-shadow: 0 0 6px var(--blue-600);
@@ -328,6 +336,7 @@ section: Settings
 
 :root {
   /* Legacy Colors */
+  --color-secondary: var(--color-accent);
   --purple-a100: var(--purple-900);
   --magenta-500: var(--purple-500);
 

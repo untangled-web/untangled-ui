@@ -47,6 +47,9 @@ See the README-css.md for more details on working with the CSS itself.
 
 ## CALL FOR CONTRIBUTIONS.
 
+NOTE: Make sure you run the gulp command in the README.css to generate 
+the CSS.
+
 Adding something to this library should be quick and easy. The DOM/CSS 
 for a ton of these is already worked out. What we
 need here are active defui versions of those that can be used easily 

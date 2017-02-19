@@ -1,6 +1,7 @@
 (ns styles.components
   (:require [om.next :as om :refer-macros [defui]]
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [untangled.ui.layout :as l]
             [untangled.icons :as icons]
             [om.dom :as dom]))
 
@@ -18,16 +19,16 @@
 (defexample avatar
   "An avatar is a round symbol to represent a person's identity. When there is no visual, we use the first and last
    initial of their name."
-  (dom/div #js {:className "u-row"}
-    (dom/div #js {:className "u-column--1"}
+  (l/row {}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar"} "AV"))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar"} (icons/icon :help)))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--support"} "KB"))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--informative"} (icons/icon :supervisor_account)))
-    (dom/div #js {:className "u-column--1"}
+    (l/col {:width 1}
       (dom/span #js {:className "c-avatar c-avatar--huge"} "AV"))))
 
 ;; -------------------------
@@ -73,10 +74,16 @@
 
      Use these button classes on `<button>` or `<input type='submit'>` element. It's easy to make a new button.")
 
-(defexample button
-  "### Basic"
-  (dom/button #js {:className "c-button"} "Regular")
-  )
+(defview button
+  "### Button types"
+  (dom/div #js {:className "u-row u-center"}
+    (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Button")
+      (dom/div #js {:className "u-font-size--small u-leader"} "Raised button"))
+    (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--primary"} "Button")
+      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button")
+      )))
 
 (defexample button-shape
   "### Size and form
@@ -84,17 +91,11 @@
   You can optionally use modifier classes that let you manipulate the size and shape of your button.
   "
   (dom/div #js {}
+    (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Regular")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--round"} "Round")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--dense"} "Dense")
     (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button"} "Regular"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--large"} "Large"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--xlarge"} "Extra Large"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--round"} "Round"))
-    (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--wide"} "Wide"))
-    ))
+      (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--wide"} "Wide"))))
 
 
 (defexample button-color
@@ -102,36 +103,59 @@
 
   Stateful color classes are provided to further communicate the intentions of your button action."
   (dom/div #js {}
-    (dom/button #js {:className "c-button"} "Default")
-    (dom/button #js {:className "c-button c-button--secondary"} "Secondary")
-    (dom/button #js {:className "c-button c-button--alert"} "Alert")
-    (dom/button #js {:className "c-button c-button--passive"} "Passive")
-    (dom/button #js {:className "c-button c-button--text"} "Text")
-    (dom/button #js {:className "c-button c-button--anchor"} "Anchor")))
+    (dom/button #js {:className "c-button"} "Flat")
+    (dom/button #js {:className "c-button c-button--primary"} "Flat Primary")
+    (dom/button #js {:className "c-button c-button--accent"} "Flat Accent")
+    (dom/button #js {:className "c-button c-button--raised"} "Raised")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Raised Primary")
+    (dom/button #js {:className "c-button c-button--raised c-button--accent"} "Raised Accent")))
 
 
-(defexample button-state
-  "### States"
-  (dom/div #js {}
-    (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")
-    (dom/button #js {:title "Click me to see the active state." :className "c-button is-active"} "Active")))
+(defview button-state
+  "### Flat Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--12 u-column--6@md"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")))
+
+    (dom/div #js {:className "u-column--12 u-column--6@md t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")))))
+
+
+(defview button-state-raised
+  "### Raised Button States"
+  (dom/div #js {:className "u-row u-row--collapsed u-center"}
+    (dom/div #js {:className "u-column--12 u-column--6@md"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised is-disabled"} "Disabled"))
+      )
+    (dom/div #js {:className "u-column--12 u-column--6@md t-dark" :style #js {:background "#444"}}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-focused"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-active"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised c-button--primary is-disabled"} "Disabled")))))
 
 
 (defexample button-icon
 "### Buttons with icons"
   (dom/div nil
-    (dom/button #js {:className "c-button"}
+    (dom/button #js {:className "c-button c-button--raised"}
       (icons/icon :arrow_back)
       (dom/span #js {:className "c-button__content"} "Left Icon"))
-    (dom/button #js {:className "c-button"}
+
+    (dom/button #js {:className "c-button c-button--raised"}
       (dom/span #js {:className "c-button__content"} "Right Icon")
       (icons/icon :arrow_forward))
+
     (dom/button #js {:title "Icon Button" :className "c-button c-button--icon"}
-      (dom/span #js {:className "c-icon"}
-        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-          (dom/path #js {:d "M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"}))))
-    )
-  )
+      (icons/icon :translate))))
 
 
 
@@ -395,7 +419,9 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
-         (dom/div #js {:className "c-expansion-panel__info"} "Caribbean cruise")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-1
+             "Caribbean cruise"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for trip name")))
 
@@ -405,9 +431,26 @@
                    :tabIndex  "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Location")
-         (dom/div #js {:className "c-expansion-panel__info"} "Barbados")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2
+             "Barbados"
+             (dom/span nil "Select trip destination" (icons/icon :help_outline))))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
-       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for location")))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (l/row {:density :collapse}
+           (dom/div #js {:className "u-column--12 u-column--8@md u-center@md"}
+             (dom/span #js {:className "c-badge c-badge--large"} "Barbados" (icons/icon :cancel)))
+           (dom/div #js {:className "u-column--12 u-column--4@md"}
+             (dom/div #js {:className "c-message--neutral"} "Select your destination of choice")
+             (dom/div #js {:className "c-message"} "Learn more"))
+           )
+         (l/row {:density :collapse :className "c-expansion-panel__actions"}
+           (dom/div #js {:className "u-column--12 u-end"}
+             (dom/button #js {:className "c-button c-button--text"} "CANCEL")
+             (dom/button #js {:className "c-button c-button--anchor"} "SAVE")
+             )
+           )
+         )))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
@@ -415,8 +458,10 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
-         (dom/div #js {:className "c-expansion-panel__info"} "Start date: Feb 29, 2016")
-         (dom/div #js {:className "c-expansion-panel__info"} "End date: Not set")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-3 "Start date: Feb 29, 2016"))
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-3 "End date: Not set"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for dates")))
 
@@ -426,7 +471,8 @@
                    :tabIndex "0"}
        (dom/div #js {:className "c-expansion-panel__list-content"}
          (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
-         (dom/div #js {:className "c-expansion-panel__info"} "The best cruise line")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-4 "The best cruise line"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for carrier")))
 
@@ -438,7 +484,8 @@
          (dom/div #js {:className "c-expansion-panel__title"}
            (dom/div nil "Meal preferences")
            (dom/div #js {:className "c-message--neutral"} "Optional"))
-         (dom/div #js {:className "c-expansion-panel__info"} "Vegetarian")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-5 "Vegetarian"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
      )))
@@ -1224,7 +1271,10 @@
       )))
 
 (defexample accordion-nested
-  "# Nested Accordion Example"
+  "### Nested
+
+  Notice how you can add `.is-nested` to any element and it collapses and expands with `.is-active`
+  "
   (let [accordion (or (om/get-state this :accordion) 1)
         accordion-select (fn [a] (if (not (= accordion a)) (om/update-state! this assoc :accordion a) (om/update-state! this assoc :accordion 0)))
         accordion-active (fn [a] (if (= accordion a) " is-active" ""))]
@@ -1295,71 +1345,23 @@
             (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})) " Action 1 "))
       (dom/div #js {:className "o-sidebar__toggle"}))))
 
-(defn toggle-aside [this] (om/update-state! this update :aside not))
-
-(defexample aside
-  "# Aside Example"
-  (let [aside (boolean (om/get-state this :aside))]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(toggle-aside this)} "Show/Hide Aside Example")
-      (dom/aside #js {:id        "a1"
-                      :className (str "o-aside o-aside--right " (if aside "is-active" ""))}
-        (dom/h1 #js {:className "o-aside__title"} "Favorites")
-        (dom/span #js {
-                       :className "o-aside__close"
-                       :onClick   #(toggle-aside this)}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))
-        (dom/h2 #js {:className "o-aside__title o-aside__title--section"} "Reveal")
-        (dom/ul #js {:className "o-aside__list"}
-          (dom/li #js {}
-            (dom/a #js {:href "#" :className "o-aside__item"} "Segment analysis"))
-          (dom/li #js {}
-            (dom/a #js {:href "#" :className "o-aside__item"} "Source of business report")))
-        (dom/h2 #js {:className "o-aside__title o-aside__title--section"} "Narrowcast")
-        (dom/ul #js {:className "o-aside__list"}
-          (dom/li #js {}
-            (dom/a #js {:href "#" :className "o-aside__item"} "Agent performance report"))
-          (dom/li #js {}
-            (dom/a #js {:href "#" :className "o-aside__item"} "Roll-up report")))
-        (dom/h2 #js {:className "o-aside__title o-aside__title--section"} "Reach")
-        (dom/ul #js {:className "o-aside__list"}
-          (dom/li #js {}
-            (dom/a #js {:href "#" :className "o-aside__item"} "Create new list")))
-        (dom/div #js {:className "o-aside__backdrop"})))))
-
-
-(defexample button-group
-  "# Button Group Example"
-  (dom/div #js {}
-    (dom/div #js {:className "o-button-group"}
-      (dom/button #js {:className "c-button"} "Play")
-      (dom/button #js {:className "c-button"} "Pause")
-      (dom/button #js {:className "c-button"} "Stop"))))
-
-(defexample button-stacked
-  "# Button Group Stacked Example"
-  (dom/div #js {}
-    (dom/div #js {:className "o-button-group--stack"}
-      (dom/button #js {:className "c-button"} "Play")
-      (dom/button #js {:className "c-button"} "Pause")
-      (dom/button #js {:className "c-button"} "Stop"))))
-
 (defn toggle-pause [this] (om/update-state! this update :pause not))
-(defexample button-toggle
-  "# Button Group Toggle Example"
+(defexample button-group
+  "# Button Group"
   (let [pause (boolean (om/get-state this :pause))]
     (dom/div #js {}
-      (dom/span #js {:className "o-button-group__label"} "Control")
+      (dom/label #js {:className ""} "Control")
       (dom/div #js {:className "o-button-group--toggle"}
-        (dom/button #js {:className (str "c-button c-button--small" (if pause " c-button--text" ""))
+        (dom/button #js {:className (str "c-button " (if pause "" " c-button--raised c-button--primary"))
                          :onClick   #(toggle-pause this)} "Play")
-        (dom/button #js {:className (str "c-button c-button--small" (if (not pause) " c-button--text" ""))
+        (dom/button #js {:className (str "c-button " (if (not pause) "" "c-button--raised c-button--primary"))
                          :onClick   #(toggle-pause this)} "Pause")))))
 
 (defexample postfix-group
-  "# Button Group Postfix Example"
+  "# Button Group Postfix Example
+
+  **Please Note** This does not work well on mobile with multiple buttons. To fix this we hacked out the second button. Use at your own risk.
+  "
   (dom/div #js {}
     (dom/div #js {:className "u-row u-row--collapse"}
       (dom/div #js {:className "u-column--9"}
@@ -1371,82 +1373,74 @@
 
 
 (defexample calendar-example
-  "# Calendar Example"
+  "### Calendar Example"
   (dom/div #js {}
     (dom/div #js {:className "u-wrapper"}
       (dom/span #js {:className "o-button-group-label"} " X Date")
       (dom/div #js {:className "o-calendar-wrapper"}
         (dom/input #js {:readOnly "true" :value "" :className "o-claendar-date"}))
-      (dom/div #js {:className "o-calendar c-card"}
-        (dom/header #js {:className "o-calendar__control u-middle"}
-          (dom/div #js {:className "u-column--2"}
-            (dom/button #js {:title "Last Month" :className "o-calendar__button"}
-              (dom/span #js {:className "c-icon c-icon__arrow-back"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"})))))
-          (dom/div #js {:className "u-column--8"}
-            (dom/button #js {:title "Today" :className "c-button c-button--icon"}
-              (dom/span #js {:className "c-icon c-icon__today"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"})))))
-          (dom/div #js {:className "u-column--2"}
-            (dom/button #js {:title "Next Month" :className "o-calendar__button"}
-              (dom/span #js {:className "c-icon c-icon__arrow-forward"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"}))))))
-        (dom/div #js {:className "o-calendar__month o-overlay"}
-          (dom/hr #js {})
+
+      (dom/div #js {:className "c-calendar"}
+        (dom/header #js {:className "c-calendar__control u-middle"}
+          (dom/button #js {:title "Last Month" :className "c-button c-button--icon"}
+            (icons/icon :keyboard_arrow_left))
+          (dom/span #js {} "January 2017")
+          (dom/button #js {:title "Today" :className "c-button c-button--icon"}
+            (icons/icon :today))
+          (dom/button #js {:title "Next Month" :className "c-button c-button--icon"}
+            (icons/icon :keyboard_arrow_right)))
+        (dom/div #js {:className "o-calendar__month"}
           (dom/table #js {}
             (dom/thead #js {}
               (dom/tr #js {}
-                (dom/th #js {:className "o-day-name"} "Su")
-                (dom/th #js {:className "o-day-name"} "M")
-                (dom/th #js {:className "o-day-name"} "Tu")
-                (dom/th #js {:className "o-day-name"} "W")
-                (dom/th #js {:className "o-day-name"} "Th")
-                (dom/th #js {:className "o-day-name"} "F")
-                (dom/th #js {:className "o-day-name"} "Sa")))
+                (dom/th #js {} "Su")
+                (dom/th #js {} "M")
+                (dom/th #js {} "Tu")
+                (dom/th #js {} "W")
+                (dom/th #js {} "Th")
+                (dom/th #js {} "F")
+                (dom/th #js {} "Sa")))
             (dom/tbody #js {}
               (dom/tr #js {}
-                (dom/td #js {:className "o-day is-inactive"} "27")
-                (dom/td #js {:className "o-day is-inactive"} "28")
-                (dom/td #js {:className "o-day is-inactive"} "29")
-                (dom/td #js {:className "o-day is-inactive"} "30")
-                (dom/td #js {:className "o-day is-inactive"} "31")
-                (dom/td #js {:className "o-day"} "1")
-                (dom/td #js {:className "o-day"} "2"))
+                (dom/td #js {:className "c-calendar__day is-inactive"} "27")
+                (dom/td #js {:className "c-calendar__day is-inactive"} "28")
+                (dom/td #js {:className "c-calendar__day is-inactive"} "29")
+                (dom/td #js {:className "c-calendar__day is-inactive"} "30")
+                (dom/td #js {:className "c-calendar__day is-inactive"} "31")
+                (dom/td #js {:className "c-calendar__day"} "1")
+                (dom/td #js {:className "c-calendar__day"} "2"))
               (dom/tr #js {}
-                (dom/td #js {:className "o-day"} "3")
-                (dom/td #js {:className "o-day"} "4")
-                (dom/td #js {:className "o-day"} "5")
-                (dom/td #js {:className "o-day"} "6")
-                (dom/td #js {:className "o-day"} "7")
-                (dom/td #js {:className "o-day"} "8")
-                (dom/td #js {:className "o-day"} "9"))
+                (dom/td #js {:className "c-calendar__day"} "3")
+                (dom/td #js {:className "c-calendar__day"} "4")
+                (dom/td #js {:className "c-calendar__day"} "5")
+                (dom/td #js {:className "c-calendar__day"} "6")
+                (dom/td #js {:className "c-calendar__day"} "7")
+                (dom/td #js {:className "c-calendar__day"} "8")
+                (dom/td #js {:className "c-calendar__day"} "9"))
               (dom/tr #js {}
-                (dom/td #js {:className "o-day"} "10")
-                (dom/td #js {:className "o-day"} "11")
-                (dom/td #js {:className "o-day"} "12")
-                (dom/td #js {:className "o-day"} "13")
-                (dom/td #js {:className "o-day"} "14")
-                (dom/td #js {:className "o-day"} "15")
-                (dom/td #js {:className "o-day"} "16"))
+                (dom/td #js {:className "c-calendar__day"} "10")
+                (dom/td #js {:className "c-calendar__day"} "11")
+                (dom/td #js {:className "c-calendar__day"} "12")
+                (dom/td #js {:className "c-calendar__day"} "13")
+                (dom/td #js {:className "c-calendar__day"} "14")
+                (dom/td #js {:className "c-calendar__day"} "15")
+                (dom/td #js {:className "c-calendar__day"} "16"))
               (dom/tr #js {}
-                (dom/td #js {:className "o-day"} "17")
-                (dom/td #js {:className "o-day"} "18")
-                (dom/td #js {:className "o-day is-active"} "19")
-                (dom/td #js {:className "o-day"} "20")
-                (dom/td #js {:className "o-day"} "21")
-                (dom/td #js {:className "o-day"} "22")
-                (dom/td #js {:className "o-day"} "23"))
+                (dom/td #js {:className "c-calendar__day"} "17")
+                (dom/td #js {:className "c-calendar__day"} "18")
+                (dom/td #js {:className "c-calendar__day is-active"} "19")
+                (dom/td #js {:className "c-calendar__day"} "20")
+                (dom/td #js {:className "c-calendar__day"} "21")
+                (dom/td #js {:className "c-calendar__day"} "22")
+                (dom/td #js {:className "c-calendar__day"} "23"))
               (dom/tr #js {}
-                (dom/td #js {:className "o-day"} "24")
-                (dom/td #js {:className "o-day"} "25")
-                (dom/td #js {:className "o-day"} "26")
-                (dom/td #js {:className "o-day"} "27")
-                (dom/td #js {:className "o-day"} "28")
-                (dom/td #js {:className "o-day"} "29")
-                (dom/td #js {:className "o-day"} "30")))))))))
+                (dom/td #js {:className "c-calendar__day"} "24")
+                (dom/td #js {:className "c-calendar__day"} "25")
+                (dom/td #js {:className "c-calendar__day"} "26")
+                (dom/td #js {:className "c-calendar__day"} "27")
+                (dom/td #js {:className "c-calendar__day"} "28")
+                (dom/td #js {:className "c-calendar__day"} "29")
+                (dom/td #js {:className "c-calendar__day"} "30")))))))))
 
 (defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
@@ -1687,7 +1681,10 @@
 
 
 (defexample icon-rail
-  "# Icon Rail Example"
+  "# Icon Rail Example
+
+  Just add an extra modifier class `.o-iconbar--rail` and you'll get this effect.
+  "
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--rail"}
       (dom/button #js {:className "o-iconbar__item is-active"}
@@ -1712,7 +1709,10 @@
         (dom/span #js {:className "o-iconbar__label"} "Github")))))
 
 (defexample icon-bar-shifting
-  "# Icon Bar Shifting Example"
+  "# Icon Bar Shifting Example
+
+  Just add an extra modifier class `.o-iconbar--shifting` and you'll get this effect.
+  "
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--shifting is-mobile"}
       (dom/button #js {:className "o-iconbar__item is-active"}
@@ -1947,7 +1947,10 @@
       (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
 
 (defexample sidebar
-  "# Sidebar Example"
+  "# Sidebar Example
+
+  **Deprecated** We should be using the drawer component or 2-pane article layout instead.
+  "
   (let [example-class-modifier (str (if (om/get-state this :sidebar-visible) "" " u-hide")
                                  (if (om/get-state this :sidebar-collapsed) " is-collapsed" ""))]
     (dom/div #js {}
@@ -2019,52 +2022,33 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div #js {}
       (dom/div #js {:className "o-toolbar"}
-        (dom/nav #js {:className "u-column--bar"}
-          (dom/h1 #js {:className "o-toolbar__brand"} "Name")
+        (dom/div #js {:className "u-column--bar"}
+          (dom/span #js {:className "u-font-size--semi-medium"} "View Name"))
+
+        (dom/div #js {:className "u-column--bar"}
           (dom/div #js {:className "c-dropdown"}
-            (dom/button #js {:className "c-dropdown__select js-dropdown-toggle"
-                             :onClick   #(menu-action :ui (not ui-menu-open) nil)} "UI")
-            (dom/ul #js {:className ui-menu-class :tabIndex "-1"}
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"
-                                 :onClick   #(menu-action :ui false 1)}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"})) " App "))
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"
-                                 :onClick   #(menu-action :ui false 2)}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"})) " App "))
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"
-                                 :onClick   #(menu-action :ui false 3)}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"})) " App ")))))
-        (dom/ul #js {:className "u-column--bar"}
-          (dom/li #js {:className "o-toolbar__link"}
-            (dom/div #js {:className "c-dropdown"}
-              (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"})))
-              (dom/button #js {:className "c-button c-button--text c-button--dropdown u-hide@sm"
-                               :onClick   #(menu-action :lang (not lang-menu-open) lang-item-selected)} lang-item-selected)
-              (dom/ul #js {:className lang-menu-class :tabIndex "-1"}
-                (dom/li #js {}
-                  (dom/button #js {:className "c-dropdown__link"
-                                   :onClick   #(menu-action :lang false "English-US")} "English-US"))
-                (dom/li #js {} (dom/button #js {:className "c-dropdown__link"
-                                                :onClick   #(menu-action :lang false "Español")} "Español")))))
-          (dom/li #js {:className "o-toolbar__link"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--person" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"}))
-            (dom/span #js {:className "u-hide@sm"} "Kevin Mitnick"))
-          (dom/li #js {:className "o-toolbar__link"}
+            (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
+              (icons/icon :language))
+
+            (dom/button #js {:className "c-button has-menu u-hide@sm"
+                             :onClick   #(menu-action :lang (not lang-menu-open) lang-item-selected)} lang-item-selected)
+            (dom/ul #js {:className lang-menu-class :tabIndex "-1"}
+              (dom/li #js {} (dom/button #js {:className "c-dropdown__link"
+                                              :onClick   #(menu-action :lang false "English-US")} "English-US"))
+              (dom/li #js {} (dom/button #js {:className "c-dropdown__link"
+                                              :onClick   #(menu-action :lang false "Español")} "Español"))))
+          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+
+          (dom/span #js {:title "Kevin Mitnick"}
             (dom/button #js {:className "c-button c-button--icon"}
-              (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"})))))))))
+              (icons/icon :account_circle)))
+          )))))
 
 (defexample toolbar-small
-  "# Small Toolbar Example"
+  "### Small
+
+  This toolbar is mainly used for specific operations and navigation for the current app you are using.
+  "
   (let [selected-item (or (om/get-state this :selected-item) :widgets)
         get-class (fn [item] (str "c-menu__link" (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
@@ -2087,7 +2071,10 @@
 
 
 (defexample toolbar-secondary
-  "# Secondary Toolbar Example"
+  "### Secondary Toolbar Example
+
+  The secondary toolbar is intended to only provide operations for the current view of the app your in.
+  "
   (let [example-class-modifier (str (if (om/get-state this :toolbar-secondary-visible) "" " u-hide"))]
     (dom/div #js {}
       (dom/button #js {:className "c-button"
@@ -2133,7 +2120,8 @@
           (dom/button #js {:className "c-button c-button--secondary c-button--large c-button--dropdown"} "Create widgets"))))))
 
 (defexample toolbar-secondary-example2
-  "# Toolbar Secondary Example 2"
+  "# Toolbar Secondary Example
+  "
   (dom/div #js {}
     (dom/div #js {:className "o-toolbar o-toolbar--secondary"}
       ;;"<!-- View Info for Mobile -->"
@@ -2210,7 +2198,9 @@
                       button-shape
                       button-color
                       button-state
+                      button-state-raised
                       button-icon
+                      button-group
                       ]}
           {:id :card
            :title "Card"
@@ -2352,42 +2342,26 @@
 
           ;; OBJECTS Start here
 
-          {:id :accordion :title "Accordion" :examples [accordion]
+
+          {:id :accordion :title "Accordion [Deprecated]" :examples [accordion accordion-sidebar accordion-nested]
            :documentation
-               "**NEW!** This object is redesigned to be un-opinionated and flexible for almost any interactive list you might need in your app. The simplified markup resembles this node list:
+               "# Accordion
+
+               **Deprecated** Expansion panels are better designed to show more information in a flexible way. We also have the list component now for showing informational data.
+
+               This object is redesigned to be un-opinionated and flexible for almost any interactive list you might need in your app. The simplified markup resembles this node list:
                ``` shell\n.o-accordion [ --inline | --right | --small ]\n   __title   [ is-active | is-nested | is-selected ]\n   __content [ is-active ]\n     __group\n       __info\n       __actions\n         __action [ --informative | --success ]\n         __meta\n           __meta-item\n```"}
-          {:id :accordion-nested :title " Nested Accordion " :examples [accordion-nested]
-           :documentation
-               "Notice how you can add `.is-nested` to any element and it collapses and expands with `.is-active`"}
-          {:id :accordion-sidebar :title " Accordion Side Bar" :examples [accordion-sidebar]}
-          {:id :aside :title " Aside " :examples [aside]
-           :documentation
-               "**NEW!** A simple sliding card that displays lists of links and other various content. The simplified markup resembles this node list:"}
-          {:id :button-group :title "Button Groups" :examples [button-group button-stacked button-toggle]}
-          {:id :postfix-group :title "Button Groups (postfix)" :examples [postfix-group]
-           :documentation
-               "**Please Note** This does not work well on mobile with multiple buttons. To fix this we hacked out the second button. Use at your own risk."}
           {:id :calendar-example :title "Calendar" :examples [calendar-example]
            :documentation
-               "This is a month view calendar for overlaying on input fields that control date selection."}
+               "# Calendar
+
+               This is a month view calendar for overlaying on input fields that control date selection."}
           {:id :drawer :title "Drawer" :examples [drawer]}
-          {:id :editor-inactive :title "Editor" :examples [editor-inactive editor-active]}
-          {:id :icon-bar :title "Icon Bar" :examples [icon-bar]}
-          {:id :icon-rail :title "Icon Rail" :examples [icon-rail]
-           :documentation
-               "Just add an extra modifier class `.o-iconbar--rail` and you'll get this effect."}
-          {:id :icon-bar-shifting :title "Icon Bar Shifting" :examples [icon-bar-shifting]
-           :documentation
-               "Just add an extra modifier class `.o-iconbar--shifting` and you'll get this effect."}
-          {:id :listing :title "Listing" :examples [listing-begin listing]}
+          {:id :editor-inactive :title "Editor [Deprecated]" :examples [editor-inactive editor-active]}
+          {:id :icon-bar :title "Icon Bar" :examples [icon-bar icon-rail icon-bar-shifting]}
+          {:id :listing :title "Listing [Deprecated]" :examples [listing-begin listing]}
           {:id :modal :title "Modal" :examples [modal-example modal-small modal-large modal-primary modal-success modal-warning]}
-          {:id :sidebar :title "Sidebar" :examples [sidebar sidebar-right]}
-          {:id :toolbar :title "Toolbar" :examples [toolbar]}
-          {:id :small-toolbar :title "Small Toolbar" :examples [toolbar-small]
-           :documentation
-               "This toolbar is mainly used for specific operations and navigation for the current app you are using."}
-          {:id :secondary-toolbar :title "Secondary Toolbar" :examples [toolbar-secondary]
-           :documentation
-               "The secondary toolbar is intended to only provide operations for the current view of the app your in."}
+          {:id :sidebar :title "Sidebar [Deprecated]" :examples [sidebar sidebar-right]}
+          {:id :toolbar :title "Toolbar" :examples [toolbar toolbar-small toolbar-secondary]}
           ])))
 

@@ -3,95 +3,36 @@ title: Button Groups
 section: Objects
 ---*/
 
-.o-button-group {
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 0 2% 2% 0;
-  padding: 0;
-  position: relative;
 
-
-  .c-button {
-    border-radius: 0;
-    margin-right: 1px !important;
-    margin-bottom: 2px !important;
-
-
-    &:first-of-type {
-      border-bottom-left-radius: var(--global-rounded);
-      border-top-left-radius: var(--global-rounded);
-    }
-
-
-    &:not(:first-of-type) {
-      margin-left: 0 !important;
-    }
-
-
-    &:last-of-type {
-      border-bottom-right-radius: var(--global-rounded);
-      border-top-right-radius: var(--global-rounded);
-    }
-  }
-
-
-  .c-button--postfix {
-    border-radius: 0;
-
-
-    &:last-child { border-radius: 0 var(--global-rounded) var(--global-rounded) 0; }
-  }
-}
-
-
-  .o-button-group__label {
-    display: inline-block;
-    line-height: 30px !important;
-    margin: 0 .5rem 0 !important;
-  }
-
-
-.o-button-group--stack {
-  clear: both;
-  list-style: none;
-
-  .c-button {
-    margin: 0 0 1px 0 !important;
-    width: 100%;
-  }
-}
-
-
+.o-button-group,
 .o-button-group--toggle {
   @apply --text-middle;
-  background-color: var(--grey-100);
+  background-color: var(--grey-50);
   border-radius: 5px;
-  box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, .36);
+  box-shadow: var(--shadow-3);
   box-sizing: border-box;
   display: inline-flex;
   flex: 0 1 auto;
   flex-flow: row wrap;
   height: auto;
-  line-height: 30px;
-  margin-bottom: .5em;
-  margin-right: 2%;
+  line-height: 46px;
+  margin: 6px 8px;
   overflow: hidden;
 
-  @media (--md-up) { margin-bottom: 0; }
-  
-  & .c-button {
-    border: none;
-    height: 26px;
-    line-height: 26px;
-    margin: 1px !important;
-    min-width: 50px;
-    transition: color var(--global-duration) ease, background-color var(--global-duration) ease !important;
+@media (--md-up) { margin-bottom: 0; }
 
-    &:--enter { border: none; }
+  & .c-button {
+    margin: 0;
 
     &::after { box-shadow: none; }
   }
 
-
   .c-toolbar & { margin-bottom: 0 !important; }
+}
+
+.c-button--postfix {
+  border-radius: 0;
+
+
+  &:last-child { border-radius: 0 var(--global-rounded) var(--global-rounded) 0; }
 }
