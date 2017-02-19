@@ -4,7 +4,6 @@
     [devcards.util.utils :as utils]
     [untangled.ui.sample-card :refer-macros [sample-card]]
     [om.dom :as dom]
-    [untangled.ui.card :as c]
     [untangled.ui.elements :as ele]
     [untangled.client.core :as uc]))
 
@@ -14,7 +13,7 @@
    A card compontent applies syling to ui elements that represent a card
 
   ```
-    (c/ui-card {:active true/false
+    (ele/ui-card {:active true/false
                 :title \"Some Title\"
                 :type :rounded
                         or :transparent
@@ -28,31 +27,31 @@
   ")
 
 (sample-card ui-card "ui-card"
-  (c/ui-card {}
+  (ele/ui-card {}
     (dom/div nil "Content")))
 
 (sample-card active-card "Active Card"
-  (c/ui-card {:active true}
+  (ele/ui-card {:active true}
     (dom/div nil "Content")))
 
 (sample-card title "Title"
-  (c/ui-card {:title "Hey There"}
+  (ele/ui-card {:title "Hey There"}
     (dom/div nil "Content")))
 
 (sample-card rounded "Rounded"
-  (c/ui-card {:type :rounded}
+  (ele/ui-card {:type :rounded}
     (dom/div nil "Content")))
 
 (sample-card transparent "Transparent"
-  (c/ui-card {:type :transparent}
+  (ele/ui-card {:type :transparent}
     (dom/div nil "Content")))
 
 (sample-card zone "Zone"
-  (c/ui-card {:type :zone}
+  (ele/ui-card {:type :zone}
     (dom/div nil "Content")))
 
 (sample-card ruled "Ruled"
-  (c/ui-card {:type :ruled}
+  (ele/ui-card {:type :ruled}
     (dom/div nil "Content")
     (dom/div nil "Content")
     (dom/div nil "Content")
@@ -60,13 +59,13 @@
     (dom/div nil "Content")))
 
 (sample-card ruled-zone "Ruled Zone"
-  (c/ui-card {:type :ruled-zone}
+  (ele/ui-card {:type :ruled-zone}
     (dom/div nil "Content")))
 
 (sample-card density-inset "Density Inset"
-  (c/ui-card {:density :inset}
+  (ele/ui-card {:density :inset}
     (dom/div nil "Content")))
 
 (sample-card density-collapse "Density Collapse"
-  (c/ui-card {:density :collapse}
+  (ele/ui-card {:density :collapse}
     (dom/div nil "Content")))

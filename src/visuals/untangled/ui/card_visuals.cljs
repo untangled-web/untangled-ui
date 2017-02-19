@@ -1,44 +1,44 @@
 (ns untangled.ui.card-visuals
-  (:require [untangled.ui.card :as c]
-            [om.dom :as dom]
-            [devcards.core :as dc :refer-macros [defcard]]
-            ))
+  (:require
+    [om.dom :as dom]
+    [devcards.core :as dc :refer-macros [defcard]]
+    [untangled.ui.elements :as ele]))
 
 
 (defcard card-visual-regressions
   (dom/div nil
-    (c/ui-card {}
+    (ele/ui-card {}
       (dom/div nil "Content"))
 
-    (c/ui-card {:active true}
+    (ele/ui-card {:active true}
       (dom/div nil "Content"))
 
-    (c/ui-card {:title "Hey There"}
+    (ele/ui-card {:title "Hey There"}
       (dom/div nil "Content"))
 
-    (c/ui-card {:type :rounded}
+    (ele/ui-card {:type :rounded}
       (dom/div nil "Content"))
 
-    (c/ui-card {:type :transparent}
+    (ele/ui-card {:type :transparent}
       (dom/div nil "Content"))
 
-    (c/ui-card {:type :zone}
+    (ele/ui-card {:type :zone}
       (dom/div nil "Content"))
 
-    (c/ui-card {:type :ruled}
+    (ele/ui-card {:type :ruled}
       (dom/div nil "Content")
       (dom/div nil "Content")
       (dom/div nil "Content")
       (dom/div nil "Content")
       (dom/div nil "Content"))
 
-    (c/ui-card {:type :ruled-zone}
+    (ele/ui-card {:type :ruled-zone}
       (dom/div nil "Content"))
 
-    (c/ui-card {:density :inset}
+    (ele/ui-card {:density :inset}
       (dom/div nil "Content"))
 
-    (c/ui-card {:density :collapse}
+    (ele/ui-card {:density :collapse}
       (dom/div nil "Content"))
     ))
 
