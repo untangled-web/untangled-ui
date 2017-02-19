@@ -5,7 +5,6 @@
     [om.next :as om :refer [defui]]
     [om.dom :as dom]
     [untangled.client.core :as uc]
-    [untangled.services.local-storage :as ls]
     [untangled.client.routing :as r :refer [defrouter]]
     [untangled.client.impl.network :as un]
     [untangled.client.mutations :as m :refer [defmutation]]
