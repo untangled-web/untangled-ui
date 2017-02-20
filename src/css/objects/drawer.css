@@ -20,9 +20,7 @@ section: Objects
   width: 85%;
   max-width: 305px;
   z-index: 800;
-}
 
-.o-drawer--left {
   left: -100%;
   transition: left .3s ease;
   will-change: left;
@@ -32,6 +30,7 @@ section: Objects
 
 .o-drawer--right {
   right: -100%;
+  left: no;
   transition: right var(--global-duration) ease-in-out;
   will-change: right;
 

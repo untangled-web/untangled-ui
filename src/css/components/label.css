@@ -106,32 +106,28 @@ section: Components
 }
 
 
-/* DEPRECATED
- * Spectrum-based color classes
+/* Spectrum-based color classes
  * Labels should be unopinionated to content and culture. */
 
-.c-label--green,
-.c-label--positive {
+.c-label--green {
   background-color: var(--color-label-green-background);
   color: var(--white);
 }
-.c-label--blue,
-.c-label--informative { background-color: var(--color-label-blue-background); }
-.c-label--magenta,
-.c-label--informative-alt {
+.c-label--blue { background-color: var(--color-label-blue-background); }
+
+.c-label--magenta {
   background-color: var(--color-label-magenta-background);
   color: var(--white);
 }
-.c-label--grey,
-.c-label--neutral { background-color: var(--color-label-grey-background); }
+
+.c-label--grey { background-color: var(--color-label-grey-background); }
 
 .c-label--yellow,
-.c-label--gold,
-.c-label--live { background-color: var(--color-label-gold-background); }
-.c-label--orange,
-.c-label--alterable { background-color: var(--color-label-orange-background); }
-.c-label--red,
-.c-label--negative {
+.c-label--gold { background-color: var(--color-label-gold-background); }
+
+.c-label--orange { background-color: var(--color-label-orange-background); }
+
+.c-label--red {
   background-color: var(--color-label-red-background);
   color: var(--white);
 }
