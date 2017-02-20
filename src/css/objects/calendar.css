@@ -97,7 +97,7 @@ section: Objects
 
 .c-calendar--up,
 .o-calendar--up {
-  bottom: 0;
+  bottom: 100%;
   top: auto;
 }
 

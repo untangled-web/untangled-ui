@@ -1,0 +1,144 @@
+/*---
+title: Tabs
+section: Components
+---*/
+
+:root {
+  --tab-item-height: 43px;
+}
+
+
+.c-tab {
+  background: transparent;
+  border-bottom: 3px solid transparent;
+  font-size: var(--fontSize--tiny);
+  letter-spacing: 1px;
+  min-height: 36px;
+  padding: .5em .5rem;
+  text-transform: uppercase;
+  transition: border-bottom var(--global-duration) ease, color var(--global-duration) ease;
+
+  @media (--md-up) {
+    min-width: auto;
+    padding: .5em .75rem;
+  }
+
+  &:hover { border-bottom-color: var(--blue-400); }
+
+  &:--active {
+     background-color: transparent;
+     border-bottom-color: var(--blue-800);
+     box-shadow: none;
+     color: var(--blue-800);
+
+  :--fullscreen & {
+    border-bottom-color: var(--blue-200);
+    color: var(--blue-200);
+  }
+  }
+
+  :--fullscreen & {
+    font-size: .9rem;
+  }
+}
+
+/*
+.c-tab {
+  background-color: transparent;
+  color: currentColor;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0 .5rem;
+  text-decoration: none;
+  margin: 0 -.5rem;
+
+  .c-tab__link {
+    display: block;
+    font-size: var(--fontSize--tiny);
+    height: var(--menu-item-height);
+    line-height: var(--menu-item-height);
+    padding: 0 12px;
+    transition: background-color var(--global-duration) ease, color var(--global-duration) ease;
+    white-space: nowrap;
+    width: 100%;
+
+    @media (--md-up) {
+      font-size: var(--fontSize--normal);
+      padding: 0 24px;
+    }
+
+    &:--active {
+      background-color: transparent;
+      border-bottom: 4px solid var(--borderColor-nav-active);
+      box-shadow: none;
+      color: var(--color-nav-active);
+    }
+
+
+    &:hover {
+      background-color: var(--borderColor-nav-hover);
+      color: var(--color-nav-hover);
+     }
+
+    &.is-active + .c-menu__submenu {
+      @apply --fade-in;
+    }
+  }
+
+  .c-menu__submenu {
+    @apply --fade-out;
+    @apply --reset-box;
+    color: currentColor;
+    display: block;
+    list-style: none;
+    min-width: 150px;
+
+    &.is-active { @apply --fade-in; }
+
+    &__item { @apply --no-bullet; }
+  }
+}
+
+.c-tab--inline {
+
+@media (--md-up) {
+  min-width: 100px;
+}
+
+&:--disabled {
+   opacity: .5;
+   -ms-pointer-events: none;
+   pointer-events: none;
+ }
+
+&.is-active {
+   background-color: var(--blue-800);
+   box-shadow: inset 0 0 6px rgba(0, 0, 0, .8);
+   color: var(--menu-active-copy);
+ }
+}
+
+
+.c-tab--small {
+  font-size: var(--fontSize--small);
+  height: 38px;
+  line-height: 38px;
+}
+
+
+.c-tab__section {
+  @apply --no-bullet;
+  @apply --fade-out;
+  background-color: var(--primary-color);
+  position: absolute;
+
+& .c-tab__link { text-align: left; }
+
+.c-tab li:hover > & {
+  @apply --fade-in;
+  z-index: 200;
+}
+}
+
+
+*/

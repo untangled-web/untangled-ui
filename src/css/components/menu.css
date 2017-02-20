@@ -1,159 +1,187 @@
 /*---
-title: Menu
+title: Dropdowns
 section: Components
 ---*/
 
+/* DEPRECATED
+ * .c-dropdown__toggle, .c-dropdown__text-toggle, .c-dropdown__content
+ */
+
+
 :root {
-  --menu-item-height: 43px;
+  --height-dropdown-select--small: 26px;
+  --height-dropdown-select--large: 42px;
+  --size-dropdown-select: 30px;
+  --size-dropdown-icon: 24px;
+  --size-dropdown-menu-icon: 16px;
+  --offset-dropdown-menu-icon: 3px;
 }
 
-.c-menu {
-  @apply --list-horizontal;
-  @apply --row;
-  background-color: transparent;
-  color: currentColor;
-  list-style: none;
+
+.c-dropdown {
+  cursor: default;
+  display: inline-block;
+  height: auto;
   position: relative;
-  text-decoration: none;
-  user-select: none;
-  vertical-align: middle;
 
-  &__item { @apply --no-bullet; }
+  &:--disabled {
+    opacity: .5;
+    pointer-events: none;
+    -ms-pointer-events: none;
+  }
 
-  .c-card &:first-child { margin-top: auto !important; }
+  .u-wrapper {
+    margin-bottom: 0;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
 }
 
 
-  .c-menu__link {
-    background-color: transparent;
-    color: currentColor;
-    cursor: pointer;
+  .c-dropdown__link {
+    background-color: var(--color-dropdown-link-background);
     font-family: inherit;
-    padding: 0 .5rem;
-    text-decoration: none;
+    font-size: var(--fontSize--small);
+    padding: .75em 1rem;
+    text-align: left;
+    transition: background-color var(--global-duration) ease, color var(--global-duration) ease;
+    width: 100%;
 
-    @media (--md-up) {
-      min-width: 100px;
+    &:--enter { background-color: var(--color-dropdown-link-background-enter); }
+
+    &:--active {
+      background-color: var(--color-dropdown-link-background-active);
+      color: var(--color-dropdown-link-active);
     }
 
     &:--disabled {
+      box-shadow: none;
       opacity: .5;
       -ms-pointer-events: none;
       pointer-events: none;
     }
-
-    &.is-active {
-      background-color: var(--blue-800);
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, .8);
-      color: var(--menu-active-copy);
-    }
   }
 
 
-  .c-menu__link--small {
-    font-size: var(--fontSize--small);
-    height: 38px;
-    line-height: 38px;
-  }
 
 
-  .c-menu__section {
-    @apply --no-bullet;
+
+  /* Menu Elements */
+
+  .c-menu {
     @apply --fade-out;
-    background-color: var(--primary-color);
-    position: absolute;
-
-    & .c-menu__link { text-align: left; }
-
-    .c-menu li:hover > & {
-      @apply --fade-in;
-      z-index: 200;
-    }
-  }
-
-
-.c-menu--block {
-  margin: 0 -.5rem;
-
-  .c-menu__link {
-    display: block;
-    font-size: var(--fontSize--tiny);
-    height: var(--menu-item-height);
-    line-height: var(--menu-item-height);
-    padding: 0 12px;
-    transition: background-color var(--global-duration) ease, color var(--global-duration) ease;
-    white-space: nowrap;
-    width: 100%;
-
-    @media (--md-up) {
-      font-size: var(--fontSize--normal);
-      padding: 0 24px;
-    }
-
-    &:--active {
-      background-color: transparent;
-      border-bottom: 4px solid var(--borderColor-nav-active);
-      box-shadow: none;
-      color: var(--color-nav-active);
-    }
-
-
-    &:hover {
-      background-color: var(--borderColor-nav-hover);
-      color: var(--color-nav-hover);
-     }
-
-    &.is-active + .c-menu__submenu {
-      @apply --fade-in;
-    }
-  }
-
-  .c-menu__submenu {
-    @apply --fade-out;
-    @apply --reset-box;
-    color: currentColor;
-    display: block;
+    background-color: var(--color-dropdown-menu-background);
+    box-shadow: var(--shadow-dropdown);
+    left: 8px;
     list-style: none;
-    min-width: 150px;
+    min-width: 100px;
+    padding: .5em 0;
+    position: absolute;
+    top: calc(100% - 6px);
+    z-index: var(--zIndex-menu);
 
-    &.is-active { @apply --fade-in; }
+    &:--active { @apply --fade-in; }
 
-    &__item { @apply --no-bullet; }
+    &::before { right: 20px !important; }
+
+    &::after,
+    &:not(.is-active) svg { display: none; }
+
+    & .c-icon {
+      color: var(--color-page);
+      height: var(--size-dropdown-menu-icon);
+      top: var(--offset-dropdown-menu-icon) !important;
+      width: var(--size-dropdown-menu-icon);
+    }
+
+    & > .c-button { margin: 0 !important; }
+
+    &--overlap {
+      left: 13px !important;
+      top: -3px !important;
+      width: 165px !important;
+    }
+
+    .c-dropdown--right & {
+      left: auto;
+      right: 8px;
+    }
+
+    .c-dropdown--large & { padding: 6px 0; }
+  }
+
+
+  .c-dropdown__group { border-bottom: 1px solid var(--borderColor-inactive); }
+
+
+
+
+
+/* Large Dropdown */
+
+/* DEPRECATED
+ * .c-dropdown--picker, .c-dropdown__picker */
+
+
+.c-dropdown--large,
+.c-dropdown--picker {
+  .c-dropdown__menu,
+  .c-dropdown__content {
+    min-width: 13.5rem;
+    padding: var(--frame-third);
+  }
+
+  .c-button { margin-bottom: 0; }
+}
+
+
+  .c-dropdown__viewer,
+  .c-dropdown__picker {
+    border-bottom: 1px solid var(--grey-500);
+    box-shadow: var(--shadow-dropdown-picker);
+    margin-bottom: var(--frame-quarter);
+    max-height: calc(29vh);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0 1rem;
+  }
+
+
+  .c-dropdown__list {
+    @apply --fade-in;
+    background-color: var(--color-dropdown-menu-background);
+    border: 1px dashed var(--grey-400);
+    border-radius: 0 var(--global-rounded) var(--global-rounded) var(--global-rounded);
+    box-shadow: none;
+    color: var(--color-dropdown-menu);
+    display: inline-block;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    max-width: 100%;
+    min-width: 200px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    top: 29px;
+    z-index: -1;
+  }
+
+
+.c-dropdown--data {
+  z-index: 5;
+
+  & .c-dropdown__select,
+  & .c-dropdown__toggle {
+    color: var(--color-dropdown-data-select);
+    min-width: 200px;
   }
 }
 
-.c-menu--inline {
 
-  .c-menu__link {
-    border-bottom: 3px solid transparent;
-    font-size: var(--fontSize--tiny);
-    letter-spacing: 1px;
-    min-height: 36px;
-    padding: .5em .5rem;
-    text-transform: uppercase;
-    transition: border-bottom var(--global-duration) ease, color var(--global-duration) ease;
-
-    @media (--md-up) {
-      min-width: auto;
-      padding: .5em .75rem;
-    }
-
-    &:hover { border-bottom-color: var(--blue-400); }
-
-    &:--active {
-      background-color: transparent;
-      border-bottom-color: var(--blue-800);
-      box-shadow: none;
-      color: var(--blue-800);
-
-      :--fullscreen & {
-        border-bottom-color: var(--blue-200);
-        color: var(--blue-200);
-      }
-    }
-
-    :--fullscreen & {
-      font-size: .9rem;
-    }
+.c-dropdown--wide {
+  &,
+  .c-dropdown__select {
+    width: 100%;
   }
 }
