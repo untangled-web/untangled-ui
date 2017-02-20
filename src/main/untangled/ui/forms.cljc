@@ -915,34 +915,6 @@
             (completing (partial field-diff form))
             diff fields))))))
 
-(defn reset-from-entity!
-  "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
-   You may compose your own Om transactions and use `(f/reset-from-entity {:form-id [:entity id]})` directly."
-  [comp-or-reconciler form]
-  (let [form-id (form-ident form)]
-    (om/transact! comp-or-reconciler
-      `[(reset-from-entity ~{:form-id form-id})
-        ~form-root-key])))
-
-(defn commit-to-entity!
-  "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
-   database and also post the entity to the server.
-
-   IMPORTANT: This function checks the validity of the form. If it is invalid, it will NOT commit the changes, but will
-   instead trigger an update of the form in the UI to show validation errors.
-
-   For remotes to work you must implement `(f/commit-to-entity {:form-id [:id id] :value {...})`
-   on the server. "
-  [component & {:keys [remote rerender] :or {remote false}}]
-  (let [form (om/props component)]
-    (om/transact! component
-      (reduce conj
-        [(if (valid? (validate-fields form))
-           `(commit-to-entity ~{:form form :remote remote})
-           `(validate-form ~{:form-id (form-ident form)}))
-         form-root-key]
-        rerender))))
-
 (defn entity-xform
   "Modify the form's (under `form-id`) using `update-forms` and a passed in transform `xf`"
   [state form-id xf]
@@ -972,3 +944,32 @@
            "
            [{:keys [form-id]}]
            (action [{:keys [state]}] (swap! state entity-xform form-id reset-entity))))
+
+(defn reset-from-entity!
+  "Reset the form from a given entity in your application database using an Om transaction and update the validation state.
+   You may compose your own Om transactions and use `(f/reset-from-entity {:form-id [:entity id]})` directly."
+  [comp-or-reconciler form]
+  (let [form-id (form-ident form)]
+    (om/transact! comp-or-reconciler
+      `[(reset-from-entity ~{:form-id form-id})
+        ~form-root-key])))
+
+(defn commit-to-entity!
+  "Copy the given form state into the given entity. If remote is supplied, then it will optimistically update the app
+   database and also post the entity to the server.
+
+   IMPORTANT: This function checks the validity of the form. If it is invalid, it will NOT commit the changes, but will
+   instead trigger an update of the form in the UI to show validation errors.
+
+   For remotes to work you must implement `(f/commit-to-entity {:form-id [:id id] :value {...})`
+   on the server. "
+  [component & {:keys [remote rerender] :or {remote false}}]
+  (let [form (om/props component)]
+    (om/transact! component
+      (reduce conj
+        [(if (valid? (validate-fields form))
+           `(commit-to-entity ~{:form form :remote remote})
+           `(validate-form ~{:form-id (form-ident form)}))
+         form-root-key]
+        rerender))))
+
