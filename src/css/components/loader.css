@@ -11,6 +11,7 @@ section: Components
   animation: 1.15s cubic-bezier(.215, .61, .355, 1) 0s infinite ripple;
   border: 0 solid var(--color-loader);
   border-radius: 50%;
+  display: inline-block;
   width: auto;
   z-index: var(--zIndex-loader);
 
