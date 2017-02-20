@@ -42,7 +42,7 @@
   (initial-state [this params] (f/build-form this (or params {})))
   static f/IForm
   (form-spec [this] [(f/id-field :db/id)                    ; Mark which thing is the ID of this entity
-                     (f/text-input :phone/number :class "form-control")
+                     (f/text-input :phone/number :className "form-control")
                      (f/dropdown-input :phone/type [(f/option :home "Home") (f/option :work "Work")])])
   static om/IQuery
   (query [this] [:db/id :phone/type :phone/number f/form-key]) ; Don't forget f/form-key!
