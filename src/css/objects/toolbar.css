@@ -10,12 +10,13 @@ section: Objects
 :root {
   --height-toolbar: 56px;
   --padding-toolbar: 0 .5rem;
+  --color-toolbar: var(--white);
 }
 
 .o-toolbar {
   @apply --row;
   @apply --middle;
-  background-color: var(--white);
+  background-color: var(--color-toolbar);
   box-shadow: var(--shadow-1);
   color: var(--grey-900);
   height: var(--height-toolbar);
@@ -46,12 +47,6 @@ section: Objects
     padding: 7px 0;
   }
 
-
-  .o-toolbar__product {
-    color: var(--color-nav-active);
-    display: inline-block;
-    text-transform: uppercase;
-  }
 
   .o-toolbar__view,
   .o-toolbar__actions {
@@ -104,10 +99,9 @@ section: Objects
 
 
 .o-toolbar--small {
-  background-color: var(--backgroundColor-toolbar-small);
   border: none !important;
   color: var(--color-toolbar-small);
-  height: 44px;
+  height: 48px;
 
   @media print { display: none; }
 }
