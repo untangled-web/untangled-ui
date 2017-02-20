@@ -645,62 +645,62 @@
           (f/diff-form basic-person) => {}
           "we can pick up an update to a form"
           (f/diff-form (assoc basic-person :person/name "Foo Bar"))
-          => {:tx/set {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
+          => {:form/update {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
           "we can pick up a creation of a reference"
           (-> basic-person
             (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
             f/diff-form)
-          => {:tx/new {[:phone/by-id t1] {:phone/number "123-4567"}}
-              :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}}
+          => {:form/new-entity {[:phone/by-id t1] {:phone/number "123-4567"}}
+              :form/update {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}}
           "we can pick up a deletion of a reference"
           (-> one-number-person
             (dissoc :person/name)
             f/diff-form)
-          => {:tx/del {(f/form-ident one-number-person) {:person/name "A"}}}
+          => {:form/delete-entity {(f/form-ident one-number-person) {:person/name "A"}}}
           "we can pick up a deletion of an entity"
           (-> one-number-person
             (dissoc :person/number)
             f/diff-form)
-          => {:tx/del {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
+          => {:form/delete-entity {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
           "we can pick up changes to subforms"
           (-> one-number-person
             (assoc-in [:person/number :phone/number] "123-4567")
             f/diff-form)
-          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
+          => {:form/update {[:phone/by-id 1] {:phone/number "123-4567"}}}
           (-> many-number-person
             (assoc-in [:person/number 0 :phone/number] "123-4567")
             f/diff-form)
-          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
+          => {:form/update {[:phone/by-id 1] {:phone/number "123-4567"}}}
           "^-> new ref one"
           (-> basic-person
             (assoc :person/number (f/build-form Phone {:db/id 1}))
             f/diff-form)
-          => {:tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
+          => {:form/update {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
           "^-> add ref one"
           (-> one-number-person
             (assoc :person/number (f/build-form Phone {:db/id 2}))
             f/diff-form)
-          => {:tx/set {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
+          => {:form/update {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
           "^-> rem ref many"
           (-> one-many-number-person
             (assoc :person/number [])
             f/diff-form)
-          => {:tx/rem {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
+          => {:form/remove-relation {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
           "^-> add ref many"
           (-> no-number-person
             (update :person/number conj (f/build-form Phone {:db/id 1}))
             f/diff-form)
-          => {:tx/add {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
+          => {:form/add-relation {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
           (-> many-number-person
             (update :person/number conj (f/build-form Phone {:db/id 3}))
             f/diff-form)
-          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
+          => {:form/add-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
           "^-> del & add ref many"
           (-> many-number-person
             (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
             f/diff-form)
-          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
-              :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
+          => {:form/add-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
+              :form/remove-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
                                                form-id => [:people/by-id 3]

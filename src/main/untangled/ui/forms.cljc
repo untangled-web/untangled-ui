@@ -876,11 +876,11 @@
                 additions (set/difference curr-set orig-set)
                 removals  (set/difference orig-set curr-set)]
             (cond-> {}
-              (seq removals)  #_=> (assoc :tx/rem (vec removals))
-              (seq additions) #_=> (assoc :tx/add (vec additions))))
+              (seq removals)  #_=> (assoc :form/remove-relation (vec removals))
+              (seq additions) #_=> (assoc :form/add-relation (vec additions))))
     (cond
-      curr #_=> {:tx/set curr}
-      (and (not curr) orig) #_=> {:tx/del orig})))
+      curr #_=> {:form/update curr}
+      (and (not curr) orig) #_=> {:form/delete-entity orig})))
 
 (defn- field-diff [form diff field]
   (let [ident (form-ident form)
@@ -897,18 +897,18 @@
    and the values are vectors of the keys for the fields that changed on that form.
 
    Return value:
-   {:tx/new {[:phone/by-id #phone-id] {...}}
-   ,:tx/del {(comment, inverse of :tx/new, ie delete)}
-   ,:tx/set {[:phone/by-id 1] {:phone/number \"123-4567\"}}
-   ,:tx/add {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
-   ,:tx/rem {(comment, same as :tx/add, but means remove)}}"
+   {:new-entity {[:phone/by-id #phone-id] {...}}
+   ,:delete-entity {(comment, inverse of :new, i.e. delete)}
+   ,:update {[:phone/by-id 1] {:phone/number \"123-4567\"}}
+   ,:add-relation {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
+   ,:remove-relation {(comment, same as :add, but means remove)}}"
   [root-form]
   (form-reduce root-form {}
     (fn [diff form]
       (let [[_ id :as ident] (form-ident form)
             fields (element-names form)]
         (if (om/tempid? id)
-          (assoc-in diff [:tx/new ident] (select-keys form (remove (partial ui-field? form) fields)))
+          (assoc-in diff [:form/new-entity ident] (select-keys form (remove (partial ui-field? form) fields)))
           (transduce (comp
                        (remove (partial ui-field? form))
                        (filter (partial dirty-field? form)))
