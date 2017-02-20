@@ -107,13 +107,13 @@
           onSelect       (or (om/get-computed this :onSelect) identity)
           selected-item  (find-first :menu-item/item-id selected-item items)
           selected-label (get selected-item :menu-item/label (tr-unsafe label))
-          menu-class     (str "c-dropdown__menu" (if open? " is-active" ""))]
-      (dom/div #js {:key (str "menu-" (name id)) :className "c-dropdown"}
+          menu-class     (str "c-menu" (if open? " is-active" ""))]
+      (dom/div #js {:key (str "menu-" (name id)) :className "u-wrapper"}
         (dom/button #js {:onClick   (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
                                       false)
-                         :className "c-dropdown__select js-dropdown-toggle"} (tr-unsafe selected-label))
+                         :className "c-button has-menu js-dropdown-toggle"} (tr-unsafe selected-label))
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
           (map (fn [{:keys [menu-item/item-id menu-item/label]}]
                  (dom/li #js {:key     (str "menu-item-" (name item-id))
@@ -122,7 +122,8 @@
                                          (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :menu/open?])
                                          (when onSelect (onSelect item-id))
                                          false)}
-                   (dom/button #js {:className "c-dropdown__link"} label))) items))))))
+                   (dom/button #js {:className "c-menu__item"} label))) items))))))
+
 
 ;; Make sure you either render a key in your DOM or supply keyfn
 ;; It is a good idea to include a docstring here to help used understand things about how to use the component.

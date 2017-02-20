@@ -88,11 +88,11 @@
         selected-idx (get (om/props component) field)
         get-class    (fn [idx] (str "link" (if (= idx selected-idx) " is-active" "")))
         select-item  (fn [idx] (m/set-integer! component field :value idx))]
-    (dom/ul #js {:className "c-menu c-menu--inline"}
+    (dom/div #js {:className "u-row c-menu--inline"}
       (map-indexed (fn [idx nm]
-                     (dom/li #js {:key idx}
-                       (dom/button #js {:className (str (get-class idx) " c-menu__link")
-                                        :onClick   #(select-item idx)} nm))) part-names))))
+                     (dom/button #js {:className (str (get-class idx) " c-tab")
+                                      :key       idx
+                                      :onClick   #(select-item idx)} nm)) part-names))))
 
 (defn toolbar [component field options]
   (let [part-names   options
@@ -237,7 +237,7 @@
                                              :top        "-12px"
                                              :marginLeft "10px"}} "UI Styleguide")))
           (dom/div #js {:className "u-column"
-                        :style     #js {:marginTop "20px"}}
+                        :style     #js {:marginTop "8px"}}
             (tabs this :parts/selected-part part-names))
           (dom/div #js {:className "u-column--3 u-end u-hide@sm u-hide@md"}
             (ui-search searchbar))

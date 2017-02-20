@@ -4,9 +4,8 @@ section: Utilities
 ---*/
 
 .u-wrapper {
-  margin-bottom: var(--frame-half);
+  display: inline-block;
   position: relative;
-  width: 100%;
 }
 
 

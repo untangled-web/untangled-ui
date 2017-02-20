@@ -32,16 +32,16 @@
  * Card...............Styles for many different kinds of cards
  * Checkbox...........Custom CSS and A11Y compatible checkbox
  * Radio..............Custom CSS and A11Y compatible radios
- * Dropdown...........Select and menu join forces to create a dropdown
  * Field..............A simple take on inputs for madlibs style editing
  * Icon...............Useful classes for doing things with icons
  * Input..............Simple input styles
  * Label..............Subjective indicators
  * Loader.............Animated controls to show progress
- * Menu...............Navigable controls
+ * Menu...............Select and menu join forces to create a dropdown
  * Message............Small text in varying colors
  * Notification.......Informative dialogs
  * Table..............Responsive tabular data patterns
+ * Tabs...............Navigable controls
  * Tooltip............Short messages for documenting things
  *
  * OBJECTS
@@ -78,7 +78,6 @@
 @import 'components/card';
 @import 'components/checkbox';
 @import 'components/radio';
-@import 'components/dropdown';
 @import 'components/expansion-panel';
 @import 'components/field';
 @import 'components/icon';
@@ -91,6 +90,7 @@
 @import 'components/notification';
 @import 'components/switch';
 @import 'components/table';
+@import 'components/tabs';
 @import 'components/tooltip';
 
 @import 'objects/accordion';

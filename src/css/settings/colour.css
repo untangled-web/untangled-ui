@@ -203,13 +203,13 @@ section: Settings
 
   /* Dropdown */
 
-  --color-dropdown-menu: var(--color-page);
-  --color-dropdown-menu-background: var(--white);
-  --color-dropdown-link-background: transparent;
-  --color-dropdown-link-background-enter: var(--blue-100);
-  --color-dropdown-link-active: var(--white);
-  --color-dropdown-link-background-active: var(--color-primary);
-  --color-dropdown-data-select: var(--grey-600);
+  --color-menu: var(--color-page);
+  --color-menu-background: var(--white);
+  --color-menu-link-background: transparent;
+  --color-menu-link-background-enter: var(--grey-100);
+  --color-menu-link-active: var(--white);
+  --color-menu-link-background-active: var(--color-primary);
+  --color-menu-data-select: var(--grey-600);
 
 
   /* Form */
@@ -297,8 +297,8 @@ section: Settings
   --shadow-4: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
   --shadow-5: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
   --shadow-focus: 0 0 8px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.36);
-  --shadow-dropdown: var(--shadow-2);
-  --shadow-dropdown-picker: inset 0 10px 11px -7px rgba(0, 0, 0, .5), inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
+  --shadow-menu: var(--shadow-1);
+  --shadow-menu-picker: inset 0 10px 11px -7px rgba(0, 0, 0, .5), inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
   --toggle-focus-shadow: 0 0 6px var(--blue-600);
 }
 

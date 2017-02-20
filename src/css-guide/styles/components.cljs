@@ -244,159 +244,56 @@
 ;; Dropdown
 ;; -------------------------
 
-(def dropdown-header
-  "# Dropdowns")
+(def menus-header
+  "# Menus")
 
-(defexample dropdown
+(defexample menus
   "### Basic
 
   This example uses component local state to toggle the is-active class to open/close the dropdown."
   (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))
+        menu-class (str "c-menu" (if open " is-active" ""))
         selections ["Apples" "Oranges" "Banannas"]
         current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className "c-dropdown"}
+    (dom/div #js {:className "u-wrapper"}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                       :className "c-dropdown__select js-dropdown-toggle"} current)
+                       :className "c-button has-menu js-dropdown-toggle"} current)
       (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                    :className menu-class}
         (map (fn [s]
                (dom/li #js {:key s :onClick (fn [evt]
                                               (om/update-state! this assoc :open false)
                                               (om/update-state! this assoc :selection s))}
-                 (dom/button #js {:className "c-dropdown__link"} s))) selections)))))
+                 (dom/button #js {:className "c-menu__item"} s))) selections)))))
 
-(defexample dropdown-shape
+(defexample menus-shape
   "### Shape and form"
   (dom/div nil
     (let [open       (boolean (om/get-state this :open))
-         menu-class (str "c-dropdown__menu" (if open " is-active" ""))
+         menu-class (str "c-menu" (if open " is-active" ""))
          selections ["Apples" "Oranges" "Banannas"]
          current    (or (om/get-state this :selection) "Large Menu")]
       (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "c-dropdown c-dropdown--large"}
+        (dom/div #js {:className "u-wrapper c-dropdown--large"}
          (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                          :className "c-dropdown__select js-dropdown-toggle"} current)
+                          :className "c-button has-menu js-dropdown-toggle"} current)
          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                       :className menu-class}
            (map (fn [s]
                   (dom/li #js {:key s :onClick (fn [evt]
                                                  (om/update-state! this assoc :open false)
                                                  (om/update-state! this assoc :selection s))}
-                    (dom/button #js {:className "c-dropdown__link"} s))) selections)))))
+                    (dom/button #js {:className "c-menu__item"} s))) selections)))))
 
     (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
+        menu-class (str "c-menu c-menu--right " (if open " is-active" ""))]
     (dom/div #js {:className "u-end"}
-      (dom/div #js {:className "c-dropdown c-dropdown--right"}
-        (dom/button #js {:onClick #(toggle-open this) :className "c-dropdown__select c-dropdown__select--right js-dropdown-toggle"} "Right Aligned")
+      (dom/div #js {:className "u-wrapper"}
+        (dom/button #js {:onClick #(toggle-open this) :className "c-button has-menu u-wrapper__select--right js-dropdown-toggle"} "Right Aligned")
         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
           (dom/li #js {}
-            (dom/button #js {:className "c-dropdown__link"} "Apples"))))))
+            (dom/button #js {:className "c-menu__item"} "Apples"))))))
     ))
-
-(defexample dropdown-colors
-  "### Colors"
-  (dom/div nil
-    (let [open       (boolean (om/get-state this :open))
-          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "c-dropdown"}
-          (dom/button #js {:onClick   #(toggle-open this)
-                           :className "c-dropdown__select c-dropdown__select--positive js-dropdown-toggle"} "Positive Select")
-          (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-            (dom/li #js {}
-              (dom/button #js {:className "c-dropdown__link"} "Banannas"))))))
-
-    (let [open (boolean (om/get-state this :open))
-          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "c-dropdown"}
-         (dom/button #js {:onClick   #(toggle-open this)
-                          :className "c-dropdown__select c-dropdown__select--alterable js-dropdown-toggle"} "Alterable Select")
-         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-           (dom/li #js {}
-             (dom/button #js {:className "c-dropdown__link"} "Apples"))))))
-
-    (let [open (boolean (om/get-state this :open))
-          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-      (dom/div #js {:className ""}
-        (dom/div #js {:className "c-dropdown"}
-         (dom/button #js {:onClick   #(toggle-open this)
-                          :className "c-dropdown__select c-dropdown__select--negative js-dropdown-toggle"} "Negative Select")
-         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-           ;; items:
-           (dom/li #js {}
-             (dom/button #js {:className "c-dropdown__link"} "Banannas"))))))
-    ))
-
-(defexample dropdown-buttons
-  "### Buttons"
-  (dom/div nil
-    (let [open       (boolean (om/get-state this :open))
-          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "c-dropdown"}
-         (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Button Dropdown")
-         (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-           (dom/li #js {}
-             (dom/button #js {:className "c-dropdown__link"} "Water"))))))
-
-    (let [open (boolean (om/get-state this :open))
-          menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-      (dom/div #js {:className "o-button-group"}
-        (dom/button #js {:className "c-button"} "Button Group Dropdown")
-        (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown"})
-        (dom/ul #js {:className menu-class}
-          (dom/li #js {}
-            (dom/button #js {:className "c-dropdown__link"} "Water")))))
-    ))
-
-(defexample dropdown-search-multi
-  "### Multi-Select, Searchable Dropdown"
-  (let [open (boolean (om/get-state this :open))
-        items (mapv #(str "Item " %) (range 1 20))
-        menu-class (str "c-dropdown__menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown c-dropdown--large"}
-      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Filter")
-      (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        (dom/div #js {:className "u-trailer--quarter"}
-          (dom/input #js {:type "text" :placeholder "Search..." :className "c-input"}))
-        (dom/div #js {:className "c-dropdown__viewer"}
-          (map (fn [item]
-                 (dom/div #js {:key item :className "u-leader--sixth u-trailer--sixth"}
-                   (dom/input #js {:type "checkbox" :id (str item "-cb") :className "c-checkbox"})
-                   (dom/label #js {:htmlFor (str item "-cb")} item)))
-               items))
-        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--wide"} "Apply")))))
-
-(defexample dropdown-data
-  "### Dropdown Data
-
-  This is a control that is meant to let you view what various dropdowns would show, for example in cases
-  of UI that lets you configure UI.
-
-  Note: The dropdown list underneath should not be enabled when the dropdown list is visible. Doing this fosters a better interaction for the user."
-  (let [open (boolean (om/get-state this :open))
-        name (or (om/get-state this :menu-name) "Menu 1")
-        menu-1-items (mapv #(str "Item " %) (range 1 5))
-        menu-2-items (mapv #(str "Other " %) (range 1 3))
-        menu (or (om/get-state this :menu) menu-1-items)]
-    (dom/div #js {:className "c-dropdown c-dropdown--data"}
-      (dom/button #js {:onClick   #(toggle-open this)
-                       :className "c-dropdown__select js-dropdown-toggle"} name)
-      (dom/ul #js {:id        "test-dropdown" :aria-hidden "true"
-                   :className (str "c-dropdown__menu" (when open " is-active")) :tabIndex "-1"}
-        (dom/li #js {}
-          (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
-                           :className "c-dropdown__link"} "Menu 1"))
-        (dom/li #js {}
-          (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
-                           :className "c-dropdown__link"} "Menu 2")))
-      (dom/ul #js {:className "c-dropdown__list" :tabIndex "-1"}
-        (map (fn [item]
-               (dom/li #js {:key item}
-                 (dom/button #js {:className "c-dropdown__link"} item))) menu)))))
 
 
 ;; -------------------------
@@ -761,59 +658,61 @@
 
 (defexample loader
   "# Loader"
-  (dom/div #js {:style #js {:height "100px"}}
-    (dom/div #js {:className "c-loader"})
-    (dom/div #js {:className "c-loader c-loader--neutral"})))
+  (dom/div nil
+    (dom/div #js {:className "u-row u-center u-trailer"}
+      (dom/div #js {:className "c-loader"}))
+    (dom/div #js {:className "u-row u-center"}
+      (dom/div #js {:className "c-loader c-loader--neutral"}))))
 
 
 ;; -------------------------
-;; Menus
+;; Tabs
 ;; -------------------------
 
-(def menu-header
-  "# Menu")
+(def tabs-header
+  "# Tabs")
 
-(defexample menu
+(defexample tabs
   "### Basic"
-  (dom/ul #js {:className "c-menu"}
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Widgets"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Doodads"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Apparatuses"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Things")
-      )))
+  (dom/div #js {:className "u-row"}
+    (dom/button #js {:className "c-tab"} "Widgets")
+    (dom/button #js {:className "c-tab"} "Doodads")
+    (dom/button #js {:className "c-tab"} "Apparatuses")
+    (dom/button #js {:className "c-tab"} "Things")))
 
-(defexample menu-block
+(defexample tabs-block
   "### Block"
-  (dom/ul #js {:className "c-menu c-menu--block"}
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Widgets"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Doodads"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Apparatuses"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link has-descendants is-active"} "Things")
-      (dom/ul #js {:className "c-menu__submenu"}
+  (dom/div #js {:className "u-row"}
+    (dom/button #js {:className "c-tab"} "Widgets")
+    (dom/button #js {:className "c-tab"} "Doodads")
+    (dom/button #js {:className "c-tab"} "Apparatuses")
+    (dom/span #js {:className "u-wrapper"}
+      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+      (dom/ul #js {:className "c-menu"}
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__link"} "Thingamabob"))
+          (dom/button #js {:className "c-menu__item"} "Thingamabob"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__link"} "Thingamajig"))
+          (dom/button #js {:className "c-menu__item"} "Thingamajig"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__link"} "Thinger"))))))
+          (dom/button #js {:className "c-menu__item"} "Thinger")))
+      (dom/button #js {:className "c-tab"} "Doodads")
+      (dom/button #js {:className "c-tab"} "Apparatuses")
+      (dom/span #js {:className "u-wrapper"}
+      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+      (dom/ul #js {:className "c-menu is-active"}
+        (dom/li #js {}
+          (dom/button #js {:className "c-menu__item"} "Thingamabob"))
+        (dom/li #js {}
+          (dom/button #js {:className "c-menu__item"} "Thingamajig"))
+        (dom/li #js {}
+          (dom/button #js {:className "c-menu__item"} "Thinger")))))))
 
-(defexample menu-inline
+(defexample tabs-inline
   "### Inline"
-  (dom/ul #js {:className "c-menu c-menu--inline"}
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link is-active"} "Link 1"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Link 2"))
-    (dom/li #js {}
-      (dom/button #js {:className "c-menu__link"} "Link 3"))))
+  (dom/div #js {:className "u-row"}
+    (dom/button #js {:className "c-tab is-active"} "Link 1")
+    (dom/button #js {:className "c-tab"} "Link 2")
+    (dom/button #js {:className "c-tab"} "Link 3")))
 
 
 ;; -------------------------
@@ -1576,22 +1475,22 @@
                 (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                   (dom/path #js {:d "M7 10l5 5 5-5z"})))
               (dom/span #js {} "If response ")
-              (dom/div #js {:className "c-dropdown"}
-                (dom/button #js {:className "c-dropdown__toggle js-dropdown-toggle"} "is")
-                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-dropdown__content" :tabIndex "-1"}
+              (dom/div #js {:className "u-wrapper"}
+                (dom/button #js {:className "u-wrapper__toggle js-dropdown-toggle"} "is")
+                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu" :tabIndex "-1"}
                   (dom/li #js {}
-                    (dom/button #js {:className "c-dropdown__link"} "is"))
-                  (dom/li #js {} (dom/button #js {:className "c-dropdown__link"} "is not"))
-                  (dom/li #js {} (dom/button #js {:className "c-dropdown__link"} "contains"))))
-              (dom/div #js {:className "c-dropdown"}
-                (dom/button #js {:className "c-dropdown__toggle js-dropdown-toggle"} "Red wine")
-                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-dropdown__content" :tabIndex "-1"}
+                    (dom/button #js {:className "c-menu__item"} "is"))
+                  (dom/li #js {} (dom/button #js {:className "c-menu__item"} "is not"))
+                  (dom/li #js {} (dom/button #js {:className "c-menu__item"} "contains"))))
+              (dom/div #js {:className "u-wrapper"}
+                (dom/button #js {:className "u-wrapper__toggle js-dropdown-toggle"} "Red wine")
+                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu" :tabIndex "-1"}
                   (dom/li #js {}
-                    (dom/button #js {:className "c-dropdown__link"} "Red Wine"))
+                    (dom/button #js {:className "c-menu__item"} "Red Wine"))
                   (dom/li #js {}
-                    (dom/button #js {:className "c-dropdown__link"} "White Wine"))
+                    (dom/button #js {:className "c-menu__item"} "White Wine"))
                   (dom/li #js {}
-                    (dom/button #js {:className "c-dropdown__link"} "Crux Scotch Ale"))))
+                    (dom/button #js {:className "c-menu__item"} "Crux Scotch Ale"))))
               (dom/span #js {} " then:"))
             (dom/div #js {:className "u-column--3 u-end"}
               (dom/button #js {:data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.0" :className "c-button c-button--icon"}
@@ -1767,7 +1666,7 @@
                 (dom/h1 #js {} "Item Title"))
               (dom/div #js {:className "o-listing__duration u-show@sm u-hide@md-up"} "14 days"))
             (dom/div #js {:className "o-listing__duration u-hide@sm"} "14 days"))
-          (dom/div #js {:className "o-listing__actions c-dropdown--right u-column--4 u-end u-top"}
+          (dom/div #js {:className "o-listing__actions u-wrapper--right u-column--4 u-end u-top"}
             (dom/div #js {:className "o-listing__action-group"}
               (dom/button #js {:title "Edit" :className "c-button c-button--icon"}
                 (dom/span #js {:className "c-icon"}
@@ -1781,44 +1680,44 @@
                 (dom/span #js {:className "c-icon"}
                   (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                     (dom/path #js {:d "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"}))))
-              (dom/div #js {:className "c-dropdown c-dropdown--right"}
+              (dom/div #js {:className "u-wrapper c-dropdown--right"}
                 (dom/button #js {:title "Duplicate, Delete & more" :className "c-button c-button--icon js-dropdown-toggle"}
                   (dom/span #js {:className "c-icon"}
                     (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                       (dom/path #js {:d "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"}))))
-                (dom/ul #js {:className "c-dropdown__content"}
+                (dom/ul #js {:className "c-menu"}
                   (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Edit" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Edit" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"}))) " Edit "))
                   (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Preview" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Preview" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"}))) " Preview "))
                   (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Send" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Send" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"}))) " Send "))
                   (dom/li #js {}
-                    (dom/button #js {:title "Favorite" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Favorite" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"}))) " Favorite "))
                   (dom/li #js {}
-                    (dom/button #js {:title "Share" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Share" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"}))) " Share "))
                   (dom/li #js {}
-                    (dom/button #js {:title "Duplicate" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Duplicate" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"}))) " Duplicate "))
                   (dom/li #js {}
-                    (dom/button #js {:title "Delete" :className "c-dropdown__link"}
+                    (dom/button #js {:title "Delete" :className "c-menu__item"}
                       (dom/span #js {:className "c-icon"}
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))) " Delete ")))))))))))
@@ -1964,7 +1863,7 @@
             (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :className "c-icon c-icon--search " :viewBox "0 0 24 24"}
               (dom/title #js {} "Search")
               (dom/path #js {:d "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"})))
-          (dom/div #js {:className "c-dropdown c-dropdown--picker"}
+          (dom/div #js {:className "u-wrapper c-dropdown--picker"}
             (dom/button #js {:className "c-button c-button--small"} " Filter items "
               (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :className "c-icon c-icon--arrow-drop-down" :viewBox "0 0 24 24"}
                 (dom/title #js {} "Arrow Drop Down")
@@ -2015,8 +1914,8 @@
   (let [changed-menu (om/get-state this :changed-menu)
         ui-menu-open (if (= (:id changed-menu) :ui) (:open-state changed-menu) nil)
         lang-menu-open (if (= (:id changed-menu) :lang) (:open-state changed-menu) nil)
-        ui-menu-class (str "c-dropdown__menu" (if ui-menu-open " is-active" ""))
-        lang-menu-class (str "c-dropdown__content" (if lang-menu-open " is-active" ""))
+        ui-menu-class (str "c-menu" (if ui-menu-open " is-active" ""))
+        lang-menu-class (str "c-menu c-menu--right " (if lang-menu-open " is-active" ""))
         lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
@@ -2026,16 +1925,16 @@
           (dom/span #js {:className "u-font-size--semi-medium"} "View Name"))
 
         (dom/div #js {:className "u-column--bar"}
-          (dom/div #js {:className "c-dropdown"}
+          (dom/div #js {:className "u-wrapper"}
             (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
               (icons/icon :language))
 
             (dom/button #js {:className "c-button has-menu u-hide@sm"
                              :onClick   #(menu-action :lang (not lang-menu-open) lang-item-selected)} lang-item-selected)
             (dom/ul #js {:className lang-menu-class :tabIndex "-1"}
-              (dom/li #js {} (dom/button #js {:className "c-dropdown__link"
+              (dom/li #js {} (dom/button #js {:className "c-menu__item"
                                               :onClick   #(menu-action :lang false "English-US")} "English-US"))
-              (dom/li #js {} (dom/button #js {:className "c-dropdown__link"
+              (dom/li #js {} (dom/button #js {:className "c-menu__item"
                                               :onClick   #(menu-action :lang false "Español")} "Español"))))
           (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
 
@@ -2050,24 +1949,20 @@
   This toolbar is mainly used for specific operations and navigation for the current app you are using.
   "
   (let [selected-item (or (om/get-state this :selected-item) :widgets)
-        get-class (fn [item] (str "c-menu__link" (if (= item selected-item) " is-active" "")))
+        get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
     (dom/div #js {}
       (dom/div #js {:className "o-toolbar o-toolbar--small"}
-        (dom/ul #js {:className "c-menu c-menu--block"}
-          (dom/li #js {}
-            (dom/button #js {:className (get-class :widgets)
-                             :onClick   #(select-item :widgets)} "Widgets"))
-          (dom/li #js {}
-            (dom/button #js {:className (get-class :doodads)
-                             :onClick   #(select-item :doodads)} "Doodads"))
-          (dom/li #js {}
-            (dom/button #js {:className (get-class :apparatuses)
-                             :onClick   #(select-item :apparatuses)} "Apparatuses"))
-          (dom/li #js {}
-            (dom/button #js {:className (get-class :things)
-                             :onClick   #(select-item :things)} "Things")))))))
+        (dom/ul #js {:className "u-wrapper"}
+          (dom/button #js {:className (get-class :widgets)
+                           :onClick   #(select-item :widgets)} "Widgets")
+          (dom/button #js {:className (get-class :doodads)
+                           :onClick   #(select-item :doodads)} "Doodads")
+          (dom/button #js {:className (get-class :apparatuses)
+                           :onClick   #(select-item :apparatuses)} "Apparatuses")
+          (dom/button #js {:className (get-class :things)
+                           :onClick   #(select-item :things)} "Things"))))))
 
 
 (defexample toolbar-secondary
@@ -2076,90 +1971,42 @@
   The secondary toolbar is intended to only provide operations for the current view of the app your in.
   "
   (let [example-class-modifier (str (if (om/get-state this :toolbar-secondary-visible) "" " u-hide"))]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this update :toolbar-secondary-visible not)} "Show/Hide Example")
-      (dom/div #js {:className (str "o-toolbar o-toolbar--secondary" example-class-modifier)}
-        ;;"<!-- View Info for Mobile -->"
+    (dom/div #js {:className "u-wrapper"}
+      (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
+        ;; View Info for Mobile
         (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
           (dom/h1 #js {} "View Name"))
-        ;;"<!-- View Actions for Mobile -->"
+
+        ;; View Actions for Mobile
         (dom/div #js {:className "u-column u-hide@md-up u-end"}
           (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--filter_list" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"})))
+            (icons/icon :filter_list))
           (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--search" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"})))
+            (icons/icon :search))
           (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--list" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"})))
+            (icons/icon :list))
           (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--create" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"}))))
-        ;;"<!-- View Actions for Tablets and Computers -->"
+            (icons/icon :create)))
+
+        ;; View Actions for Tablets and Computers
         (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "c-dropdown"}
-            (dom/button #js {:className "c-button c-button--dropdown"} "Filter by tag")
-            (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-dropdown__content [is-active]" :tabIndex "-1"}
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"} "Water"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"} "Coffee"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-dropdown__link"} "Tea"))))
           (dom/div #js {:className "u-wrapper"}
-            (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "c-input c-input--inset" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
-            (dom/button #js {:type "submit" :disabled "" :aria-label "Submit" :className "c-button c-button--icon u-absolute--top-left"}
-              (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--search" :viewBox "0 0 24 24"}
-                (dom/path #js {:d "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"})))))
+            (dom/button #js {:className "c-button has-menu"} "Filter by tag")
+            (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
+              (dom/li #js {}
+                (dom/button #js {:className "c-menu__item"} "Water"))
+              (dom/li #js {}
+                (dom/button #js {:className "c-menu__item"} "Coffee"))
+              (dom/li #js {}
+                (dom/button #js {:className "c-menu__item"} "Tea"))))
+          (dom/div #js {:className "o-input"}
+            (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
+            (icons/icon :search)))
         (dom/div #js {:className "u-column--bar u-hide@sm"}
           (dom/div #js {:className "o-button-group--toggle"}
-            (dom/button #js {:className "c-button"} "List")
-            (dom/button #js {:className "c-button c-button--text"} "Detail"))
-          (dom/button #js {:className "c-button c-button--secondary c-button--large c-button--dropdown"} "Create widgets"))))))
-
-(defexample toolbar-secondary-example2
-  "# Toolbar Secondary Example
-  "
-  (dom/div #js {}
-    (dom/div #js {:className "o-toolbar o-toolbar--secondary"}
-      ;;"<!-- View Info for Mobile -->"
-      (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
-        (dom/h1 #js {} "View Name"))
-      ;;"<!-- View Actions for Mobile -->"
-      (dom/div #js {:className "u-column u-hide@md-up u-end"}
-        (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
-          (dom/svg #js {:className "c-icon c-icon--filter_list"} " ... "))
-        (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
-          (dom/svg #js {:className "c-icon c-icon--search"} " ... "))
-        (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
-          (dom/svg #js {:className "c-icon c-icon--list"} " ... "))
-        (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
-          (dom/svg #js {:className "c-icon c-icon--create"} " ... ")))
-      ;;"<!-- View Actions for Tablets and Computers -->"
-      (dom/div #js {:className "u-column u-hide@sm"}
-        (dom/div #js {:className "u-row u-row--collapse u-middle"}
-          (dom/div #js {:className "u-column--4"}
-            (dom/div #js {:className "c-dropdown"}
-              (dom/button #js {:className "c-button c-button--dropdown"} "Filter by tag")
-              (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-dropdown__content [is-active]" :tabIndex "-1"}
-                (dom/li #js {}
-                  (dom/button #js {:className "c-dropdown__link"} "Water"))
-                (dom/li #js {}
-                  (dom/button #js {:className "c-dropdown__link"} "Coffee"))
-                (dom/li #js {}
-                  (dom/button #js {:className "c-dropdown__link"} "Tea")))))
-          (dom/div #js {:className "u-column"}
-            (dom/div #js {:className "u-wrapper"}
-              (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "c-input c-input--inset" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
-              (dom/button #js {:type "submit" :disabled "" :aria-label "Submit" :className "c-button c-button--icon u-absolute--top-left"}
-                (dom/svg #js {:className "c-icon c-icon--search"} " ... "))))))
-      (dom/div #js {:className "u-column u-end u-hide@sm"}
-        (dom/div #js {:className "o-button-group--toggle"}
-          (dom/button #js {:className "c-button"} "List")
-          (dom/button #js {:className "c-button c-button--text"} "Detail"))
-        (dom/button #js {:className "c-button c-button--secondary c-button--large c-button--dropdown"} "Create widgets")))))
+            (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
+            (dom/button #js {:className "c-button"} "Detail"))
+          (dom/button #js {:className "c-button c-button--accent"} "Create a widget"))))))
 
 
 
@@ -2221,15 +2068,11 @@
                       checkboxes
                       ]}
           {:id :dropdowns
-           :title "Dropdowns"
-           :documentation dropdown-header
+           :title "Menus"
+           :documentation menus-header
            :examples [
-                      dropdown
-                      dropdown-shape
-                      dropdown-colors
-                      dropdown-buttons
-                      dropdown-search-multi
-                      dropdown-data
+                      menus
+                      menus-shape
                       ]}
           {:id :expanding_panel
            :title "Expansion panels"
@@ -2294,12 +2137,12 @@
                       messages
                       ]}
           {:id :menus
-           :title "Menus"
-           :documentation menu-header
+           :title "Tabs"
+           :documentation tabs-header
            :examples [
-                      menu
-                      menu-inline
-                      menu-block
+                      tabs
+                      tabs-inline
+                      tabs-block
                       ]}
           {:id :notifications
            :title "Notifications"
