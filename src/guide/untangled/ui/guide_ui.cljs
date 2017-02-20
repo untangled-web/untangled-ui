@@ -6,7 +6,7 @@
             untangled.ui.Forms--02-State-Lifecycle
             untangled.ui.Forms--03-Server-Integration
             untangled.ui.Forms--05-Field-Interactions
-            untangled.ui.form-demo-cards
+            untangled.ui.Forms--10-Full-Stack-Demo
             untangled.ui.menu-cards
             untangled.ui.calendar-cards
             untangled.ui.Layout--01-Basics
