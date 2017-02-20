@@ -78,19 +78,21 @@
 
 (defn subform-element
   "Declare that the current form links to subforms through the given entity property in a :one or :many capacity. this
-  must be included in your list of form elements if you want form interactions to trigger across a form group."
-  ([field form-class cardinality]
-   (assert-or-fail cardinality #{:one :many}
-     "subform-element requires a cardinality of :one or :many")
-   (assert-or-fail form-class (every-pred
-                                #(implements? om/Ident %)
-                                #(implements? IForm %)
-                                #(implements? om/IQuery %))
+  must be included in your list of form elements if you want form interactions to trigger across a form group.
+
+  Additional named parameters:
+
+  `isComponent` - A boolean to indicate that references to instances of this subform are the only uses of the target,
+  such that removing the reference indicates that the target is no longer used and can be removed from the database."
+  ([field form-class cardinality & {:keys [isComponent]}]
+   (assert (contains? #{:one :many} cardinality) "subform-element requires a cardinality of :one or :many")
+   (assert ((every-pred #(implements? om/Ident %) #(implements? IForm %) #(implements? om/IQuery %)) form-class)
      (str "Subform element " field " MUST implement IForm, IQuery, and Ident."))
-   (with-meta {:input/name        field
-               :input/is-form?    true
-               :input/cardinality cardinality
-               :input/type        ::subform}
+   (with-meta {:input/name          field
+               :input/is-form?      true
+               :input/is-component? isComponent
+               :input/cardinality   cardinality
+               :input/type          ::subform}
      {:component form-class})))
 
 (defn form-switcher-input
@@ -562,17 +564,56 @@
 #?(:cljs (defmutation noop "Do nothing." [params]))
 
 (defn on-form-change
-  "Single arity takes a symbol for a mutation
-   & registers a mutation with the form to be called whenever the form changes.
+  "Declare an Untangled mutation (as a properly namespaced symbol) that will be triggered on
+  each form change. Only one such mutation can be defined for a form.
 
-   Two arity version is for use inside a `(defmethod form-field* ...)` body,
-   see the ::text renderer for an example."
-  ([mut-sym]
-   {:input/type             form-key
-    :input/name             :on-form-change
-    :on-form-change/mut-sym mut-sym})
-  ([form params]
-   `(~(get-in form [form-key :on-form-change :on-form-change/mut-sym] `noop) ~params)))
+  Add this to your IForm declarations:
+
+  ```
+  (defui ^:once PhoneForm
+    static uc/InitialAppState
+    (initial-state [this params] (f/build-form this (or params {})))
+    static f/IForm
+    (form-spec [this] [(f/id-field :db/id)
+                       (f/on-form-change 'some-ns/global-validate-phone-form)
+                       ...])
+  ...)
+  ```
+
+  When invoked, the target mutation params will include:
+
+  `:form-id` The ident of the form. You may use the app state in `env` to do anything you want to do (validate, etc.)
+  `:field` The name of the field that changed
+  `:kind` The kind of change:
+     `:blur` The user finished with the given field and moved away from it.
+     `:edit` The user changed the value. Text fields edits will trigger one of these per keystroke."
+  [mut-sym]
+  {:input/type                     form-key
+   :input/name                     :on-form-change
+   :on-form-change/mutation-symbol mut-sym})
+
+(defn- get-on-form-change-mutation
+  "Get the Om mutation symbol to invoke when the form changes. This is typically used in the implementation
+  of form field renderers as part of the transaction to run on change and blur events.
+
+  Returns a valid symbolic data structure that can be used inside of transact:
+
+  ```
+  (om/transact! `[~@(get-on-form-change-mutation form :f :blur)])
+  ```
+
+  will convert to something like:
+
+  ```
+  (om/transact! `[(your-change-handler-symbol {:form-id [:form 1] :field :f :kind :blur})])
+  ```
+
+  This function returns a list of mutations expressions to run (which will contain zero or one).
+  Use list unquote to patch it into place."
+  [form field-name kind]
+  {:pre [(contains? #{:blur :edit} kind)]}
+  (when-let [mutation-symbol (get-in form [form-key :on-form-change :on-form-change/mutation-symbol])]
+    [(list mutation-symbol {:form-id (form-ident form) :kind kind :field field-name})]))
 
 (defn current-validity
   "Returns the current validity from a form's props for the given field. One of :valid, :invalid, or :unchecked"
@@ -755,6 +796,7 @@
                         (om/transact! component
                           `[(validate-field
                               ~{:form-id id :field field-name})
+                            ~@(get-on-form-change-mutation form field-name :blur)
                             ~form-root-key]))
          :onChange    (fn [event]
                         (let [value      (.. event -target -value)
@@ -763,7 +805,7 @@
                                           :value   value}]
                           (om/transact! component
                             `[(set-field ~field-info)
-                              ~(on-form-change form field-info)
+                              ~@(get-on-form-change-mutation form field-name :edit)
                               ~form-root-key])))})))
 
 (defmethod form-field* ::text [component form field-name]
@@ -782,6 +824,7 @@
                       (om/transact! component
                         `[(validate-field
                             ~{:form-id id :field field-name})
+                          ~@(get-on-form-change-mutation form field-name :blur)
                           ~form-root-key]))
          :onChange  (fn [event]
                       (let [raw-value  (.. event -target -value)
@@ -793,7 +836,7 @@
                                         :value   value}]
                         (om/transact! component
                           `[(set-field ~field-info)
-                            ~(on-form-change form field-info)
+                            ~@(get-on-form-change-mutation form field-name :edit)
                             ~form-root-key])))})))
 
 (defmethod form-field* ::integer [component form field-name]
@@ -826,7 +869,7 @@
                                         :value   value}]
                         (om/transact! component
                           `[(select-option ~field-info)
-                            ~(on-form-change form field-info)
+                            ~@(get-on-form-change-mutation form field-name :edit)
                             ~form-root-key])))}
       (when optional?
         (dom/option #js {:value ::none} ""))
@@ -850,7 +893,7 @@
                                         :value   value}]
                         (om/transact! component
                           `[(toggle-field ~field-info)
-                            ~(on-form-change form field-info)
+                            ~@(get-on-form-change-mutation form field-name :edit)
                             ~form-root-key])))})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -879,7 +922,7 @@
               (seq removals)  #_=> (assoc :form/remove-relation (vec removals))
               (seq additions) #_=> (assoc :form/add-relation (vec additions))))
     (cond
-      curr #_=> {:form/update curr}
+      curr #_=> {:form/updates curr}
       (and (not curr) orig) #_=> {:form/delete-entity orig})))
 
 (defn- field-diff [form diff field]
@@ -897,11 +940,11 @@
    and the values are vectors of the keys for the fields that changed on that form.
 
    Return value:
-   {:new-entity {[:phone/by-id #phone-id] {...}}
-   ,:delete-entity {(comment, inverse of :new, i.e. delete)}
-   ,:update {[:phone/by-id 1] {:phone/number \"123-4567\"}}
-   ,:add-relation {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
-   ,:remove-relation {(comment, same as :add, but means remove)}}"
+   {:form/new-entity {[:phone/by-id #phone-id] {...}}
+   ,:form/delete-entity {(comment, inverse of :new, i.e. delete)}
+   ,:form/update {[:phone/by-id 1] {:phone/number \"123-4567\"}}
+   ,:form/add-relation {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
+   ,:form/remove-relation {(comment, same as :add, but means remove)}}"
   [root-form]
   (form-reduce root-form {}
     (fn [diff form]

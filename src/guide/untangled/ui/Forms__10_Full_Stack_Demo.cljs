@@ -47,7 +47,7 @@
 (defn write-handler [env k p]
   (log/info "SERVER mutation for " k " with params " p)
   (case k
-    `f/commit-to-entity (let [updates (-> p :delta :form/update)]
+    `f/commit-to-entity (let [updates (-> p :delta :form/updates)]
                           (doseq [[[table id] changes] updates]
                             (case table
                               :phone/by-id (update-phone-number id changes)
@@ -375,11 +375,11 @@
   just the one we're supporting: Updates.
 
   The parameters passed to the server on update have a `:delta` key. The delta in this case will contain
-  a `:form/update` key with a map whose keys are the idents of things that changed, and whose values are maps
+  a `:form/updates` key with a map whose keys are the idents of things that changed, and whose values are maps
   of the field/value updates. For example:
 
   ```
-  {:delta {:form/update {[:phone/by-id 1] {:phone/number \"444-5421\"}}}}
+  {:delta {:form/updates {[:phone/by-id 1] {:phone/number \"444-5421\"}}}}
   ```
 
   would be sent to indicate that phone number with id 1 had just its `:phone/number` attribute changed to the

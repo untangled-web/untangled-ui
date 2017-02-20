@@ -24,16 +24,15 @@
             [lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.7"]]
 
-  :source-paths ["dev" "src/main" "src/guide" "src/visuals" "src/css-guide"]
+  :source-paths ["src/main"]
   :test-paths ["src/test"]
-  :jar-exclusions [#".DS_Store" #"public" #"cards" #"user.clj"]
-
+  :jar-exclusions [#".DS_Store" #"public/js" #"private"]
 
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :clean-targets ^{:protect false} ["resources/public/js" "target" "resources/private/js"]
 
-  :test-refresh {:report       untangled-spec.reporters.terminal/untangled-report
-                 :with-repl    true}
+  :test-refresh {:report    untangled-spec.reporters.terminal/untangled-report
+                 :with-repl true}
 
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}
@@ -46,9 +45,7 @@
                                :asset-path    "js/guide"
                                :output-to     "resources/public/js/guide.js"
                                :output-dir    "resources/public/js/guide"
-                               ;:language-in :ecmascript5
-                               ;:verbose true
-                               ;:foreign-libs [{:file "src/extern" :module-type :es6}]
+                               :preloads      [devtools.preload]
                                :optimizations :none}}
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]
@@ -57,13 +54,15 @@
                                :asset-path    "js/visuals"
                                :output-to     "resources/public/js/visuals.js"
                                :output-dir    "resources/public/js/visuals"
+                               :preloads      [devtools.preload]
                                :optimizations :none}}
                {:id           "test"
                 :source-paths ["src/test" "src/main"]
-                :figwheel     {:on-jsload "cljs.user/on-load"}
-                :compiler     {:main       cljs.user
+                :figwheel     {:on-jsload "cljs.test-dev/on-load"}
+                :compiler     {:main       cljs.test-dev
                                :output-to  "resources/public/js/specs.js"
                                :output-dir "resources/public/js/specs"
+                               :preloads   [devtools.preload]
                                :asset-path "js/specs"}}
                {:id           "css-guide"
                 :figwheel     true
@@ -98,6 +97,7 @@
                                   [org.clojure/tools.nrepl "0.2.12"]
                                   [hickory "0.7.0"]
                                   [devcards "0.2.2" :exclusions [org.omcljs/om]]]
+                   :source-paths ["dev"]
                    :repl-options {:init-ns          clj.user
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                   :port             7001}}})
