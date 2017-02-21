@@ -1,4 +1,4 @@
-(ns untangled.ui.form-demo-cards
+(ns untangled.ui.Forms--10-Full-Stack-Demo
   (:require
     [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [untangled.client.cards :refer [untangled-app]]
@@ -47,7 +47,7 @@
 (defn write-handler [env k p]
   (log/info "SERVER mutation for " k " with params " p)
   (case k
-    `f/commit-to-entity (let [updates (-> p :delta :tx/set)]
+    `f/commit-to-entity (let [updates (-> p :delta :form/updates)]
                           (doseq [[[table id] changes] updates]
                             (case table
                               :phone/by-id (update-phone-number id changes)
@@ -171,9 +171,9 @@
         (when number-to-edit
           (ui-phone-form number-to-edit))
         (l/row {}
-          (l/col {:width 1} (ele/ui-button {:onClick cancel-edit} "Cancel"))
-          (l/col {:width 1} (ele/ui-button {:disabled (or not-valid? not-dirty?)
-                                            :onClick  save} "Save")))))))
+          (ele/ui-button {:onClick cancel-edit} "Cancel")
+          (ele/ui-button {:disabled (or not-valid? not-dirty?)
+                          :onClick  save} "Save"))))))
 
 (defui ^:once PhoneList
   static om/IQuery
@@ -375,11 +375,11 @@
   just the one we're supporting: Updates.
 
   The parameters passed to the server on update have a `:delta` key. The delta in this case will contain
-  a `:tx/set` key with a map whose keys are the idents of things that changed, and whose values are maps
+  a `:form/updates` key with a map whose keys are the idents of things that changed, and whose values are maps
   of the field/value updates. For example:
 
   ```
-  {:delta {:tx/set {[:phone/by-id 1] {:phone/number \"444-5421\"}}}}
+  {:delta {:form/updates {[:phone/by-id 1] {:phone/number \"444-5421\"}}}}
   ```
 
   would be sent to indicate that phone number with id 1 had just its `:phone/number` attribute changed to the
@@ -394,24 +394,7 @@
   # The Final Result
 
   The server state and application are in the following two live cards:
-  "
-
-  )
-
-
-
-
-(defmutation edit-phone
-  "Om Mutation: Set up the given phone number to be editable in the
-  phone form, and route the UI to the form."
-  [{:keys [id]}]
-  (action [{:keys [state]}]
-    (swap! state (fn [state-map]
-                   (-> state-map
-                     (initialize-form PhoneForm (phone-ident id))
-                     (set-number-to-edit id)
-                     (r/update-routing-links {:route-params {}
-                                              :handler      :route/phone-editor}))))))
+  ")
 
 (defcard server-state-card
   "# This card shows the current server-side state (simulated)"

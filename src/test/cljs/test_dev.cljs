@@ -1,13 +1,11 @@
-(ns ^:figwheel-always cljs.user
+(ns ^:figwheel-always cljs.test-dev
   (:require-macros
     [untangled-spec.reporters.suite :as ts])
   (:require
     untangled-spec.reporters.impl.suite
-    untangled.ui.tests-to-run
-    [devtools.core :as devtools]))
+    untangled.ui.tests-to-run))
 
 (enable-console-print!)
-(devtools/install!)
 
 (ts/deftest-all-suite specs #".*-spec")
 

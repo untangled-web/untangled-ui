@@ -1,4 +1,4 @@
-(ns untangled.ui.forms-overview-cards
+(ns untangled.ui.Forms--01-The-Basics
   (:require-macros
     [untangled.client.cards :refer [untangled-app]])
   (:require
@@ -81,15 +81,15 @@
         (ui-phone-form phone)))))
 
 (defcard-doc
-  "# Forms Overview
+  "# Forms – The Basics
 
   Generic form support is a primary rapid appliation development feature. Fortunately, the overall structure of Om Next
-  and Untangled makes it relatively simple to write form support in a general-purpose, composeable manner. In fact,
-  just a few simple functions make it possible to support:
+  and Untangled makes it relatively simple to write form support in a general-purpose, composeable manner. This library
+  defines form support that has:
 
-  - An extensible form field set
-  - Extensible validation
   - Declarative forms
+  - An extensible set of form fields
+  - Extensible validation
   - Separation of form UI from form logic
   - Remote integration with form <-> entity
   - Local integration with entities in the browser database
@@ -97,10 +97,9 @@
   The following `requires` define the namespacing used in the examples:
 
   ```
-  (ns untangled.ui.forms-overview
-    (:require-macros
-      [untangled.client.cards :refer [untangled-app]])
+  (ns your-ns
     (:require
+      [untangled.client.cards :refer [untangled-app]]
       [clojure.string :as str]
       [com.stuartsierra.component :as component]
       [om.dom :as dom]
@@ -118,19 +117,12 @@
   implication for your UI is that your component queries must be expanded to include queries for this additional support
   data.
 
-  ## The Basics
+  ## Your Component as a Form
 
-  Here is a sample UI component that acts as a form:
-
-  "
-  (dc/mkdn-pprint-source field-with-label)
-  (dc/mkdn-pprint-source PhoneForm)
-  "
-
-  Component that wish to act as forms must meet the following requirements:
+  Components that wish to act as forms must meet the following requirements (here `f` is an alias for the forms namespace):
 
   - They must implement `f/IForm`
-      - The fields must include an `id-field`
+      - The fields method must return a list of fields that includes an `id-field`
   - They must implement `om/Ident`
   - They must implement `om/IQuery`, and include extra bits of form query (the key `f/form-key`)
   - The app state of the entity acting as a form must be augmented via `f/build-form` (e.g. using a mutation or app initialization)
@@ -152,6 +144,15 @@
   The built-in support for doing form logic expects the fields to be declared on the component that will
   render the form.
 
+  ```
+  (om/defui MyForm
+    static f/IForm
+    (form-spec [this] [(f/id-field :db/id)
+                       (f/text-input :person/name)
+                       ...]
+    ...
+  ```
+
   ## Step 2: Rendering the Form Fields
 
   The form fields themselves are rendered by calling `(f/form-field form field-name)`. This method **only** renders
@@ -165,6 +166,10 @@
   You'll commonly write some functions of your own that combine other DOM markup with this, such as the function
   `field-with-label` shown in the example. Additional functions like `f/invalid?` can be used to make decisions about
   showing/hiding validation messages.
+
+  "
+  (dc/mkdn-pprint-source field-with-label)
+  "
 
   **The rendering of the form is pretty much up to you! Thus, your forms can be as pretty (or ugly) as you care to make
   them. No worrying about figuring out how we render them, and then trying to make *that* look good.**
@@ -184,6 +189,7 @@
 
   If we compose the above form into this UI root:
   "
+  (dc/mkdn-pprint-source PhoneForm)
   (dc/mkdn-pprint-source PhoneRoot)
   "We can embed it into an active dev card to play with it (you may edit the devcard options to include :")
 
