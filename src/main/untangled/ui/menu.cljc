@@ -84,6 +84,7 @@
 ;; name of the thing being created. These can be used in InitialAppState to
 ;; all your user's to easily construct these without having to think about the map structure, enabling better
 ;; local reasoning.
+;; TODO(DEVELOPER): Add :menu/position with #{:bottom-left :bottom-right :top-left :top-right} options.
 (defn menu
   "Build a state tree for a menu to use in initial app state. The id of the menu should be globally unique."
   [id label items]
@@ -92,7 +93,7 @@
 (defn menu-item
   "Build the state map that can be used in a menu as an item. The `id` need only be unique within the menu."
   [id label]
-  {:menu-item/item-id id :menu-item/label label})
+  {:menu-item/item-id id :menu-item/label label :menu-item/active? false})
 
 (defn- find-first [key value list] (first (filter #(= (get % key) value) list)))
 
@@ -108,21 +109,23 @@
           selected-item  (find-first :menu-item/item-id selected-item items)
           selected-label (get selected-item :menu-item/label (tr-unsafe label))
           menu-class     (str "c-menu" (if open? " is-active" ""))]
-      (dom/div #js {:key (str "menu-" (name id)) :className "u-wrapper"}
+      (dom/div #js {:key (str "menu-" (name id)) :className "has-menu"}
         (dom/button #js {:onClick   (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
                                       false)
-                         :className "c-button has-menu js-dropdown-toggle"} (tr-unsafe selected-label))
+                         :className "c-button js-dropdown-toggle"} (tr-unsafe selected-label))
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
           (map (fn [{:keys [menu-item/item-id menu-item/label]}]
                  (dom/li #js {:key     (str "menu-item-" (name item-id))
                               :onClick (fn [evt]
                                          (.stopPropagation evt)
+                                         (m/set-value! this :menu-item/active? not)
                                          (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :menu/open?])
                                          (when onSelect (onSelect item-id))
                                          false)}
-                   (dom/button #js {:className "c-menu__item"} label))) items))))))
+                   (dom/button #js {:className (str "c-menu__item"
+                                                 (when :menu-item/active? " is-active"))} label))) items))))))
 
 
 ;; Make sure you either render a key in your DOM or supply keyfn
