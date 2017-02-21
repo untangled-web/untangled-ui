@@ -96,18 +96,19 @@
   ```
 
   The tricky part is that \"global\" validation is not ever triggered by built-in iteraction
-  support with fields. Thus, you have a few ways of dealing with checking a form:
+  support with fields.
+
+  Thus, you have a few ways of dealing with checking if a form is valid:
 
   1. Trigger a `f/validate-form` mutation. Such a mutation will recursively walk your form and
   subforms and mark all fields with `:invalid` or `:valid`. This will have the effect of
   showing validation messages that are defined in the examples above.
   2. Compose the `f/validate-forms` helper function into your own mutation. This function works against
   an app state map and recursively updates a form/subforms. (see the source for `defmutation validate-form`)
-  3. Run the `
+  3. Use the `would-be-valid?` function on the forms props (e.g. in the UI). This function returns true
+  if the supplied form (and subforms) would be valid if validation was run on it. It essentially runs
+  validation in a pure functional way.
 
-
-
-
-
-
+  If using (1) or (2), then the methods `valid?` and `invalid?` can recursively test the validity. Note that
+  as fields are changed the state of those fields may return to unchecked (which is neither valid or invalid).
   ")
