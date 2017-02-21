@@ -43,7 +43,7 @@ section: Components
 
 
 .c-message--warning {
-  --color-message: var(--color-live);
+  --color-message: var(--color-alterable);
   @apply --message;
 }
 

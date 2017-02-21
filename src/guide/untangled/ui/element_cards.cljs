@@ -60,15 +60,15 @@
   "
   (dom/div nil
     (e/ui-label {} "Default")
-    (e/ui-label {:color :positive} "Positive")
-    (e/ui-label {:color :informative} "Informative")
-    (e/ui-label {:color :informative-alt} "Informative Alt")
-    (e/ui-label {:color :neutral} "Neutral")
-    (e/ui-label {:color :live} "Live")
-    (e/ui-label {:color :alterable} "Alterable")
-    (e/ui-label {:color :negative} "Negative")
-    (e/ui-label {:color :positive} (icon :add) "Add")
-    (e/ui-label {:color :negative} (icon :close) "Remove")))
+    (e/ui-label {:color :green} "Green")
+    (e/ui-label {:color :blue} "Blue")
+    (e/ui-label {:color :magenta} "Magenta")
+    (e/ui-label {:color :grey} "Grey")
+    (e/ui-label {:color :yellow} "Yellow")
+    (e/ui-label {:color :orange} "Orange")
+    (e/ui-label {:color :red} "Red")
+    (e/ui-label {:color :green} (icon :add) "Add")
+    (e/ui-label {:color :red} (icon :close) "Remove")))
 
 (defcard field
   "# Fields

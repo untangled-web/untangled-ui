@@ -20,7 +20,7 @@ section: Components
   --color-badge--default: var(--color-page);
   --borderRadius-badge: 50px;
   --marginRight-badge: 6px;
-  --padding-badge: 3px 2px 3px 10px;
+  --padding-badge: 3px 8px;
   --padding-badge--icon: 4px;
   --size-badge--small: 14px;
   --size-badge--icon: 30px;
