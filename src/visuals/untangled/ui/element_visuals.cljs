@@ -80,3 +80,10 @@
     (e/ui-message {:color :warning} "This is a warning message.")
     (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
     (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
+
+(defcard checkbox
+   (dom/div nil
+    (e/ui-checkbox {:id "checkbox"} )
+    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
+    (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
+    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
