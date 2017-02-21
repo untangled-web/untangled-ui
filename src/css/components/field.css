@@ -13,6 +13,7 @@ section: Components
 }
 
 .c-field {
+  @apply --middle;
   background-color: transparent;
   border-bottom: solid var(--borderColor-field);
   border-width: 0 0 2px;
@@ -21,7 +22,7 @@ section: Components
   display: flex;
   font-family: inherit;
   font-size: var(--field-font-size);
-  margin: 0 0 16px 0;
+  margin: 0;
   min-height: var(--field-min-height); /* IE11 Input Height */
   padding: 2px 4px;
   transition: border var(--global-duration) ease-in-out;

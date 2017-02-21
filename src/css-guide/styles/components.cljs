@@ -255,68 +255,124 @@
         menu-class (str "c-menu" (if open " is-active" ""))
         selections ["Apples" "Oranges" "Banannas"]
         current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className "u-wrapper"}
+    (dom/div #js {:className "has-menu"}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                       :className "c-button has-menu js-dropdown-toggle"} current)
-      (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                   :className menu-class}
-        (map (fn [s]
-               (dom/li #js {:key s :onClick (fn [evt]
-                                              (om/update-state! this assoc :open false)
-                                              (om/update-state! this assoc :selection s))}
-                 (dom/button #js {:className "c-menu__item"} s))) selections)))))
+                       :className "c-button js-dropdown-toggle"} current)
+      (dom/div #js {:id          "test-dropdown"
+                   :tabIndex    "-1"
+                   :aria-hidden "true"
+                   :className   menu-class}
+        (dom/div #js {:className "c-menu__group"}
+          (map (fn [s]
+                (dom/div #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s)
+                                                )}
+                  (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))))
 
 (defexample menus-shape
   "### Shape and form"
   (dom/div nil
+    ;; Top left
     (let [open       (boolean (om/get-state this :open))
-         menu-class (str "c-menu" (if open " is-active" ""))
+         menu-class (str "c-menu c-menu--top-left" (if open " is-active" ""))
          selections ["Apples" "Oranges" "Banannas"]
-         current    (or (om/get-state this :selection) "Large Menu")]
+         current    (or (om/get-state this :selection) "Top Left Aligned")]
       (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "u-wrapper c-dropdown--large"}
+        (dom/div #js {:className "has-menu u-trailer--triple"}
          (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                          :className "c-button has-menu js-dropdown-toggle"} current)
+                          :className "c-button js-dropdown-toggle"} current)
          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                       :className menu-class}
            (map (fn [s]
                   (dom/li #js {:key s :onClick (fn [evt]
                                                  (om/update-state! this assoc :open false)
                                                  (om/update-state! this assoc :selection s))}
-                    (dom/button #js {:className "c-menu__item"} s))) selections)))))
+                    (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+
+    ;; Top right
+
+    (let [open       (boolean (om/get-state this :open))
+          menu-class (str "c-menu c-menu--top-right" (if open " is-active" ""))
+          selections ["Apples" "Oranges" "Banannas"]
+          current    (or (om/get-state this :selection) "Top Right Aligned")]
+      (dom/div #js {:className "u-trailer--triple"}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                           :className "c-button js-dropdown-toggle"} current)
+          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                       :className menu-class}
+            (map (fn [s]
+                   (dom/li #js {:key s :onClick (fn [evt]
+                                                  (om/update-state! this assoc :open false)
+                                                  (om/update-state! this assoc :selection s))}
+                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+
+    ;; Bottom left
+
+    (let [open       (boolean (om/get-state this :open))
+          menu-class (str "c-menu" (if open " is-active" ""))
+          selections ["Apples" "Oranges" "Banannas"]
+          current    (or (om/get-state this :selection) "Bottom Left Aligned")]
+      (dom/div #js {:className "u-trailer--triple u-end"}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                           :className "c-button js-dropdown-toggle"} current)
+          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                       :className menu-class}
+            (map (fn [s]
+                   (dom/li #js {:key s :onClick (fn [evt]
+                                                  (om/update-state! this assoc :open false)
+                                                  (om/update-state! this assoc :selection s))}
+                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+
+    ;; Bottom right
 
     (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-menu c-menu--right " (if open " is-active" ""))]
+        menu-class (str "c-menu c-menu--bottom-right " (if open " is-active" ""))]
     (dom/div #js {:className "u-end"}
-      (dom/div #js {:className "u-wrapper"}
-        (dom/button #js {:onClick #(toggle-open this) :className "c-button has-menu u-wrapper__select--right js-dropdown-toggle"} "Right Aligned")
-        (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-          (dom/li #js {}
-            (dom/button #js {:className "c-menu__item"} "Apples"))))))
-    ))
+      (dom/div #js {:className "has-menu"}
+        (dom/button #js {:onClick #(toggle-open this) :className "c-button js-dropdown-toggle"} "Bottom Right Aligned")
+        (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
+          (dom/div #js {:className "c-menu__group"}
+            (dom/button #js {:className (str "c-menu__item")}
+              (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+              "Show ruler")
+            (dom/button #js {:className (str "c-menu__item")}
+              (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+              "Show grid"))
+          (dom/div #js {:className "c-menu__group"}
+            (dom/button #js {:className (str "c-menu__item")}
+             (dom/div #js {:className "c-menu__item-check"})
+             "Hide layout")
+          (dom/button #js {:className (str "c-menu__item")}
+            (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+            "Show bleed"))
+          ))))))
 
 
 (defexample menus-search-multi
   "### Multi-Select, Searchable Dropdown"
   (let [open (boolean (om/get-state this :open))
         items (mapv #(str "Item " %) (range 1 20))
-        menu-class (str "c-menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown c-dropdown--large"}
+        menu-class (str "c-menu c-menu--large" (if open " is-active" ""))]
+    (dom/div #js {:className "has-menu"}
       (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Filter")
       (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        (dom/div #js {:className "u-trailer--quarter"}
-          (dom/input #js {:type "text" :placeholder "Search..." :className "c-input"}))
-        (dom/div #js {:className "c-dropdown__viewer"}
+        (dom/div #js {:className "c-field"}
+          (icons/icon :search)
+          (dom/input #js {:type "text" :placeholder "Search..." :className "c-field__input"}))
+        (dom/div #js {:className "c-menu__viewer"}
           (map (fn [item]
                  (dom/div #js {:key item :className "u-leader--sixth u-trailer--sixth"}
                    (dom/input #js {:type "checkbox" :id (str item "-cb") :className "c-checkbox"})
                    (dom/label #js {:htmlFor (str item "-cb")} item)))
             items))
-        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--wide"} "Apply")))))
+        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--primary c-button--wide"} "Apply")))))
 
 
 (defexample menus-data
-  "### Dropdown Data
+  "### Multiple list group selection
 
   This is a control that is meant to let you view what various dropdowns would show, for example in cases
   of UI that lets you configure UI.
@@ -327,20 +383,24 @@
         menu-1-items (mapv #(str "Item " %) (range 1 5))
         menu-2-items (mapv #(str "Other " %) (range 1 3))
         menu (or (om/get-state this :menu) menu-1-items)]
+
     (dom/div nil
-      (dom/div #js {:className "u-wrapper"}
-        (dom/button #js {:onClick   #(toggle-open this)
-                         :className "c-button has-menu js-dropdown-toggle"} name)
-        (dom/div #js {:id        "test-dropdown" :aria-hidden "true"
-                      :className (str "c-menu" (when open " is-active")) :tabIndex "-1"}
-          (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
-                           :className "c-menu__item"} "Menu 1")
-          (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
-                           :className "c-menu__item"} "Menu 2")))
-      (dom/div #js {:className "c-list" :tabIndex "-1"}
-        (map (fn [item]
-               (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable" :key item}
-                 (dom/div #js {:className "c-list__tile"} item))) menu)))))
+      (l/row {}
+        (l/col {:width 4}
+          (dom/div #js {:className "c-card c-card--collapse"}
+           (dom/div #js {:className "has-menu"}
+             (dom/button #js {:onClick   #(toggle-open this)
+                              :className "c-button js-dropdown-toggle"} (str "List: " name))
+             (dom/div #js {:id        "test-dropdown" :aria-hidden "true"
+                           :className (str "c-menu" (when open " is-active")) :tabIndex "-1"}
+               (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
+                                :className "c-menu__item"} "Menu 1")
+               (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
+                                :className "c-menu__item"} "Menu 2")))
+           (dom/div #js {:className "c-list" :tabIndex "-1"}
+             (map (fn [item]
+                    (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable" :key item}
+                      (dom/div #js {:className "c-list__tile"} item))) menu))))))))
 
 ;; -------------------------
 ;; Expanding Panel
@@ -506,11 +566,11 @@
   "### Multi-line"
   (dom/div #js {:className "o-input"}
     (icons/icon :person)
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :1))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :2))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :3))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :4))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :5))
+    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :1))
+    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
+    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
+    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
+    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :5))
     (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
     ))
 
@@ -732,8 +792,8 @@
     (dom/button #js {:className "c-tab"} "Widgets")
     (dom/button #js {:className "c-tab"} "Doodads")
     (dom/button #js {:className "c-tab"} "Apparatuses")
-    (dom/span #js {:className "u-wrapper"}
-      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+    (dom/span #js {:className "has-menu"}
+      (dom/button #js {:className "c-tab is-active"} "Things")
       (dom/ul #js {:className "c-menu"}
         (dom/li #js {}
           (dom/button #js {:className "c-menu__item"} "Thingamabob"))
@@ -743,8 +803,8 @@
           (dom/button #js {:className "c-menu__item"} "Thinger")))
       (dom/button #js {:className "c-tab"} "Doodads")
       (dom/button #js {:className "c-tab"} "Apparatuses")
-      (dom/span #js {:className "u-wrapper"}
-      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+      (dom/span #js {:className "has-menu"}
+      (dom/button #js {:className "c-tab is-active"} "Things")
       (dom/ul #js {:className "c-menu is-active"}
         (dom/li #js {}
           (dom/button #js {:className "c-menu__item"} "Thingamabob"))
@@ -2036,8 +2096,8 @@
 
         ;; View Actions for Tablets and Computers
         (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "u-wrapper"}
-            (dom/button #js {:className "c-button has-menu"} "Filter by tag")
+          (dom/div #js {:className "has-menu"}
+            (dom/button #js {:className "c-button"} "Filter by tag")
             (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
               (dom/li #js {}
                 (dom/button #js {:className "c-menu__item"} "Water"))
@@ -2137,18 +2197,6 @@
                       field-states
                       field-sizes
                       ]}
-          {:id :inputs
-           :title "Form Inputs"
-           :documentation input-header
-           :examples [
-                      input
-                      input-states
-                      input-round
-                      input-multi-line
-                      input-collapsable
-                      textarea
-                      input-validation
-                      ]}
           {:id :icons
            :title "Icons"
            :documentation icon-header
@@ -2246,6 +2294,18 @@
 
           ;; Deprecated Components here
 
+          {:id :inputs
+           :title "Form Inputs [Deprecated]"
+           :documentation input-header
+           :examples [
+                      input
+                      input-states
+                      input-round
+                      input-multi-line
+                      input-collapsable
+                      textarea
+                      input-validation
+                      ]}
           {:id :accordion :title "Accordion [Deprecated]" :examples [accordion accordion-sidebar accordion-nested]
            :documentation
                "# Accordion [Deprecated]
