@@ -20,7 +20,6 @@ section: Objects
   box-shadow: var(--shadow-1);
   color: var(--grey-900);
   height: var(--height-toolbar);
-  padding: var(--padding-toolbar);
   z-index: var(--zIndex-appBar);
 
   & .u-column--bar {
@@ -45,6 +44,12 @@ section: Objects
 
   .o-toolbar__tile {
     padding: 7px 0;
+  }
+
+  .o-toolbar__label {
+    font-size: var(--fontSize--semiMedium);
+    line-height: var(--fontSize--semiMedium);
+    vertical-align: middle;
   }
 
 
@@ -96,8 +101,33 @@ section: Objects
 
 
 
+.o-toolbar--framed {
+  padding: var(--padding-toolbar);
+}
+
+.o-toolbar--raised {
+  box-shadow: var(--shadow-2);
+}
+
+.o-toolbar--primary,
+.o-toolbar--accent {
+  color: var(--white);
+
+  .c-icon {
+    fill: var(--white);
+  }
+}
+
+.o-toolbar--primary {
+  background-color: var(--color-primary);
+}
+
+.o-toolbar--accent {
+  background-color: var(--color-accent);
+}
 
 
+.o-toolbar--dense,
 .o-toolbar--small {
   border: none !important;
   color: var(--color-toolbar-small);

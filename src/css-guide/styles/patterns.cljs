@@ -1,15 +1,145 @@
 (ns styles.patterns
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.icons :as icons]
+            [untangled.ui.layout :as l]
             [om.dom :as dom]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START OF EXAMPLES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defarticle none
-  "# TODO")
+(defarticle errors
+  "# Errors
+
+  ## Errors occur when an app fails to complete an expected action.")
+
+(defarticle errors-usage
+  "### Usage
+
+  ### User input errors"
+  )
+
+(defviewport errors-form
+  "A basic form"
+  (dom/span nil
+    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
+      (dom/div #js {:className "o-toolbar__view"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :arrow_back))
+        (dom/span #js {:className "o-toolbar__label"} "Application"))
+      (dom/div #js {:className "o-toolbar__actions"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :more_vert))))
+
+    (l/row {}
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Personal info")))
+
+      (l/col {:width 12}
+        (dom/input #js {:className "c-field" :placeholder "First name"})
+        (dom/span #js {:className "c-message"} \u00A0))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Last name"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Birthday"})
+          (dom/span #js {:className "c-message c-message--neutral"} "MM/DD/YYYY")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Social Security"})
+          (dom/span #js {:className "c-message c-message--neutral"} "### - ## - ####")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Residence address")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Address"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "City"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "State")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Postal code"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Country"))))))
+
+(defviewport errors-form-filled
+  "Filled out form"
+  (dom/span nil
+    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
+      (dom/div #js {:className "o-toolbar__view"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :arrow_back))
+        (dom/span #js {:className "o-toolbar__label"} "Application"))
+      (dom/div #js {:className "o-toolbar__actions"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :more_vert)))
+      )
+    (l/row {}
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Personal info")))
+
+      (l/col {:width 12}
+       (dom/input #js {:className "c-field is-error" :placeholder "First name"})
+       (dom/span #js {:className "c-message c-message--alert"} "First name is required"))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Last name" :value "Connors"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field is-error" :placeholder "Birthday" :value "01/01/90"})
+          (dom/span #js {:className "c-message c-message--alert"} "MM/DD/YYYY")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field is-error" :placeholder "Social Security"})
+          (dom/span #js {:className "c-message c-message--alert"} "### - ## - ####")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Residence address")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Address" :value "2000 Main Street, Apartment J"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "City" :value "San Francisco"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "State")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Postal code" :value "97701"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Country")))
+      )
+    )
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -23,6 +153,9 @@
                  {:id :postfixing
                   :title "TODO"
                   :examples [
-                             none
+                             errors
+                             errors-usage
+                             errors-form
+                             errors-form-filled
                              ]}
                  ])))

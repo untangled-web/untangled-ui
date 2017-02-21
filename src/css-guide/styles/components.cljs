@@ -2063,10 +2063,12 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div #js {}
       (dom/div #js {:className "o-toolbar"}
-        (dom/div #js {:className "u-column--bar"}
-          (dom/span #js {:className "u-font-size--semi-medium"} "View Name"))
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
+          (dom/span #js {:className "o-toolbar__label"} "View Name"))
 
-        (dom/div #js {:className "u-column--bar"}
+        (dom/div #js {:className "o-toolbar__actions"}
           (dom/div #js {:className "u-wrapper"}
             (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
               (icons/icon :language))
@@ -2085,8 +2087,50 @@
               (icons/icon :account_circle)))
           )))))
 
-(defexample toolbar-small
-  "### Small
+
+(defexample toolbar-colors
+  "### Colors"
+  (let [changed-menu (om/get-state this :changed-menu)
+        ui-menu-open (if (= (:id changed-menu) :ui) (:open-state changed-menu) nil)
+        lang-menu-open (if (= (:id changed-menu) :lang) (:open-state changed-menu) nil)
+        ui-menu-class (str "c-menu" (if ui-menu-open " is-active" ""))
+        lang-menu-class (str "c-menu c-menu--right " (if lang-menu-open " is-active" ""))
+        lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
+        menu-action (fn [menu opened item]
+                      (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
+    (dom/div #js {}
+      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
+          (dom/span #js {:className "o-toolbar__label"} "Primary color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :account_circle)))
+          ))
+
+      (dom/p nil " ")
+
+      (dom/div #js {:className "o-toolbar o-toolbar--accent o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
+          (dom/span #js {:className "o-toolbar__label"} "Accent color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :account_circle)))
+          )))))
+
+(defexample toolbar-dense
+  "### Dense
 
   This toolbar is mainly used for specific operations and navigation for the current app you are using.
   "
@@ -2095,7 +2139,7 @@
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
     (dom/div #js {}
-      (dom/div #js {:className "o-toolbar o-toolbar--small"}
+      (dom/div #js {:className "o-toolbar o-toolbar--dense u-center"}
         (dom/ul #js {:className "u-wrapper"}
           (dom/button #js {:className (get-class :widgets)
                            :onClick   #(select-item :widgets)} "Widgets")
@@ -2113,42 +2157,41 @@
   The secondary toolbar is intended to only provide operations for the current view of the app your in.
   "
   (let [example-class-modifier (str (if (om/get-state this :toolbar-secondary-visible) "" " u-hide"))]
-    (dom/div #js {:className "u-wrapper"}
-      (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
-        ;; View Info for Mobile
-        (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
-          (dom/h1 #js {} "View Name"))
+    (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
+      ;; View Info for Mobile
+      (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
+        (dom/h1 #js {} "View Name"))
 
-        ;; View Actions for Mobile
-        (dom/div #js {:className "u-column u-hide@md-up u-end"}
-          (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :filter_list))
-          (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :search))
-          (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :list))
-          (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :create)))
+      ;; View Actions for Mobile
+      (dom/div #js {:className "u-column u-hide@md-up u-end"}
+        (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :filter_list))
+        (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :search))
+        (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :list))
+        (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :create)))
 
-        ;; View Actions for Tablets and Computers
-        (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "has-menu"}
-            (dom/button #js {:className "c-button"} "Filter by tag")
-            (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Water"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Coffee"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Tea"))))
-          (dom/div #js {:className "o-input"}
-            (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
-            (icons/icon :search)))
-        (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "o-button-group--toggle"}
-            (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
-            (dom/button #js {:className "c-button"} "Detail"))
-          (dom/button #js {:className "c-button c-button--accent"} "Create a widget"))))))
+      ;; View Actions for Tablets and Computers
+      (dom/div #js {:className "u-column--bar u-hide@sm"}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Filter by tag")
+          (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Water"))
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Coffee"))
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Tea"))))
+        (dom/div #js {:className "o-input"}
+          (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
+          (icons/icon :search)))
+      (dom/div #js {:className "u-column--bar u-hide@sm"}
+        (dom/div #js {:className "o-button-group--toggle"}
+          (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
+          (dom/button #js {:className "c-button"} "Detail"))
+        (dom/button #js {:className "c-button c-button--accent"} "Create a widget")))))
 
 
 
@@ -2321,10 +2364,36 @@
                "# Calendar
 
                This is a month view calendar for overlaying on input fields that control date selection."}
-          {:id :drawer :title "Drawer" :examples [drawer]}
-          {:id :icon-bar :title "Icon Bar" :examples [icon-bar icon-rail icon-bar-shifting]}
-          {:id :modal :title "Modal" :examples [modal-example modal-small modal-large modal-primary modal-success modal-warning]}
-          {:id :toolbar :title "Toolbar" :examples [toolbar toolbar-small toolbar-secondary]}
+          {:id :drawer
+           :title "Drawer"
+           :examples [
+                      drawer
+                      ]}
+          {:id :icon-bar
+           :title "Icon Bar"
+           :examples [
+                      icon-bar
+                      icon-rail
+                      icon-bar-shifting
+                      ]}
+          {:id :modal
+           :title "Modal"
+           :examples [
+                      modal-example
+                      modal-small
+                      modal-large
+                      modal-primary
+                      modal-success
+                      modal-warning
+                      ]}
+          {:id :toolbar
+           :title "Toolbar"
+           :examples [
+                      toolbar
+                      toolbar-colors
+                      toolbar-dense
+                      toolbar-secondary
+                      ]}
 
 
 

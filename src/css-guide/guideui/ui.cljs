@@ -152,7 +152,7 @@
   (render [this]
     (let [{:keys [example/path]} (om/props this)
           example-renderer (get-in parts (conj path :renderer))]
-      (dom/div nil
+      (dom/span nil
         (example-renderer)))))
 
 (def ui-example (om/factory Example {:keyfn :example/id}))
@@ -228,7 +228,7 @@
     (let [{:keys [parts/selected-part parts searchbar] :or {parts/selected-part 0}} (om/props this)
           part-names (map :part/title parts)]
       (dom/div nil
-        (dom/div #js {:className "o-toolbar u-row--collapse u-trailer--half"}
+        (dom/div #js {:className "o-toolbar o-toolbar--framed u-row--collapse u-trailer--half"}
           (dom/div #js {:className "u-column--4 u-column--3@md u-column--2@lg u-middle"}
             (dom/div #js {:className "o-toolbar__tile"}
               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:marginTop "2px"}})

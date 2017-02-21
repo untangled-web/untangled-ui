@@ -25,10 +25,11 @@ section: Components
   flex-wrap: wrap;
   font-family: inherit;
   font-size: var(--field-font-size);
-  margin: .5em 0;
+  height: 36px;
+  margin: 6px 0;
   min-height: var(--field-min-height); /* IE11 Input Height */
-  padding: 2px 4px;
-  transition: border var(--global-duration) ease-in-out;
+  padding: 0 0 1px 0;
+  transition: border var(--global-duration) ease-in-out, padding .4s ease-in, padding .2s ease-out;
   width: 100%;
 
 
@@ -36,6 +37,7 @@ section: Components
   &.has-focus {
     border-width: 0 0 2px;
     border-bottom-color: var(--borderColor-field--focus);
+    padding-bottom: 0;
     outline: none;
   }
 
@@ -45,24 +47,28 @@ section: Components
   &:invalid,
   &.is-invalid {
      border-width: 0 0 2px;
+     padding-bottom: 0;
      border-bottom-color: var(--borderColor-field--invalid);
    }
 
 
   &:focus.is-error {
      border-width: 0 0 2px;
+     padding-bottom: 0;
      border-bottom-color: var(--borderColor-field--error);
    }
 
 
   &.is-error {
      border-width: 0 0 2px;
+     padding-bottom: 0;
      border-bottom-color: var(--color-negative);
   }
 
 
   &[disabled] {
     border-width: 0 0 2px;
+    padding-bottom: 0;
     border-bottom-style: dotted;
   }
 

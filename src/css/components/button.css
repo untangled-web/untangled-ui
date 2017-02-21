@@ -223,6 +223,7 @@ section: Components
 .c-button--icon {
   color: var(--grey-700);
   min-width: 36px;
+  padding: 0;
 
   &:hover { color: var(--grey-800); }
 
@@ -234,9 +235,9 @@ section: Components
   &::after { opacity: 0 !important; }
 
   .c-icon {
-    height: 24px; /* IE11 Hack instead of inherit */
+    height: 24px !important; /* IE11 Hack instead of inherit */
     margin: 0 !important;
-    width: 24px; /* IE11 Hack instead of inherit */
+    width: 24px !important; /* IE11 Hack instead of inherit */
   }
 }
 
