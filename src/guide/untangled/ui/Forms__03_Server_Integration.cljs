@@ -164,4 +164,25 @@
   ```
   {:form/remove-relations { [:people/by-id 1] {:person/number [[:phone/by-id 3]] }}}
   ```
+
+  # Updating a forms-based Entity From the Server
+
+  Since your app state is normalized, any reads of an entity will end up being merged over top of
+  the entity you already have. This means that your active form fields on such an entity would
+  update.
+
+  There are some caveats to doing this, since the *remembered* state of your form will now be out
+  of sync with what you read (or pushed) from the server.
+
+  Typically what you'll want to do when (re)reading an entity that is being actively used on a form is:
+
+  1. Issue an untangled load for that entity. The incoming state will cause the UI of the form to update
+  (since you're always editing/rendering active state of the entity). Unfortunately, the pristine state
+  of the form now thinks the newly loaded entity is *dirty*!
+  2. Include a post mutation, which should:
+      - `dissoc` the form state via `(update-in app-state form-ident dissoc f/form-key)`
+      - Run `build-form` on the form
+      - Optionally use the `validate-fields` or `validate-forms` function to update the validation markers.
+
+  A non-remote (local-only) commit-to-entity (still as a post-mutation) could also be used to accomplish (2).
   ")
