@@ -134,7 +134,7 @@ section: Settings
 
   --backgroundColor-page: var(--white);
   --borderColor: var(--grey-300);
-  --borderColor-inactive: var(--grey-500);
+  --borderColor-inactive: var(--grey-200);
 
 
   /* Accoridon */
