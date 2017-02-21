@@ -223,8 +223,8 @@
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-spec [this] [(f/text-input :person/name :className "name-class")
-                     (f/subform-element :person/number Phone :many)]))
+  (form-spec [this] [(f/subform-element :person/number Phone :many)
+                     (f/text-input :person/name :className "name-class")]))
 
 (specification "Initializing a to-many form relation"
   (let [base-form (get-in person-db [:people/by-id 4])
@@ -635,6 +635,9 @@
           (assertions
             "include the scalar properties that have changed"
             (f/diff-form (assoc basic-person :person/name "Foo Bar")) => {:form/updates {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
+            (f/diff-form (assoc basic-person :person/name "")) => {:form/updates {(f/form-ident basic-person) {:person/name ""}}}
+            "sends nil for the property if the property has become nil"
+            (f/diff-form (assoc basic-person :person/name nil)) => {:form/updates {(f/form-ident basic-person) {:person/name nil}}}
             "accumulates multiple changes"
             (-> many-number-person
               (assoc-in [:person/number 0 :phone/number] "999-9999")
@@ -651,7 +654,7 @@
               f/diff-form) => {:form/updates {[:phone/by-id 1] {:phone/number "123-4567"}}}
             "excludes removals of references"
             (-> many-number-person
-              (assoc :person/number [])
+              ;(assoc :person/number [])
               (assoc :person/name "New Name")
               (f/diff-form)
               :form/updates) => {[:people/by-id 4] {:person/name "New Name"}}
@@ -659,128 +662,72 @@
             (-> basic-person
               (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
               f/diff-form
-              :form/updates) => {}))
-        (component ":form/add-relation"
+              :form/updates) => nil))
+        ; TODO: CONTINUE HERE...
+        (component ":form/add-relations"
           (assertions
-            "^-> new ref one"
+            "Includes the new relation for a new to-one association"
             (-> basic-person
               (assoc :person/number (f/build-form Phone {:db/id 1}))
               f/diff-form)
-            => {:form/add-relation {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
-            "^-> add ref one"
+            => {:form/add-relations {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
+            "Includes the new relation for a change to a to-one"
             (-> one-number-person
               (assoc :person/number (f/build-form Phone {:db/id 2}))
-              f/diff-form)
-            => {:form/updates {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}))
-        (component ":form/remove-relations"
-          (assertions
-            "we can pick up a deletion of a reference"
-            (-> one-number-person
-              (dissoc :person/name)
-              f/diff-form)
-            => {:form/delete-entity {(f/form-ident one-number-person) {:person/name "A"}}}
-            "we can pick up a deletion of an entity"
-            (-> one-number-person
-              (dissoc :person/number)
-              f/diff-form)
-            => {:form/delete-entity {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
-            ))
-        (component ":form/new-entities"
-          (assertions
-            "^-> rem ref many"
-            (-> one-many-number-person
-              (assoc :person/number [])
-              f/diff-form)
-            => {:form/remove-relation {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
-            "^-> add ref many"
+              f/diff-form
+              :form/add-relations)
+            => {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}
+            "Includes the added item in a to-many relation that started empty"
             (-> no-number-person
               (update :person/number conj (f/build-form Phone {:db/id 1}))
               f/diff-form)
-            => {:form/add-relation {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
-            (-> many-number-person
-              (update :person/number conj (f/build-form Phone {:db/id 3}))
-              f/diff-form)
-            => {:form/add-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
-            "^-> del & add ref many"
+            => {:form/add-relations {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
+            "Includes the new item when *changing* a to-many ref"
             (-> many-number-person
               (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
+              f/diff-form
+              :form/add-relations)
+            => {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
+            "Includes only the added item in a to-many relation that started with some already"
+            (-> many-number-person
+              (update :person/number conj (f/build-form Phone {:db/id 3}))
+              (update :person/number conj (f/build-form Phone {:db/id 4}))
               f/diff-form)
-            => {:form/add-relation    {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
-                :form/remove-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
+            => {:form/add-relations {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]
+                                                                                        [:phone/by-id 4]]}}}))
+        (component ":form/remove-relations"
+          (assertions
+            "Includes the removed relation for a *changed* to a to-one"
+            (-> one-number-person
+              (assoc :person/number (f/build-form Phone {:db/id 2}))
+              f/diff-form
+              :form/remove-relations)
+            => {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}
+            "Includes the relation when it completely disappears"
+            (-> one-number-person
+              (dissoc :person/number)
+              f/diff-form)
+            => {:form/remove-relations {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
+            (-> one-many-number-person
+              (assoc :person/number [])
+              f/diff-form)
+            => {:form/remove-relations {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
+            "Changing a to-many ref includes the ref removed"
+            (-> many-number-person
+              (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
+              f/diff-form
+              :form/remove-relations)
+            => {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}))
 
+        (component "Adding a new entity to the database"
+          (assertions
+            "Includes a :form/new-entities and :form/add-relations to build the remote graph"
+            (-> basic-person
+              (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
+              f/diff-form)
+            => {:form/new-entities  {[:phone/by-id t1] {:phone/number "123-4567"}}
+                :form/add-relations {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}})))
 
-        (assertions
-          "Gives an empty map when there are no changes."
-          (f/diff-form basic-person) => {}
-          "includes updates for the properties that have changed"
-          (f/diff-form (assoc basic-person :person/name "Foo Bar"))
-          => {:form/updates {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
-          (-> many-number-person
-            (assoc-in [:person/number 0 :phone/number] "999-9999")
-            (assoc :person/name "New Name")
-            (f/diff-form)) => {:form/updates {[:people/by-id 4] {:person/name "New Name"}
-                                              [:phone/by-id 1]  {:phone/number "999-9999"}}}
-          "excludes changes to references"
-          (-> many-number-person
-            (assoc :person/number [])
-            (assoc :person/name "New Name")
-            (f/diff-form)
-            :form/updates) => {[:people/by-id 4] {:person/name "New Name"}}
-          "on new entities includes a :form/new-entity and a :form/updates for the new fk reference"
-          (-> basic-person
-            (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
-            f/diff-form)
-          => {:form/new-entity {[:phone/by-id t1] {:phone/number "123-4567"}}
-              :form/updates    {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}}
-          "we can pick up a deletion of a reference"
-          (-> one-number-person
-            (dissoc :person/name)
-            f/diff-form)
-          => {:form/delete-entity {(f/form-ident one-number-person) {:person/name "A"}}}
-          "we can pick up a deletion of an entity"
-          (-> one-number-person
-            (dissoc :person/number)
-            f/diff-form)
-          => {:form/delete-entity {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
-          "we can pick up changes to subforms"
-          (-> one-number-person
-            (assoc-in [:person/number :phone/number] "123-4567")
-            f/diff-form)
-          => {:form/updates {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          (-> many-number-person
-            (assoc-in [:person/number 0 :phone/number] "123-4567")
-            f/diff-form)
-          => {:form/updates {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          "^-> new ref one"
-          (-> basic-person
-            (assoc :person/number (f/build-form Phone {:db/id 1}))
-            f/diff-form)
-          => {:form/updates {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
-          "^-> add ref one"
-          (-> one-number-person
-            (assoc :person/number (f/build-form Phone {:db/id 2}))
-            f/diff-form)
-          => {:form/updates {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
-          "^-> rem ref many"
-          (-> one-many-number-person
-            (assoc :person/number [])
-            f/diff-form)
-          => {:form/remove-relation {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
-          "^-> add ref many"
-          (-> no-number-person
-            (update :person/number conj (f/build-form Phone {:db/id 1}))
-            f/diff-form)
-          => {:form/add-relation {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
-          (-> many-number-person
-            (update :person/number conj (f/build-form Phone {:db/id 3}))
-            f/diff-form)
-          => {:form/add-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
-          "^-> del & add ref many"
-          (-> many-number-person
-            (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
-            f/diff-form)
-          => {:form/add-relation    {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
-              :form/remove-relation {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
                                                form-id => [:people/by-id 3]

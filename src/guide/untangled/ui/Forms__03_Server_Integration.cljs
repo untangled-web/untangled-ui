@@ -64,23 +64,28 @@
   the form.
 
   ```
-  {:form/new-entities { [:thing tempid-1] {:field-a 1 :field-b 55 :thing/child [:thing tempid-2]}
+  {:form/new-entities { [:thing tempid-1] {:field-a 1 :field-b 55 }
                         [:thing tempid-2] {:field-a 8 :field-b 42 }}}
   ```
 
   NOTES:
   - New entity properties include only the columns declared in the form support. Remember that you can
   declare fields without rendering them.
-  - New entity entries *include* linkage *if and only if* such linkage is declared via subform support (note
-  you do not have to render the subform).
+  - New entity entries *do not include* references! Any reference changes are always expressed
+  with linkage change entries.
 
   ## New Linkage
 
-  If a subform is explicitly declared, then changes to the linkage between a form and the subforms will
-  Form support requires that linkage be specifically declared via subform
+  If a subform is explicitly declared, then new linkage between a form and the subforms will
+  be expressed via the `:form/add-relationss` entry. The value will be a map whose keys are idents of the
+  refering object and whose values are vectors of the idents of the new targets. This is a delta. This is
+  not meant to be interpreted as all of them, just the ones that were added since the form was considered
+  clean.
 
-  When an entity (new or otherwise) has a change that is declared in the form support as
-  as subformcauses that entity to link
+  ## Dropped Linkage
 
+  If a subform is explicitly declared, then removal of linkage between a form and the subforms will
+  be expressed via the `:form/remove-relationss` entry. The value will be a map whose keys are idents of the
+  refering object and whose values are vectors of the idents that were removed. This is a delta.
 
   ")

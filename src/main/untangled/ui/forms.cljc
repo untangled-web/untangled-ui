@@ -261,8 +261,9 @@
   ([form field] (get (get-original-data form) field)))
 
 (defn- ?normalize [{:keys [input/cardinality]} x]
-  (if-not (or (is-form? x) (and (coll? x) (seq x) (every? is-form? x))) x
-                                                                        (case cardinality, :one (form-ident x), :many (mapv form-ident x), x)))
+  (if-not (or (is-form? x) (and (coll? x) (seq x) (every? is-form? x)))
+    x
+    (case cardinality, :one (form-ident x), :many (mapv form-ident x), x)))
 
 (defn dirty-field? [form field]
   (let [cfg  (field-config form field)
@@ -919,11 +920,12 @@
                 additions (set/difference curr-set orig-set)
                 removals  (set/difference orig-set curr-set)]
             (cond-> {}
-              (seq removals)  #_=> (assoc :form/remove-relation (vec removals))
-              (seq additions) #_=> (assoc :form/add-relation (vec additions))))
-    (cond
-      curr #_=> {:form/updates curr}
-      (and (not curr) orig) #_=> {:form/delete-entity orig})))
+              (seq removals)  #_=> (assoc :form/remove-relations (vec removals))
+              (seq additions) #_=> (assoc :form/add-relations (vec additions))))
+    :one (cond-> {}
+           curr #_=> (assoc :form/add-relations curr)
+           orig #_=> (assoc :form/remove-relations orig))
+    (when (not= curr orig) {:form/updates curr})))
 
 (defn- field-diff [form diff field]
   (let [ident (form-ident form)
@@ -940,18 +942,17 @@
    and the values are vectors of the keys for the fields that changed on that form.
 
    Return value:
-   {:form/new-entity {[:phone/by-id #phone-id] {...}}
-   ,:form/delete-entity {(comment, inverse of :new, i.e. delete)}
-   ,:form/update {[:phone/by-id 1] {:phone/number \"123-4567\"}}
-   ,:form/add-relation {[:person/by-id 1] {:person/number [[:phone/by-id #phone-id]]}}
-   ,:form/remove-relation {(comment, same as :add, but means remove)}}"
+   {:form/new-entities {[:phone/by-id #phone-id] {...}}
+    :form/updates {[:phone/by-id 1] {:phone/number \"123-4567\"}}
+    :form/add-relations {[:person/by-id 1] {:person/number #{phone-id-not-ident ...}}}
+    :form/remove-relations {[:person/by-id 1] {:person/number #{4 5}}}}"
   [root-form]
   (form-reduce root-form {}
     (fn [diff form]
       (let [[_ id :as ident] (form-ident form)
             fields (element-names form)]
         (if (om/tempid? id)
-          (assoc-in diff [:form/new-entity ident] (select-keys form (remove (partial ui-field? form) fields)))
+          (assoc-in diff [:form/new-entities ident] (select-keys form (remove (partial ui-field? form) fields)))
           (transduce (comp
                        (remove (partial ui-field? form))
                        (filter (partial dirty-field? form)))
