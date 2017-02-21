@@ -84,7 +84,8 @@
 ;; name of the thing being created. These can be used in InitialAppState to
 ;; all your user's to easily construct these without having to think about the map structure, enabling better
 ;; local reasoning.
-;; TODO(DEVELOPER): Add :menu/position with #{:bottom-left :bottom-right :top-left :top-right} options.
+;; TODO(DEVELOPER): Add :menu/position with #{:bottom-left :bottom-right :top-left :top-right} options. Additionally,
+;; we should add a `.u-end` class to the `.has-menu` parent div if position is right aligned.
 (defn menu
   "Build a state tree for a menu to use in initial app state. The id of the menu should be globally unique."
   [id label items]
