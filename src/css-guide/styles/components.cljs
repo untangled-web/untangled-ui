@@ -224,6 +224,11 @@
 (defexample checkboxes
   "The following examples show the various rendered states of checkboxes."
   (dom/div #js {}
+    ;; Single checkbox, no label text
+    (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
+    (dom/label #js {:htmlFor "checkbox-1"} \u00A0)
+
+
     (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-1"} "Checkbox")
     (dom/input #js {:id "checkbox-2" :type "checkbox" :checked true :className "c-checkbox"})
@@ -278,35 +283,16 @@
          menu-class (str "c-menu c-menu--top-left" (if open " is-active" ""))
          selections ["Apples" "Oranges" "Banannas"]
          current    (or (om/get-state this :selection) "Top Left Aligned")]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "has-menu u-trailer--triple"}
-         (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                          :className "c-button js-dropdown-toggle"} current)
-         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                      :className menu-class}
-           (map (fn [s]
-                  (dom/li #js {:key s :onClick (fn [evt]
-                                                 (om/update-state! this assoc :open false)
-                                                 (om/update-state! this assoc :selection s))}
-                    (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
-
-    ;; Top right
-
-    (let [open       (boolean (om/get-state this :open))
-          menu-class (str "c-menu c-menu--top-right" (if open " is-active" ""))
-          selections ["Apples" "Oranges" "Banannas"]
-          current    (or (om/get-state this :selection) "Top Right Aligned")]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "has-menu"}
-          (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                           :className "c-button js-dropdown-toggle"} current)
-          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                       :className menu-class}
-            (map (fn [s]
-                   (dom/li #js {:key s :onClick (fn [evt]
-                                                  (om/update-state! this assoc :open false)
-                                                  (om/update-state! this assoc :selection s))}
-                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+      (dom/div #js {:className "has-menu"}
+        (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :className "c-button js-dropdown-toggle"} current)
+        (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                     :className menu-class}
+          (map (fn [s]
+                 (dom/li #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s))}
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
 
     ;; Bottom left
 
@@ -314,7 +300,24 @@
           menu-class (str "c-menu" (if open " is-active" ""))
           selections ["Apples" "Oranges" "Banannas"]
           current    (or (om/get-state this :selection) "Bottom Left Aligned")]
-      (dom/div #js {:className "u-trailer--triple u-end"}
+      (dom/div #js {:className "has-menu"}
+        (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :className "c-button js-dropdown-toggle"} current)
+        (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                     :className menu-class}
+          (map (fn [s]
+                 (dom/li #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s))}
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
+
+    ;; Top right
+
+    (let [open       (boolean (om/get-state this :open))
+          menu-class (str "c-menu c-menu--top-right" (if open " is-active" ""))
+          selections ["Apples" "Oranges" "Banannas"]
+          current    (or (om/get-state this :selection) "Top Right Aligned")]
+      (dom/div #js {:className "u-end"}
         (dom/div #js {:className "has-menu"}
           (dom/button #js {:onClick   #(om/update-state! this update :open not)
                            :className "c-button js-dropdown-toggle"} current)
@@ -325,6 +328,7 @@
                                                   (om/update-state! this assoc :open false)
                                                   (om/update-state! this assoc :selection s))}
                      (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+
 
     ;; Bottom right
 
@@ -336,17 +340,17 @@
         (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
           (dom/div #js {:className "c-menu__group"}
             (dom/button #js {:className (str "c-menu__item")}
-              (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+              (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
               "Show ruler")
             (dom/button #js {:className (str "c-menu__item")}
-              (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+              (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
               "Show grid"))
           (dom/div #js {:className "c-menu__group"}
             (dom/button #js {:className (str "c-menu__item")}
-             (dom/div #js {:className "c-menu__item-check"})
+             (dom/div #js {:className "c-menu__item-icon"})
              "Hide layout")
           (dom/button #js {:className (str "c-menu__item")}
-            (dom/div #js {:className "c-menu__item-check"} (icons/icon :done))
+            (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
             "Show bleed"))
           ))))))
 
@@ -418,21 +422,28 @@
   (dom/div nil
     (let [expanded-1 (boolean (om/get-state this :expanded-1))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-1 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-1 not)
                    :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-1 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-1
              "Caribbean cruise"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
-       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for trip name")))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (dom/input #js {:className "c-field" :type "text" :placeholder "Type in a name for your trip..." :value "Caribbean cruise"})
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+         )))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
-                   :onClick   #(om/update-state! this update :expanded-2 not)
                    :tabIndex  "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick   #(om/update-state! this update :expanded-2 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Location")
          (dom/div #js {:className "c-expansion-panel__info"}
            (if-not expanded-2
@@ -444,22 +455,21 @@
            (dom/div #js {:className "u-column--12 u-column--8@md u-center@md"}
              (dom/span #js {:className "c-badge c-badge--large"} "Barbados" (icons/icon :cancel)))
            (dom/div #js {:className "u-column--12 u-column--4@md"}
-             (dom/div #js {:className "c-message--neutral"} "Select your destination of choice")
-             (dom/div #js {:className "c-message"} "Learn more"))
-           )
-         (l/row {:density :collapse :className "c-expansion-panel__actions"}
-           (dom/div #js {:className "u-column--12 u-end"}
-             (dom/button #js {:className "c-button c-button--text"} "CANCEL")
-             (dom/button #js {:className "c-button c-button--anchor"} "SAVE")
-             )
-           )
+             (dom/div #js {:className "u-helper-text"}
+               (dom/div nil "Select your destination of choice")
+               (dom/div nil (dom/a #js {:href "http://"} "Learn more")))))
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
          )))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-3 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-3 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-3 "Start date: Feb 29, 2016"))
@@ -470,9 +480,9 @@
 
     (let [expanded-4 (boolean (om/get-state this :expanded-4))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-4 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-4 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-4 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-4 "The best cruise line"))
@@ -481,9 +491,9 @@
 
     (let [expanded-5 (boolean (om/get-state this :expanded-5))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-5 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-5 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-5 not)}
          (dom/div #js {:className "c-expansion-panel__title"}
            (dom/div nil "Meal preferences")
            (dom/div #js {:className "c-message--neutral"} "Optional"))
@@ -505,7 +515,11 @@
   "### Basic"
   (dom/div nil
     (dom/input #js {:type "text" :required "true" :placeholder "Required field" :className "c-field"})
-    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})))
+    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})
+    (mapv (fn [typ] (dom/div #js {:key typ :className ""}
+                      (dom/input #js {:type typ :placeholder typ :className "c-field"})))
+          ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
+    ))
 
 (defexample field-sizes
   "### Sizes"
@@ -520,8 +534,30 @@
   (dom/div #js {}
     (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus"})
     (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid"})
-    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})))
+    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})
+    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true})
+    ))
 
+(defexample field-icon
+  "### Icons"
+  (l/row {:density :collapse}
+    (dom/div #js {:className "c-icon-column"}
+      (icons/icon :search :className ["c-icon--framed"]))
+    (l/col {:className "u-column"}
+      (dom/div #js {:className "c-field"}
+       (dom/input #js {:type "search" :className "c-field__input" :placeholder "Search..."})))))
+
+(defexample field-content
+  "### Content"
+  (l/row {}
+    (l/col {:width 4}
+     (dom/div #js {:className "c-field"}
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :1))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
+       (dom/input #js {:type "text" :className "c-field__input"}))))
+  )
 
 ;; -------------------------
 ;; Input
@@ -2196,6 +2232,8 @@
                       field
                       field-states
                       field-sizes
+                      field-icon
+                      field-content
                       ]}
           {:id :icons
            :title "Icons"

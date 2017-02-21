@@ -157,7 +157,7 @@ section: Settings
   /* Button */
 
   --color-button--primary: color(var(--grey-500) a(20%));
-  --color-button--secondary: var(--black);
+  --color-button--secondary: var(--grey-900);
   --color-button--hover: var(--color-button--primary);
   --color-button--active: color(var(--grey-500) a(30%));
   --color-button--focus: color(var(--black) a(6%));
