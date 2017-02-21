@@ -57,7 +57,7 @@
         (field-with-label this props :person/age "Age:" "That isn't a real age!")
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-default"
-                           :disabled  (not (f/dirty-form? props))
+                           :disabled  (not (f/dirty? props))
                            :onClick   #(f/commit-to-entity! this :remote true)}
             "Save!"))))))
 
@@ -83,7 +83,7 @@
 
 (defn api-mutate [{:keys [state]} k params]
   (js/console.log "api-mutate:" k params)
-  {:action (fn [] (swap! state assoc [k :seen/delta] (:delta params)))})
+  {:action (fn [] (swap! state assoc [k :seen/delta] params))})
 
 (defonce server-state (atom {:FAKE true}))
 (defonce mock-network (make-mock-network server-state {:read api-read :mutate api-mutate}))

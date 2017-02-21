@@ -570,14 +570,30 @@
       (let [clean-person (om/db->tree (om/get-query Person) c-person app-state)]
         (assertions
           "Can see if a field is clean on the form"
-          (f/dirty-form? clean-person) => false
+          (f/dirty? clean-person) => false
           "Can see if a field is dirty on the form"
-          (f/dirty-form? (assoc-in clean-person [:person/name] "X")) => true
+          (f/dirty? (assoc-in clean-person [:person/name] "X")) => true
           "Can recursively check for dirty data on a form"
           (f/dirty? clean-person) => false
           (f/dirty? (assoc clean-person :person/name "X")) => true
           (f/dirty? (assoc-in clean-person [:person/number 0 :phone/number] "222")) => true
-          (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true))))
+          (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true)))
+
+    (component "would-be-valid?"
+      (provided "Uses forms-reduce to check the complete form set"
+        (f/form-reduce f i F) =1x=> (do
+                                      (assertions
+                                        "Starts at the top-level form"
+                                        f => :the-form)
+                                      :reduction)
+
+        (assertions
+          (f/would-be-valid? :the-form) => :reduction))
+      (assertions
+        "Indicates that a valid form would be valid, even though validations have not been run"
+        (f/would-be-valid? c-person) => true
+        "Indicates that an invalid form would be INvalid, even though validations have not been run"
+        (f/would-be-valid? unchecked-person) => false)))
 
   (component "validate-forms"
     (let [app-state       (f/init-form person-db CPerson [:people/by-id 4])
@@ -743,20 +759,27 @@
                  :form   basic-person})]
           (assertions
             "only optionally `:remote`s the result of diff-form to the server"
-            (:remote commit-mut) => {:params {:delta :fake/delta}}
+            (:remote commit-mut) => {:params :fake/delta}
             "the optimistic action commits the current value of the form to be its new :original state"
             ((:action commit-mut)) => ::ok)))
-      (provided "if we have modified ui only fields"
-        (let [commit-mut
-              (m/mutate {:state (atom (-> app-state
-                                        (assoc-in (conj (f/form-ident basic-person) :ui.person/client-only) "SHOULDNT_APPEAR")
-                                        (assoc-in (conj (f/form-ident basic-person) :person/name) "NEW_NAME")))
-                         :ast   {:params {:remote true}}}
-                `f/commit-to-entity
-                {:remote  true
-                 :form-id (f/form-ident basic-person)})]
-          (assertions "we dont send them to the server"
-            (get-in (:remote commit-mut) [:params :delta (f/form-ident basic-person) :ui.person/client-only] ::nil) => ::nil)))
+      (behavior "When we have modified ui-only fields"
+        (let [form       (-> (f/build-form Person basic-person)
+                           (assoc :ui.person/client-only "SHOULDNT_APPEAR" :person/name "NEW_NAME"))
+              form-id    (f/form-ident form)
+              app-state  (atom (assoc-in {} form-id form))
+              ast        (-> (om/query->ast `[(f/commit-to-entity ~{:form form :remote true})])
+                           ;:children
+                           ;first
+                           ;:params
+                           )
+              commit-mut (m/mutate {:state  app-state
+                                    :target :remote
+                                    :ast    ast}
+                           `f/commit-to-entity
+                           {:remote true
+                            :form   form})]
+          (assertions "we only send the modified full-stack properties (without UI prefix) to the server"
+            (-> commit-mut :remote :params :form/updates) => {form-id {:person/name "NEW_NAME"}})))
       (component "commit-to-entity! - api/public function"
         (when-mocking
           (om/props :fake/component) => :fake/props
