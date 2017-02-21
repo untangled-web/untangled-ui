@@ -26,7 +26,7 @@
   3. Link an existing form to an instance of a subform. The subform might have been looked up (by your code)
   or created (via 2).
   4. Remove the linkage from a form to a subform.
-  5. As a convenience: trigger an entity deletion instruction when doing (4) if the relation
+  5. FUTURE WORK: As a convenience: trigger an entity deletion instruction when doing (4) if the relation
   is marked to indicate ownership (via `:isComponent`). This could be derived at the
   server layer with knowledge of the underlying schema.
 
@@ -77,15 +77,15 @@
   ## New Linkage
 
   If a subform is explicitly declared, then new linkage between a form and the subforms will
-  be expressed via the `:form/add-relationss` entry. The value will be a map whose keys are idents of the
-  refering object and whose values are vectors of the idents of the new targets. This is a delta. This is
+  be expressed via the `:form/add-relations` entry. The value will be a map whose keys are idents of the
+  refering object and whose values are a single ident (in the to-one case) or vectors of the idents (in the to-many
+  case) of the new targets. This is a delta. This is
   not meant to be interpreted as all of them, just the ones that were added since the form was considered
   clean.
 
   ## Dropped Linkage
 
   If a subform is explicitly declared, then removal of linkage between a form and the subforms will
-  be expressed via the `:form/remove-relationss` entry. The value will be a map whose keys are idents of the
-  refering object and whose values are vectors of the idents that were removed. This is a delta.
-
+  be expressed via the `:form/remove-relations` entry. The value will be a map whose keys are idents of the
+  refering object and whose values just like in new linkage. This is also a delta.
   ")
