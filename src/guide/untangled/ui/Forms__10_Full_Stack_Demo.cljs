@@ -47,7 +47,7 @@
 (defn write-handler [env k p]
   (log/info "SERVER mutation for " k " with params " p)
   (case k
-    `f/commit-to-entity (let [updates (-> p :delta :form/updates)]
+    `f/commit-to-entity (let [updates (-> p :form/updates)]
                           (doseq [[[table id] changes] updates]
                             (case table
                               :phone/by-id (update-phone-number id changes)
@@ -150,7 +150,7 @@
   (render [this]
     (let [{:keys [number-to-edit]} (om/props this)
           ; dirty check is recursive and always up-to-date
-          not-dirty?  (not (f/dirty-form? number-to-edit))
+          not-dirty?  (not (f/dirty? number-to-edit))
           ; validation is tri-state. Most fields are unchecked. Use pure functions to transform the
           ; form to a validated state to check validity of all fields
           valid?      (f/valid? (f/validate-fields number-to-edit))
@@ -374,12 +374,12 @@
   See the form documentation for the full possible items in such a request. For this example we'll describe
   just the one we're supporting: Updates.
 
-  The parameters passed to the server on update have a `:delta` key. The delta in this case will contain
+  The parameters passed to the server on update have 
   a `:form/updates` key with a map whose keys are the idents of things that changed, and whose values are maps
   of the field/value updates. For example:
 
   ```
-  {:delta {:form/updates {[:phone/by-id 1] {:phone/number \"444-5421\"}}}}
+  {:form/updates {[:phone/by-id 1] {:phone/number \"444-5421\"}}}
   ```
 
   would be sent to indicate that phone number with id 1 had just its `:phone/number` attribute changed to the
