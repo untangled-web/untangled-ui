@@ -629,6 +629,9 @@
    Using this on a form ignores unchecked fields,
    so you should run validate-entire-form! before trusting this value on a form.
 
+   SEE ALSO `would-be-valid?` if you'd like to pretend that full-form validation has been run
+   in a query-only sort of way.
+
    `root-form` is the props of a top-level form. Evaluates form recursively.
    `form` is the props of a specific form
    `field` is a field to check on a specific form"
@@ -641,8 +644,12 @@
   ([form field] (= :invalid (current-validity form field))))
 
 (defn valid?
-  "Returns true iff the field has been validated, and the validation is ok.
-   Running this on a form is only reliable if you've already validated the entire form (validate-entire-form!).
+  "Returns true iff the form or field has been validated, and the validation is ok.
+
+   Please make sure you've read and understood the form state lifecycle with respect to validation.
+
+   SEE ALSO `would-be-valid?` if you'd like to pretend that full-form validation has been run
+   in a query-only sort of way.
 
    `root-form` is the props of a top-level form. Evaluates form recursively.
    `form` is the props of a specific form
@@ -679,11 +686,11 @@
 (defmulti form-field-valid? "Extensible form field validation. Triggered by symbols. Arguments (args) are declared on the fields themselves."
   (fn [symbol value args] symbol))
 
-;; Sample validator that requires a number be in the (inclusive) range.
 (defmethod form-field-valid? `in-range? [_ value {:keys [min max]}]
   (let [value (int value)]
     (<= min value max)))
 
+;; Sample validator that requires a number be in the (inclusive) range.
 (defn validate-field*
   "Given a form and a field, returns a new form with that field validated. Does NOT recurse into subforms."
   [form field]
@@ -701,18 +708,25 @@
     validate-field*
     form (validatable-fields form)))
 
-(defn dirty-form?
-  "Returns true if the entity state does not match the form state, or if it contains a tempid.
-   Does NOT recurse into subforms."
+(defn would-be-valid?
+  "Checks (recursively on this form and subforms) if the values on the given form would be
+  considered valid if full validation were to be run on the form. Returns true/false."
   [form]
-  (boolean
-    (some (partial dirty-field? form)
-      (validatable-fields form))))
+  (letfn [(non-recursive-valid? [form]
+            (reduce (fn [still-valid? field]
+                      (let [f            (validate-field* form field)
+                            field-valid? (valid? f field)]
+                        (reduced-if false? (and still-valid? field-valid?)))) true (validatable-fields form)))]
+    (form-reduce form true (fn [result form] (and result (non-recursive-valid? form))))))
 
 (defn dirty?
   "Checks if the top-level form, or any of the subforms, are dirty. NOTE: Forms remain dirty as long as they have tempids."
   [form]
-  (form-reduce form false (fn [_ form] (reduced-if true? (dirty-form? form)))))
+  (letfn [(dirty-form? [form]
+            (boolean
+              (some (partial dirty-field? form)
+                (validatable-fields form))))]
+    (form-reduce form false (fn [_ form] (reduced-if true? (dirty-form? form))))))
 
 (defn validate-forms
   "Run validation on an entire form (by ident) with subforms. Returns an updated app-state."
@@ -734,7 +748,7 @@
            (action [{:keys [state]}] (swap! state update-in form-id validate-field* field))))
 
 #?(:cljs (defmutation validate-form
-           "Om Mutation: run validation on an entire form.
+           "Om Mutation: run (recursive) validation on an entire form.
 
            `form-id` is the ident of the entity acting as a form."
            [{:as opts :keys [form-id]}]
@@ -977,8 +991,8 @@
            [{:keys [form remote]}]
            (action [{:keys [state]}] (swap! state entity-xform (form-ident form) commit-state))
            (remote [{:keys [state ast target]}]
-             (let [delta (when target (diff-form form))]
-               (and remote (update ast :params #(-> % (dissoc :remote) (assoc :delta delta))))))))
+             (when (and remote target)
+               (assoc ast :params (diff-form form))))))
 
 #?(:cljs (defmutation reset-from-entity
            "Om Mutation: Reset the entity back to its original state before editing. This will be the last state that
