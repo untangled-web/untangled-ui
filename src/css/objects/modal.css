@@ -95,6 +95,14 @@ section: Objects
     }
   }
 
+  .o-modal__subheader {
+    color: var(--grey-700);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    padding: .75em 0 1em;
+  }
+
 
   .o-modal__title {
     background-color: var(--backgroundColor-modal__title);
@@ -142,41 +150,9 @@ section: Objects
 
 
   .o-modal__actions {
-    float: right;
-    margin-left: 1rem;
-    position: relative;
-    right: -7px;
-    top: -7px;
-
-    .c-icon {
-      height: 37px;
-      width: 37px;
-    }
-  }
-
-
-  .o-modal__close,
-  .o-modal__actions {
-    display: none;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-
-    @media (--md-up) { display: inline; }
-
-  }
-
-  .o-modal__close,
-  .o-modal__action {
-    background-color: transparent;
-    color: var(--color-modal__action);
-    cursor: pointer;
-
-    & .c-icon {
-      fill: var(--color-modal__action);
-      height: 40px;
-      width: 40px;
-    }
+    @apply --end;
+    margin: 0 -1rem;
+    padding: .5em 0 .5em .5rem;
   }
 
 
@@ -198,7 +174,7 @@ section: Objects
   .o-modal__content {
     max-height: calc(100vh - 260px);
     overflow-y: scroll;
-    padding: .5em .5rem;
+    padding: .75em 1rem;
     > div:not([class]) { @apply --width-column-12; }
   }
 

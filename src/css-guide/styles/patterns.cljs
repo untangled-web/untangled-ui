@@ -137,9 +137,18 @@
       (l/col {:width 6}
         (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button"} "Country")))
-      )
-    )
-  )
+      )))
+
+
+(defexample empty-states
+  "# Empty States"
+  (dom/div #js {:style #js {:position "relative" :height "400px"}}
+    (dom/div #js {:className (str "u-absolute--middle-center")}
+      (dom/span #js {:className "c-icon c-icon--huge" :disabled true}
+        (icons/icon :widgets))
+      (dom/h1 #js {} "No widgets yet")
+      (dom/p #js {:className "c-message--neutral"} "Create a widget to get started"))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,11 +160,16 @@
                 [
                  ; NOTE: :examples is a list of example names, rendered in order given
                  {:id :postfixing
-                  :title "TODO"
+                  :title "Errors"
                   :examples [
                              errors
                              errors-usage
                              errors-form
                              errors-form-filled
+                             ]}
+                 {:id :empty-states
+                  :title "Empty states"
+                  :examples [
+                             empty-states
                              ]}
                  ])))
