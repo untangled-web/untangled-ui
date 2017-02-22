@@ -1,6 +1,6 @@
 (ns styles.components
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.ui.layout :as l]
             [untangled.icons :as icons]
             [om.dom :as dom]))
@@ -1851,120 +1851,42 @@
                         (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
                           (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))) " Delete ")))))))))))
 
+
 (defexample modal-example
   "# Modal
 
   ### Basic"
   (dom/div #js {:style #js {:position "relative" :height "400px"}}
-    (dom/div #js {:className (str "o-modal is-active") :style #js {:position "absolute"}}
-      (dom/div #js {:className "c-card c-card--collapse"}
-        (dom/div #js {:className "o-modal__content"}
-          (dom/div #js {:className "o-modal__subheader"} "Modal title")
+    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-modal__card"}
+        (dom/div #js {:className "c-modal__title"} "Modal title")
+        (dom/div #js {:className "c-modal__content"}
           (dom/span #js {} "This is a card in a modal, what will they think of next?")
-          (dom/div #js {:className "o-modal__actions"}
+          )
+        (dom/div #js {:className "c-modal__actions"}
+          (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
             (dom/button #js {:className "c-button c-button--primary"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Close")))))
-    (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})))
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Ok"))
+        ))
+    (dom/div #js {:className (str "c-backdrop _is-active") :style #js {:position "absolute"}})))
 
-(defexample modal-small
-  "# Small Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--small" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__title"}
-            (dom/span #js {} "Modal Title")
-            (dom/div #js {:className "o-modal__actions"}
-              (dom/button #js {:className "o-modal__action"}
-                (dom/span #js {:className "c-icon"} " ... "))))
-          (dom/span #js {
-                         :className "o-modal__close"
-                         :onClick   #(om/update-state! this assoc :modal-visible false)}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))
-          (dom/div #js {:className "o-modal__content"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
+(defviewport modal-fullscreen-1
+  "Fullscreen modal"
+  (dom/div #js {:className "c-modal c-modal--fullscreen"}
+    (dom/div #js {:className "c-modal__card"}
+      (dom/div #js {:className "c-modal__title"}
+        (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+        "Fullscreen Modal! YAY!")
+      (dom/div #js {:className "c-modal__content"}
+        "Stuff"
+        )
+      (dom/div #js {:className "c-modal__actions"}
+        (dom/button #js {:className "c-button c-button--primary"}
+          "Disagree")
+        ))
+    ))
 
-
-(defexample modal-large
-  "# Large Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--large" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__title"}
-            (dom/span #js {} "Modal Title")
-            (dom/div #js {:className "o-modal__actions"}
-              (dom/button #js {:className "o-modal__action"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"}))))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?")
-            (dom/div #js {:className "o-modal__row"}
-              (dom/button #js {:className "c-button c-button--anchor c-button--small"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)} "Close")))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
-
-(defexample modal-primary
-  "# Primary Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--primary" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
-
-(defexample modal-success
-  "# Success Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--success" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
-
-(defexample modal-warning
-  "# Warning Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--warning" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
 
 (defexample sidebar
   "# Sidebar Example
@@ -2359,11 +2281,7 @@
            :title "Modal"
            :examples [
                       modal-example
-                      modal-small
-                      modal-large
-                      modal-primary
-                      modal-success
-                      modal-warning
+                      modal-fullscreen-1
                       ]}
           {:id :toolbar
            :title "Toolbar"
