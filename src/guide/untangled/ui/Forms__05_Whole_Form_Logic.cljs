@@ -1,4 +1,4 @@
-(ns untangled.ui.Forms--05-Field-Interactions
+(ns untangled.ui.Forms--05-Whole-Form-Logic
   (:require-macros
     [untangled.client.cards :refer [untangled-app]])
   (:require
@@ -12,16 +12,16 @@
     [untangled.ui.forms :as f]
     [untangled.icons :as i]
     [untangled.ui.simulated-server :refer [make-mock-network]]
+    [untangled.ui.elements :as ele]
     [untangled.client.logging :as log]
     [untangled.client.data-fetch :as df]
     [untangled.client.impl.network :as un]))
 
 (defn read-handler [{:keys [users]} k {:keys [name] :as params}]
-  (log/info "SERVER query for " k " with parameters " params " and existing usernames " users)
+  (log/info "SERVER query for " k " with parameters " params
+    " and existing usernames " users)
   (case k
-    :name-in-use {:value (cond
-                           (contains? users name) :duplicate
-                           :otherwise :ok)}
+    :name-in-use {:value (if (contains? users name) :duplicate :ok)}
     nil))
 
 ;; Server-side mutation handling. We only care about one mutation
@@ -54,8 +54,8 @@
    (dom/div #js {:className (str "form-group" (if (f/invalid? form name) " has-error" ""))}
      (dom/label #js {:className "col-sm-2" :htmlFor name} label)
      (dom/div #js {:className "col-sm-10"} (f/form-field comp form name))
-     (when (and validation-message (f/invalid? form name))
-       (dom/span #js {:className (str "col-sm-offset-2 col-sm-10" name)} validation-message)))))
+     (when validation-message
+       (dom/div #js {:className (str "col-sm-offset-2 col-sm-10 " name)} validation-message)))))
 
 (defui NameInUseQuery
   static om/IQuery
@@ -65,12 +65,12 @@
   "Sample mutation that simulates legal username check"
   [{:keys [form-id kind field]}]
   (action [{:keys [state]}]
-    (js/console.log field kind)
     (when (and (= kind :blur) (= :person/name field))
-      ; you could do this with a remote/post mutation sequence...
       (let [value (get-in @state (conj form-id field))]
+        (swap! state assoc-in (conj form-id :ui/name-status) :checking)
         (df/load-action state :name-in-use nil {:target  (conj form-id :ui/name-status)
                                                 :refresh [f/form-root-key]
+                                                :marker  false
                                                 :params  {:name value}}))))
   (remote [env] (df/remote-load env)))
 
@@ -91,12 +91,15 @@
   (render [this]
     (let [{:keys [ui/name-status] :as props} (om/props this)]
       (dom/div #js {:className "form-horizontal"}
-        (field-with-label this props :person/name "Username:" "Please enter your first and last name.")
-        (case name-status
-          :duplicate (dom/span nil "That username is in use.")
-          :ok (dom/span nil "OK" (untangled.icons/icon :check))
-          (dom/span nil ""))
-        (field-with-label this props :person/age "Age:" "That isn't a real age!")
+        (field-with-label this props :person/name "Username:"
+          (case name-status
+            :duplicate (ele/ui-message {:color :alert}
+                         "That username is in use." (i/icon :error))
+            :checking (ele/ui-message {:color :neutral}
+                        "Checking if that username is in use...")
+            :ok (ele/ui-message {:color :success} "OK" (i/icon :check))
+            ""))
+        (field-with-label this props :person/age "Age:")
         (dom/div #js {:className "button-group"}
           (dom/button #js {:className "btn btn-default"
                            :disabled  (not (f/dirty? props))
@@ -118,7 +121,7 @@
         (ui-person person)))))
 
 (defcard-doc
-  "# Forms -- Field Interactions
+  "# Forms – Whole Form Logic
 
   Many forms need logic that updates the UI in some non-local way as form interactions take place.
   Simple field validations can be local to a field, but some UI changes require who-form reasoning
@@ -134,10 +137,82 @@
   `IForm` list that names an Untangled mutation to run as changes are detected in the form/subform
   set.
 
-")
+  The mutation given is just a normal mutation that can do anything you need done: remoting, global
+  reasoning, etc.
+
+  Only one (the last if more than one) `on-form-change` can be declared on a form. Use other composition
+  techniques to make a single mutation if you'd like multiple operations on the form change.
+
+  ```
+  (defui ^:once Person
+    static uc/InitialAppState
+    (initial-state [this params] (f/build-form this (or params {})))
+    static f/IForm
+    (form-spec [this] [(f/id-field :db/id)
+                       (f/on-form-change `check-username-available)
+                       (f/text-input :person/name)
+                       (f/integer-input :person/age)])
+  ```
+
+  ## The Events
+
+  The form change support can send events on change and on blur. The latter is useful for regular
+  input fields (as opposed to checkboxes, for example). Your mutation will be passed parameters
+  as a map that has:
+
+  `:form-id` - The ident of the form that generated the event
+  `:kind` - Either :blur or :edit
+  `:field` - The name of the field affected
+
+  Your mutation can do anything a normal mutation can do.
+
+  ## An Example
+
+  In this example, we'll use remoting to ask the server (on field blur) if a given username is
+  already in use (in our code, 'sam' and 'tony' are taken). The client-side mutation looks like this:
+
+  ```
+  (defmutation check-username-available
+    [{:keys [form-id kind field]}]
+    (action [{:keys [state]}]
+      (when (and (= kind :blur) (= :person/name field)) ; only do things on blur
+        (let [value (get-in @state (conj form-id field))] ; get the value of the field
+          (swap! state assoc-in (conj form-id :ui/name-status) :checking) ; set a UI state to show progress
+          (df/load-action state :name-in-use nil {:target  (conj form-id :ui/name-status) ; trigger a remote load
+                                                  :refresh [f/form-root-key] ; ensure the forms re-render
+                                                  :marker  false ; don't overwrite our marker with a loading marker
+                                                  :params  {:name value}})))) ; include params on the query
+    (remote [env] (df/remote-load env))) ; trigger eval of network queue to see if there is anything remote to do
+  ```
+
+  and a server-side query function would satisfy this with something like this (users is just a set of existing usernames in
+  our sample code):
+  "
+  (dc/mkdn-pprint-source read-handler)
+  "
+
+  Now, the sequence of interactions is as follows:
+
+  1. The user blurs on the username field (we could also debounce edit events)
+  2. The mutation places a marker in the app state that allows the UI to show the 'checking' message
+  3. The mutation causes a remote query targeted to the marker location
+  4. When the server query completes, it overwrites the marker from (2) with the server response
+
+  The main catch is the `:refresh` argument to the `load-action`. This ensures that the form gets
+  re-rendered when the request completes. Of course, this could have just as easily been any keyword
+  queried by Person.
+
+  The general Person form UI looks like this:
+  "
+  (dc/mkdn-pprint-source Person)
+  "
+  Note, in particular, that the query includes `:ui/name-status` and rendering code for the possible
+  values of status. The UI is completely disconnected from the fact that remoting is being used
+  to verify the username.
+  ")
 
 (defcard form-changes
-  "# Verifying Username Sample
+  "# Live Example
 
   The following sample uses a mock server to do a full-stack form interaction example that uses
   `on-form-change` to check is a username is available. The already known usernames are 'tony' and
@@ -145,9 +220,7 @@
 
   On blur, the server will be asked if the username is available (with a simulated 1s network latency).
 
-  The load will trigger UI refresh and show the message.
-
-  TODO: Fix the CSS/rendering to be prettier
+  Try `tony` (in use) and `bob` (not in use).
   "
   (untangled-app CommitRoot
     :networking (map->MockNetwork {}))
