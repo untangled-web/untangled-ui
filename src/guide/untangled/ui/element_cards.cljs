@@ -98,3 +98,30 @@
       (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
       (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
 
+(defcard card
+   "# Cards
+
+   Use `ui-card` to render a card. Optionally set the card's title, whether the card is active, its density (inset, collapsed),
+   and style type (rounded, transparent, ruled, zone, ruled-zone).
+
+   Some samples are shown below:
+   "
+   (dom/div nil
+      (e/ui-card {:title "Card Title"} (dom/p nil "Card with a title"))
+      (e/ui-card {:type :round} (dom/p nil "Round Card, no title"))
+      (e/ui-card {:type :transparent :title "Transparent Card Title"} (dom/p nil "Text for Transparent Card"))
+      (e/ui-card {:type :ruled :title-bar true :title "Ruled Title"} (dom/p nil "Text for Ruled Card"))
+      (e/ui-card {:type :zone} (dom/p nil "Text for Zone Card"))))
+
+(defcard checkbox
+     "# Checkboxes
+
+     Use `ui-checkbox` to render a checkbox. Optionally set the checkbox's style (indeterminate, informative).
+
+     Some samples are shown below:
+     "
+     (dom/div nil
+        (e/ui-checkbox {:id "checkbox"} )
+        (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
+        (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
+        (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
