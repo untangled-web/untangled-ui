@@ -9,8 +9,6 @@
     [untangled.ui.forms :as f]
     [untangled.ui.elements :as ele]))
 
-
-
 (defn field-with-label
   "A non-library helper function, written by you to help lay out your form."
   [comp form name label & params]
