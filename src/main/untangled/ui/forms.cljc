@@ -5,12 +5,13 @@
     [om.dom :as dom]
     [om.next :as om]
     [om.util :as util]
-    #?@(:clj (
-    [taoensso.timbre :as log]))
-    #?@(:cljs ([untangled.client.core :as uc]
-                [untangled.client.data-fetch :as df]
-                [untangled.client.logging :as log]
-                [untangled.client.mutations :as m :refer [defmutation]]))))
+    [clojure.tools.reader :as reader]
+    [untangled.client.core :as uc]
+    [untangled.client.data-fetch :as df]
+    [untangled.client.logging :as log]
+    [untangled.client.mutations :as m :refer [defmutation]]))
+
+#?(:clj (def clj->js identity))
 
 (defn fail!
   ([msg] (fail! msg nil))
@@ -141,6 +142,15 @@
     (assoc :input/type ::integer)
     (update :input/default-value (fn [v] (if (integer? v) v 0)))))
 
+(defn textarea-input
+  "Declare a text area on a form. See text-input for additional options.
+
+  When rendering a text input, the params passed to the field render will be merged
+  with the textarea HTML props."
+  [name & options]
+  (-> (apply text-input name options)
+    (assoc :input/type ::textarea)))
+
 (defn checkbox-input
   "Declare a checkbox on a form"
   [name & {:keys [className default-value]
@@ -171,12 +181,42 @@
    :input/name          name})
 
 (defn option
-  "Create an option for use in a dropdown. The key is used as your app database value, and label as the label.
-
-  TODO: support lambda as label for i18n"
+  "Create an option for use in a dropdown. The key is used as your app database value, and label as the label."
   [key label]
   {:option/key   key
    :option/label label})
+
+(defn radio-input
+  "Declare an input that will render as some number of radio buttons.
+
+  `name` : The field name
+  `options` : A set of legal values. Can be anything that `pr-str` and `read-string` can convert to/from strings.
+
+  Radio button rendering is done via the params of `form-field`. If you declare:
+
+  ```
+  (radio-input :rating #{1 2 3 4 5})
+  ```
+
+  then in your rendering you will render the field five times:
+
+  ```
+  (dom/div nil
+    (form-field form :rating :choice 1) 1
+    (form-field form :rating :choice 2) 2
+    (form-field form :rating :choice 3) 3
+    (form-field form :rating :choice 4) 4
+    (form-field form :rating :choice 5) 5)
+  ```
+  "
+  [name options & {:keys [default-value className]
+                   :or   {default-value ::none className ""}}]
+  {:pre [(set? options)]}
+  {:input/name          name
+   :input/type          ::radio
+   :input/default-value default-value
+   :input/css-class     className
+   :input/options       options})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GENERAL FORM STATE ACCESS
@@ -789,7 +829,7 @@
   (fn [component form field-name & params]
     (:input/type (field-config form field-name))))
 
-(defmethod form-field* :default [component form field-name]
+(defmethod form-field* :default [component form field-name & params]
   (fail! (str "Cannot dispatch to form-field renderer on form " form " for field " field-name)))
 
 (defn form-field
@@ -797,65 +837,45 @@
   [component form field-name & params]
   (apply form-field* component form field-name params))
 
-(defn render-text-field [component form field-name]
-  (let [id         (form-ident form)
-        text-value (or (current-value form field-name) "")
-        cls        (or (css-class form field-name) "form-control")]
-    (dom/input #js
-        {:type        "text"
-         :name        field-name
-         :value       text-value
-         :placeholder (placeholder form field-name)
-         :className   cls
-         :onBlur      (fn [_]
-                        (om/transact! component
-                          `[(validate-field
-                              ~{:form-id id :field field-name})
-                            ~@(get-on-form-change-mutation form field-name :blur)
-                            ~form-root-key]))
-         :onChange    (fn [event]
-                        (let [value      (.. event -target -value)
-                              field-info {:form-id id
-                                          :field   field-name
-                                          :value   value}]
-                          (om/transact! component
-                            `[(set-field ~field-info)
-                              ~@(get-on-form-change-mutation form field-name :edit)
-                              ~form-root-key])))})))
+(defn- render-input-field [component htmlProps form field-name type
+                           field-value->input-value
+                           input-value->field-value]
+  (let [id          (form-ident form)
+        input-value (field-value->input-value (current-value form field-name))
+        cls         (or (css-class form field-name) "form-control")
+        attrs       (clj->js (merge htmlProps
+                               {:type        type
+                                :name        field-name
+                                :value       input-value
+                                :placeholder (placeholder form field-name)
+                                :onBlur      (fn [_]
+                                               (om/transact! component
+                                                 `[(validate-field
+                                                     ~{:form-id id :field field-name})
+                                                   ~@(get-on-form-change-mutation form field-name :blur)
+                                                   ~form-root-key]))
+                                :onChange    (fn [event]
+                                               (let [value      (input-value->field-value (.. event -target -value))
+                                                     field-info {:form-id id
+                                                                 :field   field-name
+                                                                 :value   value}]
+                                                 (om/transact! component
+                                                   `[(set-field ~field-info)
+                                                     ~@(get-on-form-change-mutation form field-name :edit)
+                                                     ~form-root-key])))}))]
+    (dom/input attrs)))
 
-(defmethod form-field* ::text [component form field-name]
-  (render-text-field component form field-name))
+(defmethod form-field* ::text [component form field-name & params]
+  (let [i->f identity
+        cls  (or (css-class form field-name) "form-control")
+        f->i identity]
+    (render-input-field component {:className cls} form field-name "text" f->i i->f)))
 
-(defn render-integer-field [component form field-name]
-  (let [id         (form-ident form)
-        cls        (or (css-class form field-name) "form-control")
-        text-value (current-value form field-name)]
-    (dom/input #js
-        {:type      "number"
-         :name      field-name
-         :className cls
-         :value     text-value
-         :onBlur    (fn [_]
-                      (om/transact! component
-                        `[(validate-field
-                            ~{:form-id id :field field-name})
-                          ~@(get-on-form-change-mutation form field-name :blur)
-                          ~form-root-key]))
-         :onChange  (fn [event]
-                      (let [raw-value  (.. event -target -value)
-                            value      (cond-> raw-value
-                                         (seq (re-matches #"^[0-9]*$" raw-value))
-                                         int)
-                            field-info {:form-id id
-                                        :field   field-name
-                                        :value   value}]
-                        (om/transact! component
-                          `[(set-field ~field-info)
-                            ~@(get-on-form-change-mutation form field-name :edit)
-                            ~form-root-key])))})))
-
-(defmethod form-field* ::integer [component form field-name]
-  (render-integer-field component form field-name))
+(defmethod form-field* ::integer [component form field-name & params]
+  (let [cls  (or (css-class form field-name) "form-control")
+        i->f #(when (seq (re-matches #"^[0-9]*$" %)) (int %))
+        f->i identity]
+    (render-input-field component {:className cls} form field-name "number" f->i i->f)))
 
 #?(:cljs (defmutation select-option
            "Om mutation: Select a sepecific option from a selection list. form-id is the ident of the object acting as
@@ -866,7 +886,7 @@
                                          (conj form-id field)
                                          (keyword value))))))
 
-(defmethod form-field* ::dropdown [component form field-name]
+(defmethod form-field* ::dropdown [component form field-name & params]
   (let [id        (form-ident form)
         selection (current-value form field-name)
         cls       (or (css-class form field-name) "form-control")
@@ -892,7 +912,7 @@
              (dom/option #js {:key key :value key} label))
         options))))
 
-(defmethod form-field* ::checkbox [component form field-name]
+(defmethod form-field* ::checkbox [component form field-name & params]
   (let [id         (form-ident form)
         cls        (or (css-class form field-name) "")
         bool-value (current-value form field-name)]
@@ -910,6 +930,50 @@
                           `[(toggle-field ~field-info)
                             ~@(get-on-form-change-mutation form field-name :edit)
                             ~form-root-key])))})))
+
+(defmethod form-field* ::radio [component form field-name & {:keys [choice]}]
+  (let [id          (form-ident form)
+        cls         (or (css-class form field-name) "")
+        current-val (current-value form field-name)]
+    (dom/input #js
+        {:type      "radio"
+         :name      field-name
+         :className cls
+         :value     (pr-str choice)
+         :checked   (= current-val choice)
+         :onChange  (fn [event]
+                      (let [value      (.. event -target -value)
+                            field-info {:form-id id
+                                        :field   field-name
+                                        :value   (reader/read-string value)}]
+                        (om/transact! component
+                          `[(set-field ~field-info)
+                            ~@(get-on-form-change-mutation form field-name :edit)
+                            ~form-root-key])))})))
+
+(defmethod form-field* ::textarea [component form field-name & {:as htmlProps}]
+  (let [id    (form-ident form)
+        cls   (or (css-class form field-name) "")
+        value (current-value form field-name)
+        attrs (clj->js (merge htmlProps
+                         {:name      field-name
+                          :className cls
+                          :value     value
+                          :onBlur    (fn [_]
+                                       (om/transact! component
+                                         `[(validate-field ~{:form-id id :field field-name})
+                                           ~@(get-on-form-change-mutation form field-name :blur)
+                                           ~form-root-key]))
+                          :onChange  (fn [event]
+                                       (let [value      (.. event -target -value)
+                                             field-info {:form-id id
+                                                         :field   field-name
+                                                         :value   value}]
+                                         (om/transact! component
+                                           `[(set-field ~field-info)
+                                             ~@(get-on-form-change-mutation form field-name :edit)
+                                             ~form-root-key])))}))]
+    (dom/textarea attrs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LOAD AND SAVE FORM TO/FROM ENTITY
