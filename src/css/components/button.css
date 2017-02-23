@@ -63,19 +63,22 @@ section: Components
 
   &[type="submit"] { -webkit-appearance: none; }
 
-  &:hover { background-color: var(--color-button--hover); }
+  &:hover { background-color: var(--color-button--hover);
+
+    :--dark & { background-color: var(--color-button-dark--hover); }
+   }
 
   &:focus:not(:active),
   &.is-focused {
      background-color: var(--color-button--focus);
 
-    .t-dark & { background-color: var(--color-button-dark--focus); }
+    :--dark & { background-color: var(--color-button-dark--focus); }
    }
 
   &:--active {
      background-color: var(--color-button--active);
 
-    .t-dark & { background-color: var(--color-button-dark--active); }
+    :--dark & { background-color: var(--color-button-dark--active); }
    }
 
 
@@ -85,12 +88,12 @@ section: Components
     -ms-pointer-events: none;
     pointer-events: none;
 
-    .t-dark & { color: var(--color-button-disabled--dark); }
+    :--dark & { color: var(--color-button-disabled--dark); }
   }
 
   @media print { display: none; }
 
-  .t-dark & { color: var(--color-button-dark--secondary); }
+  :--dark & { color: var(--color-button-dark--secondary); }
 
   :--fullscreen & {
     color: var(--color-button-dark--secondary);
@@ -169,7 +172,7 @@ section: Components
 
     &::after { box-shadow: none; }
 
-     .t-dark & {
+     :--dark & {
        background-color: var(--color-button-dark--primary);
        color: var(--color-button-disabled--dark);
     }
@@ -185,14 +188,14 @@ section: Components
     &:--active {
        background-color: var(--color-button-alt--active);
 
-      .t-dark & { background-color: var(--color-button-alt--active); }
+      :--dark & { background-color: var(--color-button-alt--active); }
      }
 
     &:focus:not(:active),
      &.is-focused { background-color: var(--color-button-alt--active); }
    }
 
-   .t-dark & { background-color: var(--color-button-alt--primary); }
+   :--dark & { background-color: var(--color-button-alt--primary); }
 
 
   &.c-button--accent {
@@ -204,13 +207,13 @@ section: Components
     &:--active {
        background-color: var(--color-button-accent--active);
 
-      .t-dark & { background-color: var(--color-button-dark--active); }
+      :--dark & { background-color: var(--color-button-dark--active); }
     }
 
     &:focus:not(:active),
     &.is-focused { background-color: var(--color-button-accent--active); }
 
-  .t-dark & { background-color: var(--color-button-accent--primary); }
+  :--dark & { background-color: var(--color-button-accent--primary); }
   }
 }
 
