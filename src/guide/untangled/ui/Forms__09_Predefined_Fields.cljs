@@ -1,10 +1,9 @@
 (ns untangled.ui.Forms--09-Predefined-Fields
-  (:require-macros
-    [devcards.core :as dc :refer [defcard defcard-doc]]
-    [untangled.client.cards :refer [untangled-app]])
   (:require
     [om.dom :as dom]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.next :as om :refer [defui]]
+    [untangled.client.cards :refer [untangled-app]]
     [untangled.client.core :as uc]
     [untangled.ui.forms :as f]
     [untangled.ui.elements :as ele]))

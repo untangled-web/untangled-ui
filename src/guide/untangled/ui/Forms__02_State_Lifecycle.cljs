@@ -1,9 +1,8 @@
 (ns untangled.ui.Forms--02-State-Lifecycle
-  (:require-macros
-    [untangled.client.cards :refer [untangled-app]])
   (:require
     [clojure.string :as str]
     [com.stuartsierra.component :as component]
+    [untangled.client.cards :refer [untangled-app]]
     [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
