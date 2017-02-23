@@ -39,11 +39,8 @@
   }
 
   .c-modal__title {
-    color: var(--color-modal__title);
     font-size: var(--fontSize-modal__title);
-    /* padding: 1em 1rem .85em; */
-    padding: 0 1rem;
-    min-height: 56px;
+    padding: 1em 1rem .85em;
   }
 
 
@@ -95,12 +92,11 @@
   }
 
     & .c-modal__title {
-      box-shadow: var(--shadow-2);
-      background-color: var(--color-primary);
-      color: var(--color-primary-contrast);
-
-      .c-icon {
-        fill: var(--color-primary-contrast);
-      }
-      }
+      padding: 0;
+      width: 65%;
+      max-height: 42px; /* Change to 2x line-height */
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
 }
+

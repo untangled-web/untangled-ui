@@ -1875,16 +1875,23 @@
   "Fullscreen modal"
   (dom/div #js {:className "c-modal c-modal--fullscreen"}
     (dom/div #js {:className "c-modal__card"}
-      (dom/div #js {:className "c-modal__title"}
+      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
-        "Fullscreen Modal! YAY!")
+        (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button"} "Save")))
       (dom/div #js {:className "c-modal__content"}
-        "Stuff"
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button c-button--dropdown"} "untangler@untangled.io"))
+        (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
+        (dom/input #js {:className "c-field" :placeholder "Location"})
+        (dom/label #js {:className "is-optional u-leader--half"} "Start time")
+        (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
+        (dom/label #js {:className "is-optional u-leader--half"} "End time")
+        (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
+        (dom/input #js {:className "c-field" :placeholder "Room"})
         )
-      (dom/div #js {:className "c-modal__actions"}
-        (dom/button #js {:className "c-button c-button--primary"}
-          "Disagree")
-        ))
+      )
     ))
 
 
