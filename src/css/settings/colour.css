@@ -179,8 +179,8 @@ section: Settings
   /* Dark theme buttons */
   --color-button-dark--primary: color(var(--grey-500) a(18%));
   --color-button-dark--secondary: var(--color-primary-contrast);
-  --color-button-dark--hover: var(--color-button-dark--primary);
-  --color-button-dark--active: color(var(--grey-500) a(18%));
+  --color-button-dark--hover: color(var(--grey-800) a(18%));
+  --color-button-dark--active: color(var(--grey-600) a(18%));
   --color-button-dark--focus: color(var(--black) a(10%));
 
   /* Disabled buttons */

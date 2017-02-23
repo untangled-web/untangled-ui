@@ -101,6 +101,7 @@ section: Settings
 @custom-selector :--list-items li, dt, dd;
 @custom-selector :--media audio, canvas, iframe, img, svg, video;
 @custom-selector :--fullscreen :fullscreen;
+@custom-selector :--dark .t-dark, .o-toolbar--primary, .o-toolbar--accent;
 
 
 /* Custom Pseudo Class Selectors */
