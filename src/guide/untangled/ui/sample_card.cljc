@@ -1,11 +1,11 @@
 (ns untangled.ui.sample-card
-  (:require #?(:cljs [devcards.core :as dc :include-macros true]
-               :clj [devcards.core :as dc])
-                    [clojure.tools.reader :refer [read-string]]
-                    [devcards.util.utils :as utils]))
+  #?(:cljs (:require-macros untangled.ui.sample-card
+             [devcards.core :as dc]))
+  (:require [devcards.core :as dc]
+            [devcards.util.utils :as utils]))
 
 #?(:clj
-   (defmacro sample-card
+   (defmacro defsample
      "sample-card renders a devcard that takes the source code and adds the code to the documentation for the card.
 
       parameters:
