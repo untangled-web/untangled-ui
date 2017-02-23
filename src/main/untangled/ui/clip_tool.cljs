@@ -1,5 +1,5 @@
 (ns untangled.ui.clip-tool
-  (:require [om.next :as om :refer-macros [defui]]
+  (:require [om.next :as om :refer [defui]]
             [om.dom :as dom]
             [untangled.client.core :as uc]
             [untangled.ui.clip-geometry :as cg]))

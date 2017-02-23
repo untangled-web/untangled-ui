@@ -1,7 +1,6 @@
 (ns untangled.ui.element-cards
-  (:require-macros [devcards.core :refer [defcard defcard-doc]])
   (:require
-    [devcards.core :as dc]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
     [untangled.client.cards :refer [untangled-app]]
@@ -83,18 +82,18 @@
     (e/ui-field {:state #{:error}} "Error field")))
 
 (defcard message
-   "# Messages
+  "# Messages
 
-   Use `ui-message` to render children within a message. Common children include text and icons.
+  Use `ui-message` to render children within a message. Common children include text and icons.
 
-   Some samples are shown below:
-   "
-   (dom/div nil
-      (e/ui-message {} "This is default message.")
-      (e/ui-message {:color :neutral} "This is neutral message.")
-      (e/ui-message {:color :alert} "This is an alert message.")
-      (e/ui-message {:color :success} "This is a success message.")
-      (e/ui-message {:color :warning} "This is a warning message.")
-      (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
-      (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
+  Some samples are shown below:
+  "
+  (dom/div nil
+    (e/ui-message {} "This is default message.")
+    (e/ui-message {:color :neutral} "This is neutral message.")
+    (e/ui-message {:color :alert} "This is an alert message.")
+    (e/ui-message {:color :success} "This is a success message.")
+    (e/ui-message {:color :warning} "This is a warning message.")
+    (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
+    (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
 

@@ -1,6 +1,6 @@
 (ns untangled.ui.card-cards
   (:require
-    [devcards.core :as dc :refer-macros [defcard defcard-doc parse-card-args]]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [devcards.util.utils :as utils]
     [untangled.ui.sample-card :refer-macros [sample-card]]
     [om.dom :as dom]
