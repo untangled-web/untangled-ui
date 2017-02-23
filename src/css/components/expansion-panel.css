@@ -109,6 +109,10 @@
 
 }
 
+.c-expansion-panel__secondary-content--collapse {
+  padding: 0;
+}
+
 .c-expansion-panel__actions {
   border-top: var(--border-expansion-panel);
   margin: var(--paddingY-expansion-panel) -var(--paddingX-expansion-panel) 0;
@@ -138,3 +142,4 @@
     transform: translateY(0);
   }
 }
+

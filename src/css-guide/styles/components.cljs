@@ -497,6 +497,220 @@
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
      )))
 
+(defexample expansion-panel-survey
+  "### Example: Editing a question
+
+  As another example of how to use this we look at how you would edit a survey question and apply conditional questions to it."
+
+  (dom/div nil
+    (let [expanded-1 (boolean (om/get-state this :expanded-1))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-1 " is-expanded"))
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-1 not)}
+         (dom/div #js {:className "c-expansion-panel__title"} "Question")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-1 "What kind of beverage do you prefer?"))
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (l/row {:density :collapse :valign :middle}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input1"} "Text"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input1" :type "text" :placeholder "Type a question..." :value "How was your last stay at the premium village?"}))
+           (l/col {:width 2 :halign :end}
+             (dom/label #js {:htmlFor "h-switch-input-1"} "Required?")
+             (dom/div #js {:className "c-switch"}
+               (dom/input #js {:type      "checkbox"
+                               :id        "h-switch-input-1"
+                               :checked   true
+                               :className "c-switch__input"})
+               (dom/span #js {:className "c-switch__paddle"
+                              :htmlFor   "h-switch-input-1"}))))
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input2"} "Short label"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a short question..." :value "How was your last stay?"}))
+           )
+
+
+         (l/row {}
+           (l/col {:width 9 :push 1}
+
+            (l/row {:density :collapse :valign :bottom :halign :center :className "u-trailer"}
+              (l/col {:className "u-column has-xpipe has-start-pipe" :halign :center}
+                (icons/icon :sentiment_very_dissatisfied))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Extremely dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "1" :id "sel1" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Moderately dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "2" :id "sel2" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Slightly dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "3" :id "sel3" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Neither satisfied nor dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "4" :id "sel4" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Slightly satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "5" :id "sel5" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Moderately satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "6" :id "sel6" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Extremely satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "7" :id "sel7" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe has-end-pipe" :halign :center}
+                (icons/icon :sentiment_very_satisfied))
+              )))
+
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Options")
+               (dom/button #js {:className "c-button"} "Move")
+               (dom/button #js {:className "c-button c-button--accent"} "Add Conditional")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+         )))
+
+    (let [expanded-2 (boolean (om/get-state this :expanded-2))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
+                   :tabIndex  "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick   #(om/update-state! this update :expanded-2 not)}
+         (dom/div #js {:className "c-expansion-panel__title"} "Conditional")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2
+             "If beverage prefrerence is red wine."
+             (dom/span nil "Select conditions first" (icons/icon :help_outline))))
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2 "Would you like our gm to get in touch?"))
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label nil "If answer ")
+             )
+           (l/col {:width 1}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "is"))
+             )
+           (l/col {:width 2}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "exactly"))
+             )
+           (l/col {:width 2}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "red wine"))
+             )
+           )
+
+         (l/row {:density :collapse :valign :middle}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input1"} "Text"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input1" :type "text" :placeholder "Type a question..." :value "Would you like our general manager to get in touch with you?"}))
+           (l/col {:width 2 :halign :end}
+             (dom/label #js {:htmlFor "h-switch-input-1"} "Required?")
+             (dom/div #js {:className "c-switch"}
+               (dom/input #js {:type      "checkbox"
+                               :id        "h-switch-input-1"
+                               :className "c-switch__input"})
+               (dom/span #js {:className "c-switch__paddle"
+                              :htmlFor   "h-switch-input-1"}))))
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input2"} "Short label"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a question..." :value "Would you like our gm to get in touch?"})))
+
+         (l/row {}
+           (l/col {:width 11 :push 1}
+            (l/row {:density :collapse :valign :middle :distribute-extra-columns :between}
+             (l/col {:width 12 :className "u-trailer--quarter"}
+               (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "1" :id "sel1" :name "q1"})
+               (dom/label #js {:htmlFor "sel1"} "Yes")
+               )
+             (l/col {:width 12}
+               (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "5" :id "sel5" :name "q1"})
+               (dom/label #js {:htmlFor "sel1"} "No")))))
+
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Options")
+               (dom/button #js {:className "c-button"} "Move")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+
+         )))
+
+
+    (let [expanded-3 (boolean (om/get-state this :expanded-3))]
+      (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
+                    :tabIndex  "0"}
+        (dom/div #js {:className "c-expansion-panel__list-content"
+                      :onClick   #(om/update-state! this update :expanded-3 not)}
+          (dom/div #js {:className "c-expansion-panel__title"} "Conditional")
+          (dom/div #js {:className "c-expansion-panel__info"}
+            (if-not expanded-3
+              "Choose a question"
+              (dom/span nil "Select conditions first" (icons/icon :help_outline))))
+          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+        (dom/div #js {:className "c-expansion-panel__secondary-content"}
+
+          (l/row {:density :collapse :valign :middle :className "u-trailer"}
+            (l/col {:width 1}
+              (dom/label nil "If answer ")
+              )
+            (l/col {:width 1}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "is"))
+              )
+            (l/col {:width 2}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "exactly"))
+              )
+            (l/col {:width 2}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "red wine"))
+              )
+            )
+
+          (l/row {:density :collapse :valign :middle :halign :center :className "u-trailer"}
+            (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Choose a question")
+            )
+
+          (dom/div #js {:className "c-expansion-panel__actions"}
+            (l/row {:density :collapse}
+              (dom/div #js {:className "u-column--12 u-end"}
+                (dom/button #js {:className "c-button"} "Options")
+                (dom/button #js {:className "c-button"} "Move")
+                (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+
+          )))
+
+
+    ))
+
 
 ;; -------------------------
 ;; Field
@@ -2109,6 +2323,7 @@
            :documentation expansion-panel-header
            :examples [
                       expansion-panel
+                      expansion-panel-survey
                       ]
            }
           {:id :fields
