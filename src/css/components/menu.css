@@ -28,26 +28,14 @@ section: Components
   top: calc(100% - 6px);
   z-index: var(--zIndex-menu);
 
+  .has-menu:--active &,
   &:--active { @apply --fade-in; }
-
-  &::before { right: 20px !important; }
-
-  &::after,
-  &:not(.is-active) svg { display: none; }
 
   & .c-icon {
     color: var(--color-page);
     height: var(--size-menu-icon);
     top: var(--offset-menu-icon) !important;
     width: var(--size-menu-icon);
-  }
-
-  & > .c-button { margin: 0 !important; }
-
-  &--overlap {
-    left: 13px !important;
-    top: -3px !important;
-    width: 165px !important;
   }
 }
 
@@ -159,9 +147,21 @@ section: Components
        float: right;
        margin: 1em .5rem 1em .75rem;
        position: relative;
+       transition: transform .3s ease;
        vertical-align: middle;
     }
   }
+
+
+  &:--active {
+    & > .c-button ,
+    &.c-button {
+      &::before {
+        transform: rotate(180deg);
+       }
+     }
+
+   }
 
 
   & > .c-button--wide,
