@@ -767,102 +767,9 @@
        (dom/input #js {:type "text" :className "c-field__input"}))))
   )
 
-;; -------------------------
-;; Input
-;; -------------------------
-
-(def input-header
-  "# Inputs
-
-     Input class give support for visualizing various kind of interactions. Supported input types are: `text`,
-     `password`, `date`, `datetime`, `datetime-local`, `month`, `week`, `email`, `number`, `search`, `tel`, `time`,
-     `url`, `color`.")
-
-(defexample input
-  "### All Types"
-  (dom/div nil
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "text" :className "o-input__box" :required "true" :placeholder "Required field"}))
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :placeholder "Optional field" :className "o-input__box"}))
-    (mapv (fn [typ] (dom/div #js {:key typ :className "o-input"}
-                      (dom/input #js {:type typ :placeholder typ :className "o-input__box"})))
-          ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])))
-
-(defexample input-states
-  "### States"
-  (dom/div #js {}
-    (dom/div #js {:className "o-input has-focus"}
-      (dom/input #js {:type "text" :placeholder "FOCUSED" :className "o-input__box"}))
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "text" :placeholder "INVALID" :className "o-input__box"}))
-    (dom/div #js {:className "o-input is-error"}
-      (dom/input #js {:type "text" :placeholder "ERROR" :className "o-input__box"}))))
-
-(defexample input-round
-  "### Rounded with Icons"
-  (dom/div #js {:className "o-input o-input--round"}
-    (icons/icon :search)
-    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
-    ))
-
-(defexample input-multi-line
-  "### Multi-line"
-  (dom/div #js {:className "o-input"}
-    (icons/icon :person)
-    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :1))
-    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
-    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
-    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
-    (dom/span #js {:className "c-label c-label--blue"} (util/full-name :5))
-    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
-    ))
-
-(defexample input-collapsable
-  "### Collapsable
-
-  TODO This needs some love before we show it off
-  "
-
-  (let [open? (boolean (om/get-state this :open))]
-    #_(dom/div #js {}
-      (dom/button #js {:title     "Open Search"
-                       :className (str "c-button c-button--icon" (when open? " u-hide"))
-                       :onClick   #(toggle-open this)
-                       :type      "submit" :aria-label "Submit"}
-        (dom/span #js {:className "c-icon c-icon--search"}
-          (icons/icon :search)))
-      (dom/div #js {:className (str "u-wrapper " (when-not open? " u-hide"))}
-        (dom/input #js {:className "c-input"})
-        (dom/button #js {:aria-label "Close Search"
-                         :onClick    #(toggle-open this)
-                         :className  "c-button c-button--icon u-absolute--top-right"}
-          (dom/span #js {:className "c-icon c-icon--cancel"}
-            (icons/icon :search)))))))
-
 (defexample textarea
   "# Text Area"
   (dom/textarea #js {:className "c-input c-input--multi-line"}))
-
-(defexample input-validation
-  "# Input Validation"
-  (dom/div #js {}
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation"} "Validated message")
-
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--neutral"} "Neutral validated message")
-
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "email" :value "notauser at clientcom" :required "" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--warning"} "Warning validated message")
-
-    (dom/div #js {:className "o-input is-error"}
-      (dom/input #js {:type "text" :placeholder "Placeholder text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--error"} "Error validated message")))
-
 
 ;; -------------------------
 ;; Icons
@@ -1255,10 +1162,11 @@
   (let [kind (or (om/get-state this :kind))
         set-kind (fn [k] (om/update-state! this assoc :kind k))]
     (dom/div #js {}
-      (dom/div #js {:className "o-button-group"}
-        (dom/button #js {:aria-label "None" :onClick #(set-kind nil)
+      (dom/div #js {}
+        (dom/label nil "View ")
+        (dom/button #js {:aria-label "Default" :onClick #(set-kind nil)
                          :className  (str "c-button c-button--small " (when (= kind nil) "is-active"))}
-          (dom/span #js {:className "c-button__content"} "None"))
+          (dom/span #js {:className "c-button__content"} "Default"))
         (dom/button #js {:aria-label "Swipe View" :onClick #(set-kind "swipe")
                          :className  (str "c-button c-button--small " (when (= kind "swipe") "is-active"))}
           (icons/icon :view_headline)
@@ -1441,10 +1349,6 @@
     (dom/div #js {:className "u-text-center"} " "
       (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "fit" :className "c-button c-button--large"} "My width will fit to element") " ") " "))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OBJECTS start here
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn toggle-pause [this] (om/update-state! this update :pause not))
 (defexample button-group
@@ -1959,6 +1863,7 @@
                       field-sizes
                       field-icon
                       field-content
+                      textarea
                       ]}
           {:id :icons
            :title "Icons"
@@ -2072,24 +1977,4 @@
                       toolbar-dense
                       toolbar-secondary
                       ]}
-
-
-
-
-
-          ;; Deprecated Components here
-
-          {:id :inputs
-           :title "Form Inputs [Deprecated]"
-           :documentation input-header
-           :examples [
-                      input
-                      input-states
-                      input-round
-                      input-multi-line
-                      input-collapsable
-                      textarea
-                      input-validation
-                      ]}
           ])))
-
