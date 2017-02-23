@@ -18,7 +18,7 @@
       (set! (.-src image-object) url))
     (cg/draw-rect ctx (cg/->Rectangle (cg/->Point 0 0) (cg/->Point width height)) :solid-white)
     (.drawImage ctx image-object 0 0 w h)
-    (cg/draw-rect ctx clip-region :dashed)
+    (cg/draw-rect ctx clip-region :solid)
     (cg/draw-rect ctx ul-handle :solid-black)
     (cg/draw-rect ctx lr-handle :solid-black)))
 

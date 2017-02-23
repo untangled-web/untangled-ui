@@ -55,7 +55,7 @@
                (diff-translate (:lr rect) origin target)))
 
 (defn draw-rect
-  "Draw a rectangle with a style (:solid-white, :solid-black, or :dashed)"
+  "Draw a rectangle with a style (:solid-white, :solid-black, :solid, or :dashed)"
   [ctx ^Rectangle rect style]
   (.save ctx)
   (let [x (-> rect :ul :x)
@@ -69,6 +69,9 @@
       :solid-black (do
                      (set! (.-fillStyle ctx) "black")
                      (.fillRect ctx x y w h))
+      :solid (do
+                (.setLineDash ctx #js [0])
+                (.strokeRect ctx x y w h))
       :dashed (do
                 (.setLineDash ctx #js [5])
                 (.strokeRect ctx x y w h))
