@@ -148,6 +148,7 @@ section: Components
   & > .c-button,
   &.c-button {
      border-bottom: var(--grey-200) 1px solid;
+     text-transform: none;
 
     &::before {
        @apply --triangle;
@@ -160,6 +161,15 @@ section: Components
        position: relative;
        vertical-align: middle;
     }
+  }
+
+  & > .c-button--wide,
+  &.c-button--wide {
+    height: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 4px 16px;
+    text-align: left;
   }
 }
 

@@ -1880,9 +1880,9 @@
         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
         (dom/div #js {:className "o-toolbar__actions"}
           (dom/button #js {:className "c-button"} "Save")))
+      (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
       (dom/div #js {:className "c-modal__content"}
-        (dom/div #js {:className "has-menu"}
-          (dom/button #js {:className "c-button c-button--dropdown"} "untangler@untangled.io"))
         (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
         (dom/input #js {:className "c-field" :placeholder "Location"})
         (dom/label #js {:className "is-optional u-leader--half"} "Start time")
