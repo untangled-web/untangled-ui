@@ -110,7 +110,8 @@ section: Objects
 }
 
 .o-toolbar--primary,
-.o-toolbar--accent {
+.o-toolbar--accent,
+.o-toolbar--dark {
   color: var(--white);
 
   .c-icon {
@@ -124,6 +125,10 @@ section: Objects
 
 .o-toolbar--accent {
   background-color: var(--color-accent);
+}
+
+.o-toolbar--dark {
+  background-color: var(--grey-900);
 }
 
 

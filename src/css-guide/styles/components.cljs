@@ -2014,7 +2014,8 @@
           (dom/span #js {:className "o-toolbar__label"} "Primary color"))
 
         (dom/div #js {:className "o-toolbar__actions"}
-          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :help))
 
           (dom/span #js {:title "Kevin Mitnick"}
             (dom/button #js {:className "c-button c-button--icon"}
@@ -2026,15 +2027,30 @@
       (dom/div #js {:className "o-toolbar o-toolbar--accent o-toolbar--raised"}
         (dom/div #js {:className "o-toolbar__view"}
           (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu))
+            (icons/icon :close))
           (dom/span #js {:className "o-toolbar__label"} "Accent color"))
 
         (dom/div #js {:className "o-toolbar__actions"}
-          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button"}
+              "Save"))
+          ))
+
+      (dom/p nil " ")
+
+      (dom/div #js {:className "o-toolbar o-toolbar--dark o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :arrow_back))
+          (dom/span #js {:className "o-toolbar__label"} "Dark color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :filter_list))
 
           (dom/span #js {:title "Kevin Mitnick"}
             (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :account_circle)))
+              (icons/icon :search)))
           )))))
 
 (defexample toolbar-dense
