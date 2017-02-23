@@ -96,7 +96,6 @@
       width: 65%;
       max-height: 42px; /* Change to 2x line-height */
       text-overflow: ellipsis;
-      overflow: hidden;
     }
 }
 

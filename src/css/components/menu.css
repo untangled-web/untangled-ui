@@ -154,7 +154,7 @@ section: Components
        @apply --triangle;
        @apply --triangle-bottom;
        border-width: 5px 4px 0;
-       color: var(--grey-300);
+       color: var(--grey-600);
        content: '';
        float: right;
        margin: 1em .5rem 1em .75rem;
@@ -162,6 +162,7 @@ section: Components
        vertical-align: middle;
     }
   }
+
 
   & > .c-button--wide,
   &.c-button--wide {
