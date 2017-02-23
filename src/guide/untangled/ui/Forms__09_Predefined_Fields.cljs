@@ -1,8 +1,8 @@
 (ns untangled.ui.Forms--09-Predefined-Fields
   (:require-macros
+    [devcards.core :as dc :refer [defcard defcard-doc]]
     [untangled.client.cards :refer [untangled-app]])
   (:require
-    [devcards.core :as dc :refer [defcard defcard-doc]]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]

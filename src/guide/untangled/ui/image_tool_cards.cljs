@@ -1,8 +1,8 @@
 (ns untangled.ui.image-tool-cards
   (:require-macros
-    [untangled.client.cards :refer [untangled-app]])
+    [devcards.core :as dc :refer [defcard defcard-doc]])
   (:require
-    [devcards.core :as dc :refer [defcard defcard-doc]]
+    [untangled.client.cards :refer [untangled-app]]
     [untangled.ui.clip-tool :as clip]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
