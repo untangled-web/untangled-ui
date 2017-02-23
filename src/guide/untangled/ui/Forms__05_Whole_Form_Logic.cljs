@@ -1,10 +1,10 @@
 (ns untangled.ui.Forms--05-Whole-Form-Logic
   (:require-macros
+    [devcards.core :as dc :refer [defcard defcard-doc]]
     [untangled.client.cards :refer [untangled-app]])
   (:require
     [clojure.string :as str]
     [com.stuartsierra.component :as component]
-    [devcards.core :as dc :refer [defcard defcard-doc]]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]

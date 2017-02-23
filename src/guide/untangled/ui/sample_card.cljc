@@ -1,4 +1,5 @@
 (ns untangled.ui.sample-card
+  #?(:cljs (:require-macros devcards.core))
   (:require
     #?@(:cljs (devcards.core
                 cljs.pprint))
