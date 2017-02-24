@@ -150,6 +150,22 @@
       (dom/p #js {:className "c-message--neutral"} "Create a widget to get started"))))
 
 
+(defexample pagination-dots
+  "# Pagination"
+  (let [current    (om/get-state this :current)
+        selections ["1" "2" "3"]
+        ]
+    (dom/div #js {:className "c-pagination-dots c-pagination-dots--move"}
+     (dom/ul nil
+       (map (fn [s]
+              (dom/li #js {:className (str "c-pagination-dots__dot" (when (= current s) " is-current"))
+                           :key (str "dot-" s)}
+                (dom/span #js {:onClick   #(om/update-state! this assoc :current s)} s))
+              ) selections)
+       (dom/li nil "") ;; Dummy dot
+       )))
+  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START OF SECTIONS (within a feature set...e.g. components)
@@ -171,5 +187,10 @@
                   :title "Empty states"
                   :examples [
                              empty-states
+                             ]}
+                 {:id :pagination
+                  :title "Pagination"
+                  :examples [
+                             pagination-dots
                              ]}
                  ])))
