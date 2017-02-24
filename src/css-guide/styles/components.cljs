@@ -1362,6 +1362,11 @@
           (dom/button #js {:className "c-button c-button--postfix u-hide@sm"} "Start"))))))
 
 
+(defn render-calendar-week [lowerRange upperRange]
+  (for [x (range lowerRange (+ upperRange 1))
+       :let [y (dom/td #js {:key (str "id-" x) :className "c-calendar__day"} x)]]
+   y))
+
 (defexample calendar-example
   "### Calendar Example"
   (dom/div #js {}
@@ -1397,40 +1402,18 @@
                 (dom/td #js {:className "c-calendar__day is-inactive"} "29")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "30")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "31")
-                (dom/td #js {:className "c-calendar__day"} "1")
-                (dom/td #js {:className "c-calendar__day"} "2"))
+                (render-calendar-week 1 2))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "3")
-                (dom/td #js {:className "c-calendar__day"} "4")
-                (dom/td #js {:className "c-calendar__day"} "5")
-                (dom/td #js {:className "c-calendar__day"} "6")
-                (dom/td #js {:className "c-calendar__day"} "7")
-                (dom/td #js {:className "c-calendar__day"} "8")
-                (dom/td #js {:className "c-calendar__day"} "9"))
+                (render-calendar-week 3 9))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "10")
-                (dom/td #js {:className "c-calendar__day"} "11")
-                (dom/td #js {:className "c-calendar__day"} "12")
-                (dom/td #js {:className "c-calendar__day"} "13")
-                (dom/td #js {:className "c-calendar__day"} "14")
-                (dom/td #js {:className "c-calendar__day"} "15")
-                (dom/td #js {:className "c-calendar__day"} "16"))
+                (render-calendar-week 10 16))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "17")
-                (dom/td #js {:className "c-calendar__day"} "18")
+                (render-calendar-week 17 18)
                 (dom/td #js {:className "c-calendar__day is-active"} "19")
-                (dom/td #js {:className "c-calendar__day"} "20")
-                (dom/td #js {:className "c-calendar__day"} "21")
-                (dom/td #js {:className "c-calendar__day"} "22")
-                (dom/td #js {:className "c-calendar__day"} "23"))
+                (render-calendar-week 20 23))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "24")
-                (dom/td #js {:className "c-calendar__day"} "25")
-                (dom/td #js {:className "c-calendar__day"} "26")
-                (dom/td #js {:className "c-calendar__day"} "27")
-                (dom/td #js {:className "c-calendar__day"} "28")
-                (dom/td #js {:className "c-calendar__day"} "29")
-                (dom/td #js {:className "c-calendar__day"} "30")))))))))
+                (render-calendar-week 24 30)
+                ))))))))
 
 (defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
