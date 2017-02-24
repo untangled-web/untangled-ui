@@ -139,9 +139,7 @@
                   (e/ui-icon {:color :live} (icon :alarm))
                   (e/ui-icon {:color :positive} (icon :alarm))
                   (e/ui-icon {:color :alterable} (icon :alarm))
-                  (e/ui-icon {:color :negative} (icon :alarm))
-
-                  ))
+                  (e/ui-icon {:color :negative} (icon :alarm))))
 
 (defcard icon-sizes
          "# Icons
@@ -156,8 +154,7 @@
                   (e/ui-icon {:size :medium} (icon :alarm))
                   (e/ui-icon {:size :large} (icon :alarm))
                   (e/ui-icon {:size :xlarge} (icon :alarm))
-                  (e/ui-icon {:size :huge} (icon :alarm))
-                  ))
+                  (e/ui-icon {:size :huge} (icon :alarm))))
 
 (defcard notifications
          "# Notifications
@@ -172,5 +169,4 @@
                   (e/ui-notification {:type :success :heading "Success" :content "You did it!  You're awesome."})
                   (e/ui-notification {:type :warning :heading "Warning" :content "You have been warned."})
                   (e/ui-notification {:type :error :heading "Error" :content "There has been an error."})
-                  (e/ui-notification {:width :wide :heading "Width" :content "This is a wide message."})
-                  ))
+                  (e/ui-notification {:width :wide :heading "Width" :content "This is a wide message."})))
