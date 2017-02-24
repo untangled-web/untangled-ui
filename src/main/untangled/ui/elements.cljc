@@ -140,10 +140,9 @@
                         :always (str " c-avatar")
                         (contains? legal-colors color) (str " c-avatar--" (name color))
                         (contains? legal-sizes size) (str " c-avatar--" (name size)))
-        props (cond-> props
-                      :always (assoc :className classes)
-                      :always (dissoc :color)
-                      :always (dissoc :size))]
+        props (-> props
+                      (assoc :className classes)
+                      (dissoc :color :size))]
     (dom/span (clj->js props) child)))
 
 (defn ui-loader
@@ -170,14 +169,12 @@
   (let  [legal-colors #{:positive :informative :neutral :live :alterable :negative}
         legal-sizes #{:small :medium :large :xlarge :huge}
         user-classes (get props :className "")
-        classes (cond-> user-classes
-                        :always (str " c-icon")
+        classes (cond-> (str user-classes " c-icon")
                         (contains? legal-colors color) (str " c-icon--" (name color))
                         (contains? legal-sizes size) (str " c-icon--" (name size)))
-        props (cond-> props
-                      :always (assoc :className classes)
-                      :always (dissoc :size)
-                      :always (dissoc :color))]
+        props (-> props
+                      (assoc :className classes)
+                      (dissoc :size :color))]
     (dom/span (clj->js props) child)))
 
 (defn ui-notification
@@ -189,12 +186,10 @@
   (let [legal-types #{:success :warning :error :informative}
         legal-widths #{:wide}
         user-classes (get props :className "")
-        classes      (cond-> user-classes
-                             :always (str " c-notification")
+        classes      (cond-> (str user-classes " c-notification")
                              (contains? legal-types type) (str " c-notification--" (name type))
                              (contains? legal-widths width) (str " c-notification--" (name width)))
         type-icon (case type
-                    :info (icon :info)
                     :success (icon :check_circle :states [:positive])
                     :warning (icon :warning)
                     :error (icon :error)
