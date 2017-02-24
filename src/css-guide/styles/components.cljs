@@ -1442,42 +1442,40 @@
                        :onClick   #(toggle-drawer this)} "Show/Hide Drawer Example")
       (dom/div #js {:className (str "o-drawer o-drawer--right" (if drawer " is-open" ""))
                     :onClick   #(toggle-drawer this)}
-        (dom/header #js {:className "o-drawer__header"}
-          (dom/h1 #js {:className "o-drawer__brand"} "Name")
-          (dom/h2 #js {:className "o-drawer__product"} "Media"))
-        (dom/div #js {:className "o-drawer__group o-drawer__group--account"}
-          (dom/div #js {:className "o-drawer__item"}
-            (dom/button #js {:className "o-drawer__action"}
-              (dom/span #js {:className "o-drawer__account-avatar c-icon c-icon--large"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"})))
-              (dom/span #js {:className "o-drawer__account-name"} "Samantha Smith"))))
-        (dom/div #js {:className "o-drawer__group"}
-          (dom/nav #js {:className "o-drawer__nav"}
-            (dom/ul #js {:className "o-drawer__list"}
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"}))) " Games"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"}))) " Movies"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"}))) " Books")))))
-        (dom/div #js {:className "o-drawer__group"}
-          (dom/nav #js {:className "o-drawer__nav"}
-            (dom/ul #js {:className "o-drawer__list"}
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"} "Settings"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"} "Help &amp; Feedback"))))))
-      (dom/div #js {:className "o-drawer__close"}))))
+        (dom/header #js {:className "o-drawer__header  u-row u-middle"}
+          (dom/h1 #js {:className ""} "Drawer.io"))
+        (dom/div #js {:className "c-list"}
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+              (dom/div #js {:className "c-list__avatar"} (icons/icon :games))
+              (dom/div #js {:className "c-list__name"} "Games"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className "c-list__avatar"} (icons/icon :movie))
+                (dom/div #js {:className "c-list__name"} "Movies"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className "c-list__avatar"} (icons/icon :book))
+                (dom/div #js {:className "c-list__name"} "Books"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className ""} "Settings"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className ""} "Help & Feedback"))))
+          ))
+      (dom/div #js {:className "o-drawer__close"
+                    :onClick #(toggle-drawer this)}))))
 
 
 (defexample icon-bar
