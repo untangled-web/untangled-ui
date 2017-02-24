@@ -60,7 +60,6 @@ label {
   font-size: var(--fontSize-form);
   font-weight: bold;
   line-height: var(--lineHeight-form);
-  margin-bottom: 5px;
   max-width: 100%;
 
   &.is-optional { font-weight: normal; }

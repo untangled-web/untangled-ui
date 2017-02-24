@@ -4,7 +4,7 @@ section: Components
 ---*/
 
 :root {
-  --borderColor-field: var(--grey-300);
+  --borderColor-field: var(--grey-200);
   --borderColor-field--focus: var(--blue-400);
   --borderColor-field--invalid: var(--orange-500);
   --borderColor-field--error: var(--red-400);
@@ -148,6 +148,7 @@ section: Components
 
 .c-field--large {
   font-size: var(--fontSize--semiLarge);
+  padding: 30px 0;
 
   .c-field__input { font-size: inherit; }
 }

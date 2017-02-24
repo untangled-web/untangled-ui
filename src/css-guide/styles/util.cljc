@@ -10,6 +10,7 @@
        [hickory.core :as hc]
        [untangled.client.mutations :as m]
        [untangled.client.core :as uc]
+       [untangled.ui.elements :as ue]
        [om.next :as om :refer [defui]]
        [om.dom :as dom]
        [devcards.util.markdown :as md]
@@ -98,11 +99,7 @@
                 (om.dom/div (cljs.core/clj->js {:className "u-row"})
                   (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12"})
                     (om.dom/div (cljs.core/clj->js {:className "ui-example"})
-                      (~symfn this#)
-                      #_(let [iframe#  (.createElement js/document "IFRAME")
-                              example# (.innerHTML iframe# (om.dom/div nil (~symfn this#)))]
-                          (.appendChild example# iframe#))))
-                  ))))
+                      (~symfn this#)))))))
           (def ~sym {:name          ~(name sym)
                      :documentation ~doc
                      :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
@@ -123,11 +120,20 @@
             ~'Object
             (~'render [this#]
               (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
-                (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
-                  (~symfn this#))
-                (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
-                     (om.dom/div nil (devcards.core/markdown->react ~doc)))
-                )))
+                 (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
+                   (~symfn this#))
+                 (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
+                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                 )
+              ;; TODO Figure out why the link isn't loading with this code
+              #_(untangled.ui.elements/ui-iframe {:width "360px" :height "640px"}
+                (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
+                 (om.dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+                 (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
+                   (~symfn this#))
+                 (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
+                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                 ))))
           (def ~sym {:name          ~(name sym)
                      :documentation ~doc
                      :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))

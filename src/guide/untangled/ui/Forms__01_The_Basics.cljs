@@ -1,6 +1,4 @@
 (ns untangled.ui.Forms--01-The-Basics
-  (:require-macros
-    [untangled.client.cards :refer [untangled-app]])
   (:require
     [clojure.string :as str]
     [com.stuartsierra.component :as component]
@@ -9,6 +7,7 @@
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]
     [untangled.client.mutations :as m]
+    [untangled.client.cards :refer [untangled-app]]
     [untangled.ui.forms :as f]
     [untangled.i18n :refer [tr]]))
 

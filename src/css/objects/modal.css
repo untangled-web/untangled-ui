@@ -1,25 +1,12 @@
-/*---
-title: Modal
-section: Objects
----*/
-
-/* DEPRECATED
-   .o-modal__actions,
-   .o-modal__close */
-
 :root {
   --padding-modal--invert: .5em 1rem 1em;
-  --modal-invert {
-    color: var(--white);
-    padding: .5em 1rem 1em;
-  };
+  --fontSize-modal__title: 20px;
 }
 
-.o-modal {
+.c-modal {
   @apply --fade-out;
   @apply --position-top-left;
   @apply --text-center;
-  color: var(--color-page);
   height: 100%;
   max-height: 100vh;
   overflow: hidden;
@@ -35,7 +22,7 @@ section: Objects
 }
 
 
-  .o-modal__card {
+  .c-modal__card {
     background-color: var(--backgroundColor-modal);
     border-radius: var(--global-rounded);
     box-shadow: var(--shadow-2);
@@ -51,234 +38,64 @@ section: Objects
     }
   }
 
-  .o-modal__card section,
-  .o-modal__section {
-    background-color: var(--white);
-    border-radius: 4px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, .5);
-    margin-bottom: 16px;
-    padding: 16px;
+  .c-modal__title {
+    font-size: var(--fontSize-modal__title);
+    padding: 1em 1rem .85em;
+  }
+
+
+  .c-modal__content {
+    max-height: calc(100vh - 260px);
+    padding: .85em 1rem 1em;
+    overflow-y: scroll;
+
+    .c-modal__title + & {
+      padding-top: 0;
+    }
+  }
+
+  .c-modal__content--bordered {
+    border-bottom: 1px solid var(--grey-200);
+    border-top: 1px solid var(--grey-200);
+  }
+
+  .c-modal__content--collapse {
+    padding: 0 0 .5em;
+  }
+
+
+  .c-modal__actions {
+    @apply --end;
+    padding-left: .5rem;
+  }
+
+  .c-modal__actions--stacked {
+    /* Make all buttons stack to the right */
+    & > .c-button {
+    }
+  }
+
+
+
+
+
+.c-modal--fullscreen {
+  @apply --fade-in;
+  position: static;
+  text-align: start;
+  height: auto;
+
+  & .c-modal__card {
+    margin: 0;
+    box-shadow: none;
     width: 100%;
   }
 
-
-  .o-modal__card--wide {
-    width: 95%;
-
-    @media (--md) {
-      width: 80%;
+    & .c-modal__title {
+      padding: 0;
+      width: 65%;
+      max-height: 42px; /* Change to 2x line-height */
+      text-overflow: ellipsis;
     }
-
-    @media (--lg-up) {
-      width: 50%;
-    }
-  }
-
-
-  /* TODO Deprecate this */
-  .o-modal__card--third {
-    width: 35%;
-
-
-    section {
-      background-color: var(--white);
-      border-radius: 4px;
-      box-shadow: 0 0 3px rgba(0, 0, 0, .5);
-      margin-bottom: 16px;
-      padding: 16px;
-      width: 100%;
-    }
-
-    small {
-      color: var(--blue-800);
-      margin-bottom: 2em;
-    }
-  }
-
-  .o-modal__subheader {
-    color: var(--grey-700);
-    font-size: 14px;
-    font-weight: 700;
-    margin: 0;
-    padding: .75em 0 1em;
-  }
-
-
-  .o-modal__title {
-    background-color: var(--backgroundColor-modal__title);
-    border-bottom: 1px solid var(--grey-200);
-    border-top-left-radius: var(--global-rounded);
-    border-top-right-radius: var(--global-rounded);
-    color: var(--color-modal__title);
-    display: flex;
-    flex-direction: row;
-    font-size: var(--fontSize--semiMedium);
-    height: 48px;
-    margin-bottom: .5em;
-    margin-top: -1px;
-    padding: 0;
-    position: relative;
-
-    & > .c-icon {
-      color: var(--grey-600);
-      height: 30px;
-      margin: 8px;
-      width: 30px;
-    }
-  }
-
-
-  .o-modal__heading {
-    @apply --ellipsis;
-    flex: 1;
-    margin: 8px;
-  }
-
-
-  .o-modal__toolbar {
-    @apply --row;
-    background-color: var(--white);
-    box-shadow: var(--shadow-1);
-    padding: calc(.5em + 6px) 1rem .5em;
-
-    .u-start,
-    .u-center,
-    .u-end { @apply --width-column-auto; }
-
-    .o-modal__title + & { margin-top: calc(-12px - 1px); }
-  }
-
-
-  .o-modal__actions {
-    @apply --end;
-    margin: 0 -1rem;
-    padding: .5em 0 .5em .5rem;
-  }
-
-
-  .o-modal__back {
-    background-color: transparent;
-    cursor: pointer;
-    display: inline;
-
-    @media (--md-up) { display: none; }
-
-    .c-icon {
-      fill: rgba(255, 255, 255, .5);
-      height: 40px;
-      width: 40px;
-    }
-  }
-
-
-  .o-modal__content {
-    max-height: calc(100vh - 260px);
-    overflow-y: scroll;
-    padding: .75em 1rem;
-    > div:not([class]) { @apply --width-column-12; }
-  }
-
-
-  .o-modal__content--bleed {
-    padding-left: 0;
-  }
-
-
-  .o-modal__row {
-    @apply --width-column-12;
-    @apply --end;
-  }
-
-
-  .o-modal__footer {
-    @apply --row;
-    background-color: var(--grey-100);
-    border-bottom-left-radius: var(--global-rounded);
-    border-bottom-right-radius: var(--global-rounded);
-    margin-bottom: -1px;
-    padding: 1em 1rem;
-    position: relative;
-    text-align: none;
-
-    .u-start,
-    .u-center,
-    .u-end { @apply --width-column-auto; }
-
-    .c-button { margin-bottom: 0; }
-
-    .c-button:last-child { margin-right: 0; }
-  }
-
-
-.o-modal--large {
-  display: block;
-  left: 1.5%;
-  margin: 1em auto;
-  width: 97%;
 }
 
-
-.o-modal--content,
-.c-backdrop--content {
-  @media (--md-up) {
-    height: calc(100% - var(--height-header));
-    left: var(--width-sidebar);
-    top: var(--height-header);
-    width: calc(100% - var(--width-sidebar));
-
-    .o-modal__card {
-      margin-bottom: 1em;
-      margin-right: 1rem;
-    }
-  }
-}
-
-.o-modal--primary .o-modal__card {
-  @apply --modal-invert;
-  background-color: var(--backgroundColor-modal--primary);
-}
-
-
-.o-modal--success .o-modal__card {
-  @apply --modal-invert;
-  background-color: var(--backgroundColor-modal--success);
-}
-
-
-.o-modal--warning .o-modal__card {
-  background-color: var(--backgroundColor-modal--warning);
-  padding: var(--padding-modal--invert);
-}
-
-
-.o-modal--small {
-  --backgroundColor-modal__titlebar: var(--blue-700);
-  --backgroundColor-modal: var(--white);
-
-
-  & .o-modal__title {
-    @apply --row;
-    @apply --middle;
-    background-color: var(--backgroundColor-modal__titlebar);
-    border-radius: 4px 4px 0 0;
-
-
-    .c-icon:first-child { margin-right: 5px; }
-
-
-    .o-modal__close .c-icon {
-      height: 30px !important;
-      top: .4em;
-      width: 30px !important;
-    }
-  }
-
-
-  & :--headings {
-    display: inline-block;
-    margin: 5px 0 !important;
-  }
-
-
-  & .o-modal__card { border-radius: 4px; }
-}

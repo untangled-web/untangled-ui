@@ -1,16 +1,15 @@
 (ns untangled.ui.Forms--05-Whole-Form-Logic
-  (:require-macros
-    [untangled.client.cards :refer [untangled-app]])
   (:require
     [clojure.string :as str]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [com.stuartsierra.component :as component]
-    [devcards.core :as dc :refer [defcard defcard-doc]]
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
     [untangled.client.core :as uc]
     [untangled.client.mutations :as m :refer [defmutation]]
     [untangled.ui.forms :as f]
     [untangled.icons :as i]
+    [untangled.client.cards :refer [untangled-app]]
     [untangled.ui.simulated-server :refer [make-mock-network]]
     [untangled.ui.elements :as ele]
     [untangled.client.logging :as log]

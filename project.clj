@@ -5,10 +5,10 @@
             :url  "https://opensource.org/licenses/MIT"}
 
   :dependencies [[clojurewerkz/money "1.9.0"]
-                 [ru.yandex.qatools.ashot/ashot "1.5.2" :scope "test"]
-                 [org.seleniumhq.selenium/selenium-java "3.0.1" :scope "test"]
-                 [org.seleniumhq.selenium/htmlunit-driver "2.24" :scope "test"]
-                 [clj-webdriver "0.7.2" :scope "test"]
+                 ;[ru.yandex.qatools.ashot/ashot "1.5.2" :scope "test"]
+                 ;[org.seleniumhq.selenium/selenium-java "3.0.1" :scope "test"]
+                 ;[org.seleniumhq.selenium/htmlunit-driver "2.24" :scope "test"]
+                 ;[clj-webdriver "0.7.2" :scope "test"]
                  [image-resizer "0.1.9"]
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
@@ -18,7 +18,7 @@
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
-                 [com.taoensso/timbre "4.7.4"]]
+                 [com.taoensso/timbre "4.7.4" :exclusions [io.aviso/pretty]]]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
             [lein-cljsbuild "1.1.5"]
@@ -91,13 +91,13 @@
   ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]
                                   [criterium "0.4.3"]
-                                  [figwheel-sidecar "0.5.9"]
+                                  [figwheel-sidecar "0.5.9" :exclusions [http-kit]]
                                   [com.cemerick/piggieback "0.2.1"]
                                   [org.clojure/tools.namespace "0.2.11"]
                                   [org.clojure/tools.nrepl "0.2.12"]
                                   [hickory "0.7.0"]
                                   [devcards "0.2.2" :exclusions [org.omcljs/om]]]
-                   :source-paths ["dev"]
+                   :source-paths ["dev" "src/guide" "src/css-guide"]
                    :repl-options {:init-ns          clj.user
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                   :port             7001}}})

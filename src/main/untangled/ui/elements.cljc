@@ -1,6 +1,7 @@
 (ns untangled.ui.elements
   (:require [om.dom :as dom]
             [om.next :as om :refer [defui]]
+            [untangled.icons :refer [icon]]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
@@ -125,6 +126,86 @@
                        (assoc :className classes)
                        (dissoc :color))]
     (apply dom/div (clj->js props) children)))
+
+(defn ui-avatar
+  "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :primary, :accent
+  size (optional): huge"
+  [{:keys [className color size] :as props :or {className ""}} child]
+  (let [legal-colors #{:primary :accent}
+        legal-sizes #{:huge}
+        user-classes (get props :className "")
+        classes (cond-> user-classes
+                        :always (str " c-avatar")
+                        (contains? legal-colors color) (str " c-avatar--" (name color))
+                        (contains? legal-sizes size) (str " c-avatar--" (name size)))
+        props (-> props
+                      (assoc :className classes)
+                      (dissoc :color :size))]
+    (dom/span (clj->js props) child)))
+
+(defn ui-loader
+  "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :neutral"
+  [{:keys [className color] :as props :or {className ""}}]
+  (let [legal-colors #{:neutral}
+        user-classes (get props :className "")
+        classes (cond-> user-classes
+                        :always (str " c-loader")
+                        (contains? legal-colors color) (str " c-loader--" (name color)))
+        props (cond-> props
+                      :always (assoc :className classes)
+                      :always (dissoc :color))]
+    (dom/div (clj->js props))))
+
+(defn ui-icon
+  "Render an icon. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :positive, :informative, :neutral, :live, :alterable, :negative
+  size (optional): :small, :medium, :large, :xlarge, :huge"
+  [{:keys [className color size] :as props :or {className ""}} child] ;TODO: SHould we allow children?
+  (let  [legal-colors #{:positive :informative :neutral :live :alterable :negative}
+        legal-sizes #{:small :medium :large :xlarge :huge}
+        user-classes (get props :className "")
+        classes (cond-> (str user-classes " c-icon")
+                        (contains? legal-colors color) (str " c-icon--" (name color))
+                        (contains? legal-sizes size) (str " c-icon--" (name size)))
+        props (-> props
+                      (assoc :className classes)
+                      (dissoc :size :color))]
+    (dom/span (clj->js props) child)))
+
+(defn ui-notification
+  "Render a notification. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  type: : :success, :warning, :error, :informative
+  size (optional): :wide"
+  [{:keys [className type heading content width actionPath] :as props :or {className ""}} & children]
+  (let [legal-types #{:success :warning :error :informative}
+        legal-widths #{:wide}
+        user-classes (get props :className "")
+        classes      (cond-> (str user-classes " c-notification")
+                             (contains? legal-types type) (str " c-notification--" (name type))
+                             (contains? legal-widths width) (str " c-notification--" (name width)))
+        type-icon (case type
+                    :success (icon :check_circle :states [:positive])
+                    :warning (icon :warning)
+                    :error (icon :error)
+                    (icon :info))]
+    (dom/div #js {:className classes}
+       type-icon
+       (dom/div #js {:className "c-notification_content"}
+          (dom/h1 #js {:className "c-notification_heading"} heading)
+          (dom/p #js {} content))
+       (dom/button #js {:className "c-button c-button--icon"}
+           (icon :close)
+           (dom/path #js {:d actionPath})))))
+        ;TODO - Support of action for button press (an removal of actionPath?)
+        ;TODO - Do we want to support children?
+
+
 
 #?(:cljs
    (defn update-frame-content [this child]
