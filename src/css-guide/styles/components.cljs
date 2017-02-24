@@ -1528,19 +1528,13 @@
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--shifting is-mobile"}
       (dom/button #js {:className "o-iconbar__item is-active"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"})))
+        (icons/icon :home)
         (dom/span #js {:className "o-iconbar__label"} "Home"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"})))
+        (icons/icon :description)
         (dom/span #js {:className "o-iconbar__label"} "Docs"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"})))
+        (icons/icon :feedback)
         (dom/span #js {:className "o-iconbar__label"} "Support"))
       (dom/button #js {:className "o-iconbar__item"}
         (dom/span #js {:className "c-icon"}
