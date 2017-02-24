@@ -931,25 +931,34 @@
                             ~@(get-on-form-change-mutation form field-name :edit)
                             ~form-root-key])))})))
 
-(defmethod form-field* ::radio [component form field-name & {:keys [choice]}]
+(defn radio-button-id
+  "Returns the generated ID of a form field component. Needed to label radio buttons"
+  [form field choice]
+  (str (second (form-ident form)) "-" field "-" choice))
+
+(defmethod form-field* ::radio [component form field-name & {:keys [choice label] :or {label "\u00a0"}}]
   (let [id          (form-ident form)
-        cls         (or (css-class form field-name) "")
+        cls         "c-radio c-radio--expanded"
+        field-id    (radio-button-id form field-name choice)
         current-val (current-value form field-name)]
-    (dom/input #js
-        {:type      "radio"
-         :name      field-name
-         :className cls
-         :value     (pr-str choice)
-         :checked   (= current-val choice)
-         :onChange  (fn [event]
-                      (let [value      (.. event -target -value)
-                            field-info {:form-id id
-                                        :field   field-name
-                                        :value   (reader/read-string value)}]
-                        (om/transact! component
-                          `[(set-field ~field-info)
-                            ~@(get-on-form-change-mutation form field-name :edit)
-                            ~form-root-key])))})))
+    (dom/span nil
+      (dom/input #js
+          {:type      "radio"
+           :id        field-id
+           :name      field-name
+           :className cls
+           :value     (pr-str choice)
+           :checked   (= current-val choice)
+           :onChange  (fn [event]
+                        (let [value      (.. event -target -value)
+                              field-info {:form-id id
+                                          :field   field-name
+                                          :value   (reader/read-string value)}]
+                          (om/transact! component
+                            `[(set-field ~field-info)
+                              ~@(get-on-form-change-mutation form field-name :edit)
+                              ~form-root-key])))})
+      (dom/label #js {:htmlFor field-id} label))))
 
 (defmethod form-field* ::textarea [component form field-name & {:as htmlProps}]
   (let [id    (form-ident form)
