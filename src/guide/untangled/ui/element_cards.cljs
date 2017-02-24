@@ -97,3 +97,75 @@
     (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
     (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
 
+(defcard avatar
+         "# Avatars
+
+         Use `ui-avatar` to render a single child within an avatar (typically an icon, an image or a string).
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  (e/ui-avatar {:color :primary} "PC")
+                  (e/ui-avatar {:color :accent} "AC")
+                  (e/ui-avatar {:size :huge} "HU")
+                  ;TODO: Add an image example
+                  (e/ui-avatar {} (icon :supervisor_account))))
+
+(defcard loader
+         "# Loaders
+
+         Use `ui-loader` to render a loading graphic.
+
+         Some samples are shown below:
+         "
+         (dom/div #js {:style #js {:height 50}}
+                  (e/ui-loader {})
+                  (e/ui-loader {:color :neutral})))
+
+
+(defcard icon-colors
+         "# Icons
+
+         Use `ui-icon` to render an icon with designated color attributes.
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  (e/ui-icon {} (icon :alarm))
+                  (e/ui-icon {:color :neutral} (icon :alarm))
+                  (e/ui-icon {:color :positive} (icon :alarm))
+                  (e/ui-icon {:color :informative} (icon :alarm))
+                  (e/ui-icon {:color :live} (icon :alarm))
+                  (e/ui-icon {:color :positive} (icon :alarm))
+                  (e/ui-icon {:color :alterable} (icon :alarm))
+                  (e/ui-icon {:color :negative} (icon :alarm))))
+
+(defcard icon-sizes
+         "# Icons
+
+         Use `ui-icon` to render an icon with designated size attributes.
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  (e/ui-icon {} (icon :alarm))
+                  (e/ui-icon {:size :small} (icon :alarm))
+                  (e/ui-icon {:size :medium} (icon :alarm))
+                  (e/ui-icon {:size :large} (icon :alarm))
+                  (e/ui-icon {:size :xlarge} (icon :alarm))
+                  (e/ui-icon {:size :huge} (icon :alarm))))
+
+(defcard notifications
+         "# Notifications
+
+         Use `ui-notification` to render a notification of designated type and with.
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  (e/ui-notification {:heading "Default" :content "The usual message."})
+                  (e/ui-notification {:type :informative :heading "Informative" :content "You have been notified."})
+                  (e/ui-notification {:type :success :heading "Success" :content "You did it!  You're awesome."})
+                  (e/ui-notification {:type :warning :heading "Warning" :content "You have been warned."})
+                  (e/ui-notification {:type :error :heading "Error" :content "There has been an error."})
+                  (e/ui-notification {:width :wide :heading "Width" :content "This is a wide message."})))
