@@ -119,14 +119,21 @@
           (om.next/defui ~root
             ~'Object
             (~'render [this#]
-              ;; TODO Need to feed in dimensions and stylesheet path
-              #_(untangled.ui.elements/ui-iframe {})
-                (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
+              (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
                  (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
                    (~symfn this#))
                  (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
                    (om.dom/div nil (devcards.core/markdown->react ~doc)))
-                 )))
+                 )
+              ;; TODO Figure out why the link isn't loading with this code
+              #_(untangled.ui.elements/ui-iframe {:width "360px" :height "640px"}
+                (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
+                 (om.dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+                 (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
+                   (~symfn this#))
+                 (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
+                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                 ))))
           (def ~sym {:name          ~(name sym)
                      :documentation ~doc
                      :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
