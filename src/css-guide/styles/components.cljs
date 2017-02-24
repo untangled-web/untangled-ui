@@ -1063,49 +1063,34 @@
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
-      (dom/input #js {:id      "r1" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r1" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 1 selection) :onClick #(select 1)})
       (dom/label #js {:id "r1l" :htmlFor "r1"} "A")
-      (dom/input #js {:id      "r2" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r2" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 2 selection) :onClick #(select 2)})
       (dom/label #js {:id "r2l" :htmlFor "r2"} "B")
-      (dom/input #js {:id      "r3" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r3" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 3 selection) :onClick #(select 3)})
       (dom/label #js {:htmlFor "r3"} "C"))))
-
-(defexample radio-informative
-  "### Consumer Blue"
-  (let [selection (or (om/get-state this :selection) 1)
-        select (fn [n] (om/update-state! this assoc :selection n))]
-    (dom/div #js {}
-      (dom/input #js {:id      "r1i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 1 selection) :onClick #(select 1)})
-      (dom/label #js {:htmlFor "r1i"} "A")
-      (dom/input #js {:id      "r2i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 2 selection) :onClick #(select 2)})
-      (dom/label #js {:htmlFor "r2i"} "B")
-      (dom/input #js {:id      "r3i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 3 selection) :onClick #(select 3)})
-      (dom/label #js {:htmlFor "r3i"} "C"))))
 
 (defexample radio-stacked
   "### Stacked"
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
-      (dom/input #js {:id      "sr1" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr1" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 1 selection) :onClick #(select 1)})
       (dom/label #js {:id "sr1l" :htmlFor "sr1"} "1")
-      (dom/input #js {:id      "sr2" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr2" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 2 selection) :onClick #(select 2)})
       (dom/label #js {:id "sr2l" :htmlFor "sr2"} "2")
-      (dom/input #js {:id      "sr3" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr3" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 3 selection) :onClick #(select 3)})
       (dom/label #js {:htmlFor "sr3"} "3")
-      (dom/input #js {:id      "sr4" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr4" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 4 selection) :onClick #(select 4)})
       (dom/label #js {:htmlFor "sr4"} "4")
-      (dom/input #js {:id      "sr5" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr5" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 5 selection) :onClick #(select 5)})
       (dom/label #js {:htmlFor "sr5"} "5"))))
 
@@ -1923,7 +1908,6 @@
            :documentation radio-header
            :examples [
                       radio
-                      radio-informative
                       radio-stacked]}
           {:id :switch
            :title "Switch"
