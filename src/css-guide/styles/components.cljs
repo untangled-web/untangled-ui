@@ -1568,6 +1568,44 @@
     ))
 
 
+(defviewport modal-fullscreen-2
+  "Fullscreen modal with another modal"
+  (dom/div #js {:style #js {:position "relative" :height "570px"}}
+    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-modal__card"}
+        (dom/div #js {:className "c-modal__content"}
+          (dom/span #js {} "Discard new event?")
+          )
+        (dom/div #js {:className "c-modal__actions"}
+          (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
+            (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Erase"))
+        ))
+    (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})
+
+    (dom/div #js {:className "c-modal c-modal--fullscreen"}
+     (dom/div #js {:className "c-modal__card"}
+       (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
+         (dom/div #js {:className "o-toolbar__actions"}
+           (dom/button #js {:className "c-button"} "Save")))
+       (dom/div #js {:className "has-menu"}
+         (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
+       (dom/div #js {:className "c-modal__content"}
+         (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
+         (dom/input #js {:className "c-field" :placeholder "Location"})
+         (dom/label #js {:className "is-optional u-leader--half"} "Start time")
+         (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
+         (dom/label #js {:className "is-optional u-leader--half"} "End time")
+         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
+         (dom/input #js {:className "c-field" :placeholder "Room"})
+         )
+       )
+     )))
+
+
 (defexample toolbar
   "# Toolbar Example"
   (let [changed-menu (om/get-state this :changed-menu)
@@ -1915,6 +1953,7 @@
            :examples [
                       modal-example
                       modal-fullscreen-1
+                      modal-fullscreen-2
                       ]}
           {:id :toolbar
            :title "Toolbar"

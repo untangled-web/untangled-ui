@@ -24,11 +24,11 @@
 
   .c-modal__card {
     background-color: var(--backgroundColor-modal);
-    border-radius: var(--global-rounded);
+    border-radius: calc(var(--global-rounded) / 2);
     box-shadow: var(--shadow-2);
     margin: 1em 1rem;
     min-height: 100px;
-    min-width: 200px;
+    min-width: 280px;
     pointer-events: auto;
     position: relative;
 
@@ -49,9 +49,9 @@
     padding: .85em 1rem 1em;
     overflow-y: scroll;
 
-    .c-modal__title + & {
-      padding-top: 0;
-    }
+    &:first-child { padding-top: 1.25em; }
+
+    .c-modal__title + & { padding-top: 0; }
   }
 
   .c-modal__content--bordered {
