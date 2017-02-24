@@ -87,20 +87,35 @@
   }
 }
 
-
-/*
-.c-pagination-dots--move li:nth-child(1) ~ li:nth-child(2):before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-radius: 50px;
-  content: '';
-  display: inline-block;
-  height: 10px;
-  width: 28px;
-  background-color: rgba(0, 0, 0, 0.3);
+.c-pagination-dots--move li:not(:last-child) {
+  &:before {
+     background-color: rgba(0, 0, 0, 0.3);
+     border-radius: 50px;
+     content: '';
+     display: inline-block;
+     height: 10px;
+     position: absolute;
+     top: 0;
+     transition: width .1s ease;
+     width: 10px;
+   }
 }
-*/
+
+
+.c-pagination-dots--move .is-current:nth-child(1) ~ li:active:nth-child(2):before,
+.c-pagination-dots--move .is-current:nth-child(2) ~ li:active:nth-child(3):before,
+.c-pagination-dots--move .is-current:nth-child(3) ~ li:active:nth-child(4):before,
+.c-pagination-dots--move .is-current:nth-child(4) ~ li:active:nth-child(5):before,
+.c-pagination-dots--move .is-current:nth-child(5) ~ li:active:nth-child(6):before,
+.c-pagination-dots--move .is-current:nth-child(6) ~ li:active:nth-child(7):before,
+.c-pagination-dots--move .is-current:nth-child(7) ~ li:active:nth-child(8):before,
+.c-pagination-dots--move .is-current:nth-child(8) ~ li:active:nth-child(9):before,
+.c-pagination-dots--move .is-current:nth-child(9) ~ li:active:nth-child(10):before {
+  right: 0;
+  width: 28px;
+}
+
+
 
 .c-pagination-dots--move .is-current {
   &:first-child ~ li:last-child { transform: translateX(0%); }
