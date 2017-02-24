@@ -246,7 +246,7 @@
 
 
 ;; -------------------------
-;; Dropdown
+;; Menus
 ;; -------------------------
 
 (def menus-header
@@ -259,7 +259,7 @@
   (let [open (boolean (om/get-state this :open))
         selections ["Apples" "Oranges" "Banannas"]
         current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "150px"}}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
                        :className "c-button "} current)
       (dom/div #js {:id          "test-dropdown"
@@ -281,7 +281,7 @@
     (let [open       (boolean (om/get-state this :open))
          selections ["Apples" "Oranges" "Banannas"]
          current    (or (om/get-state this :selection) "Top Left Aligned")]
-      (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -297,7 +297,7 @@
     (let [open       (boolean (om/get-state this :open))
           selections ["Apples" "Oranges" "Banannas"]
           current    (or (om/get-state this :selection) "Bottom Left Aligned")]
-      (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -314,7 +314,7 @@
           selections ["Apples" "Oranges" "Banannas"]
           current    (or (om/get-state this :selection) "Top Right Aligned")]
       (dom/div #js {:className "u-end"}
-        (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+        (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
           (dom/button #js {:onClick   #(om/update-state! this update :open not)
                            :className "c-button "} current)
           (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -329,7 +329,7 @@
     ;; Bottom right
 
     (let [open (boolean (om/get-state this :open))]
-    (dom/div #js {:className "u-end"}
+    (dom/div #js {:className "u-end" :style #js {:width "180px"}}
       (dom/div #js {:className (str "has-menu" (when open " is-active"))}
         (dom/button #js {:onClick #(toggle-open this) :className "c-button "} "Bottom Right Aligned")
         (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--bottom-right" :tabIndex "-1"}
@@ -354,7 +354,7 @@
   "### Multi-Select, Searchable Dropdown"
   (let [open (boolean (om/get-state this :open))
         items (mapv #(str "Item " %) (range 1 20))]
-    (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
       (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown "} "Filter")
       (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--large" :tabIndex "-1"}
         (dom/div #js {:className "c-field"}

@@ -37,6 +37,12 @@ section: Components
     top: var(--offset-menu-icon) !important;
     width: var(--size-menu-icon);
   }
+
+
+  & > .c-field {
+    margin: 0;
+    padding: 0 .5rem;
+  }
 }
 
 
@@ -107,7 +113,6 @@ section: Components
 
   .c-menu__viewer {
     border-bottom: 1px solid var(--grey-100);
-    border-top: 1px solid var(--grey-100);
     padding: .5em 1rem;
     max-height: 50vh;
     overflow: auto;
@@ -135,8 +140,11 @@ section: Components
 
   & > .c-button,
   &.c-button {
-     border-bottom: var(--grey-200) 1px solid;
-     text-transform: none;
+    border-bottom: var(--grey-200) 1px solid;
+    text-align: left;
+    text-transform: none;
+    margin: 6px 0;
+    width: 100%;
 
     &::before {
        @apply --triangle;
