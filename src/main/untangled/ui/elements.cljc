@@ -205,6 +205,65 @@
         ;TODO - Support of action for button press (an removal of actionPath?)
         ;TODO - Do we want to support children?
 
+(defn ui-modal
+  "Render a modal window. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  state: :active
+  type (optional): :primary :success :warning
+  size (optional): :small, :large"
+  [{:keys [className type size actionPath] :as props :or {className ""}} state header content]
+  (let [legal-types #{:primary :success :warning}
+        legal-sizes #{:small :large}
+        user-classes (get props :className "")
+        current-state (if (= state :active) " is-active" "")
+        current-title-css (if (contains? legal-types type) "" "o-modal__title")
+        classes      (cond-> (str user-classes current-state " o-modal")
+                             (contains? legal-types type) (str " o-modal--" (name type))
+                             (contains? legal-sizes size) (str " o-modal--" (name size)))]
+
+    (dom/div #js {:className (str "c-backdrop" current-state)}
+             (dom/div #js {:className classes}
+                      (dom/div #js {:className "o-modal__card"}
+                               (dom/div #js {:className current-title-css}
+                                        (dom/span #js {} header)
+                                        (dom/div #js {:className "o-modal__actions"}
+                                                 (dom/button #js {:className "o-modal__action"}
+                                                             (icon :close)
+                                                             (dom/path #js {:d actionPath}))))
+                               (dom/div #js {:className "o-modal__content"} content)
+                               (dom/div #js {:className "o-modal__row"}
+                                        (dom/button #js {:className "c-button c-button--anchor c-button--small"}
+                                                    "Close"
+                                                    (dom/path #js {:d actionPath}))))))))
+;TODO - Confirm that we do want to require content, it seems like if you didn't want content a notification would suffice.
+;TODO - When do we include the close button at the bottom of the modal?
+
+(defn ui-iconbar
+  "Render an icon bar giving using a vector of icons (each a map of attributes). Can optionally be render vertically ond/or shifting.
+  Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  align-vertically (optional): :true
+  shifting (optional): :true"
+  ;TODO - What does "is-mobile" do and should it be incorporated?
+  [{:keys [className align-vertically shifting] :as props :or {className ""}} active-title iconlist]
+  (let [user-classes (get props :className "")
+        top-level-class (cond-> (str user-classes " o-iconbar")
+                                (= align-vertically :true) (str " o-iconbar--rail")
+                                (= shifting :true) (str " o-iconbar--shifting"))]
+    (defn create-item [current-icon]
+      (let [current-title (get current-icon :title "")
+            current-icon (get current-icon :icon nil)
+            current-path (get current-icon :path "")
+            item-class (cond-> "o-iconbar__item"
+                               (= current-title active-title) (str " is-active"))]
+        (dom/button #js {:className item-class}
+                    (dom/span #js {:className "c-icon"}
+                              (icon current-icon (dom/path #js {:d current-path})))
+                    (dom/span #js {:className "o-iconbar__label"} current-title))))
+    (dom/div #js {}
+             (dom/nav #js {:className top-level-class}
+                      (map create-item iconlist)))))
+
 
 
 #?(:cljs
