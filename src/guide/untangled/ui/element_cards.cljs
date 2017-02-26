@@ -169,3 +169,36 @@
                   (e/ui-notification {:type :warning :heading "Warning" :content "You have been warned."})
                   (e/ui-notification {:type :error :heading "Error" :content "There has been an error."})
                   (e/ui-notification {:width :wide :heading "Width" :content "This is a wide message."})))
+
+(defcard iconbars
+         "# Icon Bars
+
+         Use `ui-iconbar` to render an iconbar in horizonal (default) or vertical alignment using a vector of icons.
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  (e/ui-iconbar {} "Home" [{:icon :home :title "Home" :path "123"} {:icon :explore :title "Explore" :path "456"} {:icon :help :title "Help" :path "789"}])
+                  (e/ui-iconbar {:align-vertically :true} "Explore" [{:icon :home :title "Home" :path "123"} {:icon :explore :title "Explore" :path "456"} {:icon :help :title "Help" :path "789"}])))
+
+(defcard modals
+         "# Modals
+
+         Use `ui-modal` to render a modal with optional Type, Size or custom classes.  Designate if it's current state is :active, a title and content.
+
+         Some samples are shown below:
+         "
+         (dom/div nil
+                  ;(e/ui-modal {:type :warning} :active "Warning"  "Please proceed to the nearest exit.  Walk, do not run.")
+                  ;(e/ui-modal {} nil "Modal"  "Modal content.") ;Would be invisible
+                  ;(e/ui-modal {} :active "Modal"  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+                  )
+         ;(let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
+         ;  (dom/div #js {}
+         ;           (dom/button #js {:className "c-button"
+         ;                            :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
+         ;           (e/ui-modal {} example-class-modifier "Modal" "Modal content.")
+         ;           ))
+         )
+;TODO - How do we incorporate this with the button or link that trigger it?
+;TODO - How do we want to display something that fills the whole screen when active, but initilizes in an invisible state (dependant on above).
