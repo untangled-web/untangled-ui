@@ -28,6 +28,12 @@ section: Components
   };
 }
 
+.c-icon-column {
+  @apply --middle;
+  width: 52px;
+  vertical-align: middle;
+}
+
 
 .c-icon {
   display: inline-block;
@@ -75,6 +81,13 @@ section: Components
   }
 }
 
+
+.c-icon--framed {
+  margin: 6px 8px;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 8px;
+}
 
 .c-icon--small {
   --size-icon: var(--size-icon--small);

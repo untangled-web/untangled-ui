@@ -1,6 +1,6 @@
 (ns styles.components
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.ui.layout :as l]
             [untangled.icons :as icons]
             [om.dom :as dom]))
@@ -50,7 +50,7 @@
 (defexample badge-button
   "### In a button"
   (dom/p #js {}
-    (dom/button #js {:className "c-button"} " Messages "
+    (dom/button #js {:className "c-button c-button--raised c-button--primary"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))))
 
 
@@ -224,6 +224,11 @@
 (defexample checkboxes
   "The following examples show the various rendered states of checkboxes."
   (dom/div #js {}
+    ;; Single checkbox, no label text
+    (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
+    (dom/label #js {:htmlFor "checkbox-1"} \u00A0)
+
+
     (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-1"} "Checkbox")
     (dom/input #js {:id "checkbox-2" :type "checkbox" :checked true :className "c-checkbox"})
@@ -241,7 +246,7 @@
 
 
 ;; -------------------------
-;; Dropdown
+;; Menus
 ;; -------------------------
 
 (def menus-header
@@ -252,49 +257,148 @@
 
   This example uses component local state to toggle the is-active class to open/close the dropdown."
   (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-menu" (if open " is-active" ""))
         selections ["Apples" "Oranges" "Banannas"]
         current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className "u-wrapper"}
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "150px"}}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                       :className "c-button has-menu js-dropdown-toggle"} current)
-      (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                   :className menu-class}
-        (map (fn [s]
-               (dom/li #js {:key s :onClick (fn [evt]
-                                              (om/update-state! this assoc :open false)
-                                              (om/update-state! this assoc :selection s))}
-                 (dom/button #js {:className "c-menu__item"} s))) selections)))))
+                       :className "c-button "} current)
+      (dom/div #js {:id          "test-dropdown"
+                   :tabIndex    "-1"
+                   :aria-hidden "true"
+                   :className   "c-menu"}
+        (dom/div #js {:className "c-menu__group"}
+          (map (fn [s]
+                (dom/div #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s)
+                                                )}
+                  (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))))
 
 (defexample menus-shape
   "### Shape and form"
   (dom/div nil
+    ;; Top left
     (let [open       (boolean (om/get-state this :open))
-         menu-class (str "c-menu" (if open " is-active" ""))
          selections ["Apples" "Oranges" "Banannas"]
-         current    (or (om/get-state this :selection) "Large Menu")]
-      (dom/div #js {:className "u-trailer--triple"}
-        (dom/div #js {:className "u-wrapper c-dropdown--large"}
-         (dom/button #js {:onClick   #(om/update-state! this update :open not)
-                          :className "c-button has-menu js-dropdown-toggle"} current)
-         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
-                      :className menu-class}
-           (map (fn [s]
-                  (dom/li #js {:key s :onClick (fn [evt]
-                                                 (om/update-state! this assoc :open false)
-                                                 (om/update-state! this assoc :selection s))}
-                    (dom/button #js {:className "c-menu__item"} s))) selections)))))
+         current    (or (om/get-state this :selection) "Top Left Aligned")]
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
+        (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :className "c-button "} current)
+        (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                     :className "c-menu c-menu--top-left"}
+          (map (fn [s]
+                 (dom/li #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s))}
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
 
-    (let [open (boolean (om/get-state this :open))
-        menu-class (str "c-menu c-menu--right " (if open " is-active" ""))]
-    (dom/div #js {:className "u-end"}
-      (dom/div #js {:className "u-wrapper"}
-        (dom/button #js {:onClick #(toggle-open this) :className "c-button has-menu u-wrapper__select--right js-dropdown-toggle"} "Right Aligned")
-        (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-          (dom/li #js {}
-            (dom/button #js {:className "c-menu__item"} "Apples"))))))
-    ))
+    ;; Bottom left
 
+    (let [open       (boolean (om/get-state this :open))
+          selections ["Apples" "Oranges" "Banannas"]
+          current    (or (om/get-state this :selection) "Bottom Left Aligned")]
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
+        (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :className "c-button "} current)
+        (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                     :className "c-menu"}
+          (map (fn [s]
+                 (dom/li #js {:key s :onClick (fn [evt]
+                                                (om/update-state! this assoc :open false)
+                                                (om/update-state! this assoc :selection s))}
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
+
+    ;; Top right
+
+    (let [open       (boolean (om/get-state this :open))
+          selections ["Apples" "Oranges" "Banannas"]
+          current    (or (om/get-state this :selection) "Top Right Aligned")]
+      (dom/div #js {:className "u-end"}
+        (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
+          (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                           :className "c-button "} current)
+          (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
+                       :className "c-menu c-menu--top-right"}
+            (map (fn [s]
+                   (dom/li #js {:key s :onClick (fn [evt]
+                                                  (om/update-state! this assoc :open false)
+                                                  (om/update-state! this assoc :selection s))}
+                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+
+
+    ;; Bottom right
+
+    (let [open (boolean (om/get-state this :open))]
+    (dom/div #js {:className "u-end" :style #js {:width "180px"}}
+      (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+        (dom/button #js {:onClick #(toggle-open this) :className "c-button "} "Bottom Right Aligned")
+        (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--bottom-right" :tabIndex "-1"}
+          (dom/div #js {:className "c-menu__group"}
+            (dom/button #js {:className (str "c-menu__item")}
+              (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
+              "Show ruler")
+            (dom/button #js {:className (str "c-menu__item")}
+              (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
+              "Show grid"))
+          (dom/div #js {:className "c-menu__group"}
+            (dom/button #js {:className (str "c-menu__item")}
+             (dom/div #js {:className "c-menu__item-icon"})
+             "Hide layout")
+          (dom/button #js {:className (str "c-menu__item")}
+            (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
+            "Show bleed"))
+          ))))))
+
+
+(defexample menus-search-multi
+  "### Multi-Select, Searchable Dropdown"
+  (let [open (boolean (om/get-state this :open))
+        items (mapv #(str "Item " %) (range 1 20))]
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
+      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown "} "Filter")
+      (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--large" :tabIndex "-1"}
+        (dom/div #js {:className "c-field"}
+          (icons/icon :search)
+          (dom/input #js {:type "text" :placeholder "Search..." :className "c-field__input"}))
+        (dom/div #js {:className "c-menu__viewer"}
+          (map (fn [item]
+                 (dom/div #js {:key item :className "u-leader--sixth u-trailer--sixth"}
+                   (dom/input #js {:type "checkbox" :id (str item "-cb") :className "c-checkbox"})
+                   (dom/label #js {:htmlFor (str item "-cb")} item)))
+            items))
+        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--primary c-button--wide"} "Apply")))))
+
+
+(defexample menus-data
+  "### Multiple list group selection
+
+  This is a control that is meant to let you view what various dropdowns would show, for example in cases
+  of UI that lets you configure UI.
+
+  Note: The dropdown list underneath should not be enabled when the dropdown list is visible. Doing this fosters a better interaction for the user."
+  (let [open (boolean (om/get-state this :open))
+        name (or (om/get-state this :menu-name) "Menu 1")
+        menu-1-items (mapv #(str "Item " %) (range 1 5))
+        menu-2-items (mapv #(str "Other " %) (range 1 3))
+        menu (or (om/get-state this :menu) menu-1-items)]
+
+    (dom/div nil
+      (l/row {}
+        (l/col {:width 4}
+          (dom/div #js {:className "c-card c-card--collapse"}
+            (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+             (dom/button #js {:onClick   #(toggle-open this)
+                              :className "c-button c-button--wide"} (str "List: " name))
+             (dom/div #js {:id        "test-dropdown" :aria-hidden "true"
+                           :className "c-menu" :tabIndex "-1"}
+               (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
+                                :className "c-menu__item"} "Menu 1")
+               (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
+                                :className "c-menu__item"} "Menu 2")))
+           (dom/div #js {:className "c-list" :tabIndex "-1"}
+             (map (fn [item]
+                    (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable" :key item}
+                      (dom/div #js {:className "c-list__tile"} item))) menu))))))))
 
 ;; -------------------------
 ;; Expanding Panel
@@ -312,21 +416,28 @@
   (dom/div nil
     (let [expanded-1 (boolean (om/get-state this :expanded-1))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-1 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-1 not)
                    :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-1 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-1
              "Caribbean cruise"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
-       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for trip name")))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (dom/input #js {:className "c-field" :type "text" :placeholder "Type in a name for your trip..." :value "Caribbean cruise"})
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+         )))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
-                   :onClick   #(om/update-state! this update :expanded-2 not)
                    :tabIndex  "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick   #(om/update-state! this update :expanded-2 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Location")
          (dom/div #js {:className "c-expansion-panel__info"}
            (if-not expanded-2
@@ -338,22 +449,21 @@
            (dom/div #js {:className "u-column--12 u-column--8@md u-center@md"}
              (dom/span #js {:className "c-badge c-badge--large"} "Barbados" (icons/icon :cancel)))
            (dom/div #js {:className "u-column--12 u-column--4@md"}
-             (dom/div #js {:className "c-message--neutral"} "Select your destination of choice")
-             (dom/div #js {:className "c-message"} "Learn more"))
-           )
-         (l/row {:density :collapse :className "c-expansion-panel__actions"}
-           (dom/div #js {:className "u-column--12 u-end"}
-             (dom/button #js {:className "c-button c-button--text"} "CANCEL")
-             (dom/button #js {:className "c-button c-button--anchor"} "SAVE")
-             )
-           )
+             (dom/div #js {:className "u-helper-text"}
+               (dom/div nil "Select your destination of choice")
+               (dom/div nil (dom/a #js {:href "http://"} "Learn more")))))
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
          )))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-3 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-3 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-3 "Start date: Feb 29, 2016"))
@@ -364,9 +474,9 @@
 
     (let [expanded-4 (boolean (om/get-state this :expanded-4))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-4 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-4 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-4 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
          (dom/div #js {:className "c-expansion-panel__info"}
            (when-not expanded-4 "The best cruise line"))
@@ -375,9 +485,9 @@
 
     (let [expanded-5 (boolean (om/get-state this :expanded-5))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-5 " is-expanded"))
-                   :onClick #(om/update-state! this update :expanded-5 not)
-                   :tabIndex "0"}
-       (dom/div #js {:className "c-expansion-panel__list-content"}
+                    :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-5 not)}
          (dom/div #js {:className "c-expansion-panel__title"}
            (dom/div nil "Meal preferences")
            (dom/div #js {:className "c-message--neutral"} "Optional"))
@@ -386,6 +496,220 @@
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
      )))
+
+(defexample expansion-panel-survey
+  "### Example: Editing a question
+
+  As another example of how to use this we look at how you would edit a survey question and apply conditional questions to it."
+
+  (dom/div nil
+    (let [expanded-1 (boolean (om/get-state this :expanded-1))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-1 " is-expanded"))
+                   :tabIndex "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick #(om/update-state! this update :expanded-1 not)}
+         (dom/div #js {:className "c-expansion-panel__title"} "Question")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (when-not expanded-1 "What kind of beverage do you prefer?"))
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+         (l/row {:density :collapse :valign :middle}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input1"} "Text"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input1" :type "text" :placeholder "Type a question..." :value "How was your last stay at the premium village?"}))
+           (l/col {:width 2 :halign :end}
+             (dom/label #js {:htmlFor "h-switch-input-1"} "Required?")
+             (dom/div #js {:className "c-switch"}
+               (dom/input #js {:type      "checkbox"
+                               :id        "h-switch-input-1"
+                               :checked   true
+                               :className "c-switch__input"})
+               (dom/span #js {:className "c-switch__paddle"
+                              :htmlFor   "h-switch-input-1"}))))
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input2"} "Short label"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a short question..." :value "How was your last stay?"}))
+           )
+
+
+         (l/row {}
+           (l/col {:width 9 :push 1}
+
+            (l/row {:density :collapse :valign :bottom :halign :center :className "u-trailer"}
+              (l/col {:className "u-column has-xpipe has-start-pipe" :halign :center}
+                (icons/icon :sentiment_very_dissatisfied))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Extremely dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "1" :id "sel1" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Moderately dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "2" :id "sel2" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Slightly dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "3" :id "sel3" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Neither satisfied nor dissatisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "4" :id "sel4" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Slightly satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "5" :id "sel5" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Moderately satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "6" :id "sel6" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe" :halign :center}
+                (dom/label #js {:className "is-optional u-trailer--third"}
+                  "Extremely satisfied")
+                (dom/input #js {:className "c-radio" :type "radio" :value "7" :id "sel7" :name "q1"})
+                (dom/label #js {:htmlFor "sel1"} \u00A0))
+              (l/col {:className "u-column has-xpipe has-end-pipe" :halign :center}
+                (icons/icon :sentiment_very_satisfied))
+              )))
+
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Options")
+               (dom/button #js {:className "c-button"} "Move")
+               (dom/button #js {:className "c-button c-button--accent"} "Add Conditional")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+         )))
+
+    (let [expanded-2 (boolean (om/get-state this :expanded-2))]
+     (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
+                   :tabIndex  "0"}
+       (dom/div #js {:className "c-expansion-panel__list-content"
+                     :onClick   #(om/update-state! this update :expanded-2 not)}
+         (dom/div #js {:className "c-expansion-panel__title"} "Conditional")
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2
+             "If beverage prefrerence is red wine."
+             (dom/span nil "Select conditions first" (icons/icon :help_outline))))
+         (dom/div #js {:className "c-expansion-panel__info"}
+           (if-not expanded-2 "Would you like our gm to get in touch?"))
+         (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"}
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label nil "If answer ")
+             )
+           (l/col {:width 1}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "is"))
+             )
+           (l/col {:width 2}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "exactly"))
+             )
+           (l/col {:width 2}
+             (dom/span #js {:className "has-menu"}
+               (dom/button #js {:className "c-button"} "red wine"))
+             )
+           )
+
+         (l/row {:density :collapse :valign :middle}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input1"} "Text"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input1" :type "text" :placeholder "Type a question..." :value "Would you like our general manager to get in touch with you?"}))
+           (l/col {:width 2 :halign :end}
+             (dom/label #js {:htmlFor "h-switch-input-1"} "Required?")
+             (dom/div #js {:className "c-switch"}
+               (dom/input #js {:type      "checkbox"
+                               :id        "h-switch-input-1"
+                               :className "c-switch__input"})
+               (dom/span #js {:className "c-switch__paddle"
+                              :htmlFor   "h-switch-input-1"}))))
+
+         (l/row {:density :collapse :valign :middle :className "u-trailer"}
+           (l/col {:width 1}
+             (dom/label #js {:htmlFor "input2"} "Short label"))
+           (l/col {:width 9}
+             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a question..." :value "Would you like our gm to get in touch?"})))
+
+         (l/row {}
+           (l/col {:width 11 :push 1}
+            (l/row {:density :collapse :valign :middle :distribute-extra-columns :between}
+             (l/col {:width 12 :className "u-trailer--quarter"}
+               (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "1" :id "sel1" :name "q1"})
+               (dom/label #js {:htmlFor "sel1"} "Yes")
+               )
+             (l/col {:width 12}
+               (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "5" :id "sel5" :name "q1"})
+               (dom/label #js {:htmlFor "sel1"} "No")))))
+
+         (dom/div #js {:className "c-expansion-panel__actions"}
+           (l/row {:density :collapse}
+             (dom/div #js {:className "u-column--12 u-end"}
+               (dom/button #js {:className "c-button"} "Options")
+               (dom/button #js {:className "c-button"} "Move")
+               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+
+         )))
+
+
+    (let [expanded-3 (boolean (om/get-state this :expanded-3))]
+      (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
+                    :tabIndex  "0"}
+        (dom/div #js {:className "c-expansion-panel__list-content"
+                      :onClick   #(om/update-state! this update :expanded-3 not)}
+          (dom/div #js {:className "c-expansion-panel__title"} "Conditional")
+          (dom/div #js {:className "c-expansion-panel__info"}
+            (if-not expanded-3
+              "Choose a question"
+              (dom/span nil "Select conditions first" (icons/icon :help_outline))))
+          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
+        (dom/div #js {:className "c-expansion-panel__secondary-content"}
+
+          (l/row {:density :collapse :valign :middle :className "u-trailer"}
+            (l/col {:width 1}
+              (dom/label nil "If answer ")
+              )
+            (l/col {:width 1}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "is"))
+              )
+            (l/col {:width 2}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "exactly"))
+              )
+            (l/col {:width 2}
+              (dom/span #js {:className "has-menu"}
+                (dom/button #js {:className "c-button"} "red wine"))
+              )
+            )
+
+          (l/row {:density :collapse :valign :middle :halign :center :className "u-trailer"}
+            (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Choose a question")
+            )
+
+          (dom/div #js {:className "c-expansion-panel__actions"}
+            (l/row {:density :collapse}
+              (dom/div #js {:className "u-column--12 u-end"}
+                (dom/button #js {:className "c-button"} "Options")
+                (dom/button #js {:className "c-button"} "Move")
+                (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+
+          )))
+
+
+    ))
 
 
 ;; -------------------------
@@ -399,7 +723,11 @@
   "### Basic"
   (dom/div nil
     (dom/input #js {:type "text" :required "true" :placeholder "Required field" :className "c-field"})
-    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})))
+    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})
+    (mapv (fn [typ] (dom/div #js {:key typ :className ""}
+                      (dom/input #js {:type typ :placeholder typ :className "c-field"})))
+          ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
+    ))
 
 (defexample field-sizes
   "### Sizes"
@@ -414,105 +742,34 @@
   (dom/div #js {}
     (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus"})
     (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid"})
-    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})))
-
-
-;; -------------------------
-;; Input
-;; -------------------------
-
-(def input-header
-  "# Inputs
-
-     Input class give support for visualizing various kind of interactions. Supported input types are: `text`,
-     `password`, `date`, `datetime`, `datetime-local`, `month`, `week`, `email`, `number`, `search`, `tel`, `time`,
-     `url`, `color`.")
-
-(defexample input
-  "### All Types"
-  (dom/div nil
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "text" :className "o-input__box" :required "true" :placeholder "Required field"}))
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :placeholder "Optional field" :className "o-input__box"}))
-    (mapv (fn [typ] (dom/div #js {:key typ :className "o-input"}
-                      (dom/input #js {:type typ :placeholder typ :className "o-input__box"})))
-          ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])))
-
-(defexample input-states
-  "### States"
-  (dom/div #js {}
-    (dom/div #js {:className "o-input has-focus"}
-      (dom/input #js {:type "text" :placeholder "FOCUSED" :className "o-input__box"}))
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "text" :placeholder "INVALID" :className "o-input__box"}))
-    (dom/div #js {:className "o-input is-error"}
-      (dom/input #js {:type "text" :placeholder "ERROR" :className "o-input__box"}))))
-
-(defexample input-round
-  "### Rounded with Icons"
-  (dom/div #js {:className "o-input o-input--round"}
-    (icons/icon :search)
-    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
+    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})
+    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true})
     ))
 
-(defexample input-multi-line
-  "### Multi-line"
-  (dom/div #js {:className "o-input"}
-    (icons/icon :person)
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :1))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :2))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :3))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :4))
-    (dom/span #js {:className "c-label c-label--informative"} (util/full-name :5))
-    (dom/input #js {:type "search" :className "o-input__box" :placeholder "Search..." :autoCorrect "off" :autoCapitalize "off" :autoComplete "off" :spellCheck "false"})
-    ))
+(defexample field-icon
+  "### Icons"
+  (l/row {:density :collapse}
+    (dom/div #js {:className "c-icon-column"}
+      (icons/icon :search :className ["c-icon--framed"]))
+    (l/col {:className "u-column"}
+      (dom/div #js {:className "c-field"}
+       (dom/input #js {:type "search" :className "c-field__input" :placeholder "Search..."})))))
 
-(defexample input-collapsable
-  "### Collapsable
-
-  TODO This needs some love before we show it off
-  "
-
-  (let [open? (boolean (om/get-state this :open))]
-    #_(dom/div #js {}
-      (dom/button #js {:title     "Open Search"
-                       :className (str "c-button c-button--icon" (when open? " u-hide"))
-                       :onClick   #(toggle-open this)
-                       :type      "submit" :aria-label "Submit"}
-        (dom/span #js {:className "c-icon c-icon--search"}
-          (icons/icon :search)))
-      (dom/div #js {:className (str "u-wrapper " (when-not open? " u-hide"))}
-        (dom/input #js {:className "c-input"})
-        (dom/button #js {:aria-label "Close Search"
-                         :onClick    #(toggle-open this)
-                         :className  "c-button c-button--icon u-absolute--top-right"}
-          (dom/span #js {:className "c-icon c-icon--cancel"}
-            (icons/icon :search)))))))
+(defexample field-content
+  "### Content"
+  (l/row {}
+    (l/col {:width 4}
+     (dom/div #js {:className "c-field"}
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :1))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
+       (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
+       (dom/input #js {:type "text" :className "c-field__input"}))))
+  )
 
 (defexample textarea
   "# Text Area"
   (dom/textarea #js {:className "c-input c-input--multi-line"}))
-
-(defexample input-validation
-  "# Input Validation"
-  (dom/div #js {}
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation"} "Validated message")
-
-    (dom/div #js {:className "o-input"}
-      (dom/input #js {:type "text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--neutral"} "Neutral validated message")
-
-    (dom/div #js {:className "o-input is-invalid"}
-      (dom/input #js {:type "email" :value "notauser at clientcom" :required "" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--warning"} "Warning validated message")
-
-    (dom/div #js {:className "o-input is-error"}
-      (dom/input #js {:type "text" :placeholder "Placeholder text" :className "o-input__box"}))
-    (dom/div #js {:className "o-input__validation o-input__validation--error"} "Error validated message")))
-
 
 ;; -------------------------
 ;; Icons
@@ -595,20 +852,20 @@
   "### Types"
   (dom/div #js {}
     (dom/span #js {:className "c-label"} "Default")
-    (dom/span #js {:className "c-label c-label--positive"} "Positive")
-    (dom/span #js {:className "c-label c-label--informative"} "Informative")
-    (dom/span #js {:className "c-label c-label--informative-alt"} "Informative Alt")
-    (dom/span #js {:className "c-label c-label--neutral"} "Neutral")
-    (dom/span #js {:className "c-label c-label--live"} "Live")
-    (dom/span #js {:className "c-label c-label--alterable"} "Alterable")
-    (dom/span #js {:className "c-label c-label--negative"} "Negative")))
+    (dom/span #js {:className "c-label c-label--green"} "Positive")
+    (dom/span #js {:className "c-label c-label--blue"} "Informative")
+    (dom/span #js {:className "c-label c-label--magenta"} "Informative Alt")
+    (dom/span #js {:className "c-label c-label--grey"} "Neutral")
+    (dom/span #js {:className "c-label c-label--yellow"} "Live")
+    (dom/span #js {:className "c-label c-label--orange"} "Alterable")
+    (dom/span #js {:className "c-label c-label--red"} "Negative")))
 
 (defexample label-icons
   "### With Icons"
   (dom/div #js {}
-    (dom/span #js {:className "c-label c-label--positive"}
+    (dom/span #js {:className "c-label c-label--green"}
       (icons/icon :add) " Add ")
-    (dom/span #js {:className "c-label c-label--negative"}
+    (dom/span #js {:className "c-label c-label--red"}
       (icons/icon :close) " Remove ")))
 
 
@@ -686,8 +943,8 @@
     (dom/button #js {:className "c-tab"} "Widgets")
     (dom/button #js {:className "c-tab"} "Doodads")
     (dom/button #js {:className "c-tab"} "Apparatuses")
-    (dom/span #js {:className "u-wrapper"}
-      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+    (dom/span #js {:className "has-menu"}
+      (dom/button #js {:className "c-tab is-active"} "Things")
       (dom/ul #js {:className "c-menu"}
         (dom/li #js {}
           (dom/button #js {:className "c-menu__item"} "Thingamabob"))
@@ -697,8 +954,8 @@
           (dom/button #js {:className "c-menu__item"} "Thinger")))
       (dom/button #js {:className "c-tab"} "Doodads")
       (dom/button #js {:className "c-tab"} "Apparatuses")
-      (dom/span #js {:className "u-wrapper"}
-      (dom/button #js {:className "c-tab has-menu is-active"} "Things")
+      (dom/span #js {:className "has-menu"}
+      (dom/button #js {:className "c-tab is-active"} "Things")
       (dom/ul #js {:className "c-menu is-active"}
         (dom/li #js {}
           (dom/button #js {:className "c-menu__item"} "Thingamabob"))
@@ -806,49 +1063,34 @@
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
-      (dom/input #js {:id      "r1" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r1" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 1 selection) :onClick #(select 1)})
       (dom/label #js {:id "r1l" :htmlFor "r1"} "A")
-      (dom/input #js {:id      "r2" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r2" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 2 selection) :onClick #(select 2)})
       (dom/label #js {:id "r2l" :htmlFor "r2"} "B")
-      (dom/input #js {:id      "r3" :type "radio" :className "c-radio" :name "radiogroup"
+      (dom/input #js {:id      "r3" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
                       :checked (= 3 selection) :onClick #(select 3)})
       (dom/label #js {:htmlFor "r3"} "C"))))
-
-(defexample radio-informative
-  "### Consumer Blue"
-  (let [selection (or (om/get-state this :selection) 1)
-        select (fn [n] (om/update-state! this assoc :selection n))]
-    (dom/div #js {}
-      (dom/input #js {:id      "r1i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 1 selection) :onClick #(select 1)})
-      (dom/label #js {:htmlFor "r1i"} "A")
-      (dom/input #js {:id      "r2i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 2 selection) :onClick #(select 2)})
-      (dom/label #js {:htmlFor "r2i"} "B")
-      (dom/input #js {:id      "r3i" :type "radio" :className "c-radio c-radio--informative" :name "radiogroupi"
-                      :checked (= 3 selection) :onClick #(select 3)})
-      (dom/label #js {:htmlFor "r3i"} "C"))))
 
 (defexample radio-stacked
   "### Stacked"
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
-      (dom/input #js {:id      "sr1" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr1" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 1 selection) :onClick #(select 1)})
       (dom/label #js {:id "sr1l" :htmlFor "sr1"} "1")
-      (dom/input #js {:id      "sr2" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr2" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 2 selection) :onClick #(select 2)})
       (dom/label #js {:id "sr2l" :htmlFor "sr2"} "2")
-      (dom/input #js {:id      "sr3" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr3" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 3 selection) :onClick #(select 3)})
       (dom/label #js {:htmlFor "sr3"} "3")
-      (dom/input #js {:id      "sr4" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr4" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 4 selection) :onClick #(select 4)})
       (dom/label #js {:htmlFor "sr4"} "4")
-      (dom/input #js {:id      "sr5" :type "radio" :className "c-radio c-radio--informative c-radio--stacked" :name "stackedradio"
+      (dom/input #js {:id      "sr5" :type "radio" :className "c-radio c-radio--stacked" :name "stackedradio"
                       :checked (= 5 selection) :onClick #(select 5)})
       (dom/label #js {:htmlFor "sr5"} "5"))))
 
@@ -905,10 +1147,11 @@
   (let [kind (or (om/get-state this :kind))
         set-kind (fn [k] (om/update-state! this assoc :kind k))]
     (dom/div #js {}
-      (dom/div #js {:className "o-button-group"}
-        (dom/button #js {:aria-label "None" :onClick #(set-kind nil)
+      (dom/div #js {}
+        (dom/label nil "View ")
+        (dom/button #js {:aria-label "Default" :onClick #(set-kind nil)
                          :className  (str "c-button c-button--small " (when (= kind nil) "is-active"))}
-          (dom/span #js {:className "c-button__content"} "None"))
+          (dom/span #js {:className "c-button__content"} "Default"))
         (dom/button #js {:aria-label "Swipe View" :onClick #(set-kind "swipe")
                          :className  (str "c-button c-button--small " (when (= kind "swipe") "is-active"))}
           (icons/icon :view_headline)
@@ -1092,158 +1335,6 @@
       (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "fit" :className "c-button c-button--large"} "My width will fit to element") " ") " "))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OBJECTS start here
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defexample accordion
-  "# Accordion Example"
-  (dom/div #js {}
-    (let [accordion (or (om/get-state this :accordion) 0)
-          accordion-select (fn [a] (if (not (= accordion a)) (om/update-state! this assoc :accordion a) (om/update-state! this assoc :accordion 0)))
-          accordion-active (fn [a] (if (= accordion a) " is-active" ""))]
-      (dom/div #js {}
-        (dom/div #js {:className "o-accordion"}
-          (dom/div #js {:id        "a1"
-                        :className (str "o-accordion__title is-nested " (accordion-active 1))
-                        :onClick   #(accordion-select 1)}
-            (dom/span #js {:className " c-badge c-badge--informative "} " 2 ") " Contacts ")
-          (dom/div #js {:className (str " o-accordion__content " (accordion-active 1))}
-            (dom/div #js {:className " o-accordion__group "}
-              (dom/div #js {:className " o-accordion__info o-accordion__info--critical "}
-                (dom/svg #js {:xmlns " http:// www.w3.org /2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"})) " Kennee ")
-              (dom/div #js {:className "o-accordion__info"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"})) " ilovemicrosoft@yahoo.com ")
-              (dom/div #js {:className "o-accordion__info"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"})) " 2m ago ")
-              (dom/div #js {:className "o-accordion__actions"}
-                (dom/span #js {:className "o-accordion__action"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"})))
-                (dom/span #js {:className "o-accordion__action o-accordion__action--informative"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"})))
-                (dom/span #js {:className "o-accordion__action o-accordion__action--success"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"})))))
-            (dom/div #js {:className "o-accordion__group"}
-              (dom/div #js {:className "o-accordion__info o-accordion__info--critical"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"})) " Krassy Pants ")
-              (dom/div #js {:className "o-accordion__info"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"})) " krass@pants.com ")
-              (dom/div #js {:className "o-accordion__info"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-neutral" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"})) " 2m ago ")
-              (dom/div #js {:className "o-accordion__actions"}
-                (dom/span #js {:className "o-accordion__action"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"}))))))
-          (dom/div #js {:id        "a2"
-                        :className (str "o-accordion__title is-nested" (accordion-active 2))
-                        :onClick   #(accordion-select 2)} " What kinds of dogs are there? ")
-          (dom/div #js {:className (str "o-accordion__content" (accordion-active 2))}
-            (dom/p #js {} "There are many breeds of dogs. Each breed varies in size and temperament. Owners often select a breed of dog that they find to be compatible with their own lifestyle and desires from a companion."))
-          (dom/div #js {:id        "a3"
-                        :className (str "o-accordion__title is-nested" (accordion-active 3))
-                        :onClick   #(accordion-select 3)} " How do you acquire a dog? ")
-          (dom/div #js {:className (str "o-accordion__content" (accordion-active 3))}
-            (dom/p #js {} "Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.")
-            (dom/p #js {:className "is-nested"} "A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily."))
-          (dom/div #js {:id        "a4"
-                        :className (str "o-accordion__title is-nested" (accordion-active 4))
-                        :onClick   #(accordion-select 4)} " How do you acquire a dog? ")
-          (dom/div #js {:className (str "o-accordion__content" (accordion-active 4))}
-            (dom/p #js {} "Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.")
-            (dom/p #js {:className "is-nested"} "A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily."))
-          (dom/div #js {:id        "a5"
-                        :className (str "o-accordion__title is-nested" (accordion-active 5))
-                        :onClick   #(accordion-select 5)} " How do you acquire a dog? ")
-          (dom/div #js {:className (str "o-accordion__content" (accordion-active 5))}
-            (dom/p #js {} "Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.")
-            (dom/p #js {:className "is-nested"} "A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily."))
-          (dom/div #js {:className "o-accordion__title"} " Non-nested title ")))
-      )))
-
-(defexample accordion-nested
-  "### Nested
-
-  Notice how you can add `.is-nested` to any element and it collapses and expands with `.is-active`
-  "
-  (let [accordion (or (om/get-state this :accordion) 1)
-        accordion-select (fn [a] (if (not (= accordion a)) (om/update-state! this assoc :accordion a) (om/update-state! this assoc :accordion 0)))
-        accordion-active (fn [a] (if (= accordion a) " is-active" ""))]
-    (dom/div #js {}
-      (dom/div #js {:className "o-accordion"}
-        (dom/div #js {:className "o-accordion__title"} "Recent notes")
-        (dom/div #js {:className "o-accordion__content is-active"}
-          (dom/div #js {:className "o-accordion__group"}
-            (dom/div #js {:className "o-accordion__info"}
-              (dom/div #js {:className "o-accordion__meta"}
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"})) " Agent Name ")
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"})) " 3 days ago "))
-              (dom/p #js {:id        "a1"
-                          :className (str "is-nested" (accordion-active 1))
-                          :onClick   #(accordion-select 1)} "So strongly and metaphysically did I conceive of my situation then, that while earnestly watching his motions, I seemed distinctly to perceive in the tumultuous business of cutting-in and attending to a whale, there is much running backwards and forwards among the crew.")))
-          (dom/div #js {:className "o-accordion__group"}
-            (dom/div #js {:className "o-accordion__info"}
-              (dom/div #js {:className "o-accordion__meta"}
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"})) " Agent Name ")
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"})) " 3 days ago "))
-              (dom/p #js {:className "is-nested"} "So strongly and metaphysically did I conceive of my situation then, that while earnestly watching his motions, I seemed distinctly to perceive in the tumultuous business of cutting-in and attending to a whale, there is much running backwards and forwards among the crew.")))
-          (dom/div #js {:className "o-accordion__group"}
-            (dom/div #js {:className "o-accordion__info"}
-              (dom/div #js {:className "o-accordion__meta"}
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"})) " Agent Name ")
-                (dom/div #js {:className "o-accordion__meta-item"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"})) " 3 days ago "))
-              (dom/p #js {:id        "a2"
-                          :className (str "is-nested" (accordion-active 2))
-                          :onClick   #(accordion-select 2)} "So strongly and metaphysically did I conceive of my situation then, that while earnestly watching his motions, I seemed distinctly to perceive in the tumultuous business of cutting-in and attending to a whale, there is much running backwards and forwards among the crew."))))))
-    ))
-
-;; TODO Fix, accordion sidebar is not appearing
-(defexample accordion-sidebar
-  "# Accordion inside a Sidebar Example"
-  (dom/div #js {}
-    (dom/nav #js {:className "o-sidebar [is-collapsed]"}
-      (dom/div #js {:className "o-accordion o-accordion--small"}
-        (dom/div #js {:className "o-accordion__title is-nested is-active"} " Title 1 ")
-        (dom/div #js {:className "o-accordion__content is-active"}
-          (dom/div #js {:className "o-accordion__group"}
-            (dom/div #js {:className "o-accordion__info"} "View 1")
-            (dom/div #js {:className "o-accordion__actions"}
-              (dom/span #js {:className "o-accordion__action"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"})))))
-          (dom/div #js {:className "o-accordion__group"}
-            (dom/div #js {:className "o-accordion__info"} "View 2.1")
-            (dom/div #js {:className "o-accordion__actions"}
-              (dom/span #js {:className "o-accordion__action"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"}))))))
-        (dom/div #js {:className "o-accordion__title is-selected"} "Title 2")
-        (dom/div #js {:className "o-accordion__title"} "Title 3")
-        (dom/div #js {:className "o-accordion__title is-informative"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})) " Action 1 "))
-      (dom/div #js {:className "o-sidebar__toggle"}))))
-
 (defn toggle-pause [this] (om/update-state! this update :pause not))
 (defexample button-group
   "# Button Group"
@@ -1270,6 +1361,11 @@
           (dom/button #js {:className "c-button c-button--postfix"} "Go")
           (dom/button #js {:className "c-button c-button--postfix u-hide@sm"} "Start"))))))
 
+
+(defn render-calendar-week [lowerRange upperRange]
+  (for [x (range lowerRange (+ upperRange 1))
+       :let [y (dom/td #js {:key (str "id-" x) :className "c-calendar__day"} x)]]
+   y))
 
 (defexample calendar-example
   "### Calendar Example"
@@ -1306,40 +1402,18 @@
                 (dom/td #js {:className "c-calendar__day is-inactive"} "29")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "30")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "31")
-                (dom/td #js {:className "c-calendar__day"} "1")
-                (dom/td #js {:className "c-calendar__day"} "2"))
+                (render-calendar-week 1 2))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "3")
-                (dom/td #js {:className "c-calendar__day"} "4")
-                (dom/td #js {:className "c-calendar__day"} "5")
-                (dom/td #js {:className "c-calendar__day"} "6")
-                (dom/td #js {:className "c-calendar__day"} "7")
-                (dom/td #js {:className "c-calendar__day"} "8")
-                (dom/td #js {:className "c-calendar__day"} "9"))
+                (render-calendar-week 3 9))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "10")
-                (dom/td #js {:className "c-calendar__day"} "11")
-                (dom/td #js {:className "c-calendar__day"} "12")
-                (dom/td #js {:className "c-calendar__day"} "13")
-                (dom/td #js {:className "c-calendar__day"} "14")
-                (dom/td #js {:className "c-calendar__day"} "15")
-                (dom/td #js {:className "c-calendar__day"} "16"))
+                (render-calendar-week 10 16))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "17")
-                (dom/td #js {:className "c-calendar__day"} "18")
+                (render-calendar-week 17 18)
                 (dom/td #js {:className "c-calendar__day is-active"} "19")
-                (dom/td #js {:className "c-calendar__day"} "20")
-                (dom/td #js {:className "c-calendar__day"} "21")
-                (dom/td #js {:className "c-calendar__day"} "22")
-                (dom/td #js {:className "c-calendar__day"} "23"))
+                (render-calendar-week 20 23))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "24")
-                (dom/td #js {:className "c-calendar__day"} "25")
-                (dom/td #js {:className "c-calendar__day"} "26")
-                (dom/td #js {:className "c-calendar__day"} "27")
-                (dom/td #js {:className "c-calendar__day"} "28")
-                (dom/td #js {:className "c-calendar__day"} "29")
-                (dom/td #js {:className "c-calendar__day"} "30")))))))))
+                (render-calendar-week 24 30)
+                ))))))))
 
 (defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
@@ -1351,226 +1425,54 @@
                        :onClick   #(toggle-drawer this)} "Show/Hide Drawer Example")
       (dom/div #js {:className (str "o-drawer o-drawer--right" (if drawer " is-open" ""))
                     :onClick   #(toggle-drawer this)}
-        (dom/header #js {:className "o-drawer__header"}
-          (dom/h1 #js {:className "o-drawer__brand"} "Name")
-          (dom/h2 #js {:className "o-drawer__product"} "Media"))
-        (dom/div #js {:className "o-drawer__group o-drawer__group--account"}
-          (dom/div #js {:className "o-drawer__item"}
-            (dom/button #js {:className "o-drawer__action"}
-              (dom/span #js {:className "o-drawer__account-avatar c-icon c-icon--large"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"})))
-              (dom/span #js {:className "o-drawer__account-name"} "Samantha Smith"))))
-        (dom/div #js {:className "o-drawer__group"}
-          (dom/nav #js {:className "o-drawer__nav"}
-            (dom/ul #js {:className "o-drawer__list"}
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"}))) " Games"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"}))) " Movies"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"}))) " Books")))))
-        (dom/div #js {:className "o-drawer__group"}
-          (dom/nav #js {:className "o-drawer__nav"}
-            (dom/ul #js {:className "o-drawer__list"}
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"} "Settings"))
-              (dom/li #js {:className "o-drawer__item"}
-                (dom/button #js {:className "o-drawer__action"} "Help &amp; Feedback"))))))
-      (dom/div #js {:className "o-drawer__close"}))))
+        (dom/header #js {:className "o-drawer__header  u-row u-middle"}
+          (dom/h1 #js {:className ""} "Drawer.io"))
+        (dom/div #js {:className "c-list"}
 
-(defexample editor-inactive
-  "# Editor Inactive Example"
-  (dom/div #js {}
-    (dom/section #js {:className "o-editor"}
-      (dom/header #js {:className "o-editor__toolbar has-actions"}
-        (dom/div #js {:className "o-editor__nav"})
-        (dom/div #js {:className "o-editor__info"}
-          (dom/div #js {:className "o-editor__actions o-button-group"}
-            ; "<!-- Edit -->"
-            (dom/button #js {:className "c-button c-button--large o-editor__edit"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"})))
-              (dom/span #js {:className "c-button__content u-hide@sm"} "Edit"))
-            ;"<!-- Delete -->"
-            (dom/button #js {:className "c-button c-button--large"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))))
-            ;"<!-- Move -->"
-            (dom/button #js {:className "c-button c-button--large"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"})))))))
-      (dom/div #js {:className "o-editor__content"}
-        (dom/input #js {:value "Hello, I'm content inside an editor! :)" :className "c-input"})))))
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+              (dom/div #js {:className "c-list__avatar"} (icons/icon :games))
+              (dom/div #js {:className "c-list__name"} "Games"))))
 
-(defexample editor-active
-  "# Editor Active Example"
-  (dom/div #js {}
-    (dom/section #js {:className "o-editor is-active"}
-      (dom/header #js {:className "o-editor__toolbar has-actions"}
-        (dom/div #js {:className "o-editor__nav"}
-          (dom/ul #js {:className "c-menu c-menu--inline"}
-            (dom/li #js {}
-              (dom/button #js {:className "c-menu__link is-active"} "Object"))
-            (dom/li #js {}
-              (dom/button #js {:className "c-menu__link"} "Options"))))
-        (dom/div #js {:className "o-editor__info"}
-          (dom/div #js {:className "o-editor__extras"}
-            (dom/span #js {:title "Key Attribute" :className "c-badge c-badge--round c-badge--positive"}
-              (dom/span #js {:className "c-icon c-icon--small"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"}))))
-            (dom/span #js {:title "Recommended Object" :className "c-badge c-badge--round c-badge--alterable"} "N")
-            (dom/button #js {:title "Add to Favorites" :className "c-button--favorite is-active"}
-              (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                (dom/path #js {:d "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"}))))
-          (dom/div #js {:className "o-editor__actions o-button-group"}
-            ;"<!-- Done -->"
-            (dom/button #js {:className "c-button c-button--large o-editor__done"}
-              (dom/span #js {:className "c-icon is-positive"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"})))
-              (dom/span #js {:className "c-button__content u-hide@sm"} "Done"))
-            (dom/button #js {:className "c-button c-button--large"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))))
-            (dom/button #js {:className "c-button c-button--large"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"})))))))
-      (dom/div #js {:className "o-editor__content"}
-        (dom/input #js {:value "Hello, I'm content inside an editor! :)" :className "c-input"}))
-      (dom/footer #js {:className "o-editor__toolbar o-editor__toolbar--small"}
-        (dom/div #js {:className "u-start"}
-          (dom/span #js {:className "c-icon"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M7 10l5 5 5-5z"})))
-          " Conditions "
-          (dom/button #js {:className "c-button c-button--anchor js-add-conditions"}
-            (dom/span #js {:className "c-icon c-icon--small"}
-              (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})))
-            (dom/span #js {:className "c-button__content"} "Add Conditions")))
-        (dom/div #js {:className "u-column u-end"}
-          (dom/input #js {:type "checkbox" :id "c-checkbox-1" :checked "true" :className "c-checkbox"})
-          (dom/label #js {:htmlFor "c-checkbox-1"} " Required")))
-      (dom/div #js {:className "o-editor__content"}
-        (dom/div #js {:className "c-card c-card--round"}
-          (dom/div #js {:className "o-editor__conditionals c-card__title"}
-            (dom/div #js {:className "u-column--9"}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M7 10l5 5 5-5z"})))
-              (dom/span #js {} "If response ")
-              (dom/div #js {:className "u-wrapper"}
-                (dom/button #js {:className "u-wrapper__toggle js-dropdown-toggle"} "is")
-                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu" :tabIndex "-1"}
-                  (dom/li #js {}
-                    (dom/button #js {:className "c-menu__item"} "is"))
-                  (dom/li #js {} (dom/button #js {:className "c-menu__item"} "is not"))
-                  (dom/li #js {} (dom/button #js {:className "c-menu__item"} "contains"))))
-              (dom/div #js {:className "u-wrapper"}
-                (dom/button #js {:className "u-wrapper__toggle js-dropdown-toggle"} "Red wine")
-                (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu" :tabIndex "-1"}
-                  (dom/li #js {}
-                    (dom/button #js {:className "c-menu__item"} "Red Wine"))
-                  (dom/li #js {}
-                    (dom/button #js {:className "c-menu__item"} "White Wine"))
-                  (dom/li #js {}
-                    (dom/button #js {:className "c-menu__item"} "Crux Scotch Ale"))))
-              (dom/span #js {} " then:"))
-            (dom/div #js {:className "u-column--3 u-end"}
-              (dom/button #js {:data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.0" :className "c-button c-button--icon"}
-                (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.0.0" :className "c-icon c-icon--delete " :viewBox "0 0 24 24"}
-                  (dom/title #js {:data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.0.0.0"} "Delete")
-                  (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" :data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.0.0.1"})))
-              (dom/button #js {:className "c-button c-button--icon is-positive"}
-                (dom/svg #js {:http "" :www.w3.org "" :2000 "" :svg "" :width "24" :height "24" :className "c-icon c-icon--done-all xmlns=" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"})))
-              (dom/button #js {:className "c-button c-button--icon"}
-                (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.2" :className "c-icon c-icon--open-with " :viewBox "0 0 24 24"}
-                  (dom/title #js {:data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.2.0"} "Open With")
-                  (dom/path #js {:d "M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z" :data-reactid ".0.2.$survey$ui$screens$surveys$Surveys_[=2panel].1.0.$survey$ui$screens$surveys$EditorCanvas_[=2panel =2editor =2survey-to-edit].2.0.0.0.1.0:$17592186045874.4:$condition-block-17592186045876.$17592186045876.1.2.1"})))))
-          (dom/section #js {:className "o-editor is-active" :tabIndex "-1"}
-            (dom/header #js {:role "toolbar" :className "o-editor__toolbar has-actions"}
-              (dom/div #js {:className "o-editor__nav"}
-                (dom/ul #js {:className "c-menu c-menu--inline"}
-                  (dom/li #js {}
-                    (dom/button #js {:className "c-menu__link is-active"} "Object"))
-                  (dom/li #js {} (dom/button #js {:className "c-menu__link"} "Options"))))
-              (dom/div #js {:className "o-editor__info"}
-                (dom/div #js {:className "o-editor__extras"}
-                  (dom/span #js {:title "Key Attribute" :className "c-badge c-badge--round c-badge--positive"}
-                    (dom/span #js {:className "c-icon c-icon--small"}
-                      (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                        (dom/path #js {:d "M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"}))))
-                  (dom/span #js {:title "Recommended Object" :className "c-badge c-badge--round c-badge--alterable"} "N")
-                  (dom/button #js {:title "Add to Favorites" :className "c-button--favorite is-active"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"})))
-                  (dom/div #js {:className "o-editor__actions o-button-group"} " " "<!-- Done -->" " "
-                    (dom/button #js {:className "c-button c-button--large o-editor__done"}
-                      (dom/span #js {:className "c-icon is-positive"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"})))
-                      (dom/span #js {:className "c-button__content u-hide@sm"} "Done"))
-                    (dom/button #js {:className "c-button c-button--large"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))))
-                    (dom/button #js {:className "c-button c-button--large"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"}))))))))
-            (dom/div #js {:className "o-editor__content"}
-              (dom/input #js {:value "Hello, I'm content inside an editor! :)" :className "c-input"}))
-            (dom/footer #js {:className "o-editor__toolbar o-editor__toolbar--small"}
-              (dom/div #js {:className "u-start"}
-                (dom/button #js {:className "c-button c-button--anchor js-add-conditions"}
-                  (dom/span #js {:className "c-icon c-icon--small"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})))
-                  (dom/span #js {:className "c-button__content"} "Add Conditions")))
-              (dom/div #js {:className "u-column u-end"}
-                (dom/input #js {:type "checkbox" :id "c-checkbox-1" :checked "true" :className "c-checkbox"})
-                (dom/label #js {:htmlFor "c-checkbox-1"} " Required"))))
-          (dom/button #js {:className "c-button c-button--anchor js-add-conditions"}
-            (dom/span #js {:className "c-icon c-icon--small"}
-              (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})))
-            (dom/span #js {:className "c-button__content"} "Add Conditions")))))))
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className "c-list__avatar"} (icons/icon :movie))
+                (dom/div #js {:className "c-list__name"} "Movies"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className "c-list__avatar"} (icons/icon :book))
+                (dom/div #js {:className "c-list__name"} "Books"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className ""} "Settings"))))
+
+          (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
+            (dom/div #js {:className "c-list__tile"}
+              (dom/div #js {:className "u-row u-middle"}
+                (dom/div #js {:className ""} "Help & Feedback"))))
+          ))
+      (dom/div #js {:className "o-drawer__close"
+                    :onClick #(toggle-drawer this)}))))
+
 
 (defexample icon-bar
   "# Icon Bar"
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar"}
       (dom/button #js {:className "o-iconbar__item is-active"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"})))
+        (icons/icon :home)
         (dom/span #js {:className "o-iconbar__label"} "Home"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"})))
+        (icons/icon :description)
         (dom/span #js {:className "o-iconbar__label"} "Docs"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"})))
+        (icons/icon :feedback)
         (dom/span #js {:className "o-iconbar__label"} "Support"))
       (dom/button #js {:className "o-iconbar__item"}
         (dom/span #js {:className "c-icon"}
@@ -1587,19 +1489,13 @@
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--rail"}
       (dom/button #js {:className "o-iconbar__item is-active"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"})))
+        (icons/icon :home)
         (dom/span #js {:className "o-iconbar__label"} "Home"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"})))
+        (icons/icon :description)
         (dom/span #js {:className "o-iconbar__label"} "Docs"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"})))
+        (icons/icon :feedback)
         (dom/span #js {:className "o-iconbar__label"} "Support"))
       (dom/button #js {:className "o-iconbar__item"}
         (dom/span #js {:className "c-icon"}
@@ -1615,19 +1511,13 @@
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--shifting is-mobile"}
       (dom/button #js {:className "o-iconbar__item is-active"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"})))
+        (icons/icon :home)
         (dom/span #js {:className "o-iconbar__label"} "Home"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"})))
+        (icons/icon :description)
         (dom/span #js {:className "o-iconbar__label"} "Docs"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"})))
+        (icons/icon :feedback)
         (dom/span #js {:className "o-iconbar__label"} "Support"))
       (dom/button #js {:className "o-iconbar__item"}
         (dom/span #js {:className "c-icon"}
@@ -1635,279 +1525,86 @@
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
         (dom/span #js {:className "o-iconbar__label"} "Github")))))
 
-(defexample listing-begin
-  "# Listing Beginner Example"
-  (let [example-class-modifier (if (om/get-state this :listing-visible) "" " u-hide")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this update :listing-visible not)} "Show/Hide Example")
-      (dom/div #js {:className (str "u-fixed--middle-center" example-class-modifier)}
-        (dom/span #js {:className "c-icon c-icon--huge is-passive"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M13 13v8h8v-8h-8zM3 21h8v-8H3v8zM3 3v8h8V3H3zm13.66-1.31L11 7.34 16.66 13l5.66-5.66-5.66-5.65z"})))
-        (dom/h1 #js {} "No widgets yet")
-        (dom/p #js {:className "c-message--neutral"} "Create a widget to get started")))))
-
-(defexample listing
-  "# List View Example"
-  (let [example-class-modifier (if (om/get-state this :listing-visible) "" " u-hide")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this update :listing-visible not)} "Show/Hide Example")
-      (dom/div #js {:className (str "o-listing" example-class-modifier)}
-        (dom/div #js {:className "o-listing__status"}
-          (dom/span #js {:className "o-listing__status-indicator c-icon is-positive"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"}))))
-        (dom/div #js {:className "o-listing__info"}
-          (dom/div #js {:className "o-listing__wrapper"}
-            (dom/div #js {:className "o-listing__general"}
-              (dom/div #js {:className "o-listing__name"}
-                (dom/h1 #js {} "Item Title"))
-              (dom/div #js {:className "o-listing__duration u-show@sm u-hide@md-up"} "14 days"))
-            (dom/div #js {:className "o-listing__duration u-hide@sm"} "14 days"))
-          (dom/div #js {:className "o-listing__actions u-wrapper--right u-column--4 u-end u-top"}
-            (dom/div #js {:className "o-listing__action-group"}
-              (dom/button #js {:title "Edit" :className "c-button c-button--icon"}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"}))))
-              (dom/button #js {:title "Preview" :className "c-button c-button--icon"}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"}))))
-              (dom/button #js {:title "Send" :className "c-button c-button--icon"}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"}))))
-              (dom/div #js {:className "u-wrapper c-dropdown--right"}
-                (dom/button #js {:title "Duplicate, Delete & more" :className "c-button c-button--icon js-dropdown-toggle"}
-                  (dom/span #js {:className "c-icon"}
-                    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                      (dom/path #js {:d "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"}))))
-                (dom/ul #js {:className "c-menu"}
-                  (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Edit" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"}))) " Edit "))
-                  (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Preview" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"}))) " Preview "))
-                  (dom/li #js {:className "u-hide@md-up"}
-                    (dom/button #js {:title "Send" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"}))) " Send "))
-                  (dom/li #js {}
-                    (dom/button #js {:title "Favorite" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"}))) " Favorite "))
-                  (dom/li #js {}
-                    (dom/button #js {:title "Share" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"}))) " Share "))
-                  (dom/li #js {}
-                    (dom/button #js {:title "Duplicate" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"}))) " Duplicate "))
-                  (dom/li #js {}
-                    (dom/button #js {:title "Delete" :className "c-menu__item"}
-                      (dom/span #js {:className "c-icon"}
-                        (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                          (dom/path #js {:d "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"}))) " Delete ")))))))))))
-
 (defexample modal-example
-  "# Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__title"}
-            (dom/span #js {} "Modal Title")
-            (dom/div #js {:className "o-modal__actions"}
-              (dom/button #js {:className "o-modal__action"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"}))))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?")
-            (dom/div #js {:className "o-modal__row"}
-              (dom/button #js {:className "c-button c-button--anchor c-button--small"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)} "Close")))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
+  "# Modal
 
-(defexample modal-small
-  "# Small Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--small" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__title"}
-            (dom/span #js {} "Modal Title")
-            (dom/div #js {:className "o-modal__actions"}
-              (dom/button #js {:className "o-modal__action"}
-                (dom/span #js {:className "c-icon"} " ... "))))
-          (dom/span #js {
-                         :className "o-modal__close"
-                         :onClick   #(om/update-state! this assoc :modal-visible false)}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))
-          (dom/div #js {:className "o-modal__content"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
+  ### Basic"
+  (dom/div #js {:style #js {:position "relative" :height "400px"}}
+    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-modal__card"}
+        (dom/div #js {:className "c-modal__title"} "Modal title")
+        (dom/div #js {:className "c-modal__content"}
+          (dom/span #js {} "This is a card in a modal, what will they think of next?")
+          )
+        (dom/div #js {:className "c-modal__actions"}
+          (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
+            (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Ok"))
+        ))
+    (dom/div #js {:className (str "c-backdrop _is-active") :style #js {:position "absolute"}})))
+
+(defviewport modal-fullscreen-1
+  "Fullscreen modal"
+  (dom/div #js {:className "c-modal c-modal--fullscreen"}
+    (dom/div #js {:className "c-modal__card"}
+      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+        (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+        (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button"} "Save")))
+      (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
+      (dom/div #js {:className "c-modal__content"}
+        (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
+        (dom/input #js {:className "c-field" :placeholder "Location"})
+        (dom/label #js {:className "is-optional u-leader--half"} "Start time")
+        (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
+        (dom/label #js {:className "is-optional u-leader--half"} "End time")
+        (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
+        (dom/input #js {:className "c-field" :placeholder "Room"})
+        )
+      )
+    ))
 
 
-(defexample modal-large
-  "# Large Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--large" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__title"}
-            (dom/span #js {} "Modal Title")
-            (dom/div #js {:className "o-modal__actions"}
-              (dom/button #js {:className "o-modal__action"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)}
-                (dom/span #js {:className "c-icon"}
-                  (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                    (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"}))))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?")
-            (dom/div #js {:className "o-modal__row"}
-              (dom/button #js {:className "c-button c-button--anchor c-button--small"
-                               :onClick   #(om/update-state! this assoc :modal-visible false)} "Close")))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
+(defviewport modal-fullscreen-2
+  "Fullscreen modal with another modal"
+  (dom/div #js {:style #js {:position "relative" :height "570px"}}
+    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-modal__card"}
+        (dom/div #js {:className "c-modal__content"}
+          (dom/span #js {} "Discard new event?")
+          )
+        (dom/div #js {:className "c-modal__actions"}
+          (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
+            (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Erase"))
+        ))
+    (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})
 
-(defexample modal-primary
-  "# Primary Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--primary" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
+    (dom/div #js {:className "c-modal c-modal--fullscreen"}
+     (dom/div #js {:className "c-modal__card"}
+       (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
+         (dom/div #js {:className "o-toolbar__actions"}
+           (dom/button #js {:className "c-button"} "Save")))
+       (dom/div #js {:className "has-menu"}
+         (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
+       (dom/div #js {:className "c-modal__content"}
+         (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
+         (dom/input #js {:className "c-field" :placeholder "Location"})
+         (dom/label #js {:className "is-optional u-leader--half"} "Start time")
+         (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
+         (dom/label #js {:className "is-optional u-leader--half"} "End time")
+         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
+         (dom/input #js {:className "c-field" :placeholder "Room"})
+         )
+       )
+     )))
 
-(defexample modal-success
-  "# Success Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--success" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
-
-(defexample modal-warning
-  "# Warning Modal Example"
-  (let [example-class-modifier (if (om/get-state this :modal-visible) " is-active" "")]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this assoc :modal-visible true)} "Show Example")
-      (dom/div #js {:className (str "o-modal o-modal--warning" example-class-modifier)}
-        (dom/div #js {:className "o-modal__card"}
-          (dom/div #js {:className "o-modal__actions"}
-            (dom/button #js {:className "o-modal__action"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)}
-              (dom/span #js {:className "c-icon"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
-          (dom/div #js {:className "o-modal__content u-row u-row--colapse"}
-            (dom/p #js {} "This is a card in a modal, what will they think of next?"))))
-      (dom/div #js {:className (str "c-backdrop" example-class-modifier)}))))
-
-(defexample sidebar
-  "# Sidebar Example
-
-  **Deprecated** We should be using the drawer component or 2-pane article layout instead.
-  "
-  (let [example-class-modifier (str (if (om/get-state this :sidebar-visible) "" " u-hide")
-                                 (if (om/get-state this :sidebar-collapsed) " is-collapsed" ""))]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this update :sidebar-visible not)} "Show/Hide Example")
-      (dom/nav #js {:style     #js {:left "50" :top "200" :width "16.25em" :height "300px"}
-                    :className (str "o-sidebar o-sidebar--large" example-class-modifier)}
-        (dom/div #js {:className "o-sidebar__controls"}
-          (dom/input #js {:placeholder "Search library..." :className "c-input"})
-          (dom/button #js {:className "c-button c-button--icon u-absolute--top-right"}
-            (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :className "c-icon c-icon--search " :viewBox "0 0 24 24"}
-              (dom/title #js {} "Search")
-              (dom/path #js {:d "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"})))
-          (dom/div #js {:className "u-wrapper c-dropdown--picker"}
-            (dom/button #js {:className "c-button c-button--small"} " Filter items "
-              (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :className "c-icon c-icon--arrow-drop-down" :viewBox "0 0 24 24"}
-                (dom/title #js {} "Arrow Drop Down")
-                (dom/path #js {:d "M7 10l5 5 5-5z"}))))
-          (dom/button #js {:className "c-button c-button--anchor c-button--small"}
-            (dom/svg #js {:version "1.1" :width "24" :height "24" :aria-labelledby "title" :role "img" :className "c-icon c-icon--remove-circle " :viewBox "0 0 24 24"}
-              (dom/title #js {} "Remove Circle")
-              (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"})) " Clear "))
-        (dom/div #js {:className "o-accordion o-accordion--small"}
-          (dom/div #js {:className "o-accordion__title is-nested is-active"} "Title 1")
-          (dom/div #js {:className "o-accordion__content"}
-            (dom/div #js {:className "o-accordion__group"}
-              (dom/div #js {:className "o-accordion__info"} "View 1")
-              (dom/div #js {:className "o-accordion__action"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"}))))
-            (dom/div #js {:className "o-accordion__group"}
-              (dom/div #js {:className "o-accordion__info"} "View 2.1")
-              (dom/div #js {:className "o-accordion__action"}
-                (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon is-informative" :viewBox "0 0 24 24"}
-                  (dom/path #js {:d "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"})))))
-          (dom/div #js {:className "o-accordion__title is-selected"} "Title 2")
-          (dom/div #js {:className "o-accordion__title"} "Title 3")
-          (map (fn [n] (dom/div #js {:className "o-accordion__group"}
-                         (dom/div #js {:className "o-accordion__info"} (str "View " n))))
-            (range 3 20))
-
-          (dom/div #js {:className "o-accordion__title is-informative"}
-            (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--small" :viewBox "0 0 24 24"}
-              (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"})) " Action 1 "))
-        (dom/div #js {:className "o-sidebar__toggle"})))))
-
-(defexample sidebar-right
-  "# Sidebar Right side and inline example"
-  (let [example-class-modifier (str (if (om/get-state this :sidebar-visible) "" " u-hide")
-                                 (if (om/get-state this :sidebar-collapsed) " is-collapsed" ""))]
-    (dom/div #js {}
-      (dom/button #js {:className "c-button"
-                       :onClick   #(om/update-state! this update :sidebar-visible not)} "Show/Hide Example")
-      (dom/nav #js {:className (str "o-sidebar o-sidebar--right o-sidebar--inline" example-class-modifier)}
-        (dom/textarea #js {:placeholder "Start typing here..." :className "c-input c-input--multi-line c-input--note"})
-        (dom/button #js {:className "c-button"} "Save")
-        (dom/div #js {:className "o-sidebar__toggle o-sidebar__toggle--alt"
-                      :onClick   #(om/update-state! this update :sidebar-collapsed not)})))))
 
 (defexample toolbar
   "# Toolbar Example"
@@ -1921,10 +1618,12 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div #js {}
       (dom/div #js {:className "o-toolbar"}
-        (dom/div #js {:className "u-column--bar"}
-          (dom/span #js {:className "u-font-size--semi-medium"} "View Name"))
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
+          (dom/span #js {:className "o-toolbar__label"} "View Name"))
 
-        (dom/div #js {:className "u-column--bar"}
+        (dom/div #js {:className "o-toolbar__actions"}
           (dom/div #js {:className "u-wrapper"}
             (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
               (icons/icon :language))
@@ -1943,8 +1642,66 @@
               (icons/icon :account_circle)))
           )))))
 
-(defexample toolbar-small
-  "### Small
+
+(defexample toolbar-colors
+  "### Colors"
+  (let [changed-menu (om/get-state this :changed-menu)
+        ui-menu-open (if (= (:id changed-menu) :ui) (:open-state changed-menu) nil)
+        lang-menu-open (if (= (:id changed-menu) :lang) (:open-state changed-menu) nil)
+        ui-menu-class (str "c-menu" (if ui-menu-open " is-active" ""))
+        lang-menu-class (str "c-menu c-menu--right " (if lang-menu-open " is-active" ""))
+        lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
+        menu-action (fn [menu opened item]
+                      (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
+    (dom/div #js {}
+      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
+          (dom/span #js {:className "o-toolbar__label"} "Primary color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :help))
+
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :account_circle)))
+          ))
+
+      (dom/p nil " ")
+
+      (dom/div #js {:className "o-toolbar o-toolbar--accent o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :close))
+          (dom/span #js {:className "o-toolbar__label"} "Accent color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button"}
+              "Save"))
+          ))
+
+      (dom/p nil " ")
+
+      (dom/div #js {:className "o-toolbar o-toolbar--dark o-toolbar--raised"}
+        (dom/div #js {:className "o-toolbar__view"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :arrow_back))
+          (dom/span #js {:className "o-toolbar__label"} "Dark color"))
+
+        (dom/div #js {:className "o-toolbar__actions"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :filter_list))
+
+          (dom/span #js {:title "Kevin Mitnick"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :search)))
+          )))))
+
+(defexample toolbar-dense
+  "### Dense
 
   This toolbar is mainly used for specific operations and navigation for the current app you are using.
   "
@@ -1953,7 +1710,7 @@
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
     (dom/div #js {}
-      (dom/div #js {:className "o-toolbar o-toolbar--small"}
+      (dom/div #js {:className "o-toolbar o-toolbar--dense u-center"}
         (dom/ul #js {:className "u-wrapper"}
           (dom/button #js {:className (get-class :widgets)
                            :onClick   #(select-item :widgets)} "Widgets")
@@ -1971,42 +1728,41 @@
   The secondary toolbar is intended to only provide operations for the current view of the app your in.
   "
   (let [example-class-modifier (str (if (om/get-state this :toolbar-secondary-visible) "" " u-hide"))]
-    (dom/div #js {:className "u-wrapper"}
-      (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
-        ;; View Info for Mobile
-        (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
-          (dom/h1 #js {} "View Name"))
+    (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
+      ;; View Info for Mobile
+      (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
+        (dom/h1 #js {} "View Name"))
 
-        ;; View Actions for Mobile
-        (dom/div #js {:className "u-column u-hide@md-up u-end"}
-          (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :filter_list))
-          (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :search))
-          (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :list))
-          (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
-            (icons/icon :create)))
+      ;; View Actions for Mobile
+      (dom/div #js {:className "u-column u-hide@md-up u-end"}
+        (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :filter_list))
+        (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :search))
+        (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :list))
+        (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
+          (icons/icon :create)))
 
-        ;; View Actions for Tablets and Computers
-        (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "u-wrapper"}
-            (dom/button #js {:className "c-button has-menu"} "Filter by tag")
-            (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Water"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Coffee"))
-              (dom/li #js {}
-                (dom/button #js {:className "c-menu__item"} "Tea"))))
-          (dom/div #js {:className "o-input"}
-            (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
-            (icons/icon :search)))
-        (dom/div #js {:className "u-column--bar u-hide@sm"}
-          (dom/div #js {:className "o-button-group--toggle"}
-            (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
-            (dom/button #js {:className "c-button"} "Detail"))
-          (dom/button #js {:className "c-button c-button--accent"} "Create a widget"))))))
+      ;; View Actions for Tablets and Computers
+      (dom/div #js {:className "u-column--bar u-hide@sm"}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Filter by tag")
+          (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Water"))
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Coffee"))
+            (dom/li #js {}
+              (dom/button #js {:className "c-menu__item"} "Tea"))))
+        (dom/div #js {:className "o-input"}
+          (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
+          (icons/icon :search)))
+      (dom/div #js {:className "u-column--bar u-hide@sm"}
+        (dom/div #js {:className "o-button-group--toggle"}
+          (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
+          (dom/button #js {:className "c-button"} "Detail"))
+        (dom/button #js {:className "c-button c-button--accent"} "Create a widget")))))
 
 
 
@@ -2073,12 +1829,15 @@
            :examples [
                       menus
                       menus-shape
+                      menus-search-multi
+                      menus-data
                       ]}
           {:id :expanding_panel
            :title "Expansion panels"
            :documentation expansion-panel-header
            :examples [
                       expansion-panel
+                      expansion-panel-survey
                       ]
            }
           {:id :fields
@@ -2088,18 +1847,9 @@
                       field
                       field-states
                       field-sizes
-                      ]}
-          {:id :inputs
-           :title "Form Inputs"
-           :documentation input-header
-           :examples [
-                      input
-                      input-states
-                      input-round
-                      input-multi-line
-                      input-collapsable
+                      field-icon
+                      field-content
                       textarea
-                      input-validation
                       ]}
           {:id :icons
            :title "Icons"
@@ -2159,7 +1909,6 @@
            :documentation radio-header
            :examples [
                       radio
-                      radio-informative
                       radio-stacked]}
           {:id :switch
            :title "Switch"
@@ -2182,29 +1931,36 @@
                       tooltip-directions
                       tooltip-sizes
                       ]}
-
-          ;; OBJECTS Start here
-
-
-          {:id :accordion :title "Accordion [Deprecated]" :examples [accordion accordion-sidebar accordion-nested]
-           :documentation
-               "# Accordion
-
-               **Deprecated** Expansion panels are better designed to show more information in a flexible way. We also have the list component now for showing informational data.
-
-               This object is redesigned to be un-opinionated and flexible for almost any interactive list you might need in your app. The simplified markup resembles this node list:
-               ``` shell\n.o-accordion [ --inline | --right | --small ]\n   __title   [ is-active | is-nested | is-selected ]\n   __content [ is-active ]\n     __group\n       __info\n       __actions\n         __action [ --informative | --success ]\n         __meta\n           __meta-item\n```"}
           {:id :calendar-example :title "Calendar" :examples [calendar-example]
            :documentation
                "# Calendar
 
                This is a month view calendar for overlaying on input fields that control date selection."}
-          {:id :drawer :title "Drawer" :examples [drawer]}
-          {:id :editor-inactive :title "Editor [Deprecated]" :examples [editor-inactive editor-active]}
-          {:id :icon-bar :title "Icon Bar" :examples [icon-bar icon-rail icon-bar-shifting]}
-          {:id :listing :title "Listing [Deprecated]" :examples [listing-begin listing]}
-          {:id :modal :title "Modal" :examples [modal-example modal-small modal-large modal-primary modal-success modal-warning]}
-          {:id :sidebar :title "Sidebar [Deprecated]" :examples [sidebar sidebar-right]}
-          {:id :toolbar :title "Toolbar" :examples [toolbar toolbar-small toolbar-secondary]}
+          {:id :drawer
+           :title "Drawer"
+           :examples [
+                      drawer
+                      ]}
+          {:id :icon-bar
+           :title "Icon Bar"
+           :examples [
+                      icon-bar
+                      icon-rail
+                      icon-bar-shifting
+                      ]}
+          {:id :modal
+           :title "Modal"
+           :examples [
+                      modal-example
+                      modal-fullscreen-1
+                      modal-fullscreen-2
+                      ]}
+          {:id :toolbar
+           :title "Toolbar"
+           :examples [
+                      toolbar
+                      toolbar-colors
+                      toolbar-dense
+                      toolbar-secondary
+                      ]}
           ])))
-

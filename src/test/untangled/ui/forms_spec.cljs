@@ -20,41 +20,29 @@
 
 (specification "Form Elements Declarations"
   (component "subform-element"
-    (when-mocking
-      (let [f (f/subform-element :name Stub :one)]
-        (assertions
-          "defaults as a to-one relation"
-          (:input/cardinality f) => :one
-          "is marked as a subform"
-          f =fn=> f/is-subform?
-          "has the correct type"
-          (:input/type f) => ::f/subform
-          "tracks the class of the subform UI"
-          (-> f meta :component) => Stub)))
-    (when-mocking
-      (log/error _ _) => :ok
+    (let [f (f/subform-element :name Stub :one)]
       (assertions
-        (f/subform-element :bad 'NonExistant :one)
-        =throws=> (ExceptionInfo #"NonExistant failed.*Subform element :bad.*MUST implement IForm, IQuery, and Ident."))))
+        "defaults as a to-one relation"
+        (:input/cardinality f) => :one
+        "is marked as a subform"
+        f =fn=> f/is-subform?
+        "has the correct type"
+        (:input/type f) => ::f/subform
+        "tracks the class of the subform UI"
+        (-> f meta :component) => Stub)))
   (component "form-switcher-input"
-    (when-mocking
-      (let [f (f/form-switcher-input :name Stub :k)]
-        (assertions
-          "defaults as a to-many relation"
-          (:input/cardinality f) => :many
-          "is marked as a subform"
-          f =fn=> f/is-subform?
-          "has a subform selection key"
-          (:input/select-key f) => :k
-          "has the correct type"
-          (:input/type f) => ::f/switcher
-          "tracks the class of the subform UI"
-          (-> f meta :component) => Stub)))
-    (when-mocking
-      (log/error _ _) => :ok
+    (let [f (f/form-switcher-input :name Stub :k)]
       (assertions
-        (f/form-switcher-input :bad 'NonExistant :one)
-        =throws=> (ExceptionInfo #"NonExistant failed.*Subform element :bad.*MUST implement IForm, IQuery, and Ident."))))
+        "defaults as a to-many relation"
+        (:input/cardinality f) => :many
+        "is marked as a subform"
+        f =fn=> f/is-subform?
+        "has a subform selection key"
+        (:input/select-key f) => :k
+        "has the correct type"
+        (:input/type f) => ::f/switcher
+        "tracks the class of the subform UI"
+        (-> f meta :component) => Stub)))
   (component "id-field"
     (let [field (f/id-field :name)]
       (assertions
@@ -226,7 +214,7 @@
     (assertions
       "Is ok when the target is nil"
       (f/init-one app-state (get-in app-state [:people/by-id 3]) spec {}) => app-state
-      "Throws an error when targeting a to-many"
+      "Throws an error when the app-state data is obviously a to-many relation"
       (f/init-one app-state (get-in app-state [:people/by-id 4]) spec {}) =throws=> (js/Error.))))
 
 (defui PolyPerson
@@ -235,7 +223,8 @@
   static om/Ident
   (ident [this props] [:people/by-id (:db/id props)])
   static f/IForm
-  (form-spec [this] [(f/subform-element :person/number Phone :many)]))
+  (form-spec [this] [(f/subform-element :person/number Phone :many)
+                     (f/text-input :person/name :className "name-class")]))
 
 (specification "Initializing a to-many form relation"
   (let [base-form (get-in person-db [:people/by-id 4])
@@ -260,9 +249,9 @@
           "returns the state of the final init-state"
           actual => :new-state)))
     (assertions
-      "Is ok when the target field is nil"
+      "Is ok when the target field is nil."
       (f/init-many person-db (get-in person-db [:people/by-id 3]) spec {}) => person-db
-      "Throws an error when targeting a to-one"
+      "Throws an error when the app state contains an obvious to-one relation."
       (f/init-many person-db (get-in person-db [:people/by-id 7]) spec {}) =throws=> (js/Error.))))
 
 (specification "Initializing a form recursively"
@@ -581,14 +570,30 @@
       (let [clean-person (om/db->tree (om/get-query Person) c-person app-state)]
         (assertions
           "Can see if a field is clean on the form"
-          (f/dirty-form? clean-person) => false
+          (f/dirty? clean-person) => false
           "Can see if a field is dirty on the form"
-          (f/dirty-form? (assoc-in clean-person [:person/name] "X")) => true
+          (f/dirty? (assoc-in clean-person [:person/name] "X")) => true
           "Can recursively check for dirty data on a form"
           (f/dirty? clean-person) => false
           (f/dirty? (assoc clean-person :person/name "X")) => true
           (f/dirty? (assoc-in clean-person [:person/number 0 :phone/number] "222")) => true
-          (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true))))
+          (f/dirty? (assoc-in clean-person [:person/number 1 :phone/number] "4")) => true)))
+
+    (component "would-be-valid?"
+      (provided "Uses forms-reduce to check the complete form set"
+        (f/form-reduce f i F) =1x=> (do
+                                      (assertions
+                                        "Starts at the top-level form"
+                                        f => :the-form)
+                                      :reduction)
+
+        (assertions
+          (f/would-be-valid? :the-form) => :reduction))
+      (assertions
+        "Indicates that a valid form would be valid, even though validations have not been run"
+        (f/would-be-valid? c-person) => true
+        "Indicates that an invalid form would be INvalid, even though validations have not been run"
+        (f/would-be-valid? unchecked-person) => false)))
 
   (component "validate-forms"
     (let [app-state       (f/init-form person-db CPerson [:people/by-id 4])
@@ -607,21 +612,20 @@
 (defn fix-tx "hack/fix for github.com/untangled-web/untangled-spec/issues/6"
   [tx] (mapcat #(if (seq? %) (vec %) [%]) tx))
 
-(specification "Form entity commit/reset"
-  (let [app-state              (-> person-db
-                                 (f/init-form Phone [:phone/by-id 1])
-                                 (f/init-form Phone [:phone/by-id 2]))
+(let [app-state              (-> person-db
+                               (f/init-form Phone [:phone/by-id 1])
+                               (f/init-form Phone [:phone/by-id 2]))
+      get-entity             (fn [class ident]
+                               (let [state (f/init-form app-state class ident)]
+                                 (om/db->tree (om/get-query class) (get-in state ident) state)))
+      basic-person           (get-entity Person [:people/by-id 3])
+      one-number-person      (get-entity Person [:people/by-id 7])
+      no-number-person       (get-entity PolyPerson [:people/by-id 5])
+      many-number-person     (get-entity PolyPerson [:people/by-id 4])
+      one-many-number-person (get-entity PolyPerson [:people/by-id 6])
 
-        get-entity             (fn [class ident]
-                                 (let [state (f/init-form app-state class ident)]
-                                   (om/db->tree (om/get-query class) (get-in state ident) state)))
-        basic-person           (get-entity Person [:people/by-id 3])
-        one-number-person      (get-entity Person [:people/by-id 7])
-        no-number-person       (get-entity PolyPerson [:people/by-id 5])
-        many-number-person     (get-entity PolyPerson [:people/by-id 4])
-        one-many-number-person (get-entity PolyPerson [:people/by-id 6])
-
-        [t1] (repeatedly om/tempid)]
+      [t1] (repeatedly om/tempid)]
+  (specification "Form entity commit"
     (component "form-reduce"
       (assertions
         (f/form-reduce basic-person (map f/form-ident) [] conj)
@@ -639,68 +643,107 @@
           (f/form-reduce (map f/form-ident) [] conj))
         => [[:people/by-id 5] [:phone/by-id 1] [:phone/by-id 2]]))
     (component "commit-to-entity"
-      (component "diff-form"
+      (component "Server Delta"
         (assertions
-          "sanity check"
-          (f/diff-form basic-person) => {}
-          "we can pick up an update to a form"
-          (f/diff-form (assoc basic-person :person/name "Foo Bar"))
-          => {:tx/set {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
-          "we can pick up a creation of a reference"
-          (-> basic-person
-            (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
-            f/diff-form)
-          => {:tx/new {[:phone/by-id t1] {:phone/number "123-4567"}}
-              :tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}}
-          "we can pick up a deletion of a reference"
-          (-> one-number-person
-            (dissoc :person/name)
-            f/diff-form)
-          => {:tx/del {(f/form-ident one-number-person) {:person/name "A"}}}
-          "we can pick up a deletion of an entity"
-          (-> one-number-person
-            (dissoc :person/number)
-            f/diff-form)
-          => {:tx/del {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
-          "we can pick up changes to subforms"
-          (-> one-number-person
-            (assoc-in [:person/number :phone/number] "123-4567")
-            f/diff-form)
-          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          (-> many-number-person
-            (assoc-in [:person/number 0 :phone/number] "123-4567")
-            f/diff-form)
-          => {:tx/set {[:phone/by-id 1] {:phone/number "123-4567"}}}
-          "^-> new ref one"
-          (-> basic-person
-            (assoc :person/number (f/build-form Phone {:db/id 1}))
-            f/diff-form)
-          => {:tx/set {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
-          "^-> add ref one"
-          (-> one-number-person
-            (assoc :person/number (f/build-form Phone {:db/id 2}))
-            f/diff-form)
-          => {:tx/set {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}}
-          "^-> rem ref many"
-          (-> one-many-number-person
-            (assoc :person/number [])
-            f/diff-form)
-          => {:tx/rem {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
-          "^-> add ref many"
-          (-> no-number-person
-            (update :person/number conj (f/build-form Phone {:db/id 1}))
-            f/diff-form)
-          => {:tx/add {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
-          (-> many-number-person
-            (update :person/number conj (f/build-form Phone {:db/id 3}))
-            f/diff-form)
-          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}}
-          "^-> del & add ref many"
-          (-> many-number-person
-            (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
-            f/diff-form)
-          => {:tx/add {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
-              :tx/rem {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}}))
+          "Gives an empty map when there are no changes."
+          (f/diff-form basic-person) => {})
+        (component ":form/updates"
+          (assertions
+            "include the scalar properties that have changed"
+            (f/diff-form (assoc basic-person :person/name "Foo Bar")) => {:form/updates {(f/form-ident basic-person) {:person/name "Foo Bar"}}}
+            (f/diff-form (assoc basic-person :person/name "")) => {:form/updates {(f/form-ident basic-person) {:person/name ""}}}
+            "sends nil for the property if the property has become nil"
+            (f/diff-form (assoc basic-person :person/name nil)) => {:form/updates {(f/form-ident basic-person) {:person/name nil}}}
+            "accumulates multiple changes"
+            (-> many-number-person
+              (assoc-in [:person/number 0 :phone/number] "999-9999")
+              (assoc :person/name "New Name")
+              (f/diff-form)) => {:form/updates {[:people/by-id 4] {:person/name "New Name"}
+                                                [:phone/by-id 1]  {:phone/number "999-9999"}}}
+            "includes properties from to-one subforms"
+            (-> one-number-person
+              (assoc-in [:person/number :phone/number] "123-4567")
+              f/diff-form) => {:form/updates {[:phone/by-id 1] {:phone/number "123-4567"}}}
+            "includes properties from to-many subforms"
+            (-> many-number-person
+              (assoc-in [:person/number 0 :phone/number] "123-4567")
+              f/diff-form) => {:form/updates {[:phone/by-id 1] {:phone/number "123-4567"}}}
+            "excludes removals of references"
+            (-> many-number-person
+              ;(assoc :person/number [])
+              (assoc :person/name "New Name")
+              (f/diff-form)
+              :form/updates) => {[:people/by-id 4] {:person/name "New Name"}}
+            "excludes additions of references"
+            (-> basic-person
+              (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
+              f/diff-form
+              :form/updates) => nil))
+        ; TODO: CONTINUE HERE...
+        (component ":form/add-relations"
+          (assertions
+            "Includes the new relation for a new to-one association"
+            (-> basic-person
+              (assoc :person/number (f/build-form Phone {:db/id 1}))
+              f/diff-form)
+            => {:form/add-relations {(f/form-ident basic-person) {:person/number [:phone/by-id 1]}}}
+            "Includes the new relation for a change to a to-one"
+            (-> one-number-person
+              (assoc :person/number (f/build-form Phone {:db/id 2}))
+              f/diff-form
+              :form/add-relations)
+            => {(f/form-ident one-number-person) {:person/number [:phone/by-id 2]}}
+            "Includes the added item in a to-many relation that started empty"
+            (-> no-number-person
+              (update :person/number conj (f/build-form Phone {:db/id 1}))
+              f/diff-form)
+            => {:form/add-relations {(f/form-ident no-number-person) {:person/number [[:phone/by-id 1]]}}}
+            "Includes the new item when *changing* a to-many ref"
+            (-> many-number-person
+              (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
+              f/diff-form
+              :form/add-relations)
+            => {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]]}}
+            "Includes only the added item in a to-many relation that started with some already"
+            (-> many-number-person
+              (update :person/number conj (f/build-form Phone {:db/id 3}))
+              (update :person/number conj (f/build-form Phone {:db/id 4}))
+              f/diff-form)
+            => {:form/add-relations {(f/form-ident many-number-person) {:person/number [[:phone/by-id 3]
+                                                                                        [:phone/by-id 4]]}}}))
+        (component ":form/remove-relations"
+          (assertions
+            "Includes the removed relation for a *changed* to a to-one"
+            (-> one-number-person
+              (assoc :person/number (f/build-form Phone {:db/id 2}))
+              f/diff-form
+              :form/remove-relations)
+            => {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}
+            "Includes the relation when it completely disappears"
+            (-> one-number-person
+              (dissoc :person/number)
+              f/diff-form)
+            => {:form/remove-relations {(f/form-ident one-number-person) {:person/number [:phone/by-id 1]}}}
+            (-> one-many-number-person
+              (assoc :person/number [])
+              f/diff-form)
+            => {:form/remove-relations {(f/form-ident one-many-number-person) {:person/number [[:phone/by-id 1]]}}}
+            "Changing a to-many ref includes the ref removed"
+            (-> many-number-person
+              (assoc-in [:person/number 0] (f/build-form Phone {:db/id 3}))
+              f/diff-form
+              :form/remove-relations)
+            => {(f/form-ident many-number-person) {:person/number [[:phone/by-id 1]]}}))
+
+        (component "Adding a new entity to the database"
+          (assertions
+            "Includes a :form/new-entities and :form/add-relations to build the remote graph"
+            (-> basic-person
+              (assoc :person/number (f/build-form Phone {:db/id t1 :phone/number "123-4567"}))
+              f/diff-form)
+            => {:form/new-entities  {[:phone/by-id t1] {:phone/number "123-4567"}}
+                :form/add-relations {(f/form-ident basic-person) {:person/number [:phone/by-id t1]}}})))
+
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
                                                form-id => [:people/by-id 3]
@@ -716,20 +759,27 @@
                  :form   basic-person})]
           (assertions
             "only optionally `:remote`s the result of diff-form to the server"
-            (:remote commit-mut) => {:params {:delta :fake/delta}}
+            (:remote commit-mut) => {:params :fake/delta}
             "the optimistic action commits the current value of the form to be its new :original state"
             ((:action commit-mut)) => ::ok)))
-      (provided "if we have modified ui only fields"
-        (let [commit-mut
-              (m/mutate {:state (atom (-> app-state
-                                        (assoc-in (conj (f/form-ident basic-person) :ui.person/client-only) "SHOULDNT_APPEAR")
-                                        (assoc-in (conj (f/form-ident basic-person) :person/name) "NEW_NAME")))
-                         :ast   {:params {:remote true}}}
-                `f/commit-to-entity
-                {:remote  true
-                 :form-id (f/form-ident basic-person)})]
-          (assertions "we dont send them to the server"
-            (get-in (:remote commit-mut) [:params :delta (f/form-ident basic-person) :ui.person/client-only] ::nil) => ::nil)))
+      (behavior "When we have modified ui-only fields"
+        (let [form       (-> (f/build-form Person basic-person)
+                           (assoc :ui.person/client-only "SHOULDNT_APPEAR" :person/name "NEW_NAME"))
+              form-id    (f/form-ident form)
+              app-state  (atom (assoc-in {} form-id form))
+              ast        (-> (om/query->ast `[(f/commit-to-entity ~{:form form :remote true})])
+                           ;:children
+                           ;first
+                           ;:params
+                           )
+              commit-mut (m/mutate {:state  app-state
+                                    :target :remote
+                                    :ast    ast}
+                           `f/commit-to-entity
+                           {:remote true
+                            :form   form})]
+          (assertions "we only send the modified full-stack properties (without UI prefix) to the server"
+            (-> commit-mut :remote :params :form/updates) => {form-id {:person/name "NEW_NAME"}})))
       (component "commit-to-entity! - api/public function"
         (when-mocking
           (om/props :fake/component) => :fake/props
@@ -761,11 +811,13 @@
             (assoc :person/name "MCQ")
             (f/commit-state)
             (f/get-original-data :person/name))
-          => "MCQ")))
+          => "MCQ"))))
 
-    (component "reset-from-entity"
+  (specification "Resetting a Form"
+    (component "The reset-from-entity Om mutation"
       (when-mocking
         (f/entity-xform _ form-id xf) => (do (assertions
+                                               "Triggers a reset-entity function on the form ID"
                                                form-id => :fake/form-id
                                                xf => f/reset-entity)
                                              ::ok)
@@ -775,21 +827,30 @@
                 `f/reset-from-entity
                 {:form-id :fake/form-id})]
           (assertions
-            ((:action reset-mut)) => ::ok)))
-      (component "reset-from-entity! - api/public function"
-        (when-mocking
-          (om/transact! _ tx) => (fix-tx tx)
-          (assertions
-            (f/reset-from-entity! :fake/component basic-person)
-            => `[f/reset-from-entity {:form-id [:people/by-id 3]}
-                 ~f/form-root-key])))
-      (component "reset-entity"
+            ((:action reset-mut)) => ::ok))))
+
+    (component "reset-from-entity! - api function"
+      (when-mocking
+        (om/transact! _ tx) => (let [[reset-mutation follow-on-read] tx]
+                                 (assertions
+                                   "Issues an Om transaction to reset the entity via the composable Om mutation."
+                                   reset-mutation =fn=> list?
+                                   (first reset-mutation) => `f/reset-from-entity
+                                   "which has params with the form-id as the ident of the form to reset"
+                                   (second reset-mutation) => {:form-id [:people/by-id 3]}
+                                   "and a follow-on read of the form root key for re-rendering the top-level form"
+                                   follow-on-read => f/form-root-key))
+
+        (f/reset-from-entity! :some-component basic-person)))
+    (component "reset-entity (helper function)"
+      (let [original-name (f/current-value basic-person :person/name)]
         (assertions
+          ; FIXME: test that this works for recursive forms!
+          "Reverts fields to their original value"
           (-> basic-person
             (assoc :person/name "MCQ")
             (f/reset-entity)
-            (f/current-value :person/name))
-          =fn=> #(not= % "MCQ"))))))
+            (f/current-value :person/name)) => original-name)))))
 
 (defui Mutation
   static om/IQuery
@@ -822,12 +883,33 @@
                      :mutant/name "Professor X"}}})
 
 (specification "on-form-change"
-  (assertions
-    (-> mutant-db
-      (f/init-form Mutant [:mutant/by-id 1])
-      (get-in [:mutant/by-id 1])
-      (f/on-form-change :fake/params))
-    => '(mutant/changed :fake/params)))
+  (let [form   (-> mutant-db
+                 (f/init-form Mutant [:mutant/by-id 1])
+                 (get-in [:mutant/by-id 1]))
+        change (get-in form [f/form-key :on-form-change])]
+    (assertions
+      "Declares a special field type that acts as a global-manipulation on the form triggered as the form
+      changes."
+      (:on-form-change/mutation-symbol change) => 'mutant/changed)))
+
+(specification "get-on-form-change-mutation"
+  (let [mutation-list               '[(mutant/changed {:form-id [:mutant/by-id 1] :field :mutant/name :kind :edit})]
+        form-with-change-handler    (-> mutant-db
+                                      (f/init-form Mutant [:mutant/by-id 1])
+                                      (get-in [:mutant/by-id 1]))
+        form-without-change-handler {}
+        no-mutations                nil]
+    (assertions
+      "Generates a mutation list for the predefined mutation"
+      (f/get-on-form-change-mutation form-with-change-handler :mutant/name :edit) => mutation-list
+      "which can be patched into a mutation expression"
+      `[(other/f) ~@mutation-list (other/g)] => '[(other/f)
+                                                  (mutant/changed {:form-id [:mutant/by-id 1] :field :mutant/name :kind :edit})
+                                                  (other/g)]
+      "When no mutation symbol is defined, it generates a value that can be safely patched into a mutation expression."
+      (f/get-on-form-change-mutation form-without-change-handler :mutant/name :edit) => no-mutations
+      "which can be safely patched into a mutation expression"
+      `[(other/f) ~@no-mutations (other/g)] => '[(other/f) (other/g)])))
 
 (specification "validate-field mutation"
   (let [thing-1 [:thing/by-id 1]
@@ -866,16 +948,18 @@
 
 (specification "form field rendering"
   (component "extend using form-field* & render using form-field"
-    (defmethod f/form-field* :fake/type [component form field-name]
-      ::ok)
+    (defmethod f/form-field* :fake/type [component form field-name] ::ok)
+
     (when-mocking
       (f/field-config :fake/form :fake/field) =1x=> {:input/type :fake/type}
+
       (assertions
-        (f/form-field :fake/this :fake/form :fake/field)
-        => ::ok))
+        (f/form-field :fake/this :fake/form :fake/field) => ::ok))
+
     (when-mocking
-      (log/error _ _) => nil
-      (assertions
-        "if it fails to dispatch it at least shows you the invalid form & field"
-        (f/form-field :fake/this :bad/form :bad/field)
-        =throws=> (ExceptionInfo #":bad/form.*:bad/field")))))
+      (log/error msg data) => (do
+                                (assertions
+                                  "Shows a log message on dispatch failure"
+                                  msg =fn=> #(re-matches #"^Cannot dispatch.*$" %)))
+
+      (f/form-field :fake/this :bad/form :bad/field))))

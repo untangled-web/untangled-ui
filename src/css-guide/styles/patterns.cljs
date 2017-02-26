@@ -1,74 +1,170 @@
 (ns styles.patterns
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.icons :as icons]
+            [untangled.ui.layout :as l]
             [om.dom :as dom]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START OF EXAMPLES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn toggle-open [this] (om/update-state! this update :open not))
+(defarticle errors
+  "# Errors
 
-(defexample button-postfix
-  "### Button Postfix
+  ## Errors occur when an app fails to complete an expected action.")
 
-  This pattern is mainly for demonstration purposes only, as this is a specific technique that can be accomplished through a simple collapsed grid and a button modifier class."
-  (dom/div #js {:className "u-row u-row--collapse"}
-    (dom/div #js {:className "u-column--9"}
-      (dom/input #js {:type "text" :placeholder "Search for..." :className "c-input"}))
-    (dom/div #js {:className "u-column--2"}
-      (dom/button #js {:className "c-button c-button--postfix"} "Search"))))
+(defarticle errors-usage
+  "### Usage
+
+  ### User input errors"
+  )
+
+(defviewport errors-form
+  "A basic form"
+  (dom/span nil
+    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
+      (dom/div #js {:className "o-toolbar__view"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :arrow_back))
+        (dom/span #js {:className "o-toolbar__label"} "Application"))
+      (dom/div #js {:className "o-toolbar__actions"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :more_vert))))
+
+    (l/row {}
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Personal info")))
+
+      (l/col {:width 12}
+        (dom/input #js {:className "c-field" :placeholder "First name"})
+        (dom/span #js {:className "c-message"} \u00A0))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Last name"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Birthday"})
+          (dom/span #js {:className "c-message c-message--neutral"} "MM/DD/YYYY")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Social Security"})
+          (dom/span #js {:className "c-message c-message--neutral"} "### - ## - ####")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Residence address")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Address"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "City"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "State")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Postal code"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Country"))))))
+
+(defviewport errors-form-filled
+  "Filled out form"
+  (dom/span nil
+    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
+      (dom/div #js {:className "o-toolbar__view"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :arrow_back))
+        (dom/span #js {:className "o-toolbar__label"} "Application"))
+      (dom/div #js {:className "o-toolbar__actions"}
+        (dom/button #js {:className "c-button c-button--icon"}
+          (icons/icon :more_vert)))
+      )
+    (l/row {}
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Personal info")))
+
+      (l/col {:width 12}
+       (dom/input #js {:className "c-field is-error" :placeholder "First name"})
+       (dom/span #js {:className "c-message c-message--alert"} "First name is required"))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Last name" :value "Connors"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field is-error" :placeholder "Birthday" :value "01/01/90"})
+          (dom/span #js {:className "c-message c-message--alert"} "MM/DD/YYYY")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field is-error" :placeholder "Social Security"})
+          (dom/span #js {:className "c-message c-message--alert"} "### - ## - ####")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:before :half}
+          (dom/h1 nil "Residence address")))
+
+      (l/col {:width 12}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Address" :value "2000 Main Street, Apartment J"})))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "City" :value "San Francisco"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "State")))
+
+      (l/col {:width 6}
+        (l/ui-vertical-margin {:after :half}
+          (dom/input #js {:className "c-field" :placeholder "Postal code" :value "97701"})))
+
+      (l/col {:width 6}
+        (dom/div #js {:className "has-menu"}
+          (dom/button #js {:className "c-button"} "Country")))
+      )))
 
 
-(defexample menus-search-multi
-  "### Multi-Select, Searchable Dropdown"
-  (let [open (boolean (om/get-state this :open))
-        items (mapv #(str "Item " %) (range 1 20))
-        menu-class (str "c-menu" (if open " is-active" ""))]
-    (dom/div #js {:className "c-dropdown c-dropdown--large"}
-      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown js-dropdown-toggle"} "Filter")
-      (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className menu-class :tabIndex "-1"}
-        (dom/div #js {:className "u-trailer--quarter"}
-          (dom/input #js {:type "text" :placeholder "Search..." :className "c-input"}))
-        (dom/div #js {:className "c-dropdown__viewer"}
-          (map (fn [item]
-                 (dom/div #js {:key item :className "u-leader--sixth u-trailer--sixth"}
-                   (dom/input #js {:type "checkbox" :id (str item "-cb") :className "c-checkbox"})
-                   (dom/label #js {:htmlFor (str item "-cb")} item)))
-            items))
-        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--wide"} "Apply")))))
+(defexample empty-states
+  "# Empty States"
+  (dom/div #js {:style #js {:position "relative" :height "400px"}}
+    (dom/div #js {:className (str "u-absolute--middle-center")}
+      (dom/span #js {:className "c-icon c-icon--huge" :disabled true}
+        (icons/icon :widgets))
+      (dom/h1 #js {} "No widgets yet")
+      (dom/p #js {:className "c-message--neutral"} "Create a widget to get started"))))
 
 
-(defexample menus-data
-  "### Dropdown Data
-
-  This is a control that is meant to let you view what various dropdowns would show, for example in cases
-  of UI that lets you configure UI.
-
-  Note: The dropdown list underneath should not be enabled when the dropdown list is visible. Doing this fosters a better interaction for the user."
-  (let [open (boolean (om/get-state this :open))
-        name (or (om/get-state this :menu-name) "Menu 1")
-        menu-1-items (mapv #(str "Item " %) (range 1 5))
-        menu-2-items (mapv #(str "Other " %) (range 1 3))
-        menu (or (om/get-state this :menu) menu-1-items)]
-    (dom/div nil
-      (dom/div #js {:className "c-dropdown c-dropdown--data"}
-        (dom/button #js {:onClick   #(toggle-open this)
-                         :className "c-button has-menu js-dropdown-toggle"} name)
-        (dom/ul #js {:id        "test-dropdown" :aria-hidden "true"
-                     :className (str "c-menu" (when open " is-active")) :tabIndex "-1"}
-          (dom/li #js {}
-            (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
-                             :className "c-dropdown__link"} "Menu 1"))
-          (dom/li #js {}
-            (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
-                             :className "c-dropdown__link"} "Menu 2"))))
-      (dom/div #js {:className "c-list" :tabIndex "-1"}
-        (map (fn [item]
-               (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable" :key item}
-                 (dom/div #js {:className "c-list__tile"} item))) menu)))))
-
+(defexample pagination-dots
+  "# Pagination"
+  (let [current    (om/get-state this :current)
+        selections ["1" "2" "3"]
+        ]
+    (dom/div #js {:className "c-pagination-dots c-pagination-dots--move"}
+     (dom/ul nil
+       (map (fn [s]
+              (dom/li #js {:className (str "c-pagination-dots__dot" (when (= current s) " is-current"))
+                           :key (str "dot-" s)}
+                (dom/span #js {:onClick   #(om/update-state! this assoc :current s)} s))
+              ) selections)
+       (dom/li nil "") ;; Dummy dot
+       )))
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -80,10 +176,21 @@
                 [
                  ; NOTE: :examples is a list of example names, rendered in order given
                  {:id :postfixing
-                  :title "Postfixing"
+                  :title "Errors"
                   :examples [
-                             button-postfix
-                             menus-search-multi
-                             menus-data
+                             errors
+                             errors-usage
+                             errors-form
+                             errors-form-filled
+                             ]}
+                 {:id :empty-states
+                  :title "Empty states"
+                  :examples [
+                             empty-states
+                             ]}
+                 {:id :pagination
+                  :title "Pagination"
+                  :examples [
+                             pagination-dots
                              ]}
                  ])))

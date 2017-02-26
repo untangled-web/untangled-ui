@@ -11,16 +11,16 @@ same level for synced releases.
 
 ### Install
 
-COMING SOON (ignore this for now)
+*Note:* Yarn only applies to you if your only using this framework, otherwise figwheel will install all the npm packages for you
 
 - **Soon** Download the latest release
 - Clone the repo: `git clone https://github.com/untangled-web/untangled-ui.git`
-- Install with [npm](https://www.npmjs.com): TODO
-- Install with [yarn](https://yarnpkg.com): TODO
+- Install [npm](https://www.npmjs.com/package/npm)
+- Install with [yarn](https://yarnpkg.com)
 
 ### Development
 
-If you're actively working on chaning CSS rules in this library, you
+If you're actively working on changing CSS rules in this library, you
 will want to clone this repository and run these commands:
 
 ``` shell

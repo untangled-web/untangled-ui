@@ -1,7 +1,6 @@
 (ns untangled.ui.element-cards
-  (:require-macros [devcards.core :refer [defcard defcard-doc]])
   (:require
-    [devcards.core :as dc]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [om.next :as om :refer-macros [defui]]
     [om.dom :as dom]
     [untangled.client.cards :refer [untangled-app]]
@@ -60,15 +59,15 @@
   "
   (dom/div nil
     (e/ui-label {} "Default")
-    (e/ui-label {:color :positive} "Positive")
-    (e/ui-label {:color :informative} "Informative")
-    (e/ui-label {:color :informative-alt} "Informative Alt")
-    (e/ui-label {:color :neutral} "Neutral")
-    (e/ui-label {:color :live} "Live")
-    (e/ui-label {:color :alterable} "Alterable")
-    (e/ui-label {:color :negative} "Negative")
-    (e/ui-label {:color :positive} (icon :add) "Add")
-    (e/ui-label {:color :negative} (icon :close) "Remove")))
+    (e/ui-label {:color :green} "Green")
+    (e/ui-label {:color :blue} "Blue")
+    (e/ui-label {:color :magenta} "Magenta")
+    (e/ui-label {:color :grey} "Grey")
+    (e/ui-label {:color :yellow} "Yellow")
+    (e/ui-label {:color :orange} "Orange")
+    (e/ui-label {:color :red} "Red")
+    (e/ui-label {:color :green} (icon :add) "Add")
+    (e/ui-label {:color :red} (icon :close) "Remove")))
 
 (defcard field
   "# Fields
@@ -83,21 +82,24 @@
     (e/ui-field {:state #{:error}} "Error field")))
 
 (defcard message
-   "# Messages
+  "# Messages
 
-   Use `ui-message` to render children within a message. Common children include text and icons.
+  Use `ui-message` to render children within a message. Common children include text and icons.
 
-   Some samples are shown below:
-   "
-   (dom/div nil
-      (e/ui-message {} "This is default message.")
-      (e/ui-message {:color :neutral} "This is neutral message.")
-      (e/ui-message {:color :alert} "This is an alert message.")
-      (e/ui-message {:color :success} "This is a success message.")
-      (e/ui-message {:color :warning} "This is a warning message.")
-      (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
-      (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
+<<<<<<< HEAD
+=======
+  Some samples are shown below:
+  "
+  (dom/div nil
+    (e/ui-message {} "This is default message.")
+    (e/ui-message {:color :neutral} "This is neutral message.")
+    (e/ui-message {:color :alert} "This is an alert message.")
+    (e/ui-message {:color :success} "This is a success message.")
+    (e/ui-message {:color :warning} "This is a warning message.")
+    (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
+    (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
 
+>>>>>>> upstream/develop
 (defcard avatar
          "# Avatars
 

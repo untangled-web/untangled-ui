@@ -1,7 +1,8 @@
 (ns styles.style
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defsnippet]]
             [om.dom :as dom]
+            [untangled.icons :as icons]
             [clojure.string :as str]))
 
 (def digit-values {"0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5
@@ -164,7 +165,8 @@
 
 #### Colour Palette
 
-This collection of CSS colors are intended to serve the interface of all our product applications and all the components you can see in this document.
+This collection of CSS colors are intended to serve the interface of all our product applications and all the
+components you can see in this document.
 
 ##### Example Usage
 
@@ -199,7 +201,9 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
     #### Colour Theme
 
-    These colors are intended for very specific parts of the user interface. State classes are provided for colored text in this section so you can apply appropriate emotion to your work, `e.g. <span class='is-positive'>Your file has been saved!</span>`.
+    These colors are intended for very specific parts of the user interface. State classes are provided for colored
+    text in this section so you can apply appropriate emotion to your work, `e.g. <span class='is-positive'>Your file
+    has been saved!</span>`.
 
     <div class='u-row'>
 
@@ -252,11 +256,13 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 
 
-(def docs-media "Responsive breakpoints for styling for different devices and groups of devices. We divide devices up by `14em` units starting at `34em`. Using the `em` unit has been a proven browser compatible method of rendering media queries consistently.
+(def docs-media "Responsive breakpoints for styling for different devices and groups of devices. We divide devices up
+by `14em` units starting at `34em`. Using the `em` unit has been a proven browser compatible method of rendering media queries consistently.
 
                     #### Flexible Breakpoints
 
-                    Target devices of a certain minimum width and everything larger than. If your writing mobile-first, then you would need to specify your desktop styles in a `@media (--lg-up)` breakpoint.
+                    Target devices of a certain minimum width and everything larger than. If your writing mobile-first,
+                    then you would need to specify your desktop styles in a `@media (--lg-up)` breakpoint.
 
                     ```css
                     /* For tiny devices you don't need to specify a media query. */
@@ -329,8 +335,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 ;; Positioning Examples
 
-(defexample positioning-example-fixed
-  "#### Fixed Classes"
+(defsnippet positioning-example-fixed
   (dom/div #js {}
     (dom/div #js {:className "u-fixed--top"})
     (dom/div #js {:className "u-fixed--top-center"})
@@ -342,8 +347,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
     (dom/div #js {:className "u-fixed--middle"})
     (dom/div #js {:className "u-fixed--middle-center"})))
 
-(defexample positioning-example-absolute
-  "#### Absolute Classes"
+(defsnippet positioning-example-absolute
   (dom/div #js {}
     (dom/div #js {:className "u-absolute--top"})
     (dom/div #js {:className "u-absolute--top-right"})
@@ -355,7 +359,9 @@ This collection of CSS colors are intended to serve the interface of all our pro
     (dom/div #js {:className "u-absolute--middle-center"})))
 
 (def docs-positioning-position
-  "You can directionally express which position you want to specify using these conventions:
+  "# Positioning
+
+  You can directionally express which position you want to specify using these conventions:
 
   `bottom | bottom-left | bottom-right | middle | top | top-left | top-right`
 
@@ -366,7 +372,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
   ```")
 
 (defexample positioning-example-rotate
-  ""
+  "# Rotate"
   (let [example-class-modifier (if (om/get-state this :rotate-visible) "" " u-hide")]
     (dom/div #js {}
       (dom/button #js {:className "c-button"
@@ -544,9 +550,13 @@ This collection of CSS colors are intended to serve the interface of all our pro
   "#### Ellipsis"
   (dom/div #js {:style #js {:width "300px"}}
     (dom/h1 #js {} "Before")
-    (dom/p #js {:className "is-negative"} "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to truncate this text.")
+    (dom/p #js {:className "is-negative"}
+      "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to
+      truncate this text.")
     (dom/h1 #js {} "After")
-    (dom/p #js {:className "u-ellipsis is-positive"} "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to truncate this text.")))
+    (dom/p #js {:className "u-ellipsis is-positive"}
+      "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to
+      truncate this text.")))
 
 (defexample typography-break-word
   "#### Break Word"
@@ -561,7 +571,9 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
   ``` css
   --fontFamily--sans: 'Source Sans Pro', sans-serif;
-  --fontFamily--monospaced: Consolas, \"Andale Mono WT\", \"Andale Mono\", \"Lucida Console\", \"Lucida Sans Typewriter\", \"DejaVu Sans Mono\", \"Bitstream Vera Sans Mono\", \"Liberation Mono\", \"Nimbus Mono L\", Monaco, \"Courier New\", Courier, monospace;
+  --fontFamily--monospaced: Consolas, \"Andale Mono WT\", \"Andale Mono\", \"Lucida Console\", \"Lucida Sans
+  Typewriter\", \"DejaVu Sans Mono\", \"Bitstream Vera Sans Mono\", \"Liberation Mono\", \"Nimbus Mono L\", Monaco,
+  \"Courier New\", Courier, monospace;
   --fontFamily-page: var(--fontFamily--sans);
   --fontSize--tiny: .75rem;
   --fontSize--small: .875rem;
@@ -587,7 +599,8 @@ This collection of CSS colors are intended to serve the interface of all our pro
 (defexample visibility-show
   "### Show
 
-  This set of classes let you expose any element to the desired device(s). Just add one of the following classes and you will see your element on it's respective device."
+  This set of classes let you expose any element to the desired device(s). Just add one of the following classes and
+  you will see your element on it's respective device."
   (dom/div #js {}
     (dom/div #js {} "+ Shown All The Time")
     (dom/div #js {:className "u-show@sm"} "+ Shown for Small Only")
@@ -624,8 +637,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
   (dom/div #js {}
     (dom/button #js {:className "c-button c-button--large js-fade-control"} "Fade toggle")
     (dom/span #js {:className "c-icon c-icon--xlarge is-positive u-fade-out js-fade-example"}
-      (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-        (dom/path #js {:d "M15 17v2h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm5-15H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM5 5h6v2H5V5zm15 15H4L20 4v16z"})))))
+      (icons/icon :supervisor_account))))
 
 
 
@@ -660,7 +672,9 @@ This collection of CSS colors are intended to serve the interface of all our pro
                         {:id       :visibility
                          :title    "Visibility"
                          :documentation
-                                   "Use simple utilities to hide or show elements across any span of devices"
+                                   "# Visibility
+
+                                   Use simple utilities to hide or show elements across any span of devices"
                          :examples [visibility-show visibility-hide visibility-fade]}
                         ])))
 

@@ -67,6 +67,14 @@ section: Elements
   }
 }
 
+a {
+  color: var(--blue-700);
+}
+
+a[href^="http"] {
+  cursor: pointer;
+}
+
 
 hr {
   border-top: 2px solid var(--borderColor);

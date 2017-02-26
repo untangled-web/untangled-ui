@@ -1,0 +1,141 @@
+/*
+
+
+<div class="c-pagination-dots c-pagination-dots--move">
+  <ul class="">
+    <li class="c-pagination-dots__dot is-current"><span>1</span></li>
+    <li class="c-pagination-dots__dot"><span>2</span></li>
+    <li class="c-pagination-dots__dot"><span>3</span></li>
+    <li><!-- dummy dot --></li>
+  </ul>
+</div>
+
+
+ */
+
+
+
+.c-pagination-dots ul {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-pagination-dots li {
+  position: relative;
+  display: block;
+  float: left;
+  margin: 0 4px;
+  width: 10px;
+  height: 10px;
+}
+
+.c-pagination-dots li:not(:last-child):before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 50px;
+  content: '';
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  .t-dark & {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.c-pagination-dots--move li span {
+  transition: background-color 0.3s ease;
+}
+
+.c-pagination-dots li span {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border-radius: 50px;
+  text-indent: -999em;
+  position: absolute;
+}
+
+.c-pagination-dots--move li:last-child {
+  position: absolute;
+  left: 0;
+  margin: 0;
+  width: 18px;
+  transition: transform .3s ease;
+}
+
+.c-pagination-dots--move li:last-child::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  background: var(--black);
+  transform: translateX(-50%);
+
+  .t-dark & {
+    background: var(--white);
+  }
+}
+
+.c-pagination-dots--move li:not(:last-child) {
+  &:before {
+     background-color: rgba(0, 0, 0, 0.3);
+     border-radius: 50px;
+     content: '';
+     display: inline-block;
+     height: 10px;
+     position: absolute;
+     top: 0;
+     transition: width .1s ease;
+     width: 10px;
+   }
+}
+
+
+.c-pagination-dots--move .is-current:nth-child(1) ~ li:active:nth-child(2):before,
+.c-pagination-dots--move .is-current:nth-child(2) ~ li:active:nth-child(3):before,
+.c-pagination-dots--move .is-current:nth-child(3) ~ li:active:nth-child(4):before,
+.c-pagination-dots--move .is-current:nth-child(4) ~ li:active:nth-child(5):before,
+.c-pagination-dots--move .is-current:nth-child(5) ~ li:active:nth-child(6):before,
+.c-pagination-dots--move .is-current:nth-child(6) ~ li:active:nth-child(7):before,
+.c-pagination-dots--move .is-current:nth-child(7) ~ li:active:nth-child(8):before,
+.c-pagination-dots--move .is-current:nth-child(8) ~ li:active:nth-child(9):before,
+.c-pagination-dots--move .is-current:nth-child(9) ~ li:active:nth-child(10):before {
+  right: 0;
+  width: 28px;
+}
+
+
+
+.c-pagination-dots--move .is-current {
+  &:first-child ~ li:last-child { transform: translateX(0%); }
+  &:nth-child(2) ~ li:last-child { transform: translateX(100%); }
+  &:nth-child(3) ~ li:last-child { transform: translateX(200%); }
+  &:nth-child(4) ~ li:last-child { transform: translateX(300%); }
+  &:nth-child(5) ~ li:last-child { transform: translateX(400%); }
+  &:nth-child(6) ~ li:last-child { transform: translateX(500%); }
+  &:nth-child(7) ~ li:last-child { transform: translateX(600%); }
+  &:nth-child(8) ~ li:last-child { transform: translateX(700%); }
+  &:nth-child(9) ~ li:last-child { transform: translateX(800%); }
+  &:nth-child(10) ~ li:last-child { transform: translateX(900%); }
+}
+
+
+.c-pagination-dots__dot span { transition: background-color 0.3s ease; }
+
+.c-pagination-dots__dots--move li span:hover,
+.c-pagination-dots__dots--move li span:focus {
+  background-color: rgba(0, 0, 0, .3);
+
+  .t-dark & { background-color: rgba(255, 255, 255, .3); }
+}

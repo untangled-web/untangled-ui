@@ -28,12 +28,8 @@ section: Components
   top: calc(100% - 6px);
   z-index: var(--zIndex-menu);
 
+  .has-menu:--active &,
   &:--active { @apply --fade-in; }
-
-  &::before { right: 20px !important; }
-
-  &::after,
-  &:not(.is-active) svg { display: none; }
 
   & .c-icon {
     color: var(--color-page);
@@ -42,34 +38,47 @@ section: Components
     width: var(--size-menu-icon);
   }
 
-  & > .c-button { margin: 0 !important; }
 
-  &--overlap {
-    left: 13px !important;
-    top: -3px !important;
-    width: 165px !important;
+  & > .c-field {
+    margin: 0;
+    padding: 0 .5rem;
   }
-
-  .c-menu--large & { padding: 6px 0; }
 }
 
 
-.c-menu--right {
-  left: auto;
+.c-menu--large {
+  min-width: 200px;
+}
+
+.c-button + .c-menu {
+  left: .5em;
+  right: auto;
+
+  &--top-right,
+  &--left-right,
+  &--bottom-right { right: .5em !important; }
+}
+
+
+.c-menu--top-right,
+.c-menu--bottom-right {
+  left: auto !important;
   right: 0;
 }
 
 
-.c-button + .c-menu {
-  left: .5em;
-
-  &--right { right: .5em; }
+.c-menu--top-right,
+.c-menu--top-left {
+  top: auto;
+  bottom: calc(100% - 6px);
 }
+
 
 .c-tab + .c-menu { top: calc(-.5em + 2px); }
 
-  .c-menu__group { border-bottom: 1px solid var(--borderColor-inactive); }
 
+
+  .c-menu__group:not(:last-child) { border-bottom: 1px solid var(--borderColor-inactive); }
 
 
   .c-menu__item {
@@ -96,11 +105,26 @@ section: Components
     }
   }
 
+  .c-menu__item-icon {
+    display: inline-block;
+    width: 30px;
+  }
+
+
+  .c-menu__viewer {
+    border-bottom: 1px solid var(--grey-100);
+    padding: .5em 1rem;
+    max-height: 50vh;
+    overflow: auto;
+  }
+
 
 .has-menu {
   display: inline-block;
   position: relative;
+  width: 100%;
 
+  & > .c-tab,
   &.c-tab {
     &::before {
        @apply --triangle;
@@ -114,19 +138,48 @@ section: Components
     }
   }
 
+  & > .c-button,
   &.c-button {
-     border-bottom: var(--grey-200) 1px solid;
+    border-bottom: var(--grey-200) 1px solid;
+    text-align: left;
+    text-transform: none;
+    margin: 6px 0;
+    width: 100%;
 
     &::before {
        @apply --triangle;
        @apply --triangle-bottom;
        border-width: 5px 4px 0;
+       color: var(--grey-600);
        content: '';
        float: right;
        margin: 1em .5rem 1em .75rem;
        position: relative;
+       transition: transform .3s ease;
        vertical-align: middle;
     }
   }
+
+
+  &:--active {
+    & > .c-button ,
+    &.c-button {
+      &::before {
+        transform: rotate(180deg);
+       }
+     }
+
+   }
+
+
+  & > .c-button--wide,
+  &.c-button--wide {
+    height: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 4px 16px;
+    text-align: left;
+  }
 }
+
 

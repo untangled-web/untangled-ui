@@ -75,6 +75,30 @@ import: ../README.md
   }
 }
 
+.ui-viewport-container {
+  display: inline-block;
+  width: 360px;
+  margin: 0 1.5em;
+}
+
+.ui-viewport {
+  display: inline-block;
+  box-shadow: 0 0 0 1px var(--grey-50);
+  overflow: hidden;
+
+}
+
+.ui-viewport--android {
+  border-bottom: 50px solid var(--black);
+  border-top: 20px solid var(--grey-400);
+}
+
+.ui-viewport--mobile {
+  height: 640px;
+  width: 360px;
+
+}
+
 .ui-example__figure {
   border: 3px solid var(--grey-50);
   padding: 1em 5px;

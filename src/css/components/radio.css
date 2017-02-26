@@ -4,14 +4,12 @@ section: Components
 ---*/
 
 :root {
-  --backgroundColor-radio: var(--grey-200);
-  --backgroundColor-radio--checked: var(--green-300);
-  --backgroundColor-radio--informative: transparent;
-  --backgroundColor-radio--informative--checked: var(--blue-400);
+  --backgroundColor-radio: var(--white);
+  --backgroundColor-radio--checked: var(--white);
   --borderColor-radio: var(--grey-600);
   --borderColor-radio--checked: var(--green-700);
-  --borderColor-radio--informative: var(--grey-600);
-  --borderColor-radio--informative--checked: var(--blue-400);
+  --counter-size: 10px;
+  --counter-offset: 5px;
 }
 
 .c-radio { @apply --hide-a11y; }
@@ -28,9 +26,7 @@ section: Components
 .c-radio + label {
   cursor: pointer;
   display: inline-block;
-  line-height: 19px;
-  margin-right: 10px;
-  padding-left: 19px;
+  padding-left: 17px;
   position: relative;
 
   &::before {
@@ -41,15 +37,29 @@ section: Components
     display: inline-block;
     float: left;
     font-size: var(--fontSize--small);
-    height: 12px;
+    height: 20px;
     left: 0;
     margin-bottom: 0;
     margin-right: 8px;
     position: absolute;
-    top: 4px;
-    width: 12px;
+    top: 0;
+    width: 20px;
   }
+
+  &::after {
+     @apply --fade-out;
+     background-color: var(--borderColor-radio--checked);
+     border-radius: 50px;
+     content: '';
+     height: var(--counter-size);
+     left: var(--counter-offset);
+     position: absolute;
+     top: var(--counter-offset);
+     width: var(--counter-size);
+     z-index: 5;
+   }
 }
+
 
 .c-radio:focus + label,
 .c-radio + label:active,
@@ -57,41 +67,8 @@ section: Components
   box-shadow: var(--toggle-focus-shadow);
 }
 
-
-/* Alternate Blue */
-
-.c-radio--informative + label {
-  padding-left: 27px;
-
-  &::before {
-    background-color: var(--backgroundColor-radio--informative);
-    border: 1px solid var(--borderColor-radio--informative);
-    border-radius: 50px;
-    content: '';
-    height: 20px;
-    top: 0;
-    width: 20px;
-  }
-
-  &::after {
-    @apply --fade-out;
-    background-color: var(--backgroundColor-radio--informative--checked);
-    border-radius: 50px;
-    content: '';
-    height: 6px;
-    left: 7px;
-    position: absolute;
-    top: 7px;
-    width: 6px;
-    z-index: 5;
-  }
-}
-
-.c-radio--informative:checked + label {
-  &::before {
-    background-color: transparent;
-    border: 1px solid var(--borderColor-radio--informative--checked);
-  }
+.c-radio:focus {
+  box-shadow: var(--toggle-focus-shadow);
 }
 
 
@@ -109,3 +86,54 @@ section: Components
     position: relative;
   }
 }
+
+
+.c-radio--expanded {
+  & + label {
+    padding-left: 27px;
+    margin-right: .5em;
+  }
+}
+
+
+/* Pipes
+ * This is a new utility that should be further developed for responsiveness and better box model handling.
+ */
+
+.has-xpipe {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 3px;
+
+  &::before,
+  &::after {
+    background-color: var(--grey-200);
+    content: '';
+    width: 50%;
+    height: 6px;
+    position: absolute;
+    z-index: -1;
+
+    .u-bottom & { bottom: 10px; }
+  }
+
+  &::before { left: 0; }
+
+  &::after { right: 0; }
+}
+
+.has-start-pipe,
+.has-end-pipe {
+  .c-icon {
+    background-color: var(--white);
+    border-radius: 50px;
+    position: relative;
+    top: 1px;
+  }
+}
+
+.has-start-pipe::before { display: none; }
+
+.has-end-pipe::after { display: none; }
+
+

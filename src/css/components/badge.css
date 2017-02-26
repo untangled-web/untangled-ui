@@ -29,7 +29,7 @@ section: Components
     color: var(--color-badge);
     display: inline-block;
     font-size: var(--fontSize--tiny);
-    line-height: 1;
+    line-height: 22px;
     max-width: 100%;
     outline: 0;
     padding: var(--padding-badge);
@@ -56,6 +56,8 @@ section: Components
     color: var(--color-button-alt--primary);
     margin-bottom: 3px;
   }
+
+  .c-icon:last-child { margin-left: 3px; }
 }
 
 .c-badge--small {

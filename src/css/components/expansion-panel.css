@@ -101,9 +101,16 @@
     opacity: 0;
     padding-bottom: 0;
     padding-top: 0;
+
+    & > * { margin: 0; }
   }
 
   & + & { border-top: var(--border-expansion-panel); }
+
+}
+
+.c-expansion-panel__secondary-content--collapse {
+  padding: 0;
 }
 
 .c-expansion-panel__actions {
@@ -114,6 +121,12 @@
     calc(var(--paddingX-expansion-panel) / 3)
     0
     var(--paddingX-expansion-panel);
+
+  & .c-button {
+      margin-bottom: 0;
+      margin-right: 0;
+      margin-top: 0;
+    }
 }
 
 
@@ -129,3 +142,4 @@
     transform: translateY(0);
   }
 }
+

@@ -1,8 +1,8 @@
 (ns untangled.ui.card-cards
   (:require
-    [devcards.core :as dc :refer-macros [defcard defcard-doc parse-card-args]]
+    [devcards.core :as dc :refer-macros [defcard defcard-doc]]
     [devcards.util.utils :as utils]
-    [untangled.ui.sample-card :refer-macros [sample-card]]
+    [untangled.ui.sample-card :refer [defsample]]
     [om.dom :as dom]
     [untangled.ui.elements :as ele]
     [untangled.client.core :as uc]))
@@ -26,31 +26,31 @@
   ```
   ")
 
-(sample-card ui-card "ui-card"
+(defsample ui-card "ui-card"
   (ele/ui-card {}
     (dom/div nil "Content")))
 
-(sample-card active-card "Active Card"
+(defsample active-card "Active Card"
   (ele/ui-card {:active true}
     (dom/div nil "Content")))
 
-(sample-card title "Title"
+(defsample title "Title"
   (ele/ui-card {:title "Hey There"}
     (dom/div nil "Content")))
 
-(sample-card rounded "Rounded"
+(defsample rounded "Rounded"
   (ele/ui-card {:type :rounded}
     (dom/div nil "Content")))
 
-(sample-card transparent "Transparent"
+(defsample transparent "Transparent"
   (ele/ui-card {:type :transparent}
     (dom/div nil "Content")))
 
-(sample-card zone "Zone"
+(defsample zone "Zone"
   (ele/ui-card {:type :zone}
     (dom/div nil "Content")))
 
-(sample-card ruled "Ruled"
+(defsample ruled "Ruled"
   (ele/ui-card {:type :ruled}
     (dom/div nil "Content")
     (dom/div nil "Content")
@@ -58,14 +58,14 @@
     (dom/div nil "Content")
     (dom/div nil "Content")))
 
-(sample-card ruled-zone "Ruled Zone"
+(defsample ruled-zone "Ruled Zone"
   (ele/ui-card {:type :ruled-zone}
     (dom/div nil "Content")))
 
-(sample-card density-inset "Density Inset"
+(defsample density-inset "Density Inset"
   (ele/ui-card {:density :inset}
     (dom/div nil "Content")))
 
-(sample-card density-collapse "Density Collapse"
+(defsample density-collapse "Density Collapse"
   (ele/ui-card {:density :collapse}
     (dom/div nil "Content")))
