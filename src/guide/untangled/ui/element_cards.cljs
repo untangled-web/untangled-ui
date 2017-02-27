@@ -217,7 +217,7 @@
 (defsample checkbox
          "# Checkboxes
 
-         Use `ui-checkbox` to render a checkbox. Optionally set the checkbox's type (indeterminate, informative).
+         Use `ui-checkbox` to render a checkbox. Optionally set the checkbox's kind (indeterminate, informative).
 
          Some samples are shown below:
          "
