@@ -187,12 +187,12 @@
 (defcard checkbox
      "# Checkboxes
 
-     Use `ui-checkbox` to render a checkbox. Optionally set the checkbox's style (indeterminate, informative).
+     Use `ui-checkbox` to render a checkbox. Optionally set the checkbox's type (indeterminate, informative).
 
      Some samples are shown below:
      "
      (dom/div nil
-        (e/ui-checkbox {:id "checkbox"} )
-        (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
-        (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
-        (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
+        (e/ui-checkbox {:id "checkbox" :checked true})
+        (e/ui-checkbox {:id "checkbox" :kind #{:is-indeterminate}} )
+        (e/ui-checkbox {:id "checkbox" :kind #{:informative}} )
+        ))

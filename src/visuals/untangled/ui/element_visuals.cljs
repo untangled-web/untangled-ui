@@ -125,7 +125,8 @@
 
 (defcard checkbox-visual-regressions
   (dom/div nil
-    (e/ui-checkbox {:id "checkbox"} )
-    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
-    (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
-    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
+    (e/ui-checkbox {:id "checkbox1"} )
+    (e/ui-checkbox {:id "checkbox2" :checked true} )
+    (e/ui-checkbox {:id "checkbox3" :kind :is-indeterminate} )
+    (e/ui-checkbox {:id "checkbox4" :kind :informative})
+    (e/ui-checkbox {:id "checkbox5" :checked true :kind :informative})))

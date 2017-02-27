@@ -277,24 +277,25 @@
                        clj->js)]
     (apply dom/div attributes (when title (build-title title)) children)))
 
+(def checkbox-types
+  {:is-indeterminate    "is-indeterminate"
+   :informative "c-checkbox--informative"})
+
 (defn ui-checkbox
   "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
   className (optional): additional class stylings to apply to the top level of the checkbox
   id: Name of the checkbox
-  style (optional):  is-indeterminate :c-checkbox--informative"
-  [{:keys [id style] :or {id ""} :as attrs}]
-  (let [legal-styles #{:is-indeterminate :c-checkbox--informative}
+  checked (optional): true false
+  kind (optional): is-indeterminate informative"
+  [{:keys [id checked kind] :or {id ""} :as attrs}]
+  {:pre [(contains? #{nil true false} checked)]}
+  (let [legal-kind-values #{:is-indeterminate :informative}
         user-classes (get attrs :className "")
-        classes (cond-> (str user-classes " c-checkbox " style)
-                        (contains? legal-styles style) (str (name style))
-                        )
-        attrs (cond-> attrs
-                      :always (assoc :type "checkbox")
-                      :always (dissoc :styles)
-                      :always (assoc :className classes)
-                      :always (assoc :id (name id)))        ]
+        classes (cond-> (str user-classes " c-checkbox ")
+                        (contains? legal-kind-values kind) (str (checkbox-types kind)))
+        attrs (-> attrs (assoc :type "checkbox" :checked checked :className classes :id (name id) )
+                        (dissoc :kind))]
     (dom/span #js {} (dom/input (clj->js attrs))
-              (dom/label #js {:htmlFor id} \u00A0))
-    ))
+              (dom/label #js {:htmlFor id} \u00A0))))
 
