@@ -7,8 +7,8 @@
     [untangled.client.cards :refer [untangled-app]]
     [untangled.i18n.core :as i18n]
     [untangled.client.core :as uc]
+    [untangled.ui.layout :as layout]
     [untangled.icons :refer [icon]]
-    [untangled.ui.calendar :as c]
     [untangled.ui.elements :as e]
     [untangled.client.mutations :as m]))
 
@@ -186,8 +186,17 @@
 
 (defsample icon-bar
   "# Icon Bar
+
+  Renders icons on a horizontal or vertical bar.
   "
-  (e/ui-icon-bar {}
-    (e/ui-icon {} (icon :alarm))
-    (e/ui-icon {:active true} (icon :alarm))
-    (e/ui-icon {} (icon :alarm))))
+  (dom/div nil
+    (e/ui-icon-bar {} ; FIXME: Shouldn't these lay out left-to-right in the space given?
+      (e/ui-icon {} (icon :local_activity))
+      (e/ui-icon {:active true} (icon :local_airport))
+      (e/ui-icon {} (icon :local_cafe)))
+    (dom/br nil)
+    (e/ui-icon-bar {:orientation :vertical}
+      (e/ui-icon {} (icon :arrow_back)) ; FIXME: This isn't working
+      (e/ui-icon {:active true} (icon :arrow_forward))
+      (e/ui-icon {} (icon :arrow_drop_up)))
+    ))
