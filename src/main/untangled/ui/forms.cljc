@@ -717,7 +717,8 @@
   `form` The form props
   `field` The field name"
   [form field]
-  (:input/validator-args (field-config form field) {}))
+  (assoc (get (field-config form field) :input/validator-args {})
+    ::this-form form))
 
 (defn- set-validation
   [form field value]

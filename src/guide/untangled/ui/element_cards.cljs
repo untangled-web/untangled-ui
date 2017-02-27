@@ -161,8 +161,7 @@
 
   Use `ui-notification` to render a notification of designated kind and with.
 
-  Some samples are shown below:
-  "
+  Some samples are shown below:"
   (dom/div nil
     (e/ui-notification {:kind :informative}
       (e/ui-notification-title {} "Informative")
