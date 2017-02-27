@@ -177,19 +177,50 @@
                       (dissoc :size :color))]
     (dom/span (clj->js props) child)))
 
-(defn ui-notification
-  "Render a notification. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+(defui NotificationTitle
+  Object
+  (render [this]
+    (dom/h1 #js {:className "c-notification_heading"} (om/children this))))
 
-  type: : :success, :warning, :error, :informative
-  size (optional): :wide"
-  [{:keys [className type heading content width actionPath] :as props :or {className ""}} & children]
-  (let [legal-types #{:success :warning :error :informative}
+(def ui-notification-title
+  "Render a notification title. Should only be used in a ui-notification"
+  (om/factory NotificationTitle))
+
+(defui NotificationBody
+  Object
+  (render [this] (dom/p #js {} (om/children this))))
+
+(def ui-notification-body
+  "Render a notification body. Should only be used in a ui-notification"
+  (om/factory NotificationBody))
+
+(defn react-instance?
+  "Returns the react-instance (which is logically true) iff the given react instance is an instance of the given react class.
+  Otherwise returns nil."
+  [react-class react-instance]
+  {:pre [react-class react-instance]}
+  (when (= (.-type react-instance) react-class)
+    react-instance))
+
+(defn first-node
+  "Finds (and returns) the first child that is an instance of the given React class (or nil if not found)."
+  [react-class sequence-of-react-instances]
+  (some #(react-instance? react-class %) sequence-of-react-instances))
+
+(defui Notification
+  Object
+  (render [this]
+    (let [{:keys [width kind onClose] :as props} (om/props this)
+          children     (om/children this)
+          title        (first-node NotificationTitle children)
+          content      (first-node NotificationBody children)
+          legal-types  #{:success :warning :error :informative}
         legal-widths #{:wide}
         user-classes (get props :className "")
         classes      (cond-> (str user-classes " c-notification")
-                             (contains? legal-types type) (str " c-notification--" (name type))
+                         (contains? legal-types kind) (str " c-notification--" (name kind))
                              (contains? legal-widths width) (str " c-notification--" (name width)))
-        type-icon (case type
+          type-icon    (case kind
                     :success (icon :check_circle :states [:positive])
                     :warning (icon :warning)
                     :error (icon :error)
@@ -197,15 +228,25 @@
     (dom/div #js {:className classes}
        type-icon
        (dom/div #js {:className "c-notification_content"}
-          (dom/h1 #js {:className "c-notification_heading"} heading)
-          (dom/p #js {} content))
-       (dom/button #js {:className "c-button c-button--icon"}
-           (icon :close)
-           (dom/path #js {:d actionPath})))))
-        ;TODO - Support of action for button press (an removal of actionPath?)
-        ;TODO - Do we want to support children?
+          (when title title)
+          (when content content))
+        (dom/button #js {:onClick   (fn [evt] (when onClose (onClose)))
+                         :className "c-button c-button--icon"} (icon :close))))))
 
+(def ui-notification
+  "Render a notification. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
+  type: : :success, :warning, :error, :informative
+  size (optional): :wide
+
+  You should include two children of this node:
+
+  (ui-notification {}
+    (ui-notification-title {} title-nodes)
+    (ui-notification-body {} body-nodes))
+
+  The `title-nodes` can be any inline DOM (or just a string), as can body-nodes."
+  (om/factory Notification))
 
 #?(:cljs
    (defn update-frame-content [this child]
@@ -276,3 +317,18 @@
                        (dissoc :active :title :type)
                        clj->js)]
     (apply dom/div attributes (when title (build-title title)) children)))
+
+(defn ui-icon-bar
+  "Render an icon bar giving using a vector of icons (each a map of attributes).
+   Can optionally be render vertically ond/or shifting.
+   Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  align-vertically (optional): :true
+  shifting (optional): :true"
+  [{:keys [className align-vertically shifting] :as props :or {className ""}} & children]
+  (let [user-classes    (get props :className "")
+        top-level-class (cond-> (str user-classes " o-iconbar")
+                          (= align-vertically :true) (str " o-iconbar--rail")
+                          (= shifting :true) (str " o-iconbar--shifting"))]
+    (dom/div #js {}
+      (apply dom/nav #js {:className top-level-class} children))))

@@ -25,14 +25,13 @@
              code (read-string (str "'" (str main-obj)))]
          `(dc/defcard* ~(symbol (name vname))
             (let [document# (str
-                              "# Sample " ~docu "\n"
+                              ~docu "\n"
                               "```\n"
                               (with-out-str
                                 (~'cljs.pprint/with-pprint-dispatch
                                   ~'cljs.pprint/code-dispatch
                                   (~'cljs.pprint/pprint ~code)))
-                              "```\n"
-                              "renders:")]
+                              "```\n")]
               (dc/card-base
                 {:name          ~(name vname)
                  :documentation document#
