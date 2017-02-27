@@ -134,15 +134,15 @@
   size (optional): huge"
   [{:keys [className color size] :as props :or {className ""}} child]
   (let [legal-colors #{:primary :accent}
-        legal-sizes #{:huge}
+        legal-sizes  #{:huge}
         user-classes (get props :className "")
-        classes (cond-> user-classes
-                        :always (str " c-avatar")
-                        (contains? legal-colors color) (str " c-avatar--" (name color))
-                        (contains? legal-sizes size) (str " c-avatar--" (name size)))
-        props (-> props
-                      (assoc :className classes)
-                      (dissoc :color :size))]
+        classes      (cond-> user-classes
+                       :always (str " c-avatar")
+                       (contains? legal-colors color) (str " c-avatar--" (name color))
+                       (contains? legal-sizes size) (str " c-avatar--" (name size)))
+        props        (-> props
+                       (assoc :className classes)
+                       (dissoc :color :size))]
     (dom/span (clj->js props) child)))
 
 (defn ui-loader
@@ -152,12 +152,12 @@
   [{:keys [className color] :as props :or {className ""}}]
   (let [legal-colors #{:neutral}
         user-classes (get props :className "")
-        classes (cond-> user-classes
-                        :always (str " c-loader")
-                        (contains? legal-colors color) (str " c-loader--" (name color)))
-        props (cond-> props
-                      :always (assoc :className classes)
-                      :always (dissoc :color))]
+        classes      (cond-> user-classes
+                       :always (str " c-loader")
+                       (contains? legal-colors color) (str " c-loader--" (name color)))
+        props        (cond-> props
+                       :always (assoc :className classes)
+                       :always (dissoc :color))]
     (dom/div (clj->js props))))
 
 (defn ui-icon
@@ -166,15 +166,15 @@
   color (optional): :positive, :informative, :neutral, :live, :alterable, :negative
   size (optional): :small, :medium, :large, :xlarge, :huge"
   [{:keys [className color size] :as props :or {className ""}} child] ;TODO: SHould we allow children?
-  (let  [legal-colors #{:positive :informative :neutral :live :alterable :negative}
-        legal-sizes #{:small :medium :large :xlarge :huge}
+  (let [legal-colors #{:positive :informative :neutral :live :alterable :negative}
+        legal-sizes  #{:small :medium :large :xlarge :huge}
         user-classes (get props :className "")
-        classes (cond-> (str user-classes " c-icon")
-                        (contains? legal-colors color) (str " c-icon--" (name color))
-                        (contains? legal-sizes size) (str " c-icon--" (name size)))
-        props (-> props
-                      (assoc :className classes)
-                      (dissoc :size :color))]
+        classes      (cond-> (str user-classes " c-icon")
+                       (contains? legal-colors color) (str " c-icon--" (name color))
+                       (contains? legal-sizes size) (str " c-icon--" (name size)))
+        props        (-> props
+                       (assoc :className classes)
+                       (dissoc :size :color))]
     (dom/span (clj->js props) child)))
 
 (defui NotificationTitle
@@ -215,19 +215,19 @@
           title        (first-node NotificationTitle children)
           content      (first-node NotificationBody children)
           legal-types  #{:success :warning :error :informative}
-        legal-widths #{:wide}
-        user-classes (get props :className "")
-        classes      (cond-> (str user-classes " c-notification")
+          legal-widths #{:wide}
+          user-classes (get props :className "")
+          classes      (cond-> (str user-classes " c-notification")
                          (contains? legal-types kind) (str " c-notification--" (name kind))
-                             (contains? legal-widths width) (str " c-notification--" (name width)))
+                         (contains? legal-widths width) (str " c-notification--" (name width)))
           type-icon    (case kind
-                    :success (icon :check_circle :states [:positive])
-                    :warning (icon :warning)
-                    :error (icon :error)
-                    (icon :info))]
-    (dom/div #js {:className classes}
-       type-icon
-       (dom/div #js {:className "c-notification_content"}
+                         :success (icon :check_circle :states [:positive])
+                         :warning (icon :warning)
+                         :error (icon :error)
+                         (icon :info))]
+      (dom/div #js {:className classes}
+        type-icon
+        (dom/div #js {:className "c-notification_content"}
           (when title title)
           (when content content))
         (dom/button #js {:onClick   (fn [evt] (when onClose (onClose)))
@@ -290,7 +290,7 @@
   "Helper function for building up the title bar of the card."
   [title]
   (dom/div #js {:className "c-card__title"}
-           (dom/h1 #js {:className "c-card__heading"} title)))
+    (dom/h1 #js {:className "c-card__heading"} title)))
 
 (defn ui-card
   "Card component
@@ -313,9 +313,9 @@
                      type (str " " (card-types type))
                      density (str " " (density-types density)))
         attributes (-> attrs
-                       (merge {:className classes})
-                       (dissoc :active :title :type)
-                       clj->js)]
+                     (merge {:className classes})
+                     (dissoc :active :title :type)
+                     clj->js)]
     (apply dom/div attributes (when title (build-title title)) children)))
 
 (defn ui-icon-bar

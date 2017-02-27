@@ -199,21 +199,21 @@
 (defn- calendar-toolbar [this]
   (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)]
     (dom/header #js {:className "c-calendar__control"}
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Last Month"
-                         :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
-          (icon :keyboard_arrow_left))
-        (dom/span #js {:className "current"
-                       :onClick   #(om/transact! this `[(set-overlay-visible ~{:calendar-id id :visible? (not overlay-visible?)})])}
-          (displayed-date calendar))
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Today"
-                         :onClick   #(om/transact! this `[(set-date ~{:date (date) :calendar-id id})])}
-          (icon :today))
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Next Month"
-                         :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
-          (icon :keyboard_arrow_right))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :title     "Last Month"
+                       :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
+        (icon :keyboard_arrow_left))
+      (dom/span #js {:className "current"
+                     :onClick   #(om/transact! this `[(set-overlay-visible ~{:calendar-id id :visible? (not overlay-visible?)})])}
+        (displayed-date calendar))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :title     "Today"
+                       :onClick   #(om/transact! this `[(set-date ~{:date (date) :calendar-id id})])}
+        (icon :today))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :title     "Next Month"
+                       :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
+        (icon :keyboard_arrow_right))
       )))
 
 (def days-of-week-labels

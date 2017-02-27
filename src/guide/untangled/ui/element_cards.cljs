@@ -99,71 +99,71 @@
     (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
 
 (defsample avatar
-         "# Avatars
+  "# Avatars
 
-         Use `ui-avatar` to render a single child within an avatar (typically an icon, an image or a string).
+  Use `ui-avatar` to render a single child within an avatar (typically an icon, an image or a string).
 
-         Some samples are shown below:
-         "
-         (dom/div nil
-                  (e/ui-avatar {:color :primary} "PC")
-                  (e/ui-avatar {:color :accent} "AC")
-                  (e/ui-avatar {:size :huge} "HU")
-                  ;TODO: Add an image example
-                  (e/ui-avatar {} (icon :supervisor_account))))
+  Some samples are shown below:
+  "
+  (dom/div nil
+    (e/ui-avatar {:color :primary} "PC")
+    (e/ui-avatar {:color :accent} "AC")
+    (e/ui-avatar {:size :huge} "HU")
+    ;TODO: Add an image example
+    (e/ui-avatar {} (icon :supervisor_account))))
 
 (defsample loader
-         "# Loaders
+  "# Loaders
 
-         Use `ui-loader` to render a loading graphic.
+  Use `ui-loader` to render a loading graphic.
 
-         Some samples are shown below:
-         "
-         (dom/div #js {:style #js {:height 50}}
-                  (e/ui-loader {})
-                  (e/ui-loader {:color :neutral})))
+  Some samples are shown below:
+  "
+  (dom/div #js {:style #js {:height 50}}
+    (e/ui-loader {})
+    (e/ui-loader {:color :neutral})))
 
 
 (defsample icon-colors
-         "# Icons
+  "# Icons
 
-         Use `ui-icon` to render an icon with designated color attributes.
+  Use `ui-icon` to render an icon with designated color attributes.
 
-         Some samples are shown below:
-         "
-         (dom/div nil
-                  (e/ui-icon {} (icon :alarm))
-                  (e/ui-icon {:color :neutral} (icon :alarm))
-                  (e/ui-icon {:color :positive} (icon :alarm))
-                  (e/ui-icon {:color :informative} (icon :alarm))
-                  (e/ui-icon {:color :live} (icon :alarm))
-                  (e/ui-icon {:color :positive} (icon :alarm))
-                  (e/ui-icon {:color :alterable} (icon :alarm))
-                  (e/ui-icon {:color :negative} (icon :alarm))))
+  Some samples are shown below:
+  "
+  (dom/div nil
+    (e/ui-icon {} (icon :alarm))
+    (e/ui-icon {:color :neutral} (icon :alarm))
+    (e/ui-icon {:color :positive} (icon :alarm))
+    (e/ui-icon {:color :informative} (icon :alarm))
+    (e/ui-icon {:color :live} (icon :alarm))
+    (e/ui-icon {:color :positive} (icon :alarm))
+    (e/ui-icon {:color :alterable} (icon :alarm))
+    (e/ui-icon {:color :negative} (icon :alarm))))
 
 (defsample icon-sizes
-         "# Icons
+  "# Icons
 
-         Use `ui-icon` to render an icon with designated size attributes.
+  Use `ui-icon` to render an icon with designated size attributes.
 
-         Some samples are shown below:
-         "
-         (dom/div nil
-                  (e/ui-icon {} (icon :alarm))
-                  (e/ui-icon {:size :small} (icon :alarm))
-                  (e/ui-icon {:size :medium} (icon :alarm))
-                  (e/ui-icon {:size :large} (icon :alarm))
-                  (e/ui-icon {:size :xlarge} (icon :alarm))
-                  (e/ui-icon {:size :huge} (icon :alarm))))
+  Some samples are shown below:
+  "
+  (dom/div nil
+    (e/ui-icon {} (icon :alarm))
+    (e/ui-icon {:size :small} (icon :alarm))
+    (e/ui-icon {:size :medium} (icon :alarm))
+    (e/ui-icon {:size :large} (icon :alarm))
+    (e/ui-icon {:size :xlarge} (icon :alarm))
+    (e/ui-icon {:size :huge} (icon :alarm))))
 
 (defsample notifications
-         "# Notifications
+  "# Notifications
 
   Use `ui-notification` to render a notification of designated kind and with.
 
-         Some samples are shown below:
-         "
-         (dom/div nil
+  Some samples are shown below:
+  "
+  (dom/div nil
     (e/ui-notification {:kind :informative}
       (e/ui-notification-title {} "Informative")
       (e/ui-notification-body {} "You have been notified."))
