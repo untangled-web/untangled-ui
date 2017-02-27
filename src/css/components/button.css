@@ -18,6 +18,8 @@ section: Components
 
   --button--wide: {
     display: block;
+    margin-left: 0;
+    margin-right: 0;
     width: 100%;
   };
 }

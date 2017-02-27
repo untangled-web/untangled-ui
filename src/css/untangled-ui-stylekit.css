@@ -88,22 +88,19 @@
 @import 'components/menu';
 @import 'components/message';
 @import 'components/notification';
+@import 'components/pagination';
 @import 'components/switch';
 @import 'components/table';
 @import 'components/tabs';
 @import 'components/tooltip';
 
-@import 'objects/accordion';
 @import 'objects/toolbar';
 @import 'objects/button-group';
 @import 'objects/calendar';
 @import 'objects/drawer';
-@import 'objects/editor';
 @import 'objects/iconbar';
 @import 'objects/input';
-@import 'objects/listing';
 @import 'objects/modal';
-@import 'objects/sidebar';
 @import 'objects/visualizations';
 
 @import 'utilities/alignment';

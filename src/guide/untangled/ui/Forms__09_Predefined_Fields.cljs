@@ -42,11 +42,11 @@
         (dom/div #js {:className "form-group"}
           (dom/label #js {:className "col-sm-2" :htmlFor :rating} "Rating:")
           (dom/div #js {:className "col-sm-10"}
-            (f/form-field this props :rating :choice 1) 1
-            (f/form-field this props :rating :choice 2) 2
-            (f/form-field this props :rating :choice 3) 3
-            (f/form-field this props :rating :choice 4) 4
-            (f/form-field this props :rating :choice 5) 5))))))
+            (f/form-field this props :rating :choice 1 :label 1)
+            (f/form-field this props :rating :choice 2 :label 2)
+            (f/form-field this props :rating :choice 3 :label 3)
+            (f/form-field this props :rating :choice 4 :label 4)
+            (f/form-field this props :rating :choice 5 :label 5) ))))))
 
 (def ui-sink (om/factory KitchenSink {:keyfn :db/id}))
 

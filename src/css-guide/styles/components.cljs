@@ -246,7 +246,7 @@
 
 
 ;; -------------------------
-;; Dropdown
+;; Menus
 ;; -------------------------
 
 (def menus-header
@@ -259,7 +259,7 @@
   (let [open (boolean (om/get-state this :open))
         selections ["Apples" "Oranges" "Banannas"]
         current (or (om/get-state this :selection) "Not Selected")]
-    (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "150px"}}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
                        :className "c-button "} current)
       (dom/div #js {:id          "test-dropdown"
@@ -281,7 +281,7 @@
     (let [open       (boolean (om/get-state this :open))
          selections ["Apples" "Oranges" "Banannas"]
          current    (or (om/get-state this :selection) "Top Left Aligned")]
-      (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -297,7 +297,7 @@
     (let [open       (boolean (om/get-state this :open))
           selections ["Apples" "Oranges" "Banannas"]
           current    (or (om/get-state this :selection) "Bottom Left Aligned")]
-      (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+      (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -314,7 +314,7 @@
           selections ["Apples" "Oranges" "Banannas"]
           current    (or (om/get-state this :selection) "Top Right Aligned")]
       (dom/div #js {:className "u-end"}
-        (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+        (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
           (dom/button #js {:onClick   #(om/update-state! this update :open not)
                            :className "c-button "} current)
           (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
@@ -329,7 +329,7 @@
     ;; Bottom right
 
     (let [open (boolean (om/get-state this :open))]
-    (dom/div #js {:className "u-end"}
+    (dom/div #js {:className "u-end" :style #js {:width "180px"}}
       (dom/div #js {:className (str "has-menu" (when open " is-active"))}
         (dom/button #js {:onClick #(toggle-open this) :className "c-button "} "Bottom Right Aligned")
         (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--bottom-right" :tabIndex "-1"}
@@ -354,7 +354,7 @@
   "### Multi-Select, Searchable Dropdown"
   (let [open (boolean (om/get-state this :open))
         items (mapv #(str "Item " %) (range 1 20))]
-    (dom/div #js {:className (str "has-menu" (when open " is-active"))}
+    (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
       (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown "} "Filter")
       (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--large" :tabIndex "-1"}
         (dom/div #js {:className "c-field"}
@@ -1362,6 +1362,11 @@
           (dom/button #js {:className "c-button c-button--postfix u-hide@sm"} "Start"))))))
 
 
+(defn render-calendar-week [lowerRange upperRange]
+  (for [x (range lowerRange (+ upperRange 1))
+       :let [y (dom/td #js {:key (str "id-" x) :className "c-calendar__day"} x)]]
+   y))
+
 (defexample calendar-example
   "### Calendar Example"
   (dom/div #js {}
@@ -1397,40 +1402,18 @@
                 (dom/td #js {:className "c-calendar__day is-inactive"} "29")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "30")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "31")
-                (dom/td #js {:className "c-calendar__day"} "1")
-                (dom/td #js {:className "c-calendar__day"} "2"))
+                (render-calendar-week 1 2))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "3")
-                (dom/td #js {:className "c-calendar__day"} "4")
-                (dom/td #js {:className "c-calendar__day"} "5")
-                (dom/td #js {:className "c-calendar__day"} "6")
-                (dom/td #js {:className "c-calendar__day"} "7")
-                (dom/td #js {:className "c-calendar__day"} "8")
-                (dom/td #js {:className "c-calendar__day"} "9"))
+                (render-calendar-week 3 9))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "10")
-                (dom/td #js {:className "c-calendar__day"} "11")
-                (dom/td #js {:className "c-calendar__day"} "12")
-                (dom/td #js {:className "c-calendar__day"} "13")
-                (dom/td #js {:className "c-calendar__day"} "14")
-                (dom/td #js {:className "c-calendar__day"} "15")
-                (dom/td #js {:className "c-calendar__day"} "16"))
+                (render-calendar-week 10 16))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "17")
-                (dom/td #js {:className "c-calendar__day"} "18")
+                (render-calendar-week 17 18)
                 (dom/td #js {:className "c-calendar__day is-active"} "19")
-                (dom/td #js {:className "c-calendar__day"} "20")
-                (dom/td #js {:className "c-calendar__day"} "21")
-                (dom/td #js {:className "c-calendar__day"} "22")
-                (dom/td #js {:className "c-calendar__day"} "23"))
+                (render-calendar-week 20 23))
               (dom/tr #js {}
-                (dom/td #js {:className "c-calendar__day"} "24")
-                (dom/td #js {:className "c-calendar__day"} "25")
-                (dom/td #js {:className "c-calendar__day"} "26")
-                (dom/td #js {:className "c-calendar__day"} "27")
-                (dom/td #js {:className "c-calendar__day"} "28")
-                (dom/td #js {:className "c-calendar__day"} "29")
-                (dom/td #js {:className "c-calendar__day"} "30")))))))))
+                (render-calendar-week 24 30)
+                ))))))))
 
 (defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
@@ -1528,19 +1511,13 @@
   (dom/div #js {}
     (dom/nav #js {:className "o-iconbar o-iconbar--shifting is-mobile"}
       (dom/button #js {:className "o-iconbar__item is-active"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"})))
+        (icons/icon :home)
         (dom/span #js {:className "o-iconbar__label"} "Home"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"})))
+        (icons/icon :description)
         (dom/span #js {:className "o-iconbar__label"} "Docs"))
       (dom/button #js {:className "o-iconbar__item"}
-        (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-            (dom/path #js {:d "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"})))
+        (icons/icon :feedback)
         (dom/span #js {:className "o-iconbar__label"} "Support"))
       (dom/button #js {:className "o-iconbar__item"}
         (dom/span #js {:className "c-icon"}
@@ -1589,6 +1566,44 @@
         )
       )
     ))
+
+
+(defviewport modal-fullscreen-2
+  "Fullscreen modal with another modal"
+  (dom/div #js {:style #js {:position "relative" :height "570px"}}
+    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-modal__card"}
+        (dom/div #js {:className "c-modal__content"}
+          (dom/span #js {} "Discard new event?")
+          )
+        (dom/div #js {:className "c-modal__actions"}
+          (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
+            (dom/button #js {:className "c-button c-button--primary"
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Erase"))
+        ))
+    (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})
+
+    (dom/div #js {:className "c-modal c-modal--fullscreen"}
+     (dom/div #js {:className "c-modal__card"}
+       (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
+         (dom/div #js {:className "o-toolbar__actions"}
+           (dom/button #js {:className "c-button"} "Save")))
+       (dom/div #js {:className "has-menu"}
+         (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
+       (dom/div #js {:className "c-modal__content"}
+         (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
+         (dom/input #js {:className "c-field" :placeholder "Location"})
+         (dom/label #js {:className "is-optional u-leader--half"} "Start time")
+         (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
+         (dom/label #js {:className "is-optional u-leader--half"} "End time")
+         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
+         (dom/input #js {:className "c-field" :placeholder "Room"})
+         )
+       )
+     )))
 
 
 (defexample toolbar
@@ -1938,6 +1953,7 @@
            :examples [
                       modal-example
                       modal-fullscreen-1
+                      modal-fullscreen-2
                       ]}
           {:id :toolbar
            :title "Toolbar"

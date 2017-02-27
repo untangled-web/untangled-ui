@@ -15,8 +15,8 @@
   (let [cx (.-clientX evt)
         cy (.-clientY evt)
         BB (.getBoundingClientRect dom-ele)
-        x (- cx (.-left BB))
-        y (- cy (.-top BB))]
+        x  (- cx (.-left BB))
+        y  (- cy (.-top BB))]
     (Point. x y)))
 
 (defn inside-rect?
@@ -30,7 +30,7 @@
 
 (defn rect-midpoint [^Rectangle rect]
   (->Point (int (/ (+ (-> rect :lr :x) (-> rect :ul :x)) 2))
-           (int (/ (+ (-> rect :lr :y) (-> rect :ul :y)) 2))))
+    (int (/ (+ (-> rect :lr :y) (-> rect :ul :y)) 2))))
 
 (defn diff-translate
   "Return a point translated by the vector difference of target and origin as the translation (both orign and target
@@ -39,20 +39,20 @@
   (let [dx (- (:x target-vector) (:x origin-vector))
         dy (- (:y target-vector) (:y origin-vector))]
     (->Point (+ (:x point) dx)
-             (+ (:y point) dy))))
+      (+ (:y point) dy))))
 
 (defn new-handle
   "Creates a new control handle, centered at point, of size sz"
   [{:keys [x y] :as point} sz]
   (let [half-sz (int (/ sz 2))]
     (->Rectangle (->Point (- x half-sz) (- y half-sz))
-                 (->Point (+ x half-sz) (+ y half-sz)))))
+      (->Point (+ x half-sz) (+ y half-sz)))))
 
 (defn diff-translate-rect
   "Return a rectangle translated by the vector difference of target - origin."
   [^Rectangle rect ^Point origin ^Point target]
   (->Rectangle (diff-translate (:ul rect) origin target)
-               (diff-translate (:lr rect) origin target)))
+    (diff-translate (:lr rect) origin target)))
 
 (defn draw-rect
   "Draw a rectangle with a style (:solid-white, :solid-black, :solid, or :dashed)"
@@ -70,8 +70,8 @@
                      (set! (.-fillStyle ctx) "black")
                      (.fillRect ctx x y w h))
       :solid (do
-                (.setLineDash ctx #js [0])
-                (.strokeRect ctx x y w h))
+               (.setLineDash ctx #js [0])
+               (.strokeRect ctx x y w h))
       :dashed (do
                 (.setLineDash ctx #js [5])
                 (.strokeRect ctx x y w h))
