@@ -133,8 +133,9 @@
   "
   (dom/div nil
     (e/ui-icon {} (icon :alarm))
+    (e/ui-icon {:color :passive} (icon :alarm))
+    (e/ui-icon {:color :active} (icon :alarm))
     (e/ui-icon {:color :neutral} (icon :alarm))
-    (e/ui-icon {:color :positive} (icon :alarm))
     (e/ui-icon {:color :informative} (icon :alarm))
     (e/ui-icon {:color :live} (icon :alarm))
     (e/ui-icon {:color :positive} (icon :alarm))

@@ -50,9 +50,15 @@ section: Components
 
   &:--disabled { opacity: var(--opacity-button--disabled); }
 
-  &.is-active { fill: var(--color-icon--active); }
+  &.is-active {
+     color: var(--color-icon--active) !important;
+     fill: var(--color-icon--active) !important;
+   }
 
-  &.is-passive { fill: var(--color-icon--passive); }
+  &.is-passive {
+     color: var(--color-icon--passive) !important;
+     fill: var(--color-icon--passive) !important;
+   }
 
   &.is-selectable {
     cursor: pointer;
