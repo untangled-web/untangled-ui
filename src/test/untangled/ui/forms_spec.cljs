@@ -564,8 +564,10 @@
       (f/valid? invalid-person :person/name) => false
       "Can find the validation trigger symbol for a field"
       (f/validator invalid-person :person/name) => 'is-named?
+      "Includes the current complete form in the arguments to the validator"
+      (::f/this-form (f/validator-args invalid-person :person/name)) => invalid-person
       "Can find the validation trigger args for a field"
-      (f/validator-args invalid-person :person/name) => {:name "C"})
+      (:name (f/validator-args invalid-person :person/name)) => "C")
     (component "dirty checking"
       (let [clean-person (om/db->tree (om/get-query Person) c-person app-state)]
         (assertions
