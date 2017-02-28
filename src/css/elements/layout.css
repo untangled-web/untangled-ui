@@ -99,7 +99,7 @@ section: Elements
 .o-header {
   @apply --position-top;
   position: fixed;
-  z-index: calc(var(--zIndex-appBar) + 1);
+  z-index: calc(var(--zIndex-appBar) + 2);
 
   @media print {
     margin-bottom: 1em;

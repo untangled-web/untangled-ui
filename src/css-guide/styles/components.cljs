@@ -78,12 +78,14 @@
   "### Button types"
   (dom/div #js {:className "u-row u-center"}
     (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--primary c-button--circular"} (icons/icon :add))
+      (dom/div #js {:className "u-font-size--small u-leader"} "Circular button"))
+    (dom/div #js {:className "u-column"}
       (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Button")
       (dom/div #js {:className "u-font-size--small u-leader"} "Raised button"))
     (dom/div #js {:className "u-column"}
       (dom/button #js {:className "c-button c-button--primary"} "Button")
-      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button")
-      )))
+      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button"))))
 
 (defexample button-shape
   "### Size and form
@@ -727,6 +729,16 @@
     (mapv (fn [typ] (dom/div #js {:key typ :className ""}
                       (dom/input #js {:type typ :placeholder typ :className "c-field"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
+    (l/row {:density :collapse}
+      (l/col {:width 1}
+        (dom/label #js {}
+         (dom/span #js {:className "c-button c-button--circular c-button--primary c-button--dense"}
+           (icons/icon :file_upload)
+           (dom/input #js {:type "file" :className "u-hide" :id "file-input-file"}))))
+      (l/col {:width 3}
+        (dom/input #js {:type "text" :className "c-field" :disabled true :readOnly true :id "file-input-text"})
+        (dom/label #js {:htmlFor "file-input-text"}))
+      )
     ))
 
 (defexample field-sizes
