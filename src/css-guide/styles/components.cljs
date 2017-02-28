@@ -1548,11 +1548,15 @@
   "Fullscreen modal"
   (dom/div #js {:className "c-modal c-modal--fullscreen"}
     (dom/div #js {:className "c-modal__card"}
-      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
-        (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
-        (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-        (dom/div #js {:className "c-toolbar__actions"}
-          (dom/button #js {:className "c-button"} "Save")))
+
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised c-toolbar--inline"}
+        (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
+         (dom/div #js {:className "c-toolbar__view"}
+           (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+           (dom/span #js {:className "c-toolbar__label"} "Modal title"))
+         (dom/div #js {:className "c-toolbar__actions"}
+           (dom/button #js {:className "c-button"} "Save"))))
+
       (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
       (dom/div #js {:className "c-modal__content"}
@@ -1563,9 +1567,7 @@
         (dom/label #js {:className "is-optional u-leader--half"} "End time")
         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
         (dom/input #js {:className "c-field" :placeholder "Room"})
-        )
-      )
-    ))
+        ))))
 
 
 (defviewport modal-fullscreen-2
@@ -1587,10 +1589,12 @@
     (dom/div #js {:className "c-modal c-modal--fullscreen"}
      (dom/div #js {:className "c-modal__card"}
        (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
-         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
-         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-         (dom/div #js {:className "c-toolbar__actions"}
-           (dom/button #js {:className "c-button"} "Save")))
+         (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
+          (dom/div #js {:className "c-toolbar__view"}
+            (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+            (dom/span #js {:className "c-toolbar__label"} "Modal title"))
+          (dom/div #js {:className "c-toolbar__actions"}
+            (dom/button #js {:className "c-button"} "Save"))))
        (dom/div #js {:className "has-menu"}
          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
        (dom/div #js {:className "c-modal__content"}
@@ -1618,9 +1622,8 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div #js {:className "c-toolbar" :style #js {:position "static"}}
       (dom/div #js {:className "c-toolbar__row"}
-        (dom/div #js {:className "c-toolbar__view"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu)))
+        (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
 
         (dom/div #js {:className "c-toolbar__actions"}
 
@@ -1687,7 +1690,7 @@
         get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
-      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary u-center" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "static"}}
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
             (dom/button #js {:className "c-button c-button--icon"}

@@ -29,33 +29,27 @@
  *
  * COMPONENTS
  * Badge..............Simple adaptable badges
+ * Button.............Visual style to represent actions in varying priority
+ * Button Group.......For when you can't just have one button
  * Card...............Styles for many different kinds of cards
+ * Calendar...........A modal calendar
  * Checkbox...........Custom CSS and A11Y compatible checkbox
+ * Drawer.............Mobile panes for high-level navigation
  * Radio..............Custom CSS and A11Y compatible radios
  * Field..............A simple take on inputs for madlibs style editing
  * Icon...............Useful classes for doing things with icons
+ * Iconbar............Navigable set of icons
  * Input..............Simple input styles
  * Label..............Subjective indicators
  * Loader.............Animated controls to show progress
  * Menu...............Select and menu join forces to create a dropdown
  * Message............Small text in varying colors
+ * Modal..............Lets you expose more things when you want
  * Notification.......Informative dialogs
  * Table..............Responsive tabular data patterns
  * Tabs...............Navigable controls
- * Tooltip............Short messages for documenting things
- *
- * OBJECTS
- * Accordion..........Expandable sections of content
- * Aside..............A floating card to show a list of options
  * Toolbar............Great for housing actions and navigation
- * Button Group.......For when you can't just have one button
- * Calendar...........A modal calendar
- * Drawer.............Mobile panes for high-level navigation
- * Editor.............General editor of things
- * Iconbar............Navigable set of icons
- * Listing............A collection of rows organized with actions
- * Modal..............Lets you expose more things when you want
- * Sidebar............Collapsible container for nav and content
+ * Tooltip............Short messages for documenting things
  */
 
 @import 'settings/config';
@@ -75,33 +69,31 @@
 @import 'components/backdrop';
 @import 'components/badge';
 @import 'components/button';
+@import 'components/button-group';
 @import 'components/card';
+@import 'components/calendar';
 @import 'components/checkbox';
+@import 'components/drawer';
 @import 'components/radio';
 @import 'components/expansion-panel';
 @import 'components/field';
 @import 'components/icon';
+@import 'components/iconbar';
 @import 'components/input';
 @import 'components/label';
 @import 'components/list';
 @import 'components/loader';
 @import 'components/menu';
 @import 'components/message';
+@import 'components/modal';
 @import 'components/notification';
 @import 'components/pagination';
 @import 'components/switch';
 @import 'components/table';
 @import 'components/tabs';
+@import 'components/toolbar';
 @import 'components/tooltip';
-
-@import 'objects/toolbar';
-@import 'objects/button-group';
-@import 'objects/calendar';
-@import 'objects/drawer';
-@import 'objects/iconbar';
-@import 'objects/input';
-@import 'objects/modal';
-@import 'objects/visualizations';
+@import 'components/visualizations';
 
 @import 'utilities/alignment';
 @import 'utilities/grid';

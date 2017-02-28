@@ -90,12 +90,5 @@
     box-shadow: none;
     width: 100%;
   }
-
-    & .c-modal__title {
-      padding: 0;
-      width: 65%;
-      max-height: 42px; /* Change to 2x line-height */
-      text-overflow: ellipsis;
-    }
 }
 

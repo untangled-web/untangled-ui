@@ -33,7 +33,7 @@ section: Components
   background: transparent;
   border: none;
   border-radius: var(--borderRadius-button);
-  color: var(--color-button--secondary);
+  color: currentColor /* var(--color-button--secondary) */;
   display: inline-block;
   font-family: inherit;
   font-size: var(--fontSize-button);

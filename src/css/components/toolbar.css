@@ -5,6 +5,7 @@
 }
 
 .c-toolbar {
+  align-items: baseline;
   background-color: var(--color-toolbar);
   color: var(--grey-900);
   font-size: 20px;
@@ -27,6 +28,9 @@
   border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
+.c-toolbar--inline {
+  position: static;
+}
 
 
 
@@ -35,6 +39,7 @@
   @apply --middle;
   height: var(--height-toolbar);
   z-index: var(--zIndex-appBar);
+  width: 100%;
 
   & .u-column--bar {
     &:nth-child(even) { @apply --end; }
@@ -56,9 +61,13 @@
   }
 }
 
+  .c-toolbar__view {
+    flex: 1;
+  }
+
   .c-toolbar__actions {
-    @apply --width-column-bar;
     @apply --end;
+    flex: 1;
     order: 1; /* Last */
 
     @media (--sm) {
@@ -72,15 +81,6 @@
     @media print { display: none; }
   }
 
-
-  .c-toolbar__view {
-    order: -1; /* First */
-
-    & :--headings {
-      display: inline-block;
-      margin-right: .5rem !important;
-    }
-  }
 
   .c-toolbar__action {
     @media (--sm) {
@@ -96,4 +96,16 @@
   @media print { display: none; }
 }
 
+.c-toolbar__row--expanded {
+  height: auto;
+}
 
+
+.c-toolbar__label {
+  flex: 1 1 40%;
+  margin-bottom: 12px;
+  max-height: 42px; /* Change to 2x line-height */
+  overflow: hidden;
+  padding: 0 0 2px;
+  text-overflow: ellipsis;
+}
