@@ -539,7 +539,7 @@
          (l/row {}
            (l/col {:width 9 :push 1}
 
-            (l/row {:density :collapse :valign :bottom :halign :center :className "u-trailer"}
+            (l/row {:density :collapse :className "u-trailer" :valign :bottom :halign :center}
               (l/col {:className "u-column has-xpipe has-start-pipe" :halign :center}
                 (icons/icon :sentiment_very_dissatisfied))
               (l/col {:className "u-column has-xpipe" :halign :center}
@@ -1548,10 +1548,10 @@
   "Fullscreen modal"
   (dom/div #js {:className "c-modal c-modal--fullscreen"}
     (dom/div #js {:className "c-modal__card"}
-      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-        (dom/div #js {:className "o-toolbar__actions"}
+        (dom/div #js {:className "c-toolbar__actions"}
           (dom/button #js {:className "c-button"} "Save")))
       (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
@@ -1586,10 +1586,10 @@
 
     (dom/div #js {:className "c-modal c-modal--fullscreen"}
      (dom/div #js {:className "c-modal__card"}
-       (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
+       (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
          (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-         (dom/div #js {:className "o-toolbar__actions"}
+         (dom/div #js {:className "c-toolbar__actions"}
            (dom/button #js {:className "c-button"} "Save")))
        (dom/div #js {:className "has-menu"}
          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
@@ -1616,30 +1616,19 @@
         lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
-    (dom/div #js {}
-      (dom/div #js {:className "o-toolbar"}
-        (dom/div #js {:className "o-toolbar__view"}
+    (dom/div #js {:className "c-toolbar" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar__row"}
+        (dom/div #js {:className "c-toolbar__view"}
           (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu))
-          (dom/span #js {:className "o-toolbar__label"} "View Name"))
+            (icons/icon :menu)))
 
-        (dom/div #js {:className "o-toolbar__actions"}
-          (dom/div #js {:className "u-wrapper"}
-            (dom/button #js {:className "c-button c-button--icon u-hide@md-up"}
-              (icons/icon :language))
+        (dom/div #js {:className "c-toolbar__actions"}
 
-            (dom/button #js {:className "c-button has-menu u-hide@sm"
-                             :onClick   #(menu-action :lang (not lang-menu-open) lang-item-selected)} lang-item-selected)
-            (dom/ul #js {:className lang-menu-class :tabIndex "-1"}
-              (dom/li #js {} (dom/button #js {:className "c-menu__item"
-                                              :onClick   #(menu-action :lang false "English-US")} "English-US"))
-              (dom/li #js {} (dom/button #js {:className "c-menu__item"
-                                              :onClick   #(menu-action :lang false "Español")} "Español"))))
           (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
 
-          (dom/span #js {:title "Kevin Mitnick"}
-            (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :account_circle)))
+          (dom/button #js {:className "c-button c-button--icon"
+                           :title "Kevin Mitnick"}
+            (icons/icon :account_circle))
           )))))
 
 
@@ -1653,52 +1642,41 @@
         lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
-    (dom/div #js {}
-      (dom/div #js {:className "o-toolbar o-toolbar--primary o-toolbar--raised"}
-        (dom/div #js {:className "o-toolbar__view"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu))
-          (dom/span #js {:className "o-toolbar__label"} "Primary color"))
+    (dom/div nil
 
-        (dom/div #js {:className "o-toolbar__actions"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :help))
-
-          (dom/span #js {:title "Kevin Mitnick"}
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised" :style #js {:position "static"}}
+        (dom/div #js {:className "c-toolbar__row"}
+          (dom/div #js {:className "c-toolbar__view"}
             (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :account_circle)))
-          ))
+              (icons/icon :menu))
+            (dom/span #js {:className "c-toolbar__label"} "Primary toolbar"))
+
+          (dom/div #js {:className "c-toolbar__actions"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :help))
+
+            (dom/span #js {:title "Kevin Mitnick"}
+              (dom/button #js {:className "c-button c-button--icon"}
+                (icons/icon :account_circle)))
+            )))
 
       (dom/p nil " ")
 
-      (dom/div #js {:className "o-toolbar o-toolbar--accent o-toolbar--raised"}
-        (dom/div #js {:className "o-toolbar__view"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :close))
-          (dom/span #js {:className "o-toolbar__label"} "Accent color"))
-
-        (dom/div #js {:className "o-toolbar__actions"}
-          (dom/span #js {:title "Kevin Mitnick"}
-            (dom/button #js {:className "c-button"}
-              "Save"))
-          ))
-
-      (dom/p nil " ")
-
-      (dom/div #js {:className "o-toolbar o-toolbar--dark o-toolbar--raised"}
-        (dom/div #js {:className "o-toolbar__view"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :arrow_back))
-          (dom/span #js {:className "o-toolbar__label"} "Dark color"))
-
-        (dom/div #js {:className "o-toolbar__actions"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :filter_list))
-
-          (dom/span #js {:title "Kevin Mitnick"}
+      (dom/div #js {:className "c-toolbar c-toolbar--dark c-toolbar--raised" :style #js {:position "static"}}
+        (dom/div #js {:className "c-toolbar__row"}
+          (dom/div #js {:className "c-toolbar__view"}
             (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :search)))
-          )))))
+              (icons/icon :arrow_back))
+            (dom/span #js {:className "c-toolbar__label"} "Dark toolbar"))
+
+          (dom/div #js {:className "c-toolbar__actions"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :filter_list))
+
+            (dom/span #js {:title "Kevin Mitnick"}
+              (dom/button #js {:className "c-button c-button--icon"}
+                (icons/icon :search)))
+            ))))))
 
 (defexample toolbar-dense
   "### Dense
@@ -1709,9 +1687,23 @@
         get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
-    (dom/div #js {}
-      (dom/div #js {:className "o-toolbar o-toolbar--dense u-center"}
-        (dom/ul #js {:className "u-wrapper"}
+      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary u-center" :style #js {:position "static"}}
+        (dom/div #js {:className "c-toolbar__row"}
+          (dom/div #js {:className "c-toolbar__view"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :menu))
+            (dom/span #js {:className "c-toolbar__label"} "Second row is dense"))
+
+          (dom/div #js {:className "c-toolbar__actions"}
+            (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :help))
+
+            (dom/span #js {:title "Kevin Mitnick"}
+              (dom/button #js {:className "c-button c-button--icon"}
+                (icons/icon :account_circle)))
+            ))
+        (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
+        (dom/ul #js {:className "c-tabs"}
           (dom/button #js {:className (get-class :widgets)
                            :onClick   #(select-item :widgets)} "Widgets")
           (dom/button #js {:className (get-class :doodads)
@@ -1720,50 +1712,6 @@
                            :onClick   #(select-item :apparatuses)} "Apparatuses")
           (dom/button #js {:className (get-class :things)
                            :onClick   #(select-item :things)} "Things"))))))
-
-
-(defexample toolbar-secondary
-  "### Secondary Toolbar Example
-
-  The secondary toolbar is intended to only provide operations for the current view of the app your in.
-  "
-  (let [example-class-modifier (str (if (om/get-state this :toolbar-secondary-visible) "" " u-hide"))]
-    (dom/div #js {:className (str "o-toolbar o-toolbar--secondary") :style #js {:position "static"}}
-      ;; View Info for Mobile
-      (dom/div #js {:className "o-toolbar__info u-hide@md-up"}
-        (dom/h1 #js {} "View Name"))
-
-      ;; View Actions for Mobile
-      (dom/div #js {:className "u-column u-hide@md-up u-end"}
-        (dom/button #js {:title "Filter by tag" :className "c-button c-button--icon u-hide@md-up"}
-          (icons/icon :filter_list))
-        (dom/button #js {:title "Search widgets" :className "c-button c-button--icon u-hide@md-up"}
-          (icons/icon :search))
-        (dom/button #js {:title "List view" :className "c-button c-button--icon u-hide@md-up"}
-          (icons/icon :list))
-        (dom/button #js {:title "Create widgets" :className "c-button c-button--icon u-hide@md-up"}
-          (icons/icon :create)))
-
-      ;; View Actions for Tablets and Computers
-      (dom/div #js {:className "u-column--bar u-hide@sm"}
-        (dom/div #js {:className "has-menu"}
-          (dom/button #js {:className "c-button"} "Filter by tag")
-          (dom/ul #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu [is-active]" :tabIndex "-1"}
-            (dom/li #js {}
-              (dom/button #js {:className "c-menu__item"} "Water"))
-            (dom/li #js {}
-              (dom/button #js {:className "c-menu__item"} "Coffee"))
-            (dom/li #js {}
-              (dom/button #js {:className "c-menu__item"} "Tea"))))
-        (dom/div #js {:className "o-input"}
-          (dom/input #js {:type "text" :placeholder "Search your widgets" :autoCapitalize "off" :className "o-input__box" :spellCheck "false" :autoCorrect "off" :autoComplete "off"})
-          (icons/icon :search)))
-      (dom/div #js {:className "u-column--bar u-hide@sm"}
-        (dom/div #js {:className "o-button-group--toggle"}
-          (dom/button #js {:className "c-button c-button--raised c-button--primary"} "List")
-          (dom/button #js {:className "c-button"} "Detail"))
-        (dom/button #js {:className "c-button c-button--accent"} "Create a widget")))))
-
 
 
 
@@ -1961,6 +1909,5 @@
                       toolbar
                       toolbar-colors
                       toolbar-dense
-                      toolbar-secondary
                       ]}
           ])))
