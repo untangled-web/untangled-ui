@@ -4,7 +4,7 @@
   "description": "A PostCSS Framework for web apps",
   "author": "NAVIS",
   "license": "Copyright NAVIS, using the MIT public license.",
-  "main": "src/main/css/untangled-ui-stylekit.css",
+  "main": "src/main/css/untangled-ui.css",
   "devDependencies": {
     "autoprefixer": "^6.3.6",
     "babel-core": "^6.10.4",

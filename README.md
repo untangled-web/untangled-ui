@@ -33,7 +33,6 @@ See the README-css.md for more details on working with the CSS itself.
 │   ├── css  ----------------- The CSS source files (which generate the CSS)
 │   │   ├── components
 │   │   ├── elements
-│   │   ├── objects
 │   │   ├── settings
 │   │   └── utilities
 │   ├── css-guide  ----------- An Om-based UI describing the CSS available
