@@ -1,24 +1,38 @@
-/*---
-title: Toolbar
-section: Objects
----*/
-
-/* DEPRECATED
- * .o-toolbar__info
- */
-
 :root {
   --height-toolbar: 56px;
   --padding-toolbar: 0 .5rem;
   --color-toolbar: var(--white);
 }
 
-.o-toolbar {
+.c-toolbar {
+  background-color: var(--color-toolbar);
+  color: var(--grey-900);
+  font-size: 20px;
+}
+
+.c-toolbar--raised { box-shadow: var(--shadow-2); }
+
+.c-toolbar--primary { background-color: var(--color-primary); }
+
+.c-toolbar--dark { background-color: var(--grey-900); }
+
+.c-toolbar--primary,
+.c-toolbar--dark {
+  color: var(--white);
+
+  .c-icon { fill: var(--white); }
+}
+
+.c-toolbar--bordered {
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+
+
+
+.c-toolbar__row {
   @apply --row;
   @apply --middle;
-  background-color: var(--color-toolbar);
-  box-shadow: var(--shadow-1);
-  color: var(--grey-900);
   height: var(--height-toolbar);
   z-index: var(--zIndex-appBar);
 
@@ -42,20 +56,10 @@ section: Objects
   }
 }
 
-  .o-toolbar__tile {
-    padding: 7px 0;
-  }
-
-  .o-toolbar__label {
-    font-size: var(--fontSize--semiMedium);
-    line-height: var(--fontSize--semiMedium);
-    vertical-align: middle;
-  }
-
-
-  .o-toolbar__view,
-  .o-toolbar__actions {
+  .c-toolbar__actions {
     @apply --width-column-bar;
+    @apply --end;
+    order: 1; /* Last */
 
     @media (--sm) {
       &--desktop { display: none; }
@@ -64,11 +68,12 @@ section: Objects
     @media (--md-up) {
       &--handheld { display: none; }
     }
+
+    @media print { display: none; }
   }
 
 
-  .o-toolbar__view,
-  .o-toolbar__info {
+  .c-toolbar__view {
     order: -1; /* First */
 
     & :--headings {
@@ -77,21 +82,7 @@ section: Objects
     }
   }
 
-  .o-toolbar__actions {
-    @apply --end;
-    order: 1; /* Last */
-
-    @media (--sm) {
-      /* TODO Remove and findout what this really is needed for */
-      > div,
-      > ul,
-      > li { display: inline-block; }
-    }
-
-    @media print { display: none; }
-  }
-
-  .o-toolbar__action {
+  .c-toolbar__action {
     @media (--sm) {
       display: inline-block;
       margin: 0;
@@ -99,85 +90,10 @@ section: Objects
     }
   }
 
-
-
-.o-toolbar--framed {
-  padding: var(--padding-toolbar);
-}
-
-.o-toolbar--raised {
-  box-shadow: var(--shadow-2);
-}
-
-.o-toolbar--primary,
-.o-toolbar--accent,
-.o-toolbar--dark {
-  color: var(--white);
-
-  .c-icon {
-    fill: var(--white);
-  }
-}
-
-.o-toolbar--primary {
-  background-color: var(--color-primary);
-}
-
-.o-toolbar--accent {
-  background-color: var(--color-accent);
-}
-
-.o-toolbar--dark {
-  background-color: var(--grey-900);
-}
-
-
-.o-toolbar--dense,
-.o-toolbar--small {
-  border: none !important;
-  color: var(--color-toolbar-small);
+.c-toolbar__row--dense {
   height: 48px;
 
   @media print { display: none; }
 }
 
 
-.o-toolbar--secondary {
-  border: none !important;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-
-  @media (--md-up) {
-    background-color: var(--white);
-    color: var(--color-page);
-    top: var(--header-height);
-
-    & .c-icon { color: currentColor; }
-
-    & .u-column {
-      @apply --middle;
-      display: flex;
-    }
-  }
-
-  @media print {
-    background-color: var(--white);
-    color: var(--black);
-    display: inherit;
-
-    & .c-icon { display: none; }
-  }
-
-  .t-dark & {
-    background-color: #101a27;
-
-    @media (--md-up) { background-color: var(--grey-800); }
-  }
-
-  .c-button--icon {
-    &,
-    &:hover { color: inherit; }
-  }
-}
