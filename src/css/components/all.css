@@ -41,6 +41,7 @@
 @import 'message';
 @import 'notification';
 @import 'pagination';
+@import 'progress';
 @import 'switch';
 @import 'table';
 @import 'tabs';

@@ -88,6 +88,7 @@
 @import 'components/modal';
 @import 'components/notification';
 @import 'components/pagination';
+@import 'components/progress';
 @import 'components/switch';
 @import 'components/table';
 @import 'components/tabs';

@@ -1051,6 +1051,29 @@
       (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--close" :viewBox "0 0 24 24"}
         (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
 
+
+
+;; -------------------------
+;; Progress
+;; -------------------------
+
+(def progress-header
+  "# Progress")
+
+(defexample progress-basic
+  "## Basic"
+  (dom/div #js {}
+    (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Indeterminate")
+      (dom/progress #js {:className "c-progress"}))
+
+    (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Value")
+      (dom/progress #js {:className "c-progress" :max "100" :value "70"}))))
+
+
+
+
 ;; -------------------------
 ;; Radio
 ;; -------------------------
@@ -1756,6 +1779,11 @@
                       button-icon
                       button-group
                       ]}
+          {:id :calendar-example :title "Calendar" :examples [calendar-example]
+           :documentation
+               "# Calendar
+
+               This is a month view calendar for overlaying on input fields that control date selection."}
           {:id :card
            :title "Card"
            :documentation card-header
@@ -1774,14 +1802,10 @@
            :examples [
                       checkboxes
                       ]}
-          {:id :dropdowns
-           :title "Menus"
-           :documentation menus-header
+          {:id :drawer
+           :title "Drawer"
            :examples [
-                      menus
-                      menus-shape
-                      menus-search-multi
-                      menus-data
+                      drawer
                       ]}
           {:id :expanding_panel
            :title "Expansion panels"
@@ -1812,6 +1836,13 @@
                       icon-states
                       icon-library
                       ]}
+          {:id :icon-bar
+           :title "Icon Bar"
+           :examples [
+                      icon-bar
+                      icon-rail
+                      icon-bar-shifting
+                      ]}
           {:id :labels
            :title "Labels"
            :documentation label-header
@@ -1831,19 +1862,27 @@
            :examples [
                       loader
                       ]}
+          {:id :dropdowns
+           :title "Menus"
+           :documentation menus-header
+           :examples [
+                      menus
+                      menus-shape
+                      menus-search-multi
+                      menus-data
+                      ]}
           {:id :messages
            :title "Messages"
            :documentation messages-header
            :examples [
                       messages
                       ]}
-          {:id :menus
-           :title "Tabs"
-           :documentation tabs-header
+          {:id :modal
+           :title "Modal"
            :examples [
-                      tabs
-                      tabs-inline
-                      tabs-block
+                      modal-example
+                      modal-fullscreen-1
+                      modal-fullscreen-2
                       ]}
           {:id :notifications
            :title "Notifications"
@@ -1855,6 +1894,11 @@
                       notification-error
                       notification-wide
                       ]}
+          {:id :progressbar
+           :title "Progress"
+           :documentation progress-header
+           :examples [
+                      progress-basic]}
           {:id :radio
            :title "Radio Buttons"
            :documentation radio-header
@@ -1874,37 +1918,13 @@
            :examples [
                       tables
                       ]}
-          {:id :tooltip
-           :title "Tooltips"
-           :documentation tooltips-header
+          {:id :menus
+           :title "Tabs"
+           :documentation tabs-header
            :examples [
-                      tooltips
-                      tooltip-directions
-                      tooltip-sizes
-                      ]}
-          {:id :calendar-example :title "Calendar" :examples [calendar-example]
-           :documentation
-               "# Calendar
-
-               This is a month view calendar for overlaying on input fields that control date selection."}
-          {:id :drawer
-           :title "Drawer"
-           :examples [
-                      drawer
-                      ]}
-          {:id :icon-bar
-           :title "Icon Bar"
-           :examples [
-                      icon-bar
-                      icon-rail
-                      icon-bar-shifting
-                      ]}
-          {:id :modal
-           :title "Modal"
-           :examples [
-                      modal-example
-                      modal-fullscreen-1
-                      modal-fullscreen-2
+                      tabs
+                      tabs-inline
+                      tabs-block
                       ]}
           {:id :toolbar
            :title "Toolbar"
@@ -1912,5 +1932,13 @@
                       toolbar
                       toolbar-colors
                       toolbar-dense
+                      ]}
+          {:id :tooltip
+           :title "Tooltips"
+           :documentation tooltips-header
+           :examples [
+                      tooltips
+                      tooltip-directions
+                      tooltip-sizes
                       ]}
           ])))
