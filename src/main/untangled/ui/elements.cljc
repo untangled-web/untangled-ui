@@ -338,3 +338,65 @@
                           (= shifting :true) (str " o-iconbar--shifting"))]
     (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
+
+(defui ModalTitle
+  Object
+  (render [this]
+    (dom/div #js {:className "c-modal__title"} (om/children this))))
+
+(def ui-modal-title
+  "Render a notification title. Should only be used in a ui-modal"
+  (om/factory ModalTitle))
+
+(defui ModalBody
+  Object
+  (render [this]
+    (dom/div #js {:className "c-modal__content"} (om/children this))))
+(def ui-modal-body
+  "Render a notification body. Should only be used in a ui-modal"
+  (om/factory ModalBody))
+
+(defui ModalActions
+  Object
+  (render [this]
+    (dom/div #js {:className "c-modal__actions"} (om/children this))))
+
+(def ui-modal-actions
+  "Render a notification action area. Should only be used in a ui-modal"
+  (om/factory ModalActions))
+
+(defui Modal
+  Object
+  (render [this]
+    (let [{:keys [state] :as props} (om/props this)
+          children     (om/children this)
+          title        (first-node ModalTitle children)
+          content      (first-node ModalBody children)
+          actions      (first-node ModalActions children)
+          state        (if (= state :active) " is-active" "")
+          user-classes (get props :className "")
+          classes      (-> (str user-classes " c-modal" state))]
+
+      (dom/div #js {}
+               (dom/div #js {:className (str classes) :style #js {:position "absolute"}}
+                        (dom/div #js {:className "c-modal__card"}
+                                 (when title title)
+                                 (when content content)
+                                 (when actions actions)))
+               (dom/div #js {:className (str "c-backdrop" state) :style #js {:position "absolute"}})))))
+;TODO - Need to require at least one action otherwise it can't be closed
+;TODO - Can the background fill up the full page when embedded in this object?
+
+(def ui-modal
+  "Render a modal. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  You should include three children of this node:
+
+  (ui-modal {}
+    (ui-modal-title {} title-nodes)
+    (ui-modal-body {} body-nodes)
+    (ui-modal-actions {} action-nodes)
+
+  The `title-nodes` can be any inline DOM (or just a string), as can body-nodes.  Action-notes must include at least one button that
+  closes the modal or redirects the user."
+  (om/factory Modal))
