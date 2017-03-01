@@ -77,8 +77,9 @@ import: ../README.md
 
 .ui-viewport-container {
   display: inline-block;
-  width: 360px;
   margin: 0 1.5em;
+  position: relative;
+  width: 360px;
 }
 
 .ui-viewport {
