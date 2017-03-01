@@ -42,7 +42,7 @@
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
-(defcard card
+(defcard card-visual-regressions
    (dom/div nil
       (e/ui-card {:title "Card Title"} (dom/p nil "Card with a title"))
       (e/ui-card {:type :round} (dom/p nil "Round Card, no title"))
@@ -122,3 +122,11 @@
     (e/ui-notification {:type :warning :heading "Warning" :content "You have been warned."})
     (e/ui-notification {:type :error :heading "Error" :content "There has been an error."})
     (e/ui-notification {:width :wide :heading "Width" :content "This is a wide message."})))
+
+(defcard checkbox-visual-regressions
+  (dom/div nil
+    (e/ui-checkbox {:id "checkbox1"} )
+    (e/ui-checkbox {:id "checkbox2" :checked true} )
+    (e/ui-checkbox {:id "checkbox3" :kind :is-indeterminate} )
+    (e/ui-checkbox {:id "checkbox4" :kind :informative})
+    (e/ui-checkbox {:id "checkbox5" :checked true :kind :informative})))

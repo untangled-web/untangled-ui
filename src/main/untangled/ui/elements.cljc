@@ -310,7 +310,7 @@
                :menu-icon :more_vert
                :menu-items [:ia \"This\" :ib \"that\"]}
     ...)
-    all paramters optional
+    all parameters are optional
     "
   [{:keys [type
            title
@@ -364,3 +364,26 @@
                           (= shifting :true) (str " o-iconbar--shifting"))]
     (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
+
+(def checkbox-types
+  {:is-indeterminate    "is-indeterminate"
+   :informative "c-checkbox--informative"})
+
+(defn ui-checkbox
+  "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+
+  className (optional): additional class stylings to apply to the top level of the checkbox
+  id: Name of the checkbox
+  checked (optional): true false
+  kind (optional): is-indeterminate informative"
+  [{:keys [id checked kind] :or {id ""} :as attrs}]
+  {:pre [(contains? #{nil true false} checked)]}
+  (let [legal-kind-values #{:is-indeterminate :informative}
+        user-classes (get attrs :className "")
+        classes (cond-> (str user-classes " c-checkbox ")
+                        (contains? legal-kind-values kind) (str (checkbox-types kind)))
+        attrs (-> attrs (assoc :type "checkbox" :checked checked :className classes :id (name id) )
+                        (dissoc :kind))]
+    (dom/span #js {} (dom/input (clj->js attrs))
+              (dom/label #js {:htmlFor id} \u00A0))))
+
