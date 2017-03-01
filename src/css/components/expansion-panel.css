@@ -15,13 +15,15 @@
 }
 
 .c-expansion-panel {
-  @apply --card;
+  background-color: var(--white);
+  box-shadow: var(--shadow-1);
   color: var(--color-expansion-panel);
   font-size: var(--fontSize-expansion-panel);
   margin: 0;
   overflow: hidden;
   padding: 0;
   transition: background .3s ease, height .2s ease, margin .2s ease;
+  width: 100%;
 
   &:focus:not(.is-expanded) { background-color: var(--backgroundColor-expansion-panel--focus); }
   &:not(:first-child).is-expanded { margin-top: var(--paddingY-expansion-panel); }

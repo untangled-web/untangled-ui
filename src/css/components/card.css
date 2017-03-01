@@ -6,26 +6,22 @@ section: Components
 :root {
   --padding-card: .75em 1rem;
   --margin-card: 0 0 1em;
+  --size-card--square: 320px;
   --card: {
     background-color: var(--white);
     box-shadow: var(--shadow-1);
+    border-radius: 2px;
     color: var(--color-page);
-    display: block;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--fontSize--semiNormal);
+    line-height: 20px;
     margin: var(--margin-card);
-    min-width: 100px;
-    padding: var(--padding-card);
+    min-height: 200px;
+    overflow: hidden;
     position: relative;
     transition: box-shadow var(--global-duration) ease;
-    z-index: var(--zIndex-card);
-  };
-
-  --card-wide: {
-    background-color: var(--white);
-    box-shadow: var(--shadow-1);
-    color: var(--color-page);
-    margin: var(--margin-card);
-    padding: var(--padding-card);
-    position: relative;
+    width: 330px;
     z-index: var(--zIndex-card);
   };
 
@@ -46,29 +42,6 @@ section: Components
   }
 
 
-  &.is-active {
-    box-shadow: var(--shadow-3) !important;
-    z-index: var(--zIndex-card--pickedUp);
-  }
-
-
-  &.is-inactive {
-    border: 1px solid var(--borderColor-inactive);
-    box-shadow: none;
-  }
-
-
-  &.is-selectable {
-    &:--enter { background-color: var(--grey-200); }
-  }
-
-
-  &.is-selected {
-    &,
-    &:--enter { background-color: var(--blue-50); }
-  }
-
-
   .t-dark & {
     background-color: var(--grey-800);
     color: var(--white);
@@ -83,177 +56,95 @@ section: Components
 
 
   .c-card__title {
-    @apply --row;
-    @apply --middle;
-    background-color: var(--grey-100);
-    margin: -.75em -1rem .5em;
-    min-height: 38px;
-    padding: .25em 1rem;
+    align-items: center;
+    color: currentColor;
+    display: flex;
+    justify-content: stretch;
+    line-height: normal;
+    padding: 1em 1rem;
+    perspective-origin: 165px 56px;
+    transform-origin: 165px 56px;
 
-
-    .is-inactive & { background-color: var(--white); }
-
-
-    [class*='u-column'] { @apply --row-collapse; }
-
-
-    .c-button,
-    h1 {
-      font-weight: bold;
-      margin-bottom: 0;
+    .c-card--primary &,
+    .c-card--accent & {
+      color: var(--white);
+      height: 200px;
     }
 
+    .c-card--primary & { background-color: var(--color-primary); }
 
-    .t-dark & { background-color: var(--grey-600); }
+    .c-card--accent & { background-color: var(--color-accent); }
   }
 
+  .c-card__title--image { background-repeat: no-repeat; }
 
-  .c-card__heading {
-    display: inline-block;
-    font-weight: bold;
+  .c-card__title--image-top-left { background-position: top left 15%; }
+
+  .c-card__title--image-top-right { background-position: top right 15%; }
+
+  .c-card__title--image-bottom-left { background-position: bottom left 15%; }
+
+  .c-card__title--image-bottom-right { background-position: bottom right 15%; }
+
+  .c-card__title--image-cover { background-size: cover; }
+
+  .c-card__title--expanded {
+    height: 176px;
+  }
+
+  .c-card__title-text {
+    align-self: flex-end;
+    color: inherit;
+    display: flex;
+    font-size: var(--fontSize--semiMedium);
+    line-height: normal;
+    overflow: hidden;
+    transform-origin: 149px 48px;
     margin: 0;
   }
 
-  .c-card__heading--sub {
-    color: var(--blue-700);
-    font-size: var(--fontSize--small);
-    margin-bottom: 10px;
+
+  .c-card__media {
+
+  }
+
+
+  .c-card__supporting-text {
+    overflow: hidden;
+    padding: 1em 1rem;
+    text-align: start;
+    width: 90%;
   }
 
 
   .c-card__actions {
-    color: var(--grey-700);
-
-    @media (--md-up) {
-      @apply --fade-out;
-
-      .c-card--row:hover &,
-      .c-card--row:--active & { @apply --fade-in; }
-    }
-
-    .c-card--row:focus .c-card__actions { @apply --fade-in; }
-
-    .c-icon {
-      margin-left: .75em;
-    }
-
-    .c-field + & { @apply --fade-in; }
-  }
-
-
-  .c-card__meta {
-    @apply --ellipsis;
-    font-size: 14px;
-  }
-
-
-  .c-card__thumb {
-    @apply --row;
-    @apply --middle;
-    @apply --center;
-    height: 132px;
-    margin-bottom: .5em;
-    overflow: hidden;
+    min-height: 45px;
+    text-align: start;
     width: 100%;
 
-    & > img {
-      max-height: 100%;
-      max-width: 100%;
-      width: auto;
+    .c-card--bordered & {
+      border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    .c-card--image & {
+      background-color: rgba(0, 0, 0 , .2);
     }
   }
 
 
-  .c-card__footer {
-    @apply --row;
-    @apply --row-collapse;
-    @apply --middle;
-    background-color: var(--grey-100);
-    margin-bottom: -.75em;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    margin-top: 1em;
-    padding: .1em 1rem !important;
-
-    .c-button { margin-bottom: .5em; }
+  .c-card__menu {
+    position: absolute;
+    right: 1em;
+    top: 1em;
   }
 
-
-.c-card--inset {
-  background-color: transparent;
-  box-shadow: none;
-  padding: 6px;
-  transition: background-color var(--global-duration) ease;
+.c-card--square {
+  height: var(--size-card--square);
+  width: var(--size-card--square);
 }
 
+.c-card--transparent { @apply --card-reset; }
 
-.c-card--row {
-  @apply --middle;
-  margin-bottom: 0;
-  margin-left: -.5rem;
-  margin-right: -.5rem;
-  position: relative;
-  transition: background .1s ease-in-out, box-shadow .1s ease-in-out;
+.c-card--expand { flex-grow: 1; }
 
-  &:not(:last-child) {
-    border-bottom: 1px solid rgba(0, 0, 0, .1);
-  }
-
-  @media (--md-up) {
-    margin-left: inherit;
-    margin-right: inherit;
-  }
-
-  &.is-active {
-
-    .u-row {
-      @apply --middle;
-      &:not(:only-child) {
-        margin: 0 0 .75em;
-      }
-      &:not(:first-child) {
-        border-top: 1px solid var(--grey-100);
-        margin-bottom: 0;
-        padding-top: .75em;
-
-        :--fullscreen & {
-          border-top: 1px solid var(--black);
-        }
-      }
-    }
-  }
-
-  /* Make sure titles aren't spaced out inside card rows */
-  & .c-card__heading { marign: 0 !important; }
-
-  :--fullscreen &:not(:last-child) {
-    border-bottom: 1px solid var(--black);
-  }
-}
-
-
-.c-card--transparent {
-  @apply --card-reset;
-}
-
-
-.c-card--round { border-radius: var(--global-rounded); }
-
-
-.c-card--zone {
-  border: 1px dashed var(--blue-500);
-  border-radius: var(--global-rounded);
-  box-shadow: none;
-  color: var(--blue-900);
-  display: block;
-  font-size: var(--fontSize--normal);
-  padding: 1em 1rem;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-
-.c-card--small { padding: 0; }
-
-
-.c-card--collapse { padding: 0 !important; }
+.c-card--wide { width: 512px; }

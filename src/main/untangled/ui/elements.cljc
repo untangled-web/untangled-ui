@@ -1,6 +1,7 @@
 (ns untangled.ui.elements
   (:require [om.dom :as dom]
             [om.next :as om :refer [defui]]
+            [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
             [untangled.client.logging :as log]))
 
@@ -281,48 +282,73 @@
    (defn ui-iframe [props child]
      ((om/factory IFrame) (assoc props :child child))))
 
-(def density-types
-  {:inset    "c-card--inset"
-   :collapse "c-card--collapse"})
+(def color-types
+  {:primary "c-card--primary"
+   :accent  "c-card--accent"})
 
 (def card-types
-  {:rounded     "c-card--round"
+  {:bordered    "c-card--bordered"
    :transparent "c-card--transparent"
-   :ruled       "c-card--ruled"
-   :zone        "c-card--zone"
-   :ruled-zone  "c-card--ruled c-card--zone"})
+   :square      "c-card--square"})
 
-(defn build-title
-  "Helper function for building up the title bar of the card."
-  [title]
-  (dom/div #js {:className "c-card__title"}
-    (dom/h1 #js {:className "c-card__heading"} title)))
+(def size-types
+  {:expand "c-card--expand"
+   :wide   "c-card--wide"})
 
 (defn ui-card
   "Card component
    usage
-   (c/ui-card {:active true/false
-                :title \"Some Title\"
-                :type :rounded | :transparent | :ruled | :zone | :ruled-zone}
-                :density :collapse | inset
+   (c/ui-card {:title          \"Some Title\"
+               :color          :primary | :accent
+               :type           :bordered | :transparent | :square
+               :size           :expand | :wide
+               :image          \"path/to/image/file.jpeg\"
+               :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
+               :actions        (ui-button \"Some Action\")
+
+               ;;TODO
+               :menu-icon :more_vert
+               :menu-items [:ia \"This\" :ib \"that\"]}
     ...)
     all paramters optional
     "
-  [{:keys [active type title density className] :as attrs} & children]
-  {:pre [(contains? #{nil true false} active)
-         (or (nil? type) (keyword? type))
+  [{:keys [type
+           title
+           color
+           size
+           image
+           image-position
+           actions
+           ;; menu-icon
+           ;; menu-items
+           className] :as attrs} & children]
+  {:pre [(or (nil? type) (keyword? type))
          (or (nil? title) (string? title))]}
   (let [className  (or className "")
         classes    (cond->
                      (str "c-card " className)
-                     active (str " is-active")
                      type (str " " (card-types type))
-                     density (str " " (density-types density)))
+                     size (str " " (size-types size))
+                     color (str " " (color-types color)))
         attributes (-> attrs
                      (merge {:className classes})
-                     (dissoc :active :title :type)
+                     (dissoc :title :type :color :size :actions :image :image-position)
                      clj->js)]
-    (apply dom/div attributes (when title (build-title title)) children)))
+    (dom/div attributes
+      (when title
+        (dom/div #js {:className (str "c-card__title"
+                                   (when image " c-card__title--image")
+                                   (when image-position (str " c-card__title--image-" (name image-position))))
+                      :style     #js {:backgroundImage (when color (str "url(" image ")"))}}
+          (dom/h1 #js {:className "c-card__title-text"} title)))
+      (when children
+        (apply dom/div #js {:className "c-card__supporting-text"} children))
+      (when actions
+        (dom/div #js {:className "c-card__actions"} actions))
+      ;; TODO
+      #_(when menu-icon
+        (dom/div #js {:className "c-card__menu"}
+          (menu/menu :a (icon menu-icon) menu-items))))))
 
 (defn ui-icon-bar
   "Render an icon bar giving using a vector of icons (each a map of attributes).

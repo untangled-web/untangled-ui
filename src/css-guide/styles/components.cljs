@@ -170,51 +170,46 @@
 
 (defexample card
   "### Basic"
-  (dom/div #js {:className "c-card"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "Card paragraph text goes here.")))
-
-(defexample card-rounded
-  "### Rounded Card"
-  (dom/div #js {:className "c-card c-card--round"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "This is just a monolithic class that rounds off any card you apply it to.")))
+  (dom/div #js {:className "u-row u-center"}
+    (dom/div #js {:className "c-card c-card--primary c-card--bordered c-card--wide"}
+     (dom/div #js {:className "c-card__title c-card__title--image-bottom-right"
+                   :style #js {:backgroundImage "url('img/bubbles.png')"}}
+       (dom/h1 #js {:className "c-card__title-text"} "Title"))
+     (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
+    suscipit id sed sapien. Sed sit amet sagittis ipsum.")
+     (dom/div #js {:className "c-card__actions"}
+       (dom/button #js {:className "c-button c-button--primary"} "View Updates")))))
 
 (defexample card-transparent
   "### Transparent Card"
   (dom/div #js {:className "c-card c-card--transparent"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "This gives you the basic box properties without any background color or text color.")))
+    (dom/div #js {:className "c-card__title"}
+      (dom/h1 #js {:className "c-card__title-text"} "Title"))
+    (dom/div #js {:className "c-card__supporting-text"} "This gives you the basic box properties without any background color or text color.")))
 
 (defexample card-ruled
   "### Ruled Card"
   (dom/div #js {:className "u-wrapper"}
-    (dom/div #js {:className "c-card c-card--ruled"}
-      (dom/h1 #js {} "Title")
-      (dom/p #js {} "A simple card, horizontal ruled."))))
-
-(defexample card-titlebar
-  "### Title Bar"
-  (dom/div #js {:className "c-card"}
-    (dom/div #js {:className "c-card__title"}
-      (dom/h1 #js {:className "c-card__heading"} "Title"))
-    (dom/p #js {} "Add these title and heading modifiers to your card to get a titlebar.")))
+    (dom/div #js {:className "c-card c-card--bordered"}
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
+    suscipit id sed sapien. Sed sit amet sagittis ipsum. A simple card, horizontal ruled.")
+      (dom/div #js {:className "c-card__actions"}
+       (dom/button #js {:className "c-button c-button--accent"} "Action")))))
 
 (defexample card-states
   "### States"
   (dom/div nil
     (dom/div #js {:className "c-card c-card--row is-active u-trailer--half"}
-      (dom/h1 #js {} "Active")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))
     (dom/div #js {:className "c-card c-card--row is-inactive"}
-      (dom/h1 #js {} "Inactive")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))
     ))
-
-(defexample card-zone
-  "### Zone Card"
-  (dom/div #js {:className "c-card c-card--zone"} "This is a Card Zone component! Drop things on me!"))
-
 
 ;; -------------------------
 ;; Checkboxes
@@ -1807,11 +1802,8 @@
            :examples [
                       card
                       card-states
-                      card-titlebar
-                      card-rounded
                       card-transparent
                       card-ruled
-                      card-zone
                       ]}
           {:id :checkboxes
            :title "Checkboxes"
