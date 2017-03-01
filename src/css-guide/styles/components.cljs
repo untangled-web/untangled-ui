@@ -729,13 +729,18 @@
     (mapv (fn [typ] (dom/div #js {:key typ :className ""}
                       (dom/input #js {:type typ :placeholder typ :className "c-field"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
+
+    ;; File upload
     (l/row {:density :collapse}
       (l/col {:width 1}
+        ;; This is the button to init the upload dialog
         (dom/label #js {}
          (dom/span #js {:className "c-button c-button--circular c-button--primary c-button--dense"}
            (icons/icon :file_upload)
            (dom/input #js {:type "file" :className "u-hide" :id "file-input-file"}))))
       (l/col {:width 3}
+        ;; This is the input that displays the file name when selected
+        ;; When you have multiple files selected, this label should read "X files selected"
         (dom/input #js {:type "text" :className "c-field" :disabled true :readOnly true :id "file-input-text"})
         (dom/label #js {:htmlFor "file-input-text"}))
       )
