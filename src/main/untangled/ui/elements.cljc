@@ -7,7 +7,6 @@
 
 #?(:clj (def clj->js identity))
 
-; (defn ui-fab-button "Render a perfect circle button that contains the given children (typically an icon)." [props & children])
 (defn ui-circular-button
   "Render a raised circle button. Props is a normal clj(s) map with React/HTML attributes plus:
 
