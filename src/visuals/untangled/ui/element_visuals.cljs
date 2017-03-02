@@ -16,10 +16,10 @@
     (for [shape    [:rect :round :wide]
           color    [:neutral :primary :accent]
           size     [:normal :small]
-          disabled [true false]
-          active   [true false]]
+          disabled [false true]
+          active   [false true]]
       (e/ui-button {:className "extra" :color color :active active :disabled disabled
-                    :shape     shape :size size}
+                    :shape     shape :size size :key (str shape color size disabled active (rand-int 256))}
         (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-button {} "Label" (icon :arrow_forward))
     (e/ui-button {} (icon :arrow_back) "Label")))
@@ -29,10 +29,10 @@
     (for [shape    [:rect :round :wide]
           color    [:neutral :primary :accent]
           size     [:normal :small]
-          disabled [true false]
-          active   [true false]]
+          disabled [false true]
+          active   [false true]]
       (e/ui-flat-button {:className "extra" :color color :active active :disabled disabled
-                         :shape     shape :size size}
+                         :shape     shape :size size  :key (str shape color size disabled active (rand-int 256))}
         (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-flat-button {} "Label" (icon :arrow_forward))
     (e/ui-flat-button {} (icon :arrow_back) "Label")))
@@ -41,11 +41,11 @@
   (dom/div nil
     (for [color    [:neutral :primary :accent]
           size     [:normal :small]
-          disabled [true false]
-          active   [true false]]
+          disabled [false true]
+          active   [false true]]
       (e/ui-circular-button {:className "extra" :color color :active active :disabled disabled
                              :title     (str (name color) " " (name size) " " (when disabled "disabled ") (when active "active "))
-                             :size      size}
+                             :size      size  :key (str color size disabled active (rand-int 256))}
         (icon :add)))))
 
 (defcard badges-visual-regressions
@@ -61,7 +61,7 @@
            size [:normal :expand :wide]
            type [:normal :bordered :transparent :square]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
-       (l/col {:width 6}
+       (l/col {:width 6 :key (str color size type actions (rand-int 256))}
          (e/ui-card {:title "Card Test" :color color :size size :type type :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))
@@ -73,7 +73,7 @@
      (l/row {}
        (for [image          ["" "img/bubbles.png" "img/welcome_card.jpg"]
              image-position [:none :top-left :top-right :bottom-left :bottom-right]]
-         (l/col {:width 6}
+         (l/col {:width 6 :key (str image image-position (rand-int 256))}
            (e/ui-card {:title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
@@ -83,20 +83,20 @@
   (dom/div nil
     (for [color [:none :green :blue :magenta :grey :yellow :orange :red]
           icon ["" (icon :add) (icon :close)]]
-      (e/ui-label {:color color} icon "Default"))))
+      (e/ui-label {:color color :key (str color icon (rand-int 256))} icon "Default"))))
 
 (defcard field-visual-regressions
   (dom/div nil
     (for [size [:normal :small :medium :large]
           state [:none :required :focus :invalid :error]]
-     (e/ui-field {:size size :state #{state}} (str (name size) " " (name state) " field")))))
+     (e/ui-field {:size size :state #{state} :key (str size state (rand-int 256))} (str (name size) " " (name state) " field")))))
 
 (defcard messages-visual-regressions
   (dom/div nil
     (for [color [:none :neutral :alert :success :warning]
           class ["" "u-font-size--semi-medium"]
           icon  ["" (icon :close :modifiers ["small"]) (icon :close)]]
-      (e/ui-message {:color color :className class}
+      (e/ui-message {:color color :className class :key (str color class icon (rand-int 256))}
         (str "This is a " (name color) " message"(when-not (str/blank? icon) (str " with an icon"))".") icon))))
 
 (defcard avatar-visual-regressions

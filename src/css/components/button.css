@@ -123,10 +123,15 @@ section: Components
 
   &:hover { background-color: color(var(--blue-50) a(40%)); }
 
+  &:--active { background-color: color(var(--blue-50) a(60%)); }
+
   &:focus:not(:active),
    &.is-focused { background-color: var(--color-button-alt--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
 }
 
 .c-button--accent {
@@ -134,10 +139,15 @@ section: Components
 
   &:hover { background-color: color(var(--orange-50) a(40%)); }
 
+  &:--active { background-color: color(var(--orange-50) a(60%)); }
+
   &:focus:not(:active),
   &.is-focused { background-color: var(--color-button-accent--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
 }
 
 .c-button--circular {
@@ -239,6 +249,11 @@ section: Components
      &.is-focused { background-color: var(--color-button-alt--active); }
    }
 
+   &:--disabled {
+     background-color: var(--color-button-disabled--primary) !important;
+     color: var(--color-button-disabled--secondary) !important;
+   }
+
    :--dark & { background-color: var(--color-button-alt--primary); }
 
 
@@ -256,6 +271,11 @@ section: Components
 
     &:focus:not(:active),
     &.is-focused { background-color: var(--color-button-accent--active); }
+
+    &:--disabled {
+       background-color: var(--color-button-disabled--primary) !important;
+       color: var(--color-button-disabled--secondary) !important;
+     }
 
   :--dark & { background-color: var(--color-button-accent--primary); }
   }
