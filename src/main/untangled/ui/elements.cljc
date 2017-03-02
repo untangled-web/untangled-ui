@@ -8,6 +8,34 @@
 #?(:clj (def clj->js identity))
 
 ; (defn ui-fab-button "Render a perfect circle button that contains the given children (typically an icon)." [props & children])
+(defn ui-circular-button
+  "Render a raised circle button. Props is a normal clj(s) map with React/HTML attributes plus:
+
+  :color - :neutral (default), :primary, :accent
+  :size  - :normal (default), :small
+  :active - true or false (default) -  Causes the button to look highlighted.
+
+  Any other React properties are allowed, including additional CSS classes.
+  "
+  [{:keys [className size color disabled active] :or {className ""} :as attrs} & children]
+  (let [legal-colors   #{:primary :accent}
+        legal-sizes    #{:small}
+        button-label   (fn [text]
+                         (dom/span #js {:className "c-button__content"} text))
+        fixed-children (map (fn [c]
+                              (if (string? c)
+                                (button-label c)
+                                c)) children)
+        classes        (cond-> (str className " c-button c-button--circular")
+                         disabled (str " is-disabled")
+                         active (str " is-active")
+                         (contains? legal-colors color) (str " c-button--" (name color))
+                         (contains? legal-sizes size) (str " c-button--" (name size)))
+        attrs          (cond-> attrs
+                         disabled (assoc :aria-disabled "true")
+                         :always (dissoc :disabled :active :color :size)
+                         :always (assoc :className classes))]
+    (apply dom/button (clj->js attrs) fixed-children)))
 
 (defn ui-flat-button
   "Render a button that has no colored background (it is just the children), but renders a hover shape
@@ -38,7 +66,7 @@
                          (contains? legal-sizes size) (str " c-button--" (name size)))
         attrs          (cond-> attrs
                          disabled (assoc :aria-disabled "true")
-                         :always (dissoc :type :shape)
+                         :always (dissoc :disabled :active :color :shape :size)
                          :always (assoc :className classes))]
     (apply dom/button (clj->js attrs) fixed-children)))
 
@@ -339,7 +367,7 @@
         (dom/div #js {:className (str "c-card__title"
                                    (when image " c-card__title--image")
                                    (when image-position (str " c-card__title--image-" (name image-position))))
-                      :style     #js {:backgroundImage (when color (str "url(" image ")"))}}
+                      :style     #js {:backgroundImage (when (= color (or :primary :accent)) (str "url(" image ")"))}}
           (dom/h1 #js {:className "c-card__title-text"} title)))
       (when children
         (apply dom/div #js {:className "c-card__supporting-text"} children))

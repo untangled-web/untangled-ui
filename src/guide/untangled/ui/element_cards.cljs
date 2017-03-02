@@ -37,7 +37,13 @@
   (dom/div nil
     (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} "Default Look"))
     (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} (icon :arrow_back) "With an icon"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} "Flat Look"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} (icon :arrow_back) "With an icon"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {:color :secondary :shape :wide} "Wide Secondary"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {} (icon :arrow_back)))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {:size :small} (icon :arrow_back)))
+    ))
 
 (defsample badge
   "# Badges

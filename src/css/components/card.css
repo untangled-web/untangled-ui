@@ -76,17 +76,30 @@ section: Components
     .c-card--accent & { background-color: var(--color-accent); }
   }
 
-  .c-card__title--image { background-repeat: no-repeat; }
+  .c-card__title--image {
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
 
-  .c-card__title--image-top-left { background-position: top left 15%; }
+  .c-card__title--image-top-left {
+    background-position: top left 15%;
+    background-size: auto;
+  }
 
-  .c-card__title--image-top-right { background-position: top right 15%; }
+  .c-card__title--image-top-right {
+    background-position: top right 15%;
+    background-size: auto;
+  }
 
-  .c-card__title--image-bottom-left { background-position: bottom left 15%; }
+  .c-card__title--image-bottom-left {
+    background-position: bottom left 15%;
+    background-size: auto;
+  }
 
-  .c-card__title--image-bottom-right { background-position: bottom right 15%; }
-
-  .c-card__title--image-cover { background-size: cover; }
+  .c-card__title--image-bottom-right {
+    background-position: bottom right 15%;
+    background-size: auto;
+  }
 
   .c-card__title--expanded {
     height: 176px;

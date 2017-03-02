@@ -109,7 +109,7 @@ section: Components
 .c-button__content { @apply --start; }
 
 
-.c-button-small,
+.c-button--small,
 .c-button--dense {
   height: var(--size-button--dense);
   font-size: var(--fontSize-button--dense);
@@ -167,6 +167,7 @@ section: Components
      z-index: 5;
    }
 
+  &.c-button--small,
   &.c-button--dense {
      height: 44px;
      width: 44px;
