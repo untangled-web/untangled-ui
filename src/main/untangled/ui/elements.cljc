@@ -206,7 +206,7 @@
                         (contains? legal-sizes size) (str " c-icon--" (name size)))
          props        (-> props
                         (assoc :className classes)
-                        (dissoc :size :color))]
+                        (dissoc :size :color :glyph))]
      (dom/span (clj->js props) (if glyph
                                  (icon glyph)
                                  child)))))

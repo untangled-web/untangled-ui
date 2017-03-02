@@ -9,6 +9,7 @@
     [untangled.client.impl.network :as un]
     [untangled.client.mutations :as m :refer [defmutation]]
     [untangled.client.logging :as log]
+    [untangled.client.routing :as r :refer [defrouter]]
     [untangled.ui.forms :as f]
     [untangled.ui.layout :as l]
     [untangled.ui.elements :as ele]
@@ -374,7 +375,7 @@
   See the form documentation for the full possible items in such a request. For this example we'll describe
   just the one we're supporting: Updates.
 
-  The parameters passed to the server on update have 
+  The parameters passed to the server on update have
   a `:form/updates` key with a map whose keys are the idents of things that changed, and whose values are maps
   of the field/value updates. For example:
 

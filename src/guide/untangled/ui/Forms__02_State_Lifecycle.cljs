@@ -32,11 +32,12 @@
   The lifecycle is as follows:
 
   ```
-  Regular Persisted Entity <-+
+  Regular Persisted Entity
+        |
+        | build-form
+        v
+  Pristine Form <------------+
         |                    |
-        | init-form          |
-        v                    |
-  Pristine Form              |
         | edits/additions    ^
         v                   /|
    Dirty Form -------------/ |
@@ -44,7 +45,7 @@
                                     |
   Locally Created (tempid)          |
         |                           |
-        | init-form                 |
+        | build-form                |
         v                           | (server tempid remap)
    Dirty Form                       |
     ^    |                         _|_

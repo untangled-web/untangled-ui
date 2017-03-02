@@ -13,7 +13,8 @@
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
-                 [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
+                 [org.omcljs/om "1.0.0-alpha48" :scope "provided"]
+                 ; TODO: Move to untangled 1.0.0, get rid of dep on old libs
                  [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
