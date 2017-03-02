@@ -208,7 +208,7 @@
   Sample shown below:"
   (dom/div nil
     (dom/div #js {}
-      (e/ui-modal {:state :active}
+      (e/ui-modal {:active :true}
         (e/ui-modal-title {} "Informative")
         (e/ui-modal-body {} "You have been notified.")
         (e/ui-modal-actions {}

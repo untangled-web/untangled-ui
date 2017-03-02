@@ -368,12 +368,12 @@
 (defui Modal
   Object
   (render [this]
-    (let [{:keys [state] :as props} (om/props this)
+    (let [{:keys [active] :as props} (om/props this)
           children     (om/children this)
           title        (first-node ModalTitle children)
           content      (first-node ModalBody children)
           actions      (first-node ModalActions children)
-          state        (if (= state :active) " is-active" "")
+          state        (if (= active :true) " is-active" "")
           user-classes (get props :className "")
           classes      (-> (str user-classes " c-modal" state))]
 
@@ -384,8 +384,7 @@
                                  (when content content)
                                  (when actions actions)))
                (dom/div #js {:className (str "c-backdrop" state) :style #js {:position "absolute"}})))))
-;TODO - Need to require at least one action otherwise it can't be closed
-;TODO - Can the background fill up the full page when embedded in this object?
+;TODO: Change the position to fixed and wrap the example in ui-iframe.  My testing with this did not work as expected.
 
 (def ui-modal
   "Render a modal. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
