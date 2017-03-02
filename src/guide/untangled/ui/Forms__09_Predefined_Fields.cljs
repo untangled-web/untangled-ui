@@ -45,12 +45,15 @@
   (render [this]
     (let [file-render (om/get-computed this :fileRender)
           onRetry     (fn [] (js/console.log "User asked to retry upload"))
-          onCancel    (fn [] (js/console.log "User asked to remove file"))
-          props       (-> (om/props this)
-                        (assoc :onRetry onRetry :onCancel onCancel))]
-      (js/console.log :render :file)
-      (when file-render
-        (file-render props)))))
+          onCancel    (om/get-computed this :onCancel)
+          {:keys [file/id file/name file/size file/progress file/status]} (om/props this)]
+      (dom/li #js {:key (str "file-" id)} (str name "(" size " bytes) ")
+        (case status
+          :failed (dom/span nil "FAILED!")
+          :done (dom/span nil "Ready.")
+          (dom/span nil "Sending..." progress "%"))
+        (e/ui-icon {:onClick #(onCancel id)
+                    :glyph   :cancel})))))
 
 (def ui-file (om/factory File {:keyfn :file/id}))
 
@@ -84,6 +87,9 @@
     (let [{:keys [file-upload/id file-upload/files]} (om/props this)
           file-upload-id id
           {:keys [fileSelect]} (om/get-computed this)
+          onCancel       (fn [id] (om/transact! this `[(cancel-file-upload {:upload-id ~file-upload-id
+                                                                          :file-id   ~id})
+                                                     ~f/form-root-key]))
           onChange       (fn [evt]
                            (let [js-file-list (.. evt -target -files)]
                              (om/transact! this
@@ -94,23 +100,13 @@
                                                                         :js-file     js-file})]
                                                tx-call)) (range (.-length js-file-list)))
                                  f/form-root-key))))]
-      (js/console.log :render :upload)
       (dom/div nil
         (if (seq files)
           (dom/ul nil
-            (mapv (fn [{:keys [file/id file/name file/size file/progress file/status]}]
-                    (dom/li #js {:key (str "file-" id)} (str name "(" size " bytes) ")
-                      (case status
-                        :failed (dom/span nil "FAILED!")
-                        :done (dom/span nil "Ready.")
-                        (dom/span nil "Sending..." progress "%"))
-                      (e/ui-icon {:onClick (fn [] (om/transact! this `[(cancel-file-upload {:upload-id ~file-upload-id
-                                                                                            :file-id   ~id})
-                                                                       ~f/form-root-key])) :glyph :cancel})))
-              files))
+            (mapv #(ui-file (om/computed % {:onCancel onCancel})) files))
           (dom/input #js {:onChange (fn [evt]
                                       (when onChange
-                                        (onChange evt))) :type "file"}))))))
+                                        (onChange evt))) :value "" :type "file"}))))))
 
 (def ui-file-upload (om/factory FileUpload))
 
@@ -204,18 +200,18 @@
                           (let [ident    (file-ident id)
                                 file-obj (get-in @state ident)
                                 file     (assoc file-obj :file/progress 100 :file/status :done)]
-                            (ok-callback {ident file} {ident (om/get-query File)} :file-upload)))
+                            (ok-callback {ident file} {ident (om/get-query File)})))
           progress-fn   (fn [evt]
-                          (js/console.log  :pct (progress% evt))
+                          (js/console.log :pct (progress% evt))
                           (let [ident    (file-ident id)
                                 file-obj (get-in @state ident)
                                 file     (assoc file-obj :file/progress (progress% evt))]
-                            (ok-callback {ident file} {ident (om/get-query File)} :file-upload)))
+                            (ok-callback {ident file} {ident (om/get-query File)})))
           error-fn      (fn [evt] (js/console.log :error evt)
                           (let [ident    (file-ident id)
                                 file-obj (get-in @state ident)
                                 file     (assoc file-obj :file/progress 0 :file/status :failed)]
-                            (ok-callback {ident (f/build-form File file)} {ident (om/get-query File)} :file-upload))
+                            (ok-callback {ident (f/build-form File file)} {ident (om/get-query File)}))
                           (error-callback evt))
           with-dispose  (fn [f] (fn [arg] (try
                                             (f arg)
