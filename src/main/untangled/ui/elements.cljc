@@ -137,7 +137,7 @@
         attrs        (cond-> attrs
                        (contains? state :required) (assoc :required "true")
                        :always (assoc :type "text")
-                       :always (dissoc :size)
+                       :always (dissoc :size :state)
                        :always (assoc :className classes)
                        :always (assoc :placeholder (name placeholder)))]
     (dom/input (clj->js attrs))))
