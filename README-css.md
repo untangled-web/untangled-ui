@@ -1,7 +1,7 @@
-# Untangled Stylekit
+# Untangled CSS Library
 
-This project is provided as an optional CSS toolkit for use with the Untangled Web Framework. It is generally applicable
-to any web-based project (it simply results in CSS). More documentation and usage guides coming very soon.
+This project is provided as an optional CSS library for use with Untangled UI. It is generally applicable
+to any web-based project (it simply results in CSS).
 
 ## Quick start
 
@@ -46,7 +46,7 @@ Make sure to add these things to your layout file. Optionally, for legacy browse
 </head>
 ```
 
-To continue on the path of layout, refer to the [example layout](#example-layout) section.
+To continue on the path of layout, refer to the [example layout](#example-layout) section in the CSS Guide.
 
 ### Layers
 
