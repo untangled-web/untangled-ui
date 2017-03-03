@@ -75,7 +75,14 @@
            (e/ui-card {:title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
-              (dom/p nil (str "Image position: " (name image-position))))))))))
+              (dom/p nil (str "Image position: " (name image-position))))))))
+
+     (l/row {}
+       (l/col {:width 6}
+         (e/ui-card {:title "Card Test" :media "img/welcome_card.jpg" :media-type :image}
+           (dom/div nil
+             (dom/p nil (str "Media Image"))))))
+     ))
 
 (defcard card-bordered-visual-regressions
   (l/row {}

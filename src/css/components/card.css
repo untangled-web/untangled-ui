@@ -118,7 +118,22 @@ section: Components
 
 
   .c-card__media {
+    position: relative;
 
+    &:before {
+      display: block;
+      content: '';
+      width: 100%;
+      padding-top: calc(0.346 * 100%);
+    }
+
+    & > .c-card__media-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
   }
 
 

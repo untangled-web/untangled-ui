@@ -332,6 +332,8 @@
                :image          \"path/to/image/file.jpeg\"
                :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
                :actions        (ui-button \"Some Action\")
+               :media          URL
+               :media-type     :image | :video (TODO Youtube?)
 
                ;;TODO
                :menu-icon :more_vert
@@ -346,6 +348,8 @@
            image
            image-position
            actions
+           media-type
+           media
            ;; menu-icon
            ;; menu-items
            className] :as attrs} & children]
@@ -359,9 +363,12 @@
                      color (str " " (color-types color)))
         attributes (-> attrs
                      (merge {:className classes})
-                     (dissoc :title :type :color :size :actions :image :image-position)
+                     (dissoc :title :type :color :size :actions :image :image-position :media-type :media)
                      clj->js)]
     (dom/div attributes
+      (when media
+        (dom/div #js {:className (str "c-card__media")}
+          (when (= media-type :image) (dom/img #js {:className "c-card__media-content" :src media}))))
       (when title
         (dom/div #js {:className (str "c-card__title"
                                    (when image " c-card__title--image")
