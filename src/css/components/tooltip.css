@@ -5,7 +5,8 @@ section: Components
 
 :root {
   --tooltip-arrow-size: 10px;
-  --tooltip-background: var(--white);
+  --color-tooltip: var(--white);
+  --backgroundColor-tooltip: var(--black);
   --tooltip-space: .5rem;
   --tooltip-transform: translateX(-50%);
   --tooltip-z-index: 50;
@@ -13,9 +14,11 @@ section: Components
 
 [data-tooltip] {
   position: relative;
+  opacity: .8;
 
   &::after,
   &::before {
+    background-color: var(--backgroundColor-tooltip);
     bottom: 100%;
     left: 50%;
     opacity: 0;
@@ -29,23 +32,24 @@ section: Components
   }
 
   &::after {
-    background: var(--tooltip-background);
+    background: var(--backgroundColor-tooltip);
     border-radius: var(--global-rounded);
     box-shadow: var(--shadow-2);
-    color: var(--color-page);
+    color: var(--color-tooltip);
     content: attr(data-tooltip);
-    font-size: var(--fontSize--small);
+    font-size: var(--fontSize--tiny);
     line-height: 1.35; /* Experimental */
     margin-bottom: calc(1px + var(--tooltip-arrow-size));
     padding: .5em 1rem;
     right: auto;
+    text-transform: none;
     top: auto;
     white-space: nowrap;
   }
 
   &::before {
-    @apply --arrow-up;
-    color: var(--tooltip-background);
+    @apply --arrow-up--dark;
+    color: var(--backgroundColor-tooltip);
     content: '';
     margin-bottom: 5px;
     z-index: 40;
@@ -77,8 +81,8 @@ section: Components
   &::after { margin-top: calc(1px + var(--tooltip-arrow-size)); }
 
   &::before {
-    @apply --arrow-down;
-    color: var(--tooltip-background);
+    @apply --arrow-down--dark;
+    color: var(--backgroundColor-tooltip);
     margin-bottom: 0;
     margin-top: 5px;
   }
@@ -104,8 +108,8 @@ section: Components
   &::after { margin-right: calc(1px + var(--tooltip-arrow-size)); }
 
   &::before {
-    @apply --arrow-left;
-    color: var(--tooltip-background);
+    @apply --arrow-left--dark;
+    color: var(--backgroundColor-tooltip);
     margin-bottom: 0;
     margin-right: 5px;
   }
@@ -131,8 +135,8 @@ section: Components
   }
 
   &::before {
-    @apply --arrow-right;
-    color: var(--tooltip-background);
+    @apply --arrow-right--dark;
+    color: var(--backgroundColor-tooltip);
     margin-bottom: 0;
     margin-left: 5px;
   }
