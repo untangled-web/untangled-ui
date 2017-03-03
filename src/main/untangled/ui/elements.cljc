@@ -2,7 +2,7 @@
   (:require [om.dom :as dom]
             [om.next :as om :refer [defui]]
             [untangled.ui.menu :as menu]
-            [untangled.icons :refer [icon]]
+            [untangled.icons :refer [material-icon icon]]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
@@ -208,7 +208,7 @@
                         (assoc :className classes)
                         (dissoc :size :color :glyph))]
      (dom/span (clj->js props) (if glyph
-                                 (icon glyph)
+                                 (material-icon glyph)
                                  child)))))
 
 (defui NotificationTitle

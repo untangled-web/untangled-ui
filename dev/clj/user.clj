@@ -30,5 +30,6 @@
      (swap! figwheel component/start)
      (fig/cljs-repl (:figwheel-system @figwheel)))))
 
-(comment
-  (server/go))
+(def go server/go)
+(def reset server/reset)
+

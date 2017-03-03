@@ -14,7 +14,9 @@
     [goog.events :as events]
     [om.transit :as t]
     [untangled.client.impl.network :as net]
-    [clojure.string :as str])
+    [clojure.string :as str]
+    [untangled.icons :as i]
+    [untangled.client.logging :as log])
   (:refer-clojure :exclude [send])
   (:import [goog.net XhrIo EventType]))
 
@@ -37,14 +39,18 @@
     :input/type ::f/file-upload))
 
 (defui File
+  static f/IForm
+  (form-spec [this] [(f/id-field :file/id)
+                     (f/text-input :file/name)
+                     (f/radio-input :file/status #{:done :transfer-in-progress :failed})])
   static om/IQuery
-  (query [this] [:file/id :file/name :file/size :file/progress :file/status])
+  (query [this] [f/form-key :file/id :file/name :file/size :file/progress :file/status])
   static om/Ident
   (ident [this props] (file-ident (:file/id props)))
   Object
   (render [this]
     (let [file-render (om/get-computed this :fileRender)
-          onRetry     (fn [] (js/console.log "User asked to retry upload"))
+          onRetry     (fn [] (js/console.log "User asked to retry upload")) ; TODO: Unhappy path
           onCancel    (om/get-computed this :onCancel)
           {:keys [file/id file/name file/size file/progress file/status]} (om/props this)]
       (dom/li #js {:key (str "file-" id)} (str name "(" size " bytes) ")
@@ -63,22 +69,24 @@
     (swap! state (fn [st] (-> st
                             (uc/integrate-ident (file-ident file-id)
                               :append (conj (file-upload-ident file-upload) :file-upload/files))
-                            (assoc-in (file-ident file-id) {:file/id       file-id
-                                                            :file/name     (.-name js-file)
-                                                            :file/size     (.-size js-file)
-                                                            :file/progress 0
-                                                            :file/status   :transfer-in-progress})))))
+                            (assoc-in (file-ident file-id) (f/build-form File
+                                                             {:file/id       file-id
+                                                              :file/name     (.-name js-file)
+                                                              :file/size     (.-size js-file)
+                                                              :file/progress 0
+                                                              :file/status   :transfer-in-progress}))))))
   (file-upload [env] true))
 
 (declare cancel-file-upload)
 
 (defui FileUpload
   static f/IForm
-  (form-spec [this] [(f/id-field :file-upload/id)])
+  (form-spec [this] [(f/id-field :file-upload/id)
+                     (f/subform-element :file-upload/files File :many)])
   static uc/InitialAppState
   (initial-state [cls {:keys [id]}] (f/build-form FileUpload {:file-upload/id id :file-upload/files []}))
   static om/IQuery
-  (query [this] [:file-upload/id
+  (query [this] [f/form-key f/form-root-key :file-upload/id
                  {:file-upload/files (om/get-query File)}])
   static om/Ident
   (ident [this props] (file-upload-ident (:file-upload/id props)))
@@ -86,10 +94,11 @@
   (render [this]
     (let [{:keys [file-upload/id file-upload/files]} (om/props this)
           file-upload-id id
+          control-id     (str "file-upload-" id)
           {:keys [fileSelect]} (om/get-computed this)
           onCancel       (fn [id] (om/transact! this `[(cancel-file-upload {:upload-id ~file-upload-id
-                                                                          :file-id   ~id})
-                                                     ~f/form-root-key]))
+                                                                            :file-id   ~id})
+                                                       ~f/form-root-key]))
           onChange       (fn [evt]
                            (let [js-file-list (.. evt -target -files)]
                              (om/transact! this
@@ -101,12 +110,20 @@
                                                tx-call)) (range (.-length js-file-list)))
                                  f/form-root-key))))]
       (dom/div nil
-        (if (seq files)
-          (dom/ul nil
-            (mapv #(ui-file (om/computed % {:onCancel onCancel})) files))
-          (dom/input #js {:onChange (fn [evt]
-                                      (when onChange
-                                        (onChange evt))) :value "" :type "file"}))))))
+        (when (seq files)
+          (dom/ul nil (mapv #(ui-file (om/computed % {:onCancel onCancel})) files)))
+        (dom/label #js {:htmlFor control-id}
+          (dom/span #js {:className "c-button c-button--raised"}
+            (e/ui-icon {:glyph :add})
+            "Add Files"
+            (dom/input #js {:onChange  (fn [evt]
+                                         (when onChange
+                                           (onChange evt)))
+                            :id        control-id
+                            :className "u-hide"
+                            :multiple  "multiple"
+                            :value     ""
+                            :type      "file"})))))))
 
 (def ui-file-upload (om/factory FileUpload))
 
@@ -141,6 +158,7 @@
   (ident [this props] [:sink/by-id (:db/id props)])
   Object
   (render [this]
+    (js/console.log :RERENDER-WHOLE-FORM)
     (let [props (om/props this)]
       (dom/div #js {:className "form-horizontal"}
         (field-with-label this props :text "Text:")
@@ -181,56 +199,66 @@
 (defn progress% [progress-evt] (int (* 100 (/ (or (.-loaded progress-evt) 0) (or (.-total progress-evt) 1)))))
 
 (defprotocol Abort
-  (abort-send [this] "Abort the current send."))
+  (abort-send [this id] "Abort the send with the given ID."))
 
-(defrecord FileUploadNetwork [app current-transfer]
+(defrecord FileUploadNetwork [app active-transfers transfers-to-skip]
+  net/ProgressiveTransfer
+  (updating-send [this edn ok error update]
+    (try (let [state (om/app-state (:reconciler @app))]
+           (doseq [call edn]
+             (let [params  (-> call second)
+                   js-file (:js-file params)
+                   id      (:file-id params)]
+               (if (@transfers-to-skip id)
+                 (do
+                   (swap! transfers-to-skip disj id)
+                   (ok {}))
+                 (let [xhrio        (XhrIo.)
+                       done-fn      (fn [edn]
+                                      (let [ident    (file-ident id)
+                                            file-obj (get-in @state ident)
+                                            file     (assoc file-obj :file/progress 100 :file/status :done)]
+                                        (ok {ident file} {ident (om/get-query File)})))
+                       progress-fn  (fn [evt]
+                                      (let [ident    (file-ident id)
+                                            file-obj (get-in @state ident)
+                                            file     (assoc file-obj :file/progress (progress% evt))]
+                                        (update {ident file} {ident (om/get-query File)})))
+                       error-fn     (fn [evt]
+                                      (let [ident    (file-ident id)
+                                            file-obj (get-in @state ident)
+                                            file     (assoc file-obj :file/progress 0 :file/status :failed)]
+                                        (update {ident file} {ident (om/get-query File)}))
+                                      (error evt))
+                       with-dispose (fn [f] (fn [arg] (try
+                                                        (f arg)
+                                                        (finally
+                                                          (swap! active-transfers dissoc id)
+                                                          (.dispose xhrio)))))
+                       form         (js/FormData.)]
+                   (swap! active-transfers assoc id xhrio)
+                   (.append form "file" js-file)
+                   (.append form "id" id)
+                   (.setProgressEventsEnabled xhrio true)
+                   (events/listen xhrio (.-SUCCESS EventType) (with-dispose #(done-fn (ct/read (t/reader {}) (.getResponseText xhrio)))))
+                   (events/listen xhrio (.-UPLOAD_PROGRESS EventType) #(progress-fn %))
+                   (events/listen xhrio (.-ERROR EventType) (with-dispose #(error-fn %)))
+                   (.send xhrio "/file-upload" "POST" form #js {}))))))
+         (catch js/Object e (log/error "NETWORKING THREW " e)
+                            (error e))))
   Abort
-  (abort-send [this] (when @current-transfer
-                       (js/console.log @current-transfer)
-                       (.abort @current-transfer)))
+  (abort-send [this file-id]
+    (if-let [net (get @active-transfers file-id)]
+      (.abort net)
+      (swap! transfers-to-skip conj file-id)))
   net/UntangledNetwork
   (send [this edn ok-callback error-callback]
-    (let [xhrio         (XhrIo.)
-          add-tx-params (-> edn first second)
-          state         (om/app-state (:reconciler @app))
-          js-file       (:js-file add-tx-params)
-          id            (:file-id add-tx-params)
-          done-fn       (fn [edn]
-                          (js/console.log :done edn)
-                          (let [ident    (file-ident id)
-                                file-obj (get-in @state ident)
-                                file     (assoc file-obj :file/progress 100 :file/status :done)]
-                            (ok-callback {ident file} {ident (om/get-query File)})))
-          progress-fn   (fn [evt]
-                          (js/console.log :pct (progress% evt))
-                          (let [ident    (file-ident id)
-                                file-obj (get-in @state ident)
-                                file     (assoc file-obj :file/progress (progress% evt))]
-                            (ok-callback {ident file} {ident (om/get-query File)})))
-          error-fn      (fn [evt] (js/console.log :error evt)
-                          (let [ident    (file-ident id)
-                                file-obj (get-in @state ident)
-                                file     (assoc file-obj :file/progress 0 :file/status :failed)]
-                            (ok-callback {ident (f/build-form File file)} {ident (om/get-query File)}))
-                          (error-callback evt))
-          with-dispose  (fn [f] (fn [arg] (try
-                                            (f arg)
-                                            (reset! current-transfer nil)
-                                            (finally
-                                              (.dispose xhrio)))))
-          form          (js/FormData.)]
-      (.append form "file" js-file)
-      (.append form "id" id)
-      (.setProgressEventsEnabled xhrio true)
-      (events/listen xhrio (.-SUCCESS EventType) (with-dispose #(done-fn (ct/read (t/reader {}) (.getResponseText xhrio)))))
-      (events/listen xhrio (.-UPLOAD_PROGRESS EventType) #(progress-fn %))
-      (events/listen xhrio (.-ERROR EventType) (with-dispose #(error-fn %)))
-      (reset! current-transfer xhrio)
-      (.send xhrio "/file-upload" "POST" form #js {})))
+    (net/updating-send this edn ok-callback error-callback identity))
   (start [this complete-app] (reset! app complete-app)))
 
-(defonce file-upload-networking (map->FileUploadNetwork {:current-transfer (atom nil)
-                                                         :app              (atom nil)}))
+(defonce file-upload-networking (map->FileUploadNetwork {:active-transfers  (atom {})
+                                                         :transfers-to-skip (atom #{})
+                                                         :app               (atom nil)}))
 
 (defn remove-ident
   "Remove the given ident i from a vector of idents v."
@@ -245,12 +273,12 @@
       (swap! state (fn [st] (-> st
                               (update :file-upload-file/by-id dissoc file-id)
                               (update-in files-path (partial remove-ident (file-ident file-id)))))))
-    (abort-send file-upload-networking)))
+    (abort-send file-upload-networking file-id)))
 
 (defcard form-changes
   (untangled-app CommitRoot
     :networking {:remote      (net/make-untangled-network "/api" :global-error-callback identity)
                  :file-upload file-upload-networking})
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 

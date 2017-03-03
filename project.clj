@@ -15,7 +15,7 @@
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
                  [org.omcljs/om "1.0.0-alpha48" :scope "provided"]
                  ; TODO: Move to untangled 1.0.0, get rid of dep on old libs
-                 [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
+                 [navis/untangled-client "0.8.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
@@ -100,5 +100,6 @@
                                   [devcards "0.2.2" :exclusions [org.omcljs/om]]]
                    :source-paths ["dev" "src/guide" "src/css-guide"]
                    :repl-options {:init-ns          clj.user
+                                  :init (use 'clj.user :reload)
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                   :port             7001}}})
