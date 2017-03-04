@@ -138,8 +138,6 @@
                   wrap-multipart-params
                   wrap-gzip))))
 
-
-
 ; IMPORTANT: You want to inject the built-in API handler (which is where modular API handlers get chained)
 (defn build-middleware []
   (component/using
