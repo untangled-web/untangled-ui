@@ -92,5 +92,5 @@
     :networking {:remote      (net/make-untangled-network "/api" :global-error-callback identity)
                  :file-upload (file-upload-networking)})
   {}
-  {:inspect-data true})
+  {:inspect-data false})
 

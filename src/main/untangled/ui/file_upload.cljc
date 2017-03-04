@@ -44,6 +44,12 @@
   [_ value params]
   (= value :done))
 
+(defn cropped-name [name maxlen]
+  (if (< maxlen #?(:clj  (.length name)
+                   :cljs (.-length name)))
+    (str (.substring name 0 maxlen) "...")
+    name))
+
 (defui File
   static f/IForm
   (form-spec [this] [(f/id-field :file/id)
@@ -57,10 +63,11 @@
   Object
   (render [this]
     (let [file-render (om/get-computed this :fileRender)
-          onRetry     (fn [] (log/info "User asked to retry upload")) ; TODO: Unhappy path
-          onCancel    (om/get-computed this :onCancel)
-          {:keys [file/id file/name file/size file/progress file/status]} (om/props this)]
-      (dom/li #js {:key (str "file-" id)} (str name "(" size " bytes) ")
+          onRetry     (fn [] (log/info "User asked to retry upload"))
+          onCancel    (om/get-computed this :onCancel)      ; TODO: Unhappy path
+          {:keys [file/id file/name file/size file/progress file/status]} (om/props this)
+          label       (cropped-name name 20)]
+      (dom/li #js {:key (str "file-" id)} (str label " (" size " bytes) ")
         (case status
           :failed (dom/span nil "FAILED!")
           :done (dom/span nil "Ready.")
@@ -147,14 +154,20 @@
     #?(:cljs
        (try (let [state (om/app-state (:reconciler @app))]
               (doseq [call edn]
-                (let [params  (-> call second)
+                (log/info "updating send called with " call)
+                (let [action     (-> call first)
+                      params     (-> call second)
                       js-file (:js-file params)
-                      id      (:file-id params)]
-                  (if (@transfers-to-skip id)
-                    (do
+                      id         (:file-id params)
+                      is-add?    (= action `add-file)
+                      is-cancel? (= action `cancel-file-upload)]
+                  (cond
+                    (and is-add? (@transfers-to-skip id)) (do
                       (swap! transfers-to-skip disj id)
                       (ok {}))
-                    (let [xhrio        (XhrIo.)
+
+                    is-cancel? (abort-send this id)
+                    is-add? (let [xhrio        (XhrIo.)
                           done-fn      (fn [edn]
                                          (let [ident    (file-ident id)
                                                file-obj (get-in @state ident)
@@ -194,6 +207,8 @@
     (if-let [net (get @active-transfers file-id)]
       (.abort net)
       (swap! transfers-to-skip conj file-id)))
+  net/NetworkBehavior
+  (serialize-requests? [this] false)
   net/UntangledNetwork
   (send [this edn ok-callback error-callback]
     (net/updating-send this edn ok-callback error-callback identity))
@@ -217,8 +232,8 @@
              files-path   (conj (file-upload-ident upload-id) :file-upload/files)]
          (swap! state (fn [st] (-> st
                                  (update :file-upload-file/by-id dissoc file-id)
-                                 (update-in files-path (partial remove-ident (file-ident file-id)))))))
-       (abort-send file-upload-networking file-id))))
+                                 (update-in files-path (partial remove-ident (file-ident file-id))))))))
+     (file-upload [env] true)))
 
 #?(:cljs
    (defmutation add-file
