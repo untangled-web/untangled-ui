@@ -62,18 +62,20 @@
   (ident [this props] (file-ident (:file/id props)))
   Object
   (render [this]
-    (let [file-render (om/get-computed this :fileRender)
-          onRetry     (fn [] (log/info "User asked to retry upload"))
-          onCancel    (om/get-computed this :onCancel)      ; TODO: Unhappy path
-          {:keys [file/id file/name file/size file/progress file/status]} (om/props this)
-          label       (cropped-name name 20)]
-      (dom/li #js {:key (str "file-" id)} (str label " (" size " bytes) ")
-        (case status
-          :failed (dom/span nil "FAILED!")
-          :done (dom/span nil "Ready.")
-          (dom/span nil "Sending..." progress "%"))
-        (e/ui-icon {:onClick #(onCancel id)
-                    :glyph   :cancel})))))
+    (let [renderFile (om/get-computed this :renderFile)
+          onRetry    (fn [] (log/info "User asked to retry upload"))
+          onCancel   (om/get-computed this :onCancel)       ; TODO: Unhappy path
+          {:keys [file/id file/name file/size file/progress file/status] :as props} (om/props this)
+          label      (cropped-name name 20)]
+      (when renderFile
+        (renderFile props)
+        (dom/li #js {:key (str "file-" id)} (str label " (" size " bytes) ")
+          (case status
+            :failed (dom/span nil "FAILED!")
+            :done (dom/span nil "Ready.")
+            (dom/span nil "Sending..." progress "%"))
+          (e/ui-icon {:onClick #(onCancel id)
+                      :glyph   :cancel}))))))
 
 (def ui-file
   "Render a file that is to be (or is in the process of being) uploaded."
@@ -95,7 +97,7 @@
   Object
   (render [this]
     (let [{:keys [file-upload/id file-upload/files] :as props} (om/props this)
-          {:keys [accept multiple?]} (om/get-computed this)
+          {:keys [accept multiple? renderControl renderFile]} (om/get-computed this)
           file-upload-id id
           control-id     (str "file-upload-" id)
           onCancel       (fn [id] (om/transact! this `[(cancel-file-upload {:upload-id ~file-upload-id
@@ -112,9 +114,7 @@
                                                tx-call)) (range (.-length js-file-list)))
                                  f/form-root-key))))
           can-add-more?  (or (empty? files) multiple?)
-          attrs          (cond-> {:onChange  (fn [evt]
-                                               (when onChange
-                                                 (onChange evt)))
+          attrs          (cond-> {:onChange  (fn [evt] (onChange evt))
                                   :id        control-id
                                   :className "u-hide"
                                   :value     ""
@@ -124,16 +124,37 @@
                            :always clj->js)]
       (dom/div nil
         (when (seq files)
-          (dom/ul nil (mapv #(ui-file (om/computed % {:onCancel onCancel})) files)))
+          (dom/ul nil (mapv #(ui-file (om/computed % {:onCancel onCancel :renderFile renderFile})) files)))
         (when can-add-more?
-          (dom/label #js {:htmlFor control-id}
-            (dom/span #js {:className "c-button c-button--raised"}
-              (e/ui-icon {:glyph :add})
-              "Add Files"
-              (dom/input attrs))))))))
+          (if renderControl
+            (renderControl onChange accept multiple?)
+            (dom/label #js {:htmlFor control-id}
+              (dom/span #js {:className "c-button c-button--raised"}
+                (e/ui-icon {:glyph :add})
+                "Add Files"
+                (dom/input attrs)))))))))
 
 (def ui-file-upload
-  "Render a file upload component. Typically declared and embedded in a form."
+  "Render a file upload component. Typically declared and embedded in a form. All of these parameters can
+  be passed through f/form-field, which is the normal way to render this control when using forms.
+
+  Allowed customization props (through computed):
+
+  :accept - The MIME types (comma-separated string) allowed.
+
+  :multiple? - If the upload should let the user select multiple files.
+
+  :renderFile - A custom `(fn [upload-id file-props] DOM)` to render the files that selected for upload.
+  `upload-id` is the ID of the file upload control that owns the file.
+   See untangled.ui.file-upload/File's query for details of available file-props. Can invoke
+   the `cancel-file-upload` mutation to cancel an upload (which is why you need the upload-id).
+
+  :renderControl - A custom `(fn [onChange accept multiple?] DOM)` that will render the DOM for the control that appears to allow
+  users to add files. Must output at least an `input` of type `file` with onChange set to the function it
+  receives. If set, `accept` is the acceptable MIME types, and `multiple?` is if the control should allow more
+  than one file to be selected. The FileUpload system itself will hide this control if it is not multiple and
+  a file has been selected.
+  "
   (om/factory FileUpload {:keyfn :file-upload/id}))
 
 (defmethod f/form-field* ::f/file-upload [component form field & params]
@@ -157,49 +178,49 @@
                 (log/info "updating send called with " call)
                 (let [action     (-> call first)
                       params     (-> call second)
-                      js-file (:js-file params)
+                      js-file    (:js-file params)
                       id         (:file-id params)
                       is-add?    (= action `add-file)
                       is-cancel? (= action `cancel-file-upload)]
                   (cond
                     (and is-add? (@transfers-to-skip id)) (do
-                      (swap! transfers-to-skip disj id)
-                      (ok {}))
+                                                            (swap! transfers-to-skip disj id)
+                                                            (ok {}))
 
                     is-cancel? (abort-send this id)
                     is-add? (let [xhrio        (XhrIo.)
-                          done-fn      (fn [edn]
-                                         (let [ident    (file-ident id)
-                                               file-obj (get-in @state ident)
-                                               file     (assoc file-obj :file/progress 100 :file/status :done)]
-                                           (ok {ident file} {ident (om/get-query File)})
-                                           ; force update of forms at completion of upload, so validation states can update
-                                           (omp/queue! (:reconciler @app) [f/form-root-key])))
-                          progress-fn  (fn [evt]
-                                         (let [ident    (file-ident id)
-                                               file-obj (get-in @state ident)
-                                               file     (assoc file-obj :file/progress (progress% evt))]
-                                           (update {ident file} {ident (om/get-query File)})))
-                          error-fn     (fn [evt]
-                                         (let [ident    (file-ident id)
-                                               file-obj (get-in @state ident)
-                                               file     (assoc file-obj :file/progress 0 :file/status :failed)]
-                                           (update {ident file} {ident (om/get-query File)}))
-                                         (error evt))
-                          with-dispose (fn [f] (fn [arg] (try
-                                                           (f arg)
-                                                           (finally
-                                                             (swap! active-transfers dissoc id)
-                                                             (.dispose xhrio)))))
-                          form         (js/FormData.)]
-                      (swap! active-transfers assoc id xhrio)
-                      (.append form "file" js-file)
-                      (.append form "id" id)
-                      (.setProgressEventsEnabled xhrio true)
-                      (events/listen xhrio (.-SUCCESS EventType) (with-dispose #(done-fn (ct/read (t/reader {}) (.getResponseText xhrio)))))
-                      (events/listen xhrio (.-UPLOAD_PROGRESS EventType) #(progress-fn %))
-                      (events/listen xhrio (.-ERROR EventType) (with-dispose #(error-fn %)))
-                      (.send xhrio "/file-upload" "POST" form #js {}))))))
+                                  done-fn      (fn [edn]
+                                                 (let [ident    (file-ident id)
+                                                       file-obj (get-in @state ident)
+                                                       file     (assoc file-obj :file/progress 100 :file/status :done)]
+                                                   (ok {ident file} {ident (om/get-query File)})
+                                                   ; force update of forms at completion of upload, so validation states can update
+                                                   (omp/queue! (:reconciler @app) [f/form-root-key])))
+                                  progress-fn  (fn [evt]
+                                                 (let [ident    (file-ident id)
+                                                       file-obj (get-in @state ident)
+                                                       file     (assoc file-obj :file/progress (progress% evt))]
+                                                   (update {ident file} {ident (om/get-query File)})))
+                                  error-fn     (fn [evt]
+                                                 (let [ident    (file-ident id)
+                                                       file-obj (get-in @state ident)
+                                                       file     (assoc file-obj :file/progress 0 :file/status :failed)]
+                                                   (update {ident file} {ident (om/get-query File)}))
+                                                 (error evt))
+                                  with-dispose (fn [f] (fn [arg] (try
+                                                                   (f arg)
+                                                                   (finally
+                                                                     (swap! active-transfers dissoc id)
+                                                                     (.dispose xhrio)))))
+                                  form         (js/FormData.)]
+                              (swap! active-transfers assoc id xhrio)
+                              (.append form "file" js-file)
+                              (.append form "id" id)
+                              (.setProgressEventsEnabled xhrio true)
+                              (events/listen xhrio (.-SUCCESS EventType) (with-dispose #(done-fn (ct/read (t/reader {}) (.getResponseText xhrio)))))
+                              (events/listen xhrio (.-UPLOAD_PROGRESS EventType) #(progress-fn %))
+                              (events/listen xhrio (.-ERROR EventType) (with-dispose #(error-fn %)))
+                              (.send xhrio "/file-upload" "POST" form #js {}))))))
             (catch js/Object e (log/error "NETWORKING THREW " e)
                                (error e)))))
   Abort
