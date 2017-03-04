@@ -25,7 +25,7 @@ section: Elements
   box-sizing: border-box;
   cursor: default;
   margin: 0;
-  -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, Internet Explorer 11- */
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, IE 11- */
   overflow-x: hidden;
   overflow-y: scroll; /* All browsers without overlaying scrollbars */
   width: 100%;
@@ -58,7 +58,7 @@ section: Elements
   font-size: inherit;
   line-height: inherit;
   margin: 0;
-  -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, Internet Explorer 11- */
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, IE 11- */
   padding: 0;
 }
 

@@ -18,9 +18,9 @@ section: Objects
   border: var(--borderWidth-editor) solid var(--borderColor-editor);
   border-radius: var(--global-rounded);
   color: var(--color-page);
-  padding: 0;
   margin: var(--margin-card);
   overflow: visible;
+  padding: 0;
   position: relative;
   transition: border .1s ease;
   z-index: auto !important;
@@ -31,7 +31,9 @@ section: Objects
   &.is-active {
     border: var(--borderWidth-editor) solid var(--borderColor-editor--active);
 
-    & > .o-editor__toolbar > .o-editor__info > .o-editor__actions { @apply --fade-in; }
+    & > .o-editor__toolbar > .o-editor__info > .o-editor__actions {
+      @apply --fade-in;
+    }
   }
 
   &:not(.is-active) .o-editor__actions .c-button:first-child {
@@ -155,7 +157,7 @@ section: Objects
     background-color: transparent;
     border-radius: 50%;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    content: '';
+    content: "";
     display: inline-block;
     height: 8px;
     left: 8px;
@@ -171,6 +173,10 @@ section: Objects
 
     & .c-icon { fill: var(--yellow-600); }
 
-    &::before { box-shadow: 0 0 10px rgba(0, 0, 0, .72), 0 0 10px rgba(0, 0, 0, .72); }
+    &::before {
+      box-shadow:
+        0 0 10px rgba(0, 0, 0, .72),
+        0 0 10px rgba(0, 0, 0, .72);
+    }
   }
 }

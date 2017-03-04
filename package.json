@@ -30,6 +30,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^2.2.0",
+    "gulp-stylelint": "^3.9.0",
     "gulp-uglify": "^2.0.0",
     "gulp-useref": "^3.0.0",
     "gulp-util": "^3.0.7",
@@ -60,6 +61,7 @@
     "run-sequence": "^1.0.1",
     "stylelint": "^7.0.2",
     "stylelint-config-guidelines": "^1.1.0",
+    "stylelint-order": "^0.3.0",
     "sw-precache": "^4.3.0"
   },
   "dependencies": {

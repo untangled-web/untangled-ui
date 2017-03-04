@@ -63,9 +63,10 @@ section: Components
      padding: 0 !important;
    }
 
-  &[type="submit"] { -webkit-appearance: none; }
+  &[type="submit"] { appearance: none; }
 
-  &:hover { background-color: var(--color-button--hover);
+  &:hover {
+     background-color: var(--color-button--hover);
 
     :--dark & { background-color: var(--color-button-dark--hover); }
    }
@@ -111,8 +112,8 @@ section: Components
 
 .c-button--small,
 .c-button--dense {
-  height: var(--size-button--dense);
   font-size: var(--fontSize-button--dense);
+  height: var(--size-button--dense);
   line-height: var(--size-button--dense);
 }
 
@@ -168,12 +169,12 @@ section: Components
      border-radius: inherit;
      bottom: 0;
      box-shadow: var(--shadow-2);
-     content: '';
+     content: "";
      left: 0;
      position: absolute;
-     transition: box-shadow var(--global-duration) ease;
      right: 0;
      top: 0;
+     transition: box-shadow var(--global-duration) ease;
      z-index: 5;
    }
 
@@ -182,7 +183,6 @@ section: Components
      height: 44px;
      width: 44px;
    }
-
 }
 
 .c-button--raised {
@@ -192,12 +192,12 @@ section: Components
     border-radius: inherit;
     bottom: 0;
     box-shadow: var(--shadow-1);
-    content: '';
+    content: "";
     left: 0;
     position: absolute;
-    transition: box-shadow var(--global-duration) ease;
     right: 0;
     top: 0;
+    transition: box-shadow var(--global-duration) ease;
     z-index: 5;
   }
 }

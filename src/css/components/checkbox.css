@@ -30,7 +30,7 @@ section: Components
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     display: block;
   }
 

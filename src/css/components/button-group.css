@@ -29,6 +29,11 @@ section: Objects
 .c-button--postfix {
   border-radius: 0;
 
-
-  &:last-child { border-radius: 0 var(--global-rounded) var(--global-rounded) 0; }
+  &:last-child {
+     border-radius:
+       0
+       var(--global-rounded)
+       var(--global-rounded)
+       0;
+  }
 }

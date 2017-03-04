@@ -9,8 +9,8 @@ section: Components
   --size-card--square: 320px;
   --card: {
     background-color: var(--white);
-    box-shadow: var(--shadow-1);
     border-radius: 2px;
+    box-shadow: var(--shadow-1);
     color: var(--color-page);
     display: flex;
     flex-direction: column;
@@ -111,28 +111,28 @@ section: Components
     display: flex;
     font-size: var(--fontSize--semiMedium);
     line-height: normal;
+    margin: 0;
     overflow: hidden;
     transform-origin: 149px 48px;
-    margin: 0;
   }
 
 
   .c-card__media {
     position: relative;
 
-    &:before {
+    &::before {
+      content: "";
       display: block;
-      content: '';
+      padding-top: calc(.346 * 100%);
       width: 100%;
-      padding-top: calc(0.346 * 100%);
     }
 
     & > .c-card__media-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
       bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
   }
 
@@ -155,7 +155,7 @@ section: Components
     }
 
     .c-card--image & {
-      background-color: rgba(0, 0, 0 , .2);
+      background-color: rgba(0, 0, 0, .2);
     }
   }
 

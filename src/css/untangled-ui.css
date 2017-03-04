@@ -30,7 +30,7 @@
  * COMPONENTS
  * Badge..............Simple adaptable badges
  * Button.............Visual style to represent actions in varying priority
- * Button Group.......For when you can't just have one button
+ * Button Group.......For when you can"t just have one button
  * Card...............Styles for many different kinds of cards
  * Calendar...........A modal calendar
  * Checkbox...........Custom CSS and A11Y compatible checkbox
@@ -52,52 +52,52 @@
  * Tooltip............Short messages for documenting things
  */
 
-@import 'settings/config';
-@import 'settings/global';
-@import 'settings/colour';
-@import 'settings/containment';
-@import 'settings/motion';
-@import 'settings/shapes';
-@import 'settings/typography';
+@import "settings/config";
+@import "settings/global";
+@import "settings/colour";
+@import "settings/containment";
+@import "settings/motion";
+@import "settings/shapes";
+@import "settings/typography";
 
-@import 'elements/forms';
-@import 'elements/images';
-@import 'elements/layout';
-@import 'elements/typography';
+@import "elements/forms";
+@import "elements/images";
+@import "elements/layout";
+@import "elements/typography";
 
-@import 'components/avatar';
-@import 'components/backdrop';
-@import 'components/badge';
-@import 'components/button';
-@import 'components/button-group';
-@import 'components/card';
-@import 'components/calendar';
-@import 'components/checkbox';
-@import 'components/drawer';
-@import 'components/radio';
-@import 'components/expansion-panel';
-@import 'components/field';
-@import 'components/icon';
-@import 'components/iconbar';
-@import 'components/input';
-@import 'components/label';
-@import 'components/list';
-@import 'components/loader';
-@import 'components/menu';
-@import 'components/message';
-@import 'components/modal';
-@import 'components/notification';
-@import 'components/pagination';
-@import 'components/progress';
-@import 'components/switch';
-@import 'components/table';
-@import 'components/tabs';
-@import 'components/toolbar';
-@import 'components/tooltip';
-@import 'components/visualizations';
+@import "components/avatar";
+@import "components/backdrop";
+@import "components/badge";
+@import "components/button";
+@import "components/button-group";
+@import "components/card";
+@import "components/calendar";
+@import "components/checkbox";
+@import "components/drawer";
+@import "components/radio";
+@import "components/expansion-panel";
+@import "components/field";
+@import "components/icon";
+@import "components/iconbar";
+@import "components/input";
+@import "components/label";
+@import "components/list";
+@import "components/loader";
+@import "components/menu";
+@import "components/message";
+@import "components/modal";
+@import "components/notification";
+@import "components/pagination";
+@import "components/progress";
+@import "components/switch";
+@import "components/table";
+@import "components/tabs";
+@import "components/toolbar";
+@import "components/tooltip";
+@import "components/visualizations";
 
-@import 'utilities/alignment';
-@import 'utilities/grid';
-@import 'utilities/positioning';
-@import 'utilities/typography';
-@import 'utilities/visibility';
+@import "utilities/alignment";
+@import "utilities/grid";
+@import "utilities/positioning";
+@import "utilities/typography";
+@import "utilities/visibility";

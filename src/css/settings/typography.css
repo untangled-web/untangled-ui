@@ -5,7 +5,7 @@ section: Settings
 
 
 :root {
-  --fontFamily--sans: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  --fontFamily--sans: "Source Sans Pro", Helvetica, Arial, sans-serif;
   --fontFamily--monospaced: monospace;
   --fontFamily-page: var(--fontFamily--sans);
   --fontSize--tiny: .75rem; /* 12px */
@@ -41,7 +41,7 @@ section: Settings
   --ellipsis: {
     display: inline-block;
     overflow: hidden;
-    padding: 3px 0; /* Fix text that gets vertically cut off by hidden overflow */
+    padding: 3px 0; /* TODO Cuts off ascenders */
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
@@ -64,9 +64,25 @@ section: Settings
   src:
   local("Source Sans Pro"),
   local("SourceSansPro-Regular"),
-  url("../fonts/source-sans-pro/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff2") format("woff2"),
-  url("../fonts/source-sans-pro/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff") format("woff");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  url("../fonts/source-sans-pro/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff2")
+  format("woff2"),
+  url("../fonts/source-sans-pro/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff")
+  format("woff");
+  unicode-range:
+    U+0000-00FF,
+    U+0131,
+    U+0152-0153,
+    U+02C6,
+    U+02DA,
+    U+02DC,
+    U+2000-206F,
+    U+2074,
+    U+20AC,
+    U+2212,
+    U+2215,
+    U+E0FF,
+    U+EFFD,
+    U+F000;
 }
 
 
@@ -79,9 +95,25 @@ section: Settings
   src:
   local("Source Sans Pro Bold"),
   local("SourceSansPro-Bold"),
-  url("../fonts/source-sans-pro/toadOcfmlt9b38dHJxOBGJkF8H8ye47wsfpWywda8og.woff2") format("woff2"),
-  url("../fonts/source-sans-pro/toadOcfmlt9b38dHJxOBGJkF8H8ye47wsfpWywda8og.woff") format("woff");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  url("../fonts/source-sans-pro/toadOcfmlt9b38dHJxOBGJkF8H8ye47wsfpWywda8og.woff2")
+  format("woff2"),
+  url("../fonts/source-sans-pro/toadOcfmlt9b38dHJxOBGJkF8H8ye47wsfpWywda8og.woff")
+  format("woff");
+  unicode-range:
+    U+0000-00FF,
+    U+0131,
+    U+0152-0153,
+    U+02C6,
+    U+02DA,
+    U+02DC,
+    U+2000-206F,
+    U+2074,
+    U+20AC,
+    U+2212,
+    U+2215,
+    U+E0FF,
+    U+EFFD,
+    U+F000;
 }
 
 
@@ -94,7 +126,23 @@ section: Settings
   src:
   local("Source Sans Pro Italic"),
   local("SourceSansPro-It"),
-  url("../fonts/source-sans-pro/M2Jd71oPJhLKp0zdtTvoM2Sl3jWJ3D9poyJPMfASioc.woff2") format("woff2"),
-  url("../fonts/source-sans-pro/M2Jd71oPJhLKp0zdtTvoM2Sl3jWJ3D9poyJPMfASioc.woff") format("woff");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  url("../fonts/source-sans-pro/M2Jd71oPJhLKp0zdtTvoM2Sl3jWJ3D9poyJPMfASioc.woff2")
+  format("woff2"),
+  url("../fonts/source-sans-pro/M2Jd71oPJhLKp0zdtTvoM2Sl3jWJ3D9poyJPMfASioc.woff")
+  format("woff");
+  unicode-range:
+    U+0000-00FF,
+    U+0131,
+    U+0152-0153,
+    U+02C6,
+    U+02DA,
+    U+02DC,
+    U+2000-206F,
+    U+2074,
+    U+20AC,
+    U+2212,
+    U+2215,
+    U+E0FF,
+    U+EFFD,
+    U+F000;
 }

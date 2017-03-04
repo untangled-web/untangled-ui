@@ -38,8 +38,8 @@
   @apply --row;
   @apply --middle;
   height: var(--height-toolbar);
-  z-index: var(--zIndex-appBar);
   width: 100%;
+  z-index: var(--zIndex-appBar);
 
   & .u-column--bar {
     &:nth-child(even) { @apply --end; }

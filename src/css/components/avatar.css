@@ -1,10 +1,15 @@
+:root {
+  --color-avatar: var(--grey-200);
+  --color-avatar-text: var(--grey-700);
+}
+
 .c-avatar {
   @apply --top;
   --size: 40px;
   --scale: calc(var(--size) / 2.5);
+  background-color: var(--color-avatar);
   border-radius: 100px;
-  background-color: var(--grey-200);
-  color: var(--grey-700);
+  color: var(--color-avatar-text);
   display: inline-block;
   font-size: var(--scale);
   font-weight: bold;

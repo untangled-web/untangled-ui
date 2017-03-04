@@ -46,8 +46,8 @@
 
   .c-modal__content {
     max-height: calc(100vh - 260px);
-    padding: .85em 1rem 1em;
     overflow-y: scroll;
+    padding: .85em 1rem 1em;
 
     &:first-child { padding-top: 1.25em; }
 
@@ -69,25 +69,25 @@
     padding-left: .5rem;
   }
 
+/* Make all buttons stack to the right
   .c-modal__actions--stacked {
-    /* Make all buttons stack to the right */
     & > .c-button {
     }
   }
-
+*/
 
 
 
 
 .c-modal--fullscreen {
   @apply --fade-in;
+  height: auto;
   position: static;
   text-align: start;
-  height: auto;
 
   & .c-modal__card {
-    margin: 0;
     box-shadow: none;
+    margin: 0;
     width: 100%;
   }
 }

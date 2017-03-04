@@ -227,6 +227,7 @@ section: Utilities
   .u-pull--11\@xl { margin-right: calc(var(--width-column) * 11); }
 }
 
+
 /* Grid for Emails */
 
 .s-email {
@@ -240,8 +241,8 @@ section: Utilities
 
   table {
     border-collapse: collapse;
-    mso-table-lspace: 0pt;
-    mso-table-rspace: 0pt;
+    mso-table-lspace: 0; /* removed pt unit */
+    mso-table-rspace: 0;
   }
 }
 

@@ -10,19 +10,19 @@ title: Visibility
 .s-healthcheck {
   [class] { outline: 5px solid lightgrey; }
 
-  [class*='__'] { outline: 5px solid grey; }
+  [class*="__"] { outline: 5px solid grey; }
 
-  [class*='--'] { outline: 5px solid darkgrey; }
+  [class*="--"] { outline: 5px solid darkgrey; }
 
-  [class^='o-'],
-  [class*=' o-'] { outline: 5px solid orange; }
+  [class^="o-"],
+  [class*=" o-"] { outline: 5px solid orange; }
 
-  [class^='c-'],
-  [class*=' c-'] { outline: 5px solid cyan; }
+  [class^="c-"],
+  [class*=" c-"] { outline: 5px solid cyan; }
 
-  [class*='@'] { outline: 5px solid rosybrown; }
+  [class*="@"] { outline: 5px solid rosybrown; }
 
-  [class^='_'] { outline: 5px solid red; }
+  [class^="_"] { outline: 5px solid red; }
 }
 
 
@@ -36,7 +36,7 @@ title: Visibility
 
 
 .u-fade-out { @apply --fade-out; }
-.u-fade-out\@sm { @media (--sm) {@apply --fade-out;} }
+.u-fade-out\@sm { @media (--sm) { @apply --fade-out; } }
 .u-fade-in { @apply --fade-in; }
 .u-slide-out { @apply --slide-out; }
 .u-slide-out--inv { @apply --slide-out-inv; }
@@ -48,7 +48,7 @@ title: Visibility
 [hidden] { display: none !important; }
 
 
-[hidden][aria-hidden='false'],
+[hidden][aria-hidden="false"],
 .u-show\@reader {
   clip: rect(0 0 0 0);
   display: inherit;

@@ -16,7 +16,6 @@ section: Components
   @apply --row;
 
   .c-toolbar__row:not(:first-child) & {
-
     @media (--md-up) {
       margin-left: calc(var(--width-button--icon) + var(--frame-quarter) + var(--frame-quarter) - var(--padding-tab)); /* Icon button combined width minus left padding of menu button */
     }
@@ -30,11 +29,11 @@ section: Components
   border-bottom: 2px solid transparent;
   color: currentColor;
   font-size: var(--fontSize-tab);
-  padding: 0 var(--padding-tab);
   height: var(--height-tab);
-  min-width: 72px;
   max-width: 264px;
+  min-width: 72px;
   opacity: .75;
+  padding: 0 var(--padding-tab);
   text-transform: uppercase;
   transition: border var(--global-duration) ease, background-color var(--global-duration) ease;
 

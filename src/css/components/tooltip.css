@@ -13,8 +13,8 @@ section: Components
 }
 
 [data-tooltip] {
-  position: relative;
   opacity: .8;
+  position: relative;
 
   &::after,
   &::before {
@@ -50,7 +50,7 @@ section: Components
   &::before {
     @apply --arrow-up--dark;
     color: var(--backgroundColor-tooltip);
-    content: '';
+    content: "";
     margin-bottom: 5px;
     z-index: 40;
   }
