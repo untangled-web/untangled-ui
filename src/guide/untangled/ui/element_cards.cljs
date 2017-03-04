@@ -70,17 +70,37 @@
     (e/ui-label {:color :green} (icon :add) "Add")
     (e/ui-label {:color :red} (icon :close) "Remove")))
 
-(defsample field
+(defsample field-sizes
   "# Fields
 
-  Use `ui-field` to render a field. Optionally set the size, state identifiers and provide placeholder text.  Also supports custom classes.
+  Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
     (e/ui-field {} "Default field")
-    (e/ui-field {:size :small :state #{:required}} "Small required field")
-    (e/ui-field {:size :medium :state #{:focus}} "Medium focused field")
-    (e/ui-field {:size :large :state #{:invalid}} "Large invalid field")
-    (e/ui-field {:state #{:error}} "Error field")))
+    (e/ui-field {:size :small} "Small field")
+    (e/ui-field {:size :medium} "Medium field")
+    (e/ui-field {:size :large} "Large field")))
+
+(defsample field-states
+   "# Fields
+
+   Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
+   "
+   (dom/div nil
+      (e/ui-field {} "Default field")
+      (e/ui-field {:state #{:required}} "Required field")
+      (e/ui-field {:state #{:focus}} "Focused field")
+      (e/ui-field {:state #{:invalid}} "Invalid field")
+      (e/ui-field {:state #{:error}} "Field")))
+
+(defsample field-types
+   "# Fields
+
+   Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
+   "
+   (dom/div nil
+      (mapv (fn [kind] (e/ui-field {:kind kind} (name kind)))
+            [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample message
   "# Messages

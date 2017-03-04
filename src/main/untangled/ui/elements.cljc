@@ -94,10 +94,12 @@
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
+  kind (optional): :text (default), :password, :date, :datetime, :datetime-local, :month, :week, :email, :number, :search, :tel, :time, :url, :color
   size (optional): :small, :medium, :large
   states that can be implemented (optional) :required, :focus, :invalid, :error"
-  [{:keys [size state] :or {size ""} :as attrs} placeholder]
+  [{:keys [size state kind] :or {size ""} :as attrs} placeholder]
   (let [legal-sizes  #{:small :medium :large}
+        legal-kinds #{:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color}
         user-classes (get attrs :className "")
         has          (fn [s] (contains? state s))
         classes      (cond-> (str user-classes " c-field ")
@@ -105,10 +107,12 @@
                        (has :focus) (str " has-focus")
                        (has :invalid) (str " is-invalid")
                        (has :error) (str " is-error"))
+        type         (if (contains? legal-kinds kind) (name kind) "text")
         attrs        (cond-> attrs
                        (contains? state :required) (assoc :required "true")
-                       :always (assoc :type "text")
+                       :always (assoc :type kind)
                        :always (dissoc :size)
+                       :always (dissoc :kind)
                        :always (assoc :className classes)
                        :always (assoc :placeholder (name placeholder)))]
     (dom/input (clj->js attrs))))
