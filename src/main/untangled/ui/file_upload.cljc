@@ -67,7 +67,7 @@
           onCancel   (om/get-computed this :onCancel)       ; TODO: Unhappy path
           {:keys [file/id file/name file/size file/progress file/status] :as props} (om/props this)
           label      (cropped-name name 20)]
-      (when renderFile
+      (if renderFile
         (renderFile props)
         (dom/li #js {:key (str "file-" id)} (str label " (" size " bytes) ")
           (case status
