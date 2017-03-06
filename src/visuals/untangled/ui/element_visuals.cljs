@@ -181,9 +181,13 @@
         (e/ui-avatar {:color color :style style :size size :key (str color style size content)} content) "\u00A0"))))
 
 (defcard loader-visual-regressions
-  (dom/div #js {:style #js {:height 50}}
-    (e/ui-loader {})
-    (e/ui-loader {:color :neutral})))
+  (l/row {}
+    (l/col {:width 4}
+      (e/ui-loader {}))
+    (l/col {:width 4}
+      (e/ui-loader {:color :primary}))
+    (l/col {:width 4}
+      (e/ui-loader {:color :accent}))))
 
 
 (defcard icon-colors-visual-regressions

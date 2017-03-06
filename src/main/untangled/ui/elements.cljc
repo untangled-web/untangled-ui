@@ -178,9 +178,9 @@
 (defn ui-loader
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :neutral"
+  color (optional): :primary :accent"
   [{:keys [className color] :as props :or {className ""}}]
-  (let [legal-colors #{:neutral}
+  (let [legal-colors #{:primary :accent}
         user-classes (get props :className "")
         classes      (cond-> user-classes
                        :always (str " c-loader")

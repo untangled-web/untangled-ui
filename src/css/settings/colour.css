@@ -243,7 +243,9 @@ section: Settings
 
   /* Loader */
 
-  --color-loader: var(--color-accent);
+  --color-loader: var(--color-neutral);
+  --color-loader--primary: var(--color-primary);
+  --color-loader--accent: var(--color-accent);
   --color-loader--alt: var(--grey-200);
   --color-loader-secondary: var(--blue-300);
 
