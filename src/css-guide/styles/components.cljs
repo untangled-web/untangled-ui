@@ -228,16 +228,21 @@
 
     (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-1"} "Checkbox")
+
     (dom/input #js {:id "checkbox-2" :type "checkbox" :checked true :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-2"} "Checked Checkbox")
+
     (dom/input #js {:id "checkbox-3" :type "checkbox" :className "c-checkbox is-indeterminate"})
     (dom/label #js {:htmlFor "checkbox-3"} "Indeterminate Checkbox")
-    (dom/input #js {:id "checkbox-5" :type "checkbox" :className "c-checkbox c-checkbox--informative"})
-    (dom/label #js {:htmlFor "checkbox-5"} "Informative (unchecked) Checkbox")
-    (dom/input #js {:id "checkbox-6" :type "checkbox" :checked true :className "c-checkbox c-checkbox--informative"})
-    (dom/label #js {:htmlFor "checkbox-6"} "Checked Informative Checkbox")
-    (dom/input #js {:id "checkbox-7" :type "checkbox" :className "c-checkbox c-checkbox--informative is-indeterminate"})
-    (dom/label #js {:htmlFor "checkbox-7"} "Indeterminate Informative Checkbox")))
+
+    (dom/input #js {:id "checkbox-4" :type "checkbox" :className "c-checkbox" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-4"} "Disabled Checkbox")
+
+    (dom/input #js {:id "checkbox-5" :type "checkbox" :checked true :className "c-checkbox" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-5"} "Disabled Checked Checkbox")
+
+    (dom/input #js {:id "checkbox-5" :type "checkbox" :className "c-checkbox is-indeterminate" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-5"} "Disabled Indeterminate Checkbox")))
 
 (defn toggle-open [this] (om/update-state! this update :open not))
 
