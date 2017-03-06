@@ -206,7 +206,7 @@
                         (contains? legal-sizes size) (str " c-icon--" (name size)))
          props        (-> props
                         (assoc :className classes)
-                        (dissoc :size :color))]
+                        (dissoc :size :color :glyph))]
      (dom/span (clj->js props) (if glyph
                                  (icon glyph)
                                  child)))))
@@ -324,7 +324,8 @@
 
 (defn ui-card
   "Card component
-   usage
+
+   Usage
    (c/ui-card {:title          \"Some Title\"
                :color          :primary | :accent
                :type           :bordered | :transparent | :square
@@ -380,17 +381,23 @@
       (when actions
         (dom/div #js {:className "c-card__actions"} actions))
       ;; TODO
-      #_(when menu-icon
+      #_(when menu-items
         (dom/div #js {:className "c-card__menu"}
-          (menu/menu :a (icon menu-icon) menu-items))))))
+          (menu/menu :a
+            (icon (if menu-icon menu-icon :more_vert))
+            menu-items))))))
 
 (defn ui-icon-bar
-  "Render an icon bar giving using a vector of icons (each a map of attributes).
-   Can optionally be render vertically ond/or shifting.
+  "Render an icon bar using a vector of icons (each a map of attributes).
+   Can optionally render vertically and/or shifting.
    Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  orientation (optional): :vertical or :horizontal (default)
-  shifting (optional): :true"
+   Usage
+   (c/ui-icon-bar {:orientation  :vertical or :horizontal (default)
+                   :shifting     :true
+   ...)
+   all parameters are optional
+   "
   [{:keys [className orientation shifting] :as props :or {className ""}} & children]
   (let [user-classes    (get props :className "")
         top-level-class (cond-> (str user-classes " o-iconbar")
@@ -398,3 +405,4 @@
                           (= shifting :true) (str " o-iconbar--shifting"))]
     (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
+
