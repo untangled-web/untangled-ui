@@ -150,6 +150,7 @@
               (dom/p nil (str "Image: " image))
               (dom/p nil (str "Image position: " (name image-position))))))))))
 
+
 (defcard labels-visual-regressions
   (dom/div nil
     (for [color [:none :green :blue :magenta :grey :yellow :orange :red]
@@ -205,18 +206,20 @@
 (defcard notifications-visual-regressions
   (dom/div nil
     (for [kind [:normal :informative :success :warning :error]]
-      (e/ui-notification
-        {:kind kind :key kind}
-        ;; TODO Warning key prop needed on NotificationTitle but simply setting one doesn't suppress the error.
-       (e/ui-notification-title {:key (str "nvr-title-" kind)} (str (str/capitalize (name kind))))
-       (e/ui-notification-body {} "Your message here...")
-       ))))
+      (dom/div nil
+        (e/ui-notification
+         {:kind kind :key kind}
+         ;; TODO Warning key prop needed on NotificationTitle but simply setting one doesn't suppress the error.
+         (e/ui-notification-title {:key (str "nvr-title-" kind)} (str (str/capitalize (name kind))))
+         (e/ui-notification-body {} "Your message here..."))
+        (dom/p nil " ")))))
 
 (defcard notifications-wide-visual-regressions
   (dom/div nil
     (for [kind [:normal :informative :success :warning :error]]
-      (e/ui-notification
-        {:kind kind :key (str kind "-wide") :width :wide}
-        (e/ui-notification-title {:key (str "nvr-wide-title-" kind)} (str (str/capitalize (name kind))))
-        (e/ui-notification-body {} "Your message here...")
-        ))))
+      (dom/div nil
+        (e/ui-notification
+         {:kind kind :key (str kind "-wide") :width :wide}
+         (e/ui-notification-title {:key (str "nvr-wide-title-" kind)} (str (str/capitalize (name kind))))
+         (e/ui-notification-body {} "Your message here..."))
+        (dom/p nil " ")))))
