@@ -20,6 +20,7 @@ section: Components
     min-height: 200px;
     overflow: hidden;
     position: relative;
+    text-decoration: none;
     transition: box-shadow var(--global-duration) ease;
     width: 330px;
     z-index: var(--zIndex-card);
