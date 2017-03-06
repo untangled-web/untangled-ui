@@ -36,7 +36,7 @@ utilities and produces a stylesheet that has a healthy inclining specificity gra
 
 # Getting Started
 
-Stylekit comes in a few different flavors to fit your needs. Please choose a flavor and follow the guide to get started.
+Untangled UI comes in a few different flavors to fit your needs. Please choose a flavor and follow the guide to get started.
 
 ## Components
 
@@ -139,7 +139,7 @@ the easiest way to modify and extend the styles.
 
 (def sections
   (vec [;; NOTE: :examples is a list of example names, rendered in order given
-        {:id :settings-config :title "What is Stylekit?" :examples [intro]}
+        {:id :settings-config :title "What is this?" :examples [intro]}
         {:id :settings-config :title "Config" :examples [settings-config]}
         {:id :settings-global :title "Global" :examples [settings-global]}
         ]))

@@ -464,7 +464,7 @@ by `14em` units starting at `34em`. Using the `em` unit has been a proven browse
 (def typography-header
   "# Typography
 
-  ##### Source Sans Pro is the font family that Stylekit uses by default")
+  ##### Source Sans Pro is the font family this project uses by default")
 
 (defview typography-font-scale
   "#### Font Scale"

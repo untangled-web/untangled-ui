@@ -16,7 +16,7 @@
             [clojure.string :as str]
             [devcards.core :as dc]))
 
-(def parts {"Stylekit" styles.getting-started/sections
+(def parts {"Learn" styles.getting-started/sections
             "Style"           styles.style/sections
             "Layout"          styles.layout/sections
             ;; "Elements"        styles.elements/sections
