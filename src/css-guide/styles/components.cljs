@@ -20,16 +20,23 @@
   "An avatar is a round symbol to represent a person's identity. When there is no visual, we use the first and last
    initial of their name."
   (l/row {}
-    (l/col {:width 1}
+    (l/col {:width 2}
       (dom/span #js {:className "c-avatar"} "AV"))
-    (l/col {:width 1}
+    (l/col {:width 2}
       (dom/span #js {:className "c-avatar"} (icons/icon :help)))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--support"} "KB"))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--informative"} (icons/icon :supervisor_account)))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--huge"} "AV"))))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account)))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :supervisor_account)))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--bordered c-avatar--primary"} "KB"))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--bordered c-avatar--accent"} "KB"))
+    (l/col {:width 12}
+      (dom/span #js {:className "c-avatar c-avatar--medium"} "MD")
+      (dom/span #js {:className "c-avatar c-avatar--large"} "LG")
+      (dom/span #js {:className "c-avatar c-avatar--xlarge"} "XL")
+      (dom/span #js {:className "c-avatar c-avatar--huge"} "HU"))))
 
 ;; -------------------------
 ;; Badges
