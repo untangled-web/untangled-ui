@@ -400,9 +400,9 @@
    "
   [{:keys [className orientation shifting] :as props :or {className ""}} & children]
   (let [user-classes    (get props :className "")
-        top-level-class (cond-> (str user-classes " o-iconbar")
-                          (= orientation :vertical) (str " o-iconbar--rail")
-                          (= shifting :true) (str " o-iconbar--shifting"))]
+        top-level-class (cond-> (str user-classes " c-iconbar")
+                          (= orientation :vertical) (str " c-iconbar--rail")
+                          (= shifting :true) (str " c-iconbar--shifting"))]
     (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
 
