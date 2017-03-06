@@ -112,8 +112,15 @@
   Some samples are shown below:
   "
   (dom/div nil
+    (e/ui-avatar {} "AV")
+    (e/ui-avatar {:style :bordered} "BR")
     (e/ui-avatar {:color :primary} "PC")
+    (e/ui-avatar {:color :primary :style :bordered} "PB")
     (e/ui-avatar {:color :accent} "AC")
+    (e/ui-avatar {:color :accent :style :bordered} "AB")
+    (e/ui-avatar {:size :medium} "MD")
+    (e/ui-avatar {:size :large} "LG")
+    (e/ui-avatar {:size :xlarge} "XL")
     (e/ui-avatar {:size :huge} "HU")
     ;TODO: Add an image example
     (e/ui-avatar {} (icon :supervisor_account))))

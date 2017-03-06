@@ -133,6 +133,14 @@ section: Settings
 /* Backgrounds and Borders */
 
 :root {
+  /* Avatar */
+
+  --color-avatar: var(--grey-200);
+  --color-avatar--secondary: var(--grey-700);
+  --color-avatar-alt--primary: var(--color-primary);
+  --color-avatar-alt--accent: var(--color-accent);
+  --color-avatar-alt--secondary: var(--color-primary-contrast);
+
   /* Backdrop */
 
   --color-backdrop: color(var(--black) a(60%));
@@ -149,6 +157,7 @@ section: Settings
   /* Primary buttons */
   --color-button-alt--primary: var(--color-primary);
   --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--accent: var(--color-accent);
   --color-button-alt--hover: var(--color-primary-dark);
   --color-button-alt--active: var(--color-primary-dark);
   --color-button-alt--focus: var(--white);

@@ -160,17 +160,19 @@
 
   color (optional): :primary, :accent
   size (optional): huge"
-  [{:keys [className color size] :as props :or {className ""}} child]
+  [{:keys [className color size style] :as props :or {className ""}} child]
   (let [legal-colors #{:primary :accent}
-        legal-sizes  #{:huge}
+        legal-sizes  #{:medium :large :xlarge :huge}
+        legal-styles #{:bordered}
         user-classes (get props :className "")
         classes      (cond-> user-classes
                        :always (str " c-avatar")
                        (contains? legal-colors color) (str " c-avatar--" (name color))
-                       (contains? legal-sizes size) (str " c-avatar--" (name size)))
+                       (contains? legal-sizes size) (str " c-avatar--" (name size))
+                       (contains? legal-styles style) (str " c-avatar--" (name style)))
         props        (-> props
                        (assoc :className classes)
-                       (dissoc :color :size))]
+                       (dissoc :color :size :style))]
     (dom/span (clj->js props) child)))
 
 (defn ui-loader

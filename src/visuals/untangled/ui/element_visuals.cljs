@@ -173,10 +173,12 @@
 
 (defcard avatar-visual-regressions
   (dom/div nil
-    (e/ui-avatar {:color :primary} "PC")
-    (e/ui-avatar {:color :accent} "AC")
-    (e/ui-avatar {:size :huge} "HU")
-    (e/ui-avatar {} (icon :supervisor_account))))
+    (for [color [:none :primary :accent]
+          style [:none :bordered]
+          size  [:regular :medium :large :xlarge :huge]
+          content ["AV" (icon :supervisor_account)]]
+      (dom/span nil
+        (e/ui-avatar {:color color :style style :size size :key (str color style size content)} content) "\u00A0"))))
 
 (defcard loader-visual-regressions
   (dom/div #js {:style #js {:height 50}}

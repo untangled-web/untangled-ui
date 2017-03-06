@@ -136,7 +136,7 @@ section: Components
 }
 
 .c-button--accent {
-  color: var(--color-accent);
+  color: var(--color-button-alt--accent);
 
   &:hover { background-color: color(var(--orange-50) a(40%)); }
 
