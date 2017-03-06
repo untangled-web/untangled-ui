@@ -136,7 +136,7 @@ section: Settings
   /* Avatar */
 
   --color-avatar: var(--grey-200);
-  --color-avatar--secondary: var(--grey-700);
+  --color-avatar--secondary: color(var(--grey-900) a(60%));
   --color-avatar-alt--primary: var(--color-primary);
   --color-avatar-alt--accent: var(--color-accent);
   --color-avatar-alt--secondary: var(--color-primary-contrast);
