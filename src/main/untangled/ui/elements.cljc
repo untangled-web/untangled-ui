@@ -110,11 +110,8 @@
         type         (if (contains? legal-kinds kind) (name kind) "text")
         attrs        (cond-> attrs
                        (contains? state :required) (assoc :required "true")
-                       :always (assoc :type kind)
-                       :always (dissoc :size)
-                       :always (dissoc :kind)
-                       :always (assoc :className classes)
-                       :always (assoc :placeholder (name placeholder)))]
+                       :always (assoc :type kind :className classes :placeholder (name placeholder))
+                       :always (dissoc :size :kind))]
     (dom/input (clj->js attrs))))
 
 (defn ui-message
