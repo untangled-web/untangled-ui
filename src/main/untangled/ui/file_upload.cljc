@@ -1,22 +1,77 @@
 (ns untangled.ui.file-upload
   (:require
+    [clojure.string :as str]
+    [com.stuartsierra.component :as component]
+    [cognitect.transit :as ct]
+    #?(:cljs [goog.events :as events])
     [om.dom :as dom]
     [om.next :as om :refer [defui]]
+    [om.transit :as t]
     [untangled.client.core :as uc]
     [untangled.ui.forms :as f]
     [untangled.ui.elements :as ele]
     [untangled.client.mutations :refer [defmutation]]
     [untangled.ui.elements :as e]
-    [cognitect.transit :as ct]
-    #?(:cljs [goog.events :as events])
-    [om.transit :as t]
     [untangled.client.impl.network :as net]
-    [clojure.string :as str]
     [untangled.icons :as i]
     [untangled.client.logging :as log]
+    #?(:clj
+    [ring.util.response :as resp])
+    #?(:clj
+    [ring.util.request :as ru])
     [om.next.protocols :as omp])
   (:refer-clojure :exclude [send])
+  #?(:clj
+     (:import [java.io File]))
   #?(:cljs (:import [goog.net XhrIo EventType])))
+
+;; Server-side
+(defprotocol FileUpload
+  (upload-prefix [this] "Returns the exact URI at which to install the file upload POST handler.")
+  (is-allowed? [this request] "Return true if the given file upload request is acceptable (e.g. authorized)")
+  (store [this ^File file] "Save the given file. Return an ID that this file will be known by with respect to this file upload component.")
+  (retrieve ^File [this id] "Return a file with the content that was previously stored. Id is what save originally returned.")
+  (delete [this id] "Ensure that the space consumed by file with id is no reclaimed."))
+
+(defrecord FileUploadComponent [tmp]
+  component/Lifecycle
+  (start [this] this)
+  (stop [this] this))
+
+#?(:clj
+   (defn handle-file-upload
+     "Request handler for file uploads. See `wrap-file-upload` for a middleware version of this."
+     [req ^FileUpload upload]
+     (when-not (is-allowed? upload req)
+       (throw (ex-info "Upload denied" {})))
+     (let [{:keys [filename content-type size ^File tempfile]} (get-in req [:params "file"])
+           id      (get-in req [:params "id"])
+           real-id (store upload tempfile)]
+       (-> {id real-id}
+         (ring.util.response/response)
+         (resp/content-type (format "application/transit+json; charset=utf-8"))))))
+
+#?(:clj
+   (defn wrap-file-upload
+     "Ring middleware. Place in your ring stack above wrap
+
+     (-> (wrap-file-upload upload-component)
+         middleware/wrap-transit-params
+         middleware/wrap-transit-response
+         wrap-content-type
+         wrap-params
+         wrap-multipart-params)
+
+     You'll need to create (probably as a component) an upload component that
+     implements the FileUpload protocol (shown as `upload-component` in the example).
+     "
+     [h ^FileUpload upload]
+     (let [prefix (upload-prefix upload)
+           is-file-upload? (fn [req] (= (ru/path-info req) prefix))]
+       (fn [r]
+         (if (is-file-upload? r)
+           (handle-file-upload r upload)
+           (h r))))))
 
 (declare FileUpload File cancel-file-upload add-file)
 

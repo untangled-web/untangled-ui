@@ -16,9 +16,11 @@
             [com.stuartsierra.component :as component]
             [taoensso.timbre :as timbre]
             [untangled.server.impl.middleware :as middleware]
+            [untangled.ui.file-upload :as upload]
             [clojure.string :as str]
             [ring.util.response :as resp]
-            [cognitect.transit :as transit]))
+            [cognitect.transit :as transit])
+  (:import (java.io File)))
 
 ; A Test server for trying out file upload
 
@@ -63,7 +65,6 @@
   (timbre/info "Query: " (op/ast->expr ast))
   {})
 
-
 ; This is both a server module AND hooks into the Om parser for the incoming /api read/mutate requests. The
 ; modular server support lets you chain as many of these together as you want, allowing you to define
 ; reusable Om server components.
@@ -81,6 +82,8 @@
   (component/using
     (map->ApiHandler {}) deps))
 
+
+
 (defn MIDDLEWARE [handler component]
   ((get component :middleware) handler))
 
@@ -89,43 +92,16 @@
    :headers {"Content-Type" "text/plain"}
    :body    "Resource not found."})
 
-(defrecord FileUploadComponent [tmp]
-  component/Lifecycle
-  (start [this] this)
-  (stop [this] this))
-
-(defn is-file-upload? [req]
-  (= (ru/path-info req) "/file-upload"))
 
 
-(defn- read-transit [value]
-  (let [rdr (om.next.server/reader value)]
-    (try
-      (transit/read rdr)
-      (catch Exception ex nil))))
-
-(defn handle-file-upload [req]
-  (let [{:keys [filename content-type size ^java.io.File tempfile]} (get-in req [:params "file"])
-        id (get-in req [:params "id"])]
-    (timbre/info "File upload: " id filename " (" size " bytes) stored in " (.getAbsolutePath tempfile))
-    (-> {}
-      (ring.util.response/response)
-      (resp/content-type (format "application/transit+json; charset=utf-8")))))
-
-(defn wrap-file-upload [h]
-  (fn [r]
-    (if (is-file-upload? r)
-      (handle-file-upload r)
-      (h r))))
-
-(defrecord CustomMiddleware [middleware api-handler]
+(defrecord CustomMiddleware [middleware api-handler upload]
   component/Lifecycle
   (stop [this] (dissoc this :middleware))
   (start [this]
     (assoc this :middleware
                 (-> not-found
                   (MIDDLEWARE api-handler)
-                  wrap-file-upload
+                  (upload/wrap-file-upload upload)
                   ;; TRANSIT
                   middleware/wrap-transit-params
                   middleware/wrap-transit-response
@@ -142,12 +118,25 @@
 (defn build-middleware []
   (component/using
     (map->CustomMiddleware {})
-    {:api-handler ::core/api-handler}))
+    {:upload      :upload
+     :api-handler ::core/api-handler}))
+
+(defrecord PretendFileUpload []
+  component/Lifecycle
+  (start [this] this)
+  (stop [this] this)
+  upload/FileUpload
+  (upload-prefix [this] "/file_upload")
+  (is-allowed? [this request] true)
+  (store [this ^File file] (timbre/info "Pretending to save file") 42)
+  (retrieve ^File [this id] nil)
+  (delete [this id] nil))
 
 (defn make-system [config-path]
   (core/untangled-system
     {:components {:config      (core/new-config config-path)
                   ::middleware (build-middleware)
+                  :upload      (map->PretendFileUpload {})
                   :web-server  (core/make-web-server ::middleware)}
      :modules    [(build-api-handler [])]}))
 

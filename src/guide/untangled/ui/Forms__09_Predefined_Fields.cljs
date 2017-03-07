@@ -84,55 +84,15 @@
 (defcard-doc
   "# Forms – All Built-in Field Types
 
-  ## File Upload
+  In order for this example to work (submission and file upload) you must start the dev upload server:
 
-  There are a few steps for setting up a working file upload control:
+  - Start a REPL
+  - Go to the `dev.upload-server` namespace
+  - Run `(go)`
+  - Connect to this page by changing the port on the URL to the one reported by the server.
 
-  1. Install file upload server support in your server's Ring stack
-  2. Run the server
-  3. Add file-upload networking as an extra remote in Untangled Client (requires v0.8.1+, and Om alpha48+)
-  4. Load the page through your server (not figwheel).
-
-  ### Customizing the Ring Stack
-
-  If you're using the modular server support for Untangled, then you can build a stack that contains at least
-  the following middleware: transit, API hander, file upload, and wrap-multipart-params. Other bits are also
-  commonly useful. Here's a sample middleware component that has been tested to work:
-
-  TODO: Show how to inject this into the normal API handler so you can access the files on form submission...
-
-  TODO: Finish upload handler (needs metadata and storage plugin, like image upload...probably just use that)
-
-  TODO: For now, just look at upload-server namespace in dev source directory.
-
-  ```
-  (defrecord CustomMiddleware [middleware api-handler]
-    component/Lifecycle
-    (stop [this] (dissoc this :middleware))
-    (start [this]
-      (assoc this :middleware
-                  (-> not-found
-                    (MIDDLEWARE api-handler) ; Normal API handler
-                    wrap-file-upload ; REMOTE HANDLER (needs transit for response)
-                    middleware/wrap-transit-params
-                    middleware/wrap-transit-response
-                    (wrap-resource \"public\")
-                    wrap-content-type
-                    wrap-not-modified
-                    wrap-params
-                    wrap-multipart-params ; TURN UPLOADS INTO DISK FILES
-                    wrap-gzip))))
-
-  ### Adding UC File Upload remote
-
-  The client-side setup is very simple, just add a `:networking` parameter to your client that has a map
-  containing the normal remote and a file upload remote:
-
-  ```
-  (new-untangled-client
-    :networking {:remote      (net/make-untangled-network \"/api\" :global-error-callback identity)
-                 :file-upload (untangled.ui.file-upload/file-upload-networking)})
-  ```
+  Please see the separate section on file uploads for instructions on setting up and using the file upload
+  component.
 
   "
   (dc/mkdn-pprint-source KitchenSink))
