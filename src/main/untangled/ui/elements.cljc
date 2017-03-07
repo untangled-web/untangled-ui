@@ -7,6 +7,37 @@
 
 #?(:clj (def clj->js identity))
 
+(defn ui-avatar
+  "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  color (optional): :primary, :accent
+  size (optional): huge"
+  [{:keys [className color size style] :as props :or {className ""}} child]
+  (let [legal-colors #{:primary :accent}
+        legal-sizes  #{:medium :large :xlarge :huge}
+        legal-styles #{:bordered}
+        user-classes (get props :className "")
+        classes      (cond-> user-classes
+                       :always (str " c-avatar")
+                       (contains? legal-colors color) (str " c-avatar--" (name color))
+                       (contains? legal-sizes size) (str " c-avatar--" (name size))
+                       (contains? legal-styles style) (str " c-avatar--" (name style)))
+        props        (-> props
+                       (assoc :className classes)
+                       (dissoc :color :size :style))]
+    (dom/span (clj->js props) child)))
+
+
+(defn ui-badge
+  "Render the given children within a badge. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+  `(ui-badge {} \"7\")`
+  "
+  [{:keys [className] :as props :or {className ""}} & children]
+  (let [props (update props :className str " c-badge")]
+    (apply dom/span (clj->js props) children)))
+
+
 (defn ui-flat-button
   "Render a button that looks more like a link that a button (it is just the children), but renders the hover shape
   of a more traditional button when the mouse is over it.
@@ -67,6 +98,108 @@
   [{:keys [className size color disabled active] :or {className ""} :as props} & children]
   (apply ui-flat-button (update props :className str " c-button--circular") children))
 
+(def color-types
+  {:primary "c-card--primary"
+   :accent  "c-card--accent"})
+
+(def card-types
+  {:bordered    "c-card--bordered"
+   :transparent "c-card--transparent"
+   :square      "c-card--square"})
+
+(def size-types
+  {:expand "c-card--expand"
+   :wide   "c-card--wide"})
+
+(defn ui-card
+  "Card component
+
+   Usage
+   (c/ui-card {:title          \"Some Title\"
+               :color          :primary | :accent
+               :type           :bordered | :transparent | :square
+               :size           :expand | :wide
+               :image          \"path/to/image/file.jpeg\"
+               :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
+               :actions        (ui-button \"Some Action\")
+               :media          URL
+               :media-type     :image | :video (TODO Youtube?)
+
+               ;;TODO
+               :menu-icon :more_vert
+               :menu-items [:ia \"This\" :ib \"that\"]}
+    ...)
+    all paramters optional
+    "
+  [{:keys [type
+           title
+           color
+           size
+           image
+           image-position
+           actions
+           media-type
+           media
+           ;; menu-icon
+           ;; menu-items
+           className] :as attrs} & children]
+  {:pre [(or (nil? type) (keyword? type))
+         (or (nil? title) (string? title))]}
+  (let [className  (or className "")
+        classes    (cond->
+                     (str "c-card " className)
+                     type (str " " (card-types type))
+                     size (str " " (size-types size))
+                     color (str " " (color-types color)))
+        attributes (-> attrs
+                     (merge {:className classes})
+                     (dissoc :title :type :color :size :actions :image :image-position :media-type :media)
+                     clj->js)]
+    (dom/div attributes
+      (when media
+        (dom/div #js {:className (str "c-card__media")}
+          (when (= media-type :image) (dom/img #js {:className "c-card__media-content" :src media}))))
+      (when title
+        (dom/div #js {:className (str "c-card__title"
+                                   (when image " c-card__title--image")
+                                   (when image-position (str " c-card__title--image-" (name image-position))))
+                      :style     #js {:backgroundImage (when (= color (or :primary :accent)) (str "url(" image ")"))}}
+          (dom/h1 #js {:className "c-card__title-text"} title)))
+      (when children
+        (apply dom/div #js {:className "c-card__supporting-text"} children))
+      (when actions
+        (dom/div #js {:className "c-card__actions"} actions))
+      ;; TODO
+      #_(when menu-items
+          (dom/div #js {:className "c-card__menu"}
+            (menu/menu :a
+              (icon (if menu-icon menu-icon :more_vert))
+              menu-items))))))
+
+
+(defn ui-checkbox
+  "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+
+  className (optional): additional class stylings to apply to the top level of the checkbox
+  id: Name of the checkbox
+     style (optional):  indeterminate
+  disabled (optional: true/false"
+  [{:keys [id style disabled] :or {id ""} :as attrs}]
+  (let [legal-styles #{:indeterminate}
+        user-classes (get attrs :className "")
+        classes      (cond-> (str user-classes " c-checkbox ")
+                       (contains? legal-styles style) (str "is-" (name style)))
+        attrs        (cond-> attrs
+                       :always (assoc :type "checkbox")
+                       :always (dissoc :style :disabled)
+                       :always (assoc :className classes)
+                       :always (assoc :disabled disabled)
+                       :always (assoc :id (name id)))]
+    (dom/span nil
+      (dom/input (clj->js attrs))
+      (dom/label #js {:htmlFor id} \u00A0))))
+
+
 (defn ui-fader
   "Wrap children in a span where the :visible attribute
   is a boolean indicating the visibility of the children.
@@ -87,15 +220,6 @@
                     (assoc :className classes)
                     clj->js)]
     (apply wrapper attrs children)))
-
-(defn ui-badge
-  "Render the given children within a badge. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
-
-  `(ui-badge {} \"7\")`
-  "
-  [{:keys [className] :as props :or {className ""}} & children]
-  (let [props (update props :className str " c-badge")]
-    (apply dom/span (clj->js props) children)))
 
 (defn ui-label
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -140,26 +264,6 @@
                        (assoc :className classes)
                        (dissoc :color))]
     (apply dom/div (clj->js props) children)))
-
-(defn ui-avatar
-  "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
-
-  color (optional): :primary, :accent
-  size (optional): huge"
-  [{:keys [className color size style] :as props :or {className ""}} child]
-  (let [legal-colors #{:primary :accent}
-        legal-sizes  #{:medium :large :xlarge :huge}
-        legal-styles #{:bordered}
-        user-classes (get props :className "")
-        classes      (cond-> user-classes
-                       :always (str " c-avatar")
-                       (contains? legal-colors color) (str " c-avatar--" (name color))
-                       (contains? legal-sizes size) (str " c-avatar--" (name size))
-                       (contains? legal-styles style) (str " c-avatar--" (name style)))
-        props        (-> props
-                       (assoc :className classes)
-                       (dissoc :color :size :style))]
-    (dom/span (clj->js props) child)))
 
 (defn ui-loader
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -297,84 +401,6 @@
    (defn ui-iframe [props child]
      ((om/factory IFrame) (assoc props :child child))))
 
-(def color-types
-  {:primary "c-card--primary"
-   :accent  "c-card--accent"})
-
-(def card-types
-  {:bordered    "c-card--bordered"
-   :transparent "c-card--transparent"
-   :square      "c-card--square"})
-
-(def size-types
-  {:expand "c-card--expand"
-   :wide   "c-card--wide"})
-
-(defn ui-card
-  "Card component
-
-   Usage
-   (c/ui-card {:title          \"Some Title\"
-               :color          :primary | :accent
-               :type           :bordered | :transparent | :square
-               :size           :expand | :wide
-               :image          \"path/to/image/file.jpeg\"
-               :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
-               :actions        (ui-button \"Some Action\")
-               :media          URL
-               :media-type     :image | :video (TODO Youtube?)
-
-               ;;TODO
-               :menu-icon :more_vert
-               :menu-items [:ia \"This\" :ib \"that\"]}
-    ...)
-    all paramters optional
-    "
-  [{:keys [type
-           title
-           color
-           size
-           image
-           image-position
-           actions
-           media-type
-           media
-           ;; menu-icon
-           ;; menu-items
-           className] :as attrs} & children]
-  {:pre [(or (nil? type) (keyword? type))
-         (or (nil? title) (string? title))]}
-  (let [className  (or className "")
-        classes    (cond->
-                     (str "c-card " className)
-                     type (str " " (card-types type))
-                     size (str " " (size-types size))
-                     color (str " " (color-types color)))
-        attributes (-> attrs
-                     (merge {:className classes})
-                     (dissoc :title :type :color :size :actions :image :image-position :media-type :media)
-                     clj->js)]
-    (dom/div attributes
-      (when media
-        (dom/div #js {:className (str "c-card__media")}
-          (when (= media-type :image) (dom/img #js {:className "c-card__media-content" :src media}))))
-      (when title
-        (dom/div #js {:className (str "c-card__title"
-                                   (when image " c-card__title--image")
-                                   (when image-position (str " c-card__title--image-" (name image-position))))
-                      :style     #js {:backgroundImage (when (= color (or :primary :accent)) (str "url(" image ")"))}}
-          (dom/h1 #js {:className "c-card__title-text"} title)))
-      (when children
-        (apply dom/div #js {:className "c-card__supporting-text"} children))
-      (when actions
-        (dom/div #js {:className "c-card__actions"} actions))
-      ;; TODO
-      #_(when menu-items
-          (dom/div #js {:className "c-card__menu"}
-            (menu/menu :a
-              (icon (if menu-icon menu-icon :more_vert))
-              menu-items))))))
-
 (defn ui-icon-bar
   "Render an icon bar using a vector of icons (each a map of attributes).
    Can optionally render vertically and/or shifting.
@@ -456,21 +482,19 @@
   (om/factory Modal))
 
 
-(defn ui-checkbox
-  "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+(defn ui-radio
+  "Render a radio (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
   className (optional): additional class stylings to apply to the top level of the checkbox
   id: Name of the checkbox
      style (optional):  indeterminate
   disabled (optional: true/false"
   [{:keys [id style disabled] :or {id ""} :as attrs}]
-  (let [legal-styles #{:indeterminate}
-        user-classes (get attrs :className "")
-        classes      (cond-> (str user-classes " c-checkbox ")
-                       (contains? legal-styles style) (str "is-" (name style)))
+  (let [user-classes (get attrs :className "")
+        classes      (cond-> (str user-classes " c-radio "))
         attrs        (cond-> attrs
-                       :always (assoc :type "checkbox")
-                       :always (dissoc :style :disabled)
+                       :always (assoc :type "radio")
+                       :always (dissoc :disabled)
                        :always (assoc :className classes)
                        :always (assoc :disabled disabled)
                        :always (assoc :id (name id)))]

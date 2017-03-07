@@ -11,6 +11,24 @@
     [clojure.string :as str]
     [untangled.i18n :as i :refer [tr trf]]))
 
+(defcard avatar-visual-regressions
+  (dom/div nil
+    (for [color [:none :primary :accent]
+          style [:none :bordered]
+          size  [:regular :medium :large :xlarge :huge]]
+      (dom/span #js {:key (str "id" color style size)}
+        (e/ui-avatar {:color color :style style :size size} "AV")
+        (e/ui-avatar {:color color :style style :size size} (icon :supervisor_account))))))
+
+
+(defcard badges-visual-regressions
+  (dom/div nil
+    (e/ui-button {:color :primary} "Notifications " (e/ui-badge {} "8"))
+    (e/ui-badge {:className "hello"} "7")
+    (e/ui-badge {} (icon :arrow_back))
+    (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
+
+
 (defcard buttons-visual-regression-testing
   (dom/div nil
     (for [shape    [:rect :round :wide]
@@ -47,13 +65,6 @@
                              :title     (str (name color) " " (name size) " " (when disabled "disabled ") (when active "active "))
                              :size      size  :key (str "btn-circular-" color size disabled active)}
         (icon :add)))))
-
-(defcard badges-visual-regressions
-  (dom/div nil
-    (e/ui-button {:color :primary} "Notifications " (e/ui-badge {} "8"))
-    (e/ui-badge {:className "hello"} "7")
-    (e/ui-badge {} (icon :arrow_back))
-    (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
 
 (defcard card-visual-regressions
    (l/row {}
@@ -132,44 +143,22 @@
             (dom/p nil (str "Size: " (name size)))))))))
 
 
-(defcard labels-visual-regressions
+(defcard checkbox-visual-regressions
   (dom/div nil
-    (for [color [:none :primary :accent]
-          icon ["" (icon :add)]]
-      (e/ui-label {:color color :key (str color icon (rand-int 256))} icon "Default"))))
+    (e/ui-checkbox {:id "checkbox-1"})
+    (e/ui-checkbox {:id "checkbox-2" :disabled true})
+    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
+    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
+
 
 (defcard field-visual-regressions
   (dom/div nil
     (for [size [:normal :small :medium :large]
           state [:none :required :focus :invalid :error]]
-     (e/ui-field {:size size :state #{state} :key (str size state (rand-int 256))} (str (name size) " " (name state) " field")))))
+      (e/ui-field {:size size :state #{state} :key (str size state (rand-int 256))} (str (name size) " " (name state) " field")))))
 
-(defcard messages-visual-regressions
-  (dom/div nil
-    (for [color [:none :neutral :alert :success :warning]
-          class ["" "u-font-size--semi-medium"]]
-      (e/ui-message {:color color :className class :key (str "messages-" (name color) (name class))}
-        (str "This is a " (name color) " message.")))
-    (e/ui-message {}
-      (str "This is a message with an icon.") (e/ui-icon {:size :small :glyph :arrow_forward}))))
 
-(defcard avatar-visual-regressions
-  (dom/div nil
-    (for [color [:none :primary :accent]
-         style [:none :bordered]
-         size  [:regular :medium :large :xlarge :huge]]
-     (dom/span #js {:key (str "id" color style size)}
-       (e/ui-avatar {:color color :style style :size size} "AV")
-       (e/ui-avatar {:color color :style style :size size} (icon :supervisor_account))))))
-
-(defcard loader-visual-regressions
-  (l/row {}
-    (l/col {:width 4 :halign :center}
-      (e/ui-loader {}))
-    (l/col {:width 4 :halign :center}
-      (e/ui-loader {:color :primary}))
-    (l/col {:width 4 :halign :center}
-      (e/ui-loader {:color :accent}))))
+;; TODO Need icon-bar
 
 
 (defcard icon-colors-visual-regressions
@@ -182,6 +171,7 @@
     (e/ui-icon {:color :alterable} (icon :alarm))
     (e/ui-icon {:color :negative} (icon :alarm))))
 
+
 (defcard icon-sizes-visual-regressions
   (dom/div nil
     (e/ui-icon {:size :small} (icon :alarm))
@@ -190,6 +180,56 @@
     (e/ui-icon {:size :large} (icon :alarm))
     (e/ui-icon {:size :xlarge} (icon :alarm))
     (e/ui-icon {:size :huge} (icon :alarm))))
+
+(defcard labels-visual-regressions
+  (dom/div nil
+    (for [color [:none :primary :accent]
+          icon ["" (icon :add)]]
+      (e/ui-label {:color color :key (str color icon (rand-int 256))} icon "Default"))))
+
+
+(defcard loader-visual-regressions
+  (l/row {}
+    (l/col {:width 4 :halign :center}
+      (e/ui-loader {}))
+    (l/col {:width 4 :halign :center}
+      (e/ui-loader {:color :primary}))
+    (l/col {:width 4 :halign :center}
+      (e/ui-loader {:color :accent}))))
+
+
+(defcard messages-visual-regressions
+  (dom/div nil
+    (for [color [:none :neutral :alert :success :warning]
+          class ["" "u-font-size--semi-medium"]]
+      (e/ui-message {:color color :className class :key (str "messages-" (name color) (name class))}
+        (str "This is a " (name color) " message.")))
+    (e/ui-message {}
+      (str "This is a message with an icon.") (e/ui-icon {:size :small :glyph :arrow_forward}))))
+
+
+(defcard modal
+  (dom/div nil
+    (e/ui-iframe {:height "200" :width "100%"}
+      (dom/div #js {}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+        (e/ui-modal {:active true}
+          (e/ui-modal-title {} "Informative")
+          (e/ui-modal-body {} "You have been notified.")
+          (e/ui-modal-actions {}
+            (e/ui-flat-button {:color :primary} "Cancel")
+            (e/ui-flat-button {:color :primary} "Ok")))))
+
+    (e/ui-iframe {:height "200" :width "100%"}
+      (dom/div #js {}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+        (e/ui-modal {:active true}
+          (e/ui-modal-title {} "Informative")
+          (e/ui-modal-body {} "You have been notified.")
+          (e/ui-modal-actions {}
+            (e/ui-flat-button {:color :primary} "Cancel")
+            (e/ui-flat-button {:color :primary} "Ok")))))))
+
 
 (defcard notifications-visual-regressions
   (dom/div nil
@@ -203,32 +243,13 @@
         (dom/p nil " ")))))
 
 
-(defcard checkbox
+(defcard radio-visual-regressions
   (dom/div nil
-    (e/ui-checkbox {:id "checkbox-1"})
-    (e/ui-checkbox {:id "checkbox-2" :disabled true})
-    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
-    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
+    (e/ui-radio {:id "radio-1"})
+    (e/ui-radio {:id "radio-2" :disabled true})))
 
-
-(defcard modal
-  (dom/div nil
-    (e/ui-iframe {:height "200" :width "100%"}
-     (dom/div #js {}
-       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-       (e/ui-modal {:active true}
-         (e/ui-modal-title {} "Informative")
-         (e/ui-modal-body {} "You have been notified.")
-         (e/ui-modal-actions {}
-           (e/ui-flat-button {:color :primary} "Cancel")
-           (e/ui-flat-button {:color :primary} "Ok")))))
-
-    (e/ui-iframe {:height "200" :width "100%"}
-     (dom/div #js {}
-       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-       (e/ui-modal {:active true}
-         (e/ui-modal-title {} "Informative")
-         (e/ui-modal-body {} "You have been notified.")
-         (e/ui-modal-actions {}
-           (e/ui-flat-button {:color :primary} "Cancel")
-           (e/ui-flat-button {:color :primary} "Ok")))))))
+;; TODO Need
+;; -------------
+;; progress
+;; switch
+;; tabs
