@@ -207,3 +207,13 @@
     (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
     (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
     (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
+
+
+(defcard modals
+  (dom/div #js {:style #js {:height "200px"}}
+    (e/ui-modal {:active :true}
+      (e/ui-modal-title {} "Informative")
+      (e/ui-modal-body {} "You have been notified.")
+      (e/ui-modal-actions {}
+        (e/ui-flat-button {:color :primary} "Cancel")
+        (e/ui-flat-button {:color :primary} "Ok")))))
