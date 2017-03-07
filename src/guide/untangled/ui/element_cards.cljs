@@ -258,7 +258,7 @@
           (e/ui-flat-button {:color :primary} "Cancel")
           (e/ui-flat-button {:color :primary} "Ok"))))))
 
-(defsample progress-visual-regressions
+(defsample progress
   "# Progress"
   (dom/div nil
     (e/ui-progress {})

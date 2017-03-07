@@ -108,10 +108,10 @@
   "Render a button that looks more like a link that a button (it is just the children), but renders the hover shape
   of a more traditional button when the mouse is over it.
 
-  :color - :neutral (default), :primary, :accent
-  :shape - :rect (default), :round, or :wide.  The shape when the mouse is over the button.
-  :size  - :normal (default), :small.  Small buttons are a bit more condensed.
-  :active - true or false (default).  Causes the button to look highlighted.
+  `:color` - :neutral (default), :primary, :accent
+  `:shape` - :rect (default), :round, or :wide.  The shape when the mouse is over the button.
+  `:size` - :normal (default), :small.  Small buttons are a bit more condensed.
+  `:active` - true or false (default).  Causes the button to look highlighted.
 
   Any normal HTML/React properties are allowed, including additional CSS classes.
   "
@@ -138,10 +138,10 @@
 (defn ui-button
   "Render a raised button. Props is a normal clj(s) map with React/HTML attributes plus:
 
-  :color - :neutral (default), :primary, :accent
-  :shape - :rect (default), :round, or :wide
-  :size  - :normal (default), :small
-  :active - true or false (default) -  Causes the button to look highlighted.
+  `:color` - :neutral (default), :primary, :accent
+  `:shape` - :rect (default), :round, or :wide
+  `:size` - :normal (default), :small
+  `:active` - true or false (default), Causes the button to look highlighted.
 
   Any other React properties are allowed, including additional CSS classes.
   "
@@ -152,9 +152,9 @@
   "Render a raised circle button of fixed size (configurable in CSS variables, see CSS guide).
   Extra content will overflow out of the cirle. Props is a normal clj(s) map with React/HTML attributes plus:
 
-  :color - :neutral (default), :primary, :accent
-  :size  - :normal (default), :small
-  :active - true or false (default) -  Causes the button to look highlighted.
+  `:color` - :neutral (default), :primary, :accent
+  `:size` - :normal (default), :small
+  `:active` - true or false (default), Causes the button to look highlighted.
 
   Any other React properties are allowed, including additional CSS classes.
 
@@ -166,24 +166,23 @@
 
 
 (defn ui-card
-  "Card component
+  "Render a card component
 
-   Usage
-   (c/ui-card {:title          \"Some Title\"
-               :color          :primary | :accent
-               :type           :bordered | :transparent | :square
-               :size           :expand | :wide
-               :image          \"path/to/image/file.jpeg\"
-               :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
-               :actions        (ui-button \"Some Action\")
-               :media          URL
-               :media-type     :image | :video (TODO Youtube?)
+   `:title` - \"Some Title\"
+   `:color` - :primary | :accent
+   `:type` - :bordered | :transparent | :square
+   `:size` - :expand | :wide
+   `:image` - \"path/to/image/file.jpeg\"
+   `:image-position` - :cover | :top-left | :top-right | :bottom-left | :bottom-right
+   `:actions` - (ui-button \"Some Action\")
+   `:media` - URL
+   `:media-type` - :image | :video (TODO Youtube?)
 
-               ;;TODO
-               :menu-icon :more_vert
-               :menu-items [:ia \"This\" :ib \"that\"]}
-    ...)
-    all paramters optional
+   ;;TODO
+   `:menu-icon` - :more_vert
+   `:menu-items` - [:ia \"This\" :ib \"that\"]}
+
+   all paramters optional
     "
   [{:keys [style
            title
@@ -236,20 +235,19 @@
 (defn ui-checkbox
   "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
-  className (optional): additional class stylings to apply to the top level of the checkbox
-  id: Name of the checkbox
-     style (optional):  indeterminate
-  disabled (optional: true/false"
-  [{:keys [id style disabled] :or {id ""} :as attrs}]
+  `:className` - additional class stylings to apply to the top level of the checkbox
+  `:id` string - Name of the checkbox
+  `:style` :none (default), :indeterminate
+  "
+  [{:keys [id style] :or {id ""} :as attrs}]
   (let [legal-styles #{:indeterminate}
         user-classes (get attrs :className "")
         classes      (cond-> (str user-classes " c-checkbox ")
                        (contains? legal-styles style) (str "is-" (name style)))
         attrs        (cond-> attrs
                        :always (assoc :type "checkbox")
-                       :always (dissoc :style :disabled)
+                       :always (dissoc :style)
                        :always (assoc :className classes)
-                       :always (assoc :disabled disabled)
                        :always (assoc :id (name id)))]
     (dom/span nil
       (dom/input (clj->js attrs))
@@ -259,8 +257,9 @@
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  `:size` (optional): :small, :medium, :large
-  `:state` (optional) can be one of :valid, :invalid, or :error"
+  `:size` :regular (default), :small, :medium, :large
+  `:state` :valid (default), :invalid, or :error
+  "
   [{:keys [size state] :or {size ""} :as attrs} placeholder]
   (let [legal-sizes  #{:small :medium :large}
         user-classes (get attrs :className "")
@@ -280,10 +279,9 @@
    Can optionally render vertically and/or shifting.
    Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-   Usage
-   (c/ui-icon-bar {:orientation  :vertical or :horizontal (default)
-                   :shifting     :true
-   ...)
+   `:orientation` :vertical or :horizontal (default)
+   `:shifting` :true or :false (default)
+
    all parameters are optional
    "
   [{:keys [className orientation shifting] :as props :or {className ""}} & children]
@@ -298,11 +296,12 @@
 (defn ui-icon
   "Render an icon. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :positive, :informative, :neutral, :live, :alterable, :negative
-  size (optional): :small, :medium, :large, :xlarge, :huge
-  glyph (optional): Instructs `ui-icon` to render an icon from the built-in set. See `untangled.icons/icon`.
+  `:color` :none (default), :positive, :informative, :neutral, :live, :alterable, :negative
+  `:size` :regular (default), :small, :medium, :large, :xlarge, :huge
+  `:glyph` - Instructs `ui-icon` to render an icon from the built-in set. See `untangled.icons/icon`.
 
-  The child (optional) should be some kind of icon, for example the SVG generated by the `untangled.icons/icon` function."
+  The child (optional) should be some kind of icon, for example the SVG generated by the `untangled.icons/icon` function.
+  "
   ([{:keys [className color size glyph] :as props :or {className ""}}] (ui-icon props nil))
   ([{:keys [className color size glyph] :as props :or {className ""}} child]
    (let [legal-colors #{:neutral :positive :informative :live :alterable :negative :active :passive}
@@ -321,7 +320,8 @@
 
 (defn ui-label
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
-  color (optional): :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative"
+  `:color` :none (default), :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative
+  "
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:primary :accent}
         classes      (cond-> className
@@ -336,7 +336,7 @@
 (defn ui-loader
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :primary :accent"
+  `:color` :none (default), :primary :accent"
   [{:keys [className color] :as props :or {className ""}}]
   (let [legal-colors #{:primary :accent}
         user-classes (get props :className "")
@@ -352,7 +352,8 @@
 (defn ui-message
   "Render the given children within a message. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :neutral, :alert, :success, :warning"
+  `:color` :none (default), :neutral, :alert, :success, :warning
+  "
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:neutral :alert :success :warning}
         classes      (cond-> (str className " c-message")
