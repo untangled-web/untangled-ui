@@ -17,8 +17,8 @@ section: Components
   @apply --middle;
   background-color: transparent;
   border-bottom: solid var(--borderColor-field);
-  border-width: 0 0 1px;
   border-radius: 0;
+  border-width: 0 0 1px;
   color: var(--color-page);
   display: flex;
   flex-direction: row;
@@ -35,10 +35,10 @@ section: Components
 
   &:focus,
   &.has-focus {
-    border-width: 0 0 2px;
     border-bottom-color: var(--borderColor-field--focus);
-    padding-bottom: 0;
+    border-width: 0 0 2px;
     outline: none;
+    padding-bottom: 0;
   }
 
 
@@ -46,30 +46,30 @@ section: Components
   &:focus.is-invalid,
   &:invalid,
   &.is-invalid {
+     border-bottom-color: var(--borderColor-field--invalid);
      border-width: 0 0 2px;
      padding-bottom: 0;
-     border-bottom-color: var(--borderColor-field--invalid);
    }
 
 
   &:focus.is-error {
+     border-bottom-color: var(--borderColor-field--error);
      border-width: 0 0 2px;
      padding-bottom: 0;
-     border-bottom-color: var(--borderColor-field--error);
    }
 
 
   &.is-error {
+     border-bottom-color: var(--color-negative);
      border-width: 0 0 2px;
      padding-bottom: 0;
-     border-bottom-color: var(--color-negative);
   }
 
 
   &[disabled] {
+    border-bottom-style: dotted;
     border-width: 0 0 2px;
     padding-bottom: 0;
-    border-bottom-style: dotted;
   }
 
 
@@ -77,19 +77,19 @@ section: Components
 
   &[type="color"] {
     appearance: none;
-    border-radius: 2px;
     border: none;
+    border-radius: 2px;
     height: 30px;
   }
 
   &[type="color"]::-webkit-color-swatch-wrapper {
+    border: 1px solid var(--white);
     border-radius: 2px;
     box-shadow:
       0 0 1px 1px var(--borderColor-field),
       0 0 1px 1px var(--borderColor-field),
       0 0 1px 1px var(--borderColor-field),
       0 0 1px 1px var(--borderColor-field);
-    border: 1px solid var(--white);
     padding: 0;
   }
 
@@ -102,8 +102,8 @@ section: Components
   }
 
   &[type="color"]::-webkit-color-swatch {
-    border-radius: 3px;
     border: none;
+    border-radius: 3px;
   }
 }
 
@@ -118,11 +118,11 @@ section: Components
 
 
 .c-field--block {
+  margin-bottom: .5em;
   margin-left: 1em;
   margin-right: 1em;
-  width: calc(100% - 2em);
-  margin-bottom: .5em;
   padding: 0;
+  width: calc(100% - 2em);
 
   .c-field__input { padding: 0; }
 }
@@ -148,7 +148,7 @@ section: Components
 
 .c-field--large {
   font-size: var(--fontSize--semiLarge);
-  padding: 30px 0;
+  height: 48px;
 
   .c-field__input { font-size: inherit; }
 }

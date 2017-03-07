@@ -16,7 +16,7 @@
             [clojure.string :as str]
             [devcards.core :as dc]))
 
-(def parts {"Stylekit" styles.getting-started/sections
+(def parts {"Learn" styles.getting-started/sections
             "Style"           styles.style/sections
             "Layout"          styles.layout/sections
             ;; "Elements"        styles.elements/sections
@@ -232,7 +232,8 @@
           (dom/div #js {:className "c-toolbar__row"}
            (dom/div #js {:className "u-column--4 u-column--3@md u-column--2@lg u-middle"}
              (dom/div #js {:className "o-toolbar__tile"}
-               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:marginTop "2px"}})
+               (dom/a #js {:href "/"}
+                 (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:marginTop "2px"}}))
                (dom/span #js {:className "u-font-size--semi-medium"
                               :style     #js {:position   "relative"
                                               :top        "-12px"

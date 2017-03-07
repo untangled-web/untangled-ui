@@ -4,25 +4,23 @@ section: Components
 ---*/
 
 :root {
-  /* Default button colors */
   --borderRadius-button: 2px;
-
   --fontSize-button: 14px;
   --fontSize-button--dense: calc(var(--fontSize-button) - 1px);
+  --marginY-button: 6px;
+  --marginX-button: var(--frame-quarter);
+  --opacity-button--disabled: .35;
+  --paddingY-button: 0;
+  --paddingX-button: var(--frame-quarter);
   --size-button: 36px;
   --size-button--dense: calc(var(--size-button) - 4px);
-
-  --opacity-button--disabled: .35;
   --transitionDuration-button: .1s;
-
   --width-button--icon: 36px;
 
 
   --button--wide: {
     display: block;
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
+    width: calc(100% - var(--marginX-button) - var(--marginX-button));
   };
 }
 
@@ -33,7 +31,7 @@ section: Components
   background: transparent;
   border: none;
   border-radius: var(--borderRadius-button);
-  color: var(--color-button--secondary);
+  color: currentColor /* var(--color-button--secondary) */;
   display: inline-block;
   font-family: inherit;
   font-size: var(--fontSize-button);
@@ -41,12 +39,12 @@ section: Components
   height: var(--size-button);
   letter-spacing: 0;
   line-height: var(--size-button);
-  margin: 6px var(--frame-quarter);
-  max-width: 100%;
+  margin: var(--marginY-button) var(--marginX-button);
+  max-width: calc(100% - var(--marginX-button) - var(--marginX-button));
   min-width: 64px;
   outline: none;
   overflow: visible; /* Internet Explorer 12- */
-  padding: 0 var(--frame-quarter);
+  padding: var(--paddingY-button) var(--paddingX-button);
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -65,9 +63,10 @@ section: Components
      padding: 0 !important;
    }
 
-  &[type="submit"] { -webkit-appearance: none; }
+  &[type="submit"] { appearance: none; }
 
-  &:hover { background-color: var(--color-button--hover);
+  &:hover {
+     background-color: var(--color-button--hover);
 
     :--dark & { background-color: var(--color-button-dark--hover); }
    }
@@ -111,10 +110,10 @@ section: Components
 .c-button__content { @apply --start; }
 
 
-.c-button-small,
+.c-button--small,
 .c-button--dense {
-  height: var(--size-button--dense);
   font-size: var(--fontSize-button--dense);
+  height: var(--size-button--dense);
   line-height: var(--size-button--dense);
 }
 
@@ -123,37 +122,88 @@ section: Components
 .c-button--colored {
   color: var(--color-button-alt--primary);
 
+  &:hover { background-color: color(var(--blue-50) a(40%)); }
+
+  &:--active { background-color: color(var(--blue-50) a(60%)); }
+
   &:focus:not(:active),
    &.is-focused { background-color: var(--color-button-alt--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
 }
 
 .c-button--accent {
-  color: var(--color-accent);
+  color: var(--color-button-alt--accent);
+
+  &:hover { background-color: color(var(--orange-50) a(40%)); }
+
+  &:--active { background-color: color(var(--orange-50) a(60%)); }
 
   &:focus:not(:active),
   &.is-focused { background-color: var(--color-button-accent--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
+}
+
+.c-button--circular {
+  background: var(--color-button--primary);
+  border-radius: 50%;
+  height: 55px;
+  min-width: 44px;
+  width: 55px;
+
+  .c-button& .c-icon {
+    --icon-size: 26px;
+    height: var(--icon-size);
+    margin: 8px 0 !important;
+    width: var(--icon-size);
+  }
+
+  &::after {
+     border-radius: inherit;
+     bottom: 0;
+     box-shadow: var(--shadow-2);
+     content: "";
+     left: 0;
+     position: absolute;
+     right: 0;
+     top: 0;
+     transition: box-shadow var(--global-duration) ease;
+     z-index: 5;
+   }
+
+  &.c-button--small,
+  &.c-button--dense {
+     height: 44px;
+     width: 44px;
+   }
 }
 
 .c-button--raised {
   background: var(--color-button--primary);
 
   &::after {
-     border-radius: inherit;
-     bottom: 0;
-     box-shadow: var(--shadow-2);
-     content: '';
-     left: 0;
-     position: absolute;
-     transition: box-shadow var(--global-duration) ease;
-     right: 0;
-     top: 0;
-     z-index: 5;
-   }
+    border-radius: inherit;
+    bottom: 0;
+    box-shadow: var(--shadow-1);
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: box-shadow var(--global-duration) ease;
+    z-index: 5;
+  }
+}
 
+.c-button--circular,
+.c-button--raised {
 
   &:--active {
     background-color: var(--color-button--active);
@@ -199,6 +249,11 @@ section: Components
      &.is-focused { background-color: var(--color-button-alt--active); }
    }
 
+   &:--disabled {
+     background-color: var(--color-button-disabled--primary) !important;
+     color: var(--color-button-disabled--secondary) !important;
+   }
+
    :--dark & { background-color: var(--color-button-alt--primary); }
 
 
@@ -216,6 +271,11 @@ section: Components
 
     &:focus:not(:active),
     &.is-focused { background-color: var(--color-button-accent--active); }
+
+    &:--disabled {
+       background-color: var(--color-button-disabled--primary) !important;
+       color: var(--color-button-disabled--secondary) !important;
+     }
 
   :--dark & { background-color: var(--color-button-accent--primary); }
   }

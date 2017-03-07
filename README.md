@@ -33,7 +33,6 @@ See the README-css.md for more details on working with the CSS itself.
 │   ├── css  ----------------- The CSS source files (which generate the CSS)
 │   │   ├── components
 │   │   ├── elements
-│   │   ├── objects
 │   │   ├── settings
 │   │   └── utilities
 │   ├── css-guide  ----------- An Om-based UI describing the CSS available
@@ -200,7 +199,7 @@ most components probably will not have specs; however, things like the forms sup
 behaviors that need full testing support.
 
 The `css-guide` build is for the raw CSS with examples of the DOM/CSS rules to do raw rendering. Please note you will
-need to install [npm](https://www.npmjs.org/package/npm) in order to run this task.
+need to install [npm](https://www.npmjs.org/package/npm) in order to run this task. [Learn more](README-css.md)
 
 ```
 JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj

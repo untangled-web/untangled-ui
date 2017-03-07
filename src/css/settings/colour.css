@@ -7,7 +7,8 @@ section: Settings
   #COLOUR PALETTE
 \*------------------------------------*/
 
-/* Setup a colour palette which allows us to theme the entire project from one location */
+/* Setup a colour palette which allows us to theme
+   the entire project from one location */
 
 /* stylelint-disable rule-properties-order */
 
@@ -116,43 +117,34 @@ section: Settings
   --color-negative: var(--red-700);
 
   --color-shadow: rgba(51, 51, 42, .6);
-  --color-backdrop: rgba(0, 0, 0, .6);
-  --color-backdrop--inverted: rgba(255, 255, 255, .6);
+
   --color-primary: var(--blue-500);
   --color-primary-dark: var(--blue-700);
   --color-accent: var(--orange-500);
   --color-accent-dark: var(--orange-700);
   --color-primary-contrast: var(--white);
   --color-accent-contrast: var(--white);
+
+  --backgroundColor-page: var(--white);
+  --borderColor: var(--grey-300);
+  --borderColor-inactive: var(--grey-200);
 }
 
 /* Backgrounds and Borders */
 
 :root {
+  /* Avatar */
 
-  /* Globals */
+  --color-avatar: var(--grey-200);
+  --color-avatar--secondary: color(var(--grey-900) a(60%));
+  --color-avatar-alt--primary: var(--color-primary);
+  --color-avatar-alt--accent: var(--color-accent);
+  --color-avatar-alt--secondary: var(--color-primary-contrast);
 
-  --backgroundColor-page: var(--white);
-  --borderColor: var(--grey-300);
-  --borderColor-inactive: var(--grey-200);
+  /* Backdrop */
 
-
-  /* Accoridon */
-
-  --backgroundColor-accordion: transparent;
-  --backgroundColor-accordion__action--informative: var(--blue-600);
-  --backgroundColor-accordion__action--informative--hover: var(--blue-700);
-  --backgroundColor-accordion__action--success: var(--green-600);
-  --backgroundColor-accordion__action--success--hover: var(--green-700);
-  --backgroundColor-accordion--hover: var(--blue-50);
-  --backgroundColor-accordion--selected: var(--blue-800);
-  --borderColor-accordion__title: var(--grey-900);
-  --borderColor-accordion__group: var(--grey-200);
-  --borderColor-accordion--nav: var(--grey-100);
-  --borderColor-accordion--nav__group: transparent;
-  --color-accordion__action--alt: var(--white);
-  --color-accordion--selected: var(--white);
-
+  --color-backdrop: color(var(--black) a(60%));
+  --color-backdrop--inverted: color(var(--white) a(60%));
 
   /* Button */
 
@@ -165,6 +157,7 @@ section: Settings
   /* Primary buttons */
   --color-button-alt--primary: var(--color-primary);
   --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--accent: var(--color-accent);
   --color-button-alt--hover: var(--color-primary-dark);
   --color-button-alt--active: var(--color-primary-dark);
   --color-button-alt--focus: var(--white);
@@ -201,7 +194,7 @@ section: Settings
   --color-control-border--positive: var(--green-500);
 
 
-  /* Dropdown */
+  /* Menu */
 
   --color-menu: var(--color-page);
   --color-menu-background: var(--white);
@@ -250,7 +243,9 @@ section: Settings
 
   /* Loader */
 
-  --color-loader: var(--color-accent);
+  --color-loader: var(--color-neutral);
+  --color-loader--primary: var(--color-primary);
+  --color-loader--accent: var(--color-accent);
   --color-loader--alt: var(--grey-200);
   --color-loader-secondary: var(--blue-300);
 
@@ -296,9 +291,11 @@ section: Settings
   --shadow-3: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23);
   --shadow-4: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
   --shadow-5: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
-  --shadow-focus: 0 0 8px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.36);
+  --shadow-focus: 0 0 8px rgba(0, 0, 0, .18), 0 8px 16px rgba(0, 0, 0, .36);
   --shadow-menu: var(--shadow-1);
-  --shadow-menu-picker: inset 0 10px 11px -7px rgba(0, 0, 0, .5), inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
+  --shadow-menu-picker:
+    inset 0 10px 11px -7px rgba(0, 0, 0, .5),
+    inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
   --toggle-focus-shadow: 0 0 6px var(--blue-600);
 }
 
@@ -309,13 +306,6 @@ section: Settings
   --highlight-error: var(--red-50);
   --highlight-success: var(--green-50);
   --highlight-warning: var(--yellow-50);
-}
-
-/* Survey Themes */
-
-:root {
-  --theme-purple-text: #735d85;
-  --theme-purple-fill: var(--purple-900);
 }
 
 /* Social Media */
@@ -337,9 +327,6 @@ section: Settings
 :root {
   /* Legacy Colors */
   --color-secondary: var(--color-accent);
-  --purple-a100: var(--purple-900);
-  --magenta-500: var(--purple-500);
-
   --background-color: var(--backgroundColor-page);
   --body-copy: var(--color-page);
   --placeholder-copy: var(--grey-500);
@@ -361,5 +348,4 @@ section: Settings
   --bar-color: var(--primary-color);
   --bar-border-color: var(--nav-active-color);
 }
-
 /* stylelint-enable */

@@ -120,3 +120,10 @@ section: Utilities
 
 .u-rotate--cw { transform: rotate(90deg); }
 .u-rotate--ccw { transform: rotate(-90deg); }
+
+
+.u-shadow--1 { box-shadow: var(--shadow-1) !important; }
+.u-shadow--2 { box-shadow: var(--shadow-2) !important; }
+.u-shadow--3 { box-shadow: var(--shadow-3) !important; }
+.u-shadow--4 { box-shadow: var(--shadow-4) !important; }
+.u-shadow--5 { box-shadow: var(--shadow-5) !important; }

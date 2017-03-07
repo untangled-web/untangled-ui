@@ -1,8 +1,3 @@
-/*---
-title: Drawer
-section: Objects
----*/
-
 :root {
   --backgroundColor-drawer: var(--white);
   --shadow-drawer: 0 0 5px var(--color-shadow);
@@ -11,33 +6,32 @@ section: Objects
   --color-drawer-header: var(--color-page);
 }
 
-.o-drawer {
+.c-drawer {
   background-color: var(--backgroundColor-drawer);
+  bottom: 0;
   box-shadow: var(--shadow-drawer);
+  left: -100%;
+  max-width: 305px;
   position: fixed;
   top: 0;
-  bottom: 0;
-  width: 85%;
-  max-width: 305px;
-  z-index: 800;
-
-  left: -100%;
   transition: left .3s ease;
+  width: 85%;
   will-change: left;
+  z-index: 800;
 
   &.is-open { left: 0; }
 }
 
-.o-drawer--right {
-  right: -100%;
+.c-drawer--right {
   left: no;
+  right: -100%;
   transition: right var(--global-duration) ease-in-out;
   will-change: right;
 
   &.is-open { right: 0; }
 }
 
-.o-drawer__close {
+.c-drawer__close {
   @apply --fade-out;
   background-color: rgba(0, 0, 0, .5);
   bottom: 0;
@@ -50,7 +44,7 @@ section: Objects
   .is-open + & { @apply --fade-in; }
 }
 
-.o-drawer__header {
+.c-drawer__header {
   background-color: var(--backgroundColor-drawer-header);
   border-bottom: 1px solid var(--grey-200);
   color: var(--color-drawer-header);
@@ -58,7 +52,7 @@ section: Objects
   padding: 0 1em;
 }
 
-.o-drawer__product {
+.c-drawer__product {
   color: var(--orange-900);
   display: inline-block;
   font-size: 22px;
@@ -68,11 +62,11 @@ section: Objects
   vertical-align: middle;
 }
 
-.o-drawer__group {
+.c-drawer__group {
   &:not(:last-child) { border-bottom: var(--borderColor-drawer) 1px solid; }
 }
 
-.o-drawer__action {
+.c-drawer__action {
   background-color: var(--white);
   color: var(--color-page);
   display: inline-block;
@@ -91,10 +85,11 @@ section: Objects
   }
 
   .c-icon {
-    fill: var(--orange-900);
     color: var(--grey-700);
+    fill: var(--orange-900);
     margin-right: .5em;
   }
 }
 
-.o-drawer__account-name { font-size: var(--fontSize--semiMedium); }
+.c-drawer__account-name { font-size: var(--fontSize--semiMedium); }
+

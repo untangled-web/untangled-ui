@@ -20,16 +20,23 @@
   "An avatar is a round symbol to represent a person's identity. When there is no visual, we use the first and last
    initial of their name."
   (l/row {}
-    (l/col {:width 1}
+    (l/col {:width 2}
       (dom/span #js {:className "c-avatar"} "AV"))
-    (l/col {:width 1}
+    (l/col {:width 2}
       (dom/span #js {:className "c-avatar"} (icons/icon :help)))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--support"} "KB"))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--informative"} (icons/icon :supervisor_account)))
-    (l/col {:width 1}
-      (dom/span #js {:className "c-avatar c-avatar--huge"} "AV"))))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account)))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :supervisor_account)))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--bordered c-avatar--primary"} "KB"))
+    (l/col {:width 2}
+      (dom/span #js {:className "c-avatar c-avatar--bordered c-avatar--accent"} "KB"))
+    (l/col {:width 12}
+      (dom/span #js {:className "c-avatar c-avatar--medium"} "MD")
+      (dom/span #js {:className "c-avatar c-avatar--large"} "LG")
+      (dom/span #js {:className "c-avatar c-avatar--xlarge"} "XL")
+      (dom/span #js {:className "c-avatar c-avatar--huge"} "HU"))))
 
 ;; -------------------------
 ;; Badges
@@ -78,12 +85,14 @@
   "### Button types"
   (dom/div #js {:className "u-row u-center"}
     (dom/div #js {:className "u-column"}
+      (dom/button #js {:className "c-button c-button--primary c-button--circular"} (icons/icon :add))
+      (dom/div #js {:className "u-font-size--small u-leader"} "Circular button"))
+    (dom/div #js {:className "u-column"}
       (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Button")
       (dom/div #js {:className "u-font-size--small u-leader"} "Raised button"))
     (dom/div #js {:className "u-column"}
       (dom/button #js {:className "c-button c-button--primary"} "Button")
-      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button")
-      )))
+      (dom/div #js {:className "u-font-size--small u-leader"} "Flat button"))))
 
 (defexample button-shape
   "### Size and form
@@ -168,51 +177,46 @@
 
 (defexample card
   "### Basic"
-  (dom/div #js {:className "c-card"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "Card paragraph text goes here.")))
-
-(defexample card-rounded
-  "### Rounded Card"
-  (dom/div #js {:className "c-card c-card--round"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "This is just a monolithic class that rounds off any card you apply it to.")))
+  (dom/div #js {:className "u-row u-center"}
+    (dom/div #js {:className "c-card c-card--primary c-card--bordered c-card--wide"}
+     (dom/div #js {:className "c-card__title c-card__title--image-bottom-right"
+                   :style #js {:backgroundImage "url('img/bubbles.png')"}}
+       (dom/h1 #js {:className "c-card__title-text"} "Title"))
+     (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
+    suscipit id sed sapien. Sed sit amet sagittis ipsum.")
+     (dom/div #js {:className "c-card__actions"}
+       (dom/button #js {:className "c-button c-button--primary"} "View Updates")))))
 
 (defexample card-transparent
   "### Transparent Card"
   (dom/div #js {:className "c-card c-card--transparent"}
-    (dom/h1 #js {} "Title")
-    (dom/p #js {} "This gives you the basic box properties without any background color or text color.")))
+    (dom/div #js {:className "c-card__title"}
+      (dom/h1 #js {:className "c-card__title-text"} "Title"))
+    (dom/div #js {:className "c-card__supporting-text"} "This gives you the basic box properties without any background color or text color.")))
 
 (defexample card-ruled
   "### Ruled Card"
   (dom/div #js {:className "u-wrapper"}
-    (dom/div #js {:className "c-card c-card--ruled"}
-      (dom/h1 #js {} "Title")
-      (dom/p #js {} "A simple card, horizontal ruled."))))
-
-(defexample card-titlebar
-  "### Title Bar"
-  (dom/div #js {:className "c-card"}
-    (dom/div #js {:className "c-card__title"}
-      (dom/h1 #js {:className "c-card__heading"} "Title"))
-    (dom/p #js {} "Add these title and heading modifiers to your card to get a titlebar.")))
+    (dom/div #js {:className "c-card c-card--bordered"}
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
+    suscipit id sed sapien. Sed sit amet sagittis ipsum. A simple card, horizontal ruled.")
+      (dom/div #js {:className "c-card__actions"}
+       (dom/button #js {:className "c-button c-button--accent"} "Action")))))
 
 (defexample card-states
   "### States"
   (dom/div nil
     (dom/div #js {:className "c-card c-card--row is-active u-trailer--half"}
-      (dom/h1 #js {} "Active")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))
     (dom/div #js {:className "c-card c-card--row is-inactive"}
-      (dom/h1 #js {} "Inactive")
-      (dom/p #js {} "I could have used lorem ipsum, but what's the fun in that?"))
+      (dom/div #js {:className "c-card__title"}
+        (dom/h1 #js {:className "c-card__title-text"} "Title"))
+      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))
     ))
-
-(defexample card-zone
-  "### Zone Card"
-  (dom/div #js {:className "c-card c-card--zone"} "This is a Card Zone component! Drop things on me!"))
-
 
 ;; -------------------------
 ;; Checkboxes
@@ -231,16 +235,21 @@
 
     (dom/input #js {:id "checkbox-1" :type "checkbox" :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-1"} "Checkbox")
+
     (dom/input #js {:id "checkbox-2" :type "checkbox" :checked true :className "c-checkbox"})
     (dom/label #js {:htmlFor "checkbox-2"} "Checked Checkbox")
+
     (dom/input #js {:id "checkbox-3" :type "checkbox" :className "c-checkbox is-indeterminate"})
     (dom/label #js {:htmlFor "checkbox-3"} "Indeterminate Checkbox")
-    (dom/input #js {:id "checkbox-5" :type "checkbox" :className "c-checkbox c-checkbox--informative"})
-    (dom/label #js {:htmlFor "checkbox-5"} "Informative (unchecked) Checkbox")
-    (dom/input #js {:id "checkbox-6" :type "checkbox" :checked true :className "c-checkbox c-checkbox--informative"})
-    (dom/label #js {:htmlFor "checkbox-6"} "Checked Informative Checkbox")
-    (dom/input #js {:id "checkbox-7" :type "checkbox" :className "c-checkbox c-checkbox--informative is-indeterminate"})
-    (dom/label #js {:htmlFor "checkbox-7"} "Indeterminate Informative Checkbox")))
+
+    (dom/input #js {:id "checkbox-4" :type "checkbox" :className "c-checkbox" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-4"} "Disabled Checkbox")
+
+    (dom/input #js {:id "checkbox-5" :type "checkbox" :checked true :className "c-checkbox" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-5"} "Disabled Checked Checkbox")
+
+    (dom/input #js {:id "checkbox-5" :type "checkbox" :className "c-checkbox is-indeterminate" :disabled true})
+    (dom/label #js {:htmlFor "checkbox-5"} "Disabled Indeterminate Checkbox")))
 
 (defn toggle-open [this] (om/update-state! this update :open not))
 
@@ -727,6 +736,21 @@
     (mapv (fn [typ] (dom/div #js {:key typ :className ""}
                       (dom/input #js {:type typ :placeholder typ :className "c-field"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
+
+    ;; File upload
+    (l/row {:density :collapse}
+      (l/col {:width 1}
+        ;; This is the button to init the upload dialog
+        (dom/label #js {}
+         (dom/span #js {:className "c-button c-button--circular c-button--primary c-button--dense"}
+           (icons/icon :file_upload)
+           (dom/input #js {:type "file" :className "u-hide" :id "file-input-file"}))))
+      (l/col {:width 3}
+        ;; This is the input that displays the file name when selected
+        ;; When you have multiple files selected, this label should read "X files selected"
+        (dom/input #js {:type "text" :className "c-field" :disabled true :readOnly true :id "file-input-text"})
+        (dom/label #js {:htmlFor "file-input-text"}))
+      )
     ))
 
 (defexample field-sizes
@@ -915,11 +939,18 @@
 
 (defexample loader
   "# Loader"
-  (dom/div nil
-    (dom/div #js {:className "u-row u-center u-trailer"}
+  (l/row {}
+    (l/col {:width 3 :halign :center}
       (dom/div #js {:className "c-loader"}))
-    (dom/div #js {:className "u-row u-center"}
-      (dom/div #js {:className "c-loader c-loader--neutral"}))))
+    (l/col {:width 3 :halign :center}
+      (dom/div #js {:className "c-loader c-loader--primary"}))
+    (l/col {:width 3 :halign :center}
+      (dom/div #js {:className "c-loader c-loader--accent"}))
+    (l/col {:width 3 :halign :center}
+      (dom/button #js {:className "c-button c-button--raised c-button--primary"}
+        (dom/span #js {:className "c-loader c-loader--inverted"}))
+      (dom/button #js {:className "c-button c-button--raised"}
+        (dom/span #js {:className "c-loader"})))))
 
 
 ;; -------------------------
@@ -1050,6 +1081,29 @@
     (dom/button #js {:className "c-button c-button--icon"}
       (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--close" :viewBox "0 0 24 24"}
         (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
+
+
+
+;; -------------------------
+;; Progress
+;; -------------------------
+
+(def progress-header
+  "# Progress")
+
+(defexample progress-basic
+  "## Basic"
+  (dom/div #js {}
+    (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Indeterminate")
+      (dom/progress #js {:className "c-progress"}))
+
+    (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Value")
+      (dom/progress #js {:className "c-progress" :max "100" :value "70"}))))
+
+
+
 
 ;; -------------------------
 ;; Radio
@@ -1423,9 +1477,9 @@
     (dom/div #js {}
       (dom/button #js {:className "c-button"
                        :onClick   #(toggle-drawer this)} "Show/Hide Drawer Example")
-      (dom/div #js {:className (str "o-drawer o-drawer--right" (if drawer " is-open" ""))
+      (dom/div #js {:className (str "c-drawer c-drawer--right" (if drawer " is-open" ""))
                     :onClick   #(toggle-drawer this)}
-        (dom/header #js {:className "o-drawer__header  u-row u-middle"}
+        (dom/header #js {:className "c-drawer__header  u-row u-middle"}
           (dom/h1 #js {:className ""} "Drawer.io"))
         (dom/div #js {:className "c-list"}
 
@@ -1457,73 +1511,73 @@
               (dom/div #js {:className "u-row u-middle"}
                 (dom/div #js {:className ""} "Help & Feedback"))))
           ))
-      (dom/div #js {:className "o-drawer__close"
+      (dom/div #js {:className "c-drawer__close"
                     :onClick #(toggle-drawer this)}))))
 
 
 (defexample icon-bar
   "# Icon Bar"
   (dom/div #js {}
-    (dom/nav #js {:className "o-iconbar"}
-      (dom/button #js {:className "o-iconbar__item is-active"}
+    (dom/nav #js {:className "c-iconbar"}
+      (dom/button #js {:className "c-iconbar__item is-active"}
         (icons/icon :home)
-        (dom/span #js {:className "o-iconbar__label"} "Home"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Home"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :description)
-        (dom/span #js {:className "o-iconbar__label"} "Docs"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Docs"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :feedback)
-        (dom/span #js {:className "o-iconbar__label"} "Support"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Support"))
+      (dom/button #js {:className "c-iconbar__item"}
         (dom/span #js {:className "c-icon"}
           (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
-        (dom/span #js {:className "o-iconbar__label"} "Github")))))
+        (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
 
 (defexample icon-rail
   "# Icon Rail Example
 
-  Just add an extra modifier class `.o-iconbar--rail` and you'll get this effect.
+  Just add an extra modifier class `.c-iconbar--rail` and you'll get this effect.
   "
   (dom/div #js {}
-    (dom/nav #js {:className "o-iconbar o-iconbar--rail"}
-      (dom/button #js {:className "o-iconbar__item is-active"}
+    (dom/nav #js {:className "c-iconbar c-iconbar--rail"}
+      (dom/button #js {:className "c-iconbar__item is-active"}
         (icons/icon :home)
-        (dom/span #js {:className "o-iconbar__label"} "Home"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Home"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :description)
-        (dom/span #js {:className "o-iconbar__label"} "Docs"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Docs"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :feedback)
-        (dom/span #js {:className "o-iconbar__label"} "Support"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Support"))
+      (dom/button #js {:className "c-iconbar__item"}
         (dom/span #js {:className "c-icon"}
           (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
-        (dom/span #js {:className "o-iconbar__label"} "Github")))))
+        (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
 (defexample icon-bar-shifting
   "# Icon Bar Shifting Example
 
-  Just add an extra modifier class `.o-iconbar--shifting` and you'll get this effect.
+  Just add an extra modifier class `.c-iconbar--shifting` and you'll get this effect.
   "
   (dom/div #js {}
-    (dom/nav #js {:className "o-iconbar o-iconbar--shifting is-mobile"}
-      (dom/button #js {:className "o-iconbar__item is-active"}
+    (dom/nav #js {:className "c-iconbar c-iconbar--shifting is-mobile"}
+      (dom/button #js {:className "c-iconbar__item is-active"}
         (icons/icon :home)
-        (dom/span #js {:className "o-iconbar__label"} "Home"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Home"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :description)
-        (dom/span #js {:className "o-iconbar__label"} "Docs"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Docs"))
+      (dom/button #js {:className "c-iconbar__item"}
         (icons/icon :feedback)
-        (dom/span #js {:className "o-iconbar__label"} "Support"))
-      (dom/button #js {:className "o-iconbar__item"}
+        (dom/span #js {:className "c-iconbar__label"} "Support"))
+      (dom/button #js {:className "c-iconbar__item"}
         (dom/span #js {:className "c-icon"}
           (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
-        (dom/span #js {:className "o-iconbar__label"} "Github")))))
+        (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
 (defexample modal-example
   "# Modal
@@ -1548,11 +1602,15 @@
   "Fullscreen modal"
   (dom/div #js {:className "c-modal c-modal--fullscreen"}
     (dom/div #js {:className "c-modal__card"}
-      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
-        (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
-        (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-        (dom/div #js {:className "c-toolbar__actions"}
-          (dom/button #js {:className "c-button"} "Save")))
+
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised c-toolbar--inline"}
+        (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
+         (dom/div #js {:className "c-toolbar__view"}
+           (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+           (dom/span #js {:className "c-toolbar__label"} "Modal title"))
+         (dom/div #js {:className "c-toolbar__actions"}
+           (dom/button #js {:className "c-button"} "Save"))))
+
       (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
       (dom/div #js {:className "c-modal__content"}
@@ -1563,9 +1621,7 @@
         (dom/label #js {:className "is-optional u-leader--half"} "End time")
         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
         (dom/input #js {:className "c-field" :placeholder "Room"})
-        )
-      )
-    ))
+        ))))
 
 
 (defviewport modal-fullscreen-2
@@ -1587,10 +1643,12 @@
     (dom/div #js {:className "c-modal c-modal--fullscreen"}
      (dom/div #js {:className "c-modal__card"}
        (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
-         (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
-         (dom/div #js {:className "c-modal__title"} "Modal title that is getting way too long")
-         (dom/div #js {:className "c-toolbar__actions"}
-           (dom/button #js {:className "c-button"} "Save")))
+         (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
+          (dom/div #js {:className "c-toolbar__view"}
+            (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
+            (dom/span #js {:className "c-toolbar__label"} "Modal title"))
+          (dom/div #js {:className "c-toolbar__actions"}
+            (dom/button #js {:className "c-button"} "Save"))))
        (dom/div #js {:className "has-menu"}
          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
        (dom/div #js {:className "c-modal__content"}
@@ -1618,9 +1676,8 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div #js {:className "c-toolbar" :style #js {:position "static"}}
       (dom/div #js {:className "c-toolbar__row"}
-        (dom/div #js {:className "c-toolbar__view"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu)))
+        (dom/button #js {:className "c-button c-button--icon"}
+            (icons/icon :menu))
 
         (dom/div #js {:className "c-toolbar__actions"}
 
@@ -1687,7 +1744,7 @@
         get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
-      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary u-center" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "static"}}
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
             (dom/button #js {:className "c-button c-button--icon"}
@@ -1753,17 +1810,19 @@
                       button-icon
                       button-group
                       ]}
+          {:id :calendar-example :title "Calendar" :examples [calendar-example]
+           :documentation
+               "# Calendar
+
+               This is a month view calendar for overlaying on input fields that control date selection."}
           {:id :card
            :title "Card"
            :documentation card-header
            :examples [
                       card
                       card-states
-                      card-titlebar
-                      card-rounded
                       card-transparent
                       card-ruled
-                      card-zone
                       ]}
           {:id :checkboxes
            :title "Checkboxes"
@@ -1771,14 +1830,10 @@
            :examples [
                       checkboxes
                       ]}
-          {:id :dropdowns
-           :title "Menus"
-           :documentation menus-header
+          {:id :drawer
+           :title "Drawer"
            :examples [
-                      menus
-                      menus-shape
-                      menus-search-multi
-                      menus-data
+                      drawer
                       ]}
           {:id :expanding_panel
            :title "Expansion panels"
@@ -1809,6 +1864,13 @@
                       icon-states
                       icon-library
                       ]}
+          {:id :icon-bar
+           :title "Icon Bar"
+           :examples [
+                      icon-bar
+                      icon-rail
+                      icon-bar-shifting
+                      ]}
           {:id :labels
            :title "Labels"
            :documentation label-header
@@ -1828,19 +1890,27 @@
            :examples [
                       loader
                       ]}
+          {:id :dropdowns
+           :title "Menus"
+           :documentation menus-header
+           :examples [
+                      menus
+                      menus-shape
+                      menus-search-multi
+                      menus-data
+                      ]}
           {:id :messages
            :title "Messages"
            :documentation messages-header
            :examples [
                       messages
                       ]}
-          {:id :menus
-           :title "Tabs"
-           :documentation tabs-header
+          {:id :modal
+           :title "Modal"
            :examples [
-                      tabs
-                      tabs-inline
-                      tabs-block
+                      modal-example
+                      modal-fullscreen-1
+                      modal-fullscreen-2
                       ]}
           {:id :notifications
            :title "Notifications"
@@ -1852,6 +1922,11 @@
                       notification-error
                       notification-wide
                       ]}
+          {:id :progressbar
+           :title "Progress"
+           :documentation progress-header
+           :examples [
+                      progress-basic]}
           {:id :radio
            :title "Radio Buttons"
            :documentation radio-header
@@ -1871,37 +1946,13 @@
            :examples [
                       tables
                       ]}
-          {:id :tooltip
-           :title "Tooltips"
-           :documentation tooltips-header
+          {:id :menus
+           :title "Tabs"
+           :documentation tabs-header
            :examples [
-                      tooltips
-                      tooltip-directions
-                      tooltip-sizes
-                      ]}
-          {:id :calendar-example :title "Calendar" :examples [calendar-example]
-           :documentation
-               "# Calendar
-
-               This is a month view calendar for overlaying on input fields that control date selection."}
-          {:id :drawer
-           :title "Drawer"
-           :examples [
-                      drawer
-                      ]}
-          {:id :icon-bar
-           :title "Icon Bar"
-           :examples [
-                      icon-bar
-                      icon-rail
-                      icon-bar-shifting
-                      ]}
-          {:id :modal
-           :title "Modal"
-           :examples [
-                      modal-example
-                      modal-fullscreen-1
-                      modal-fullscreen-2
+                      tabs
+                      tabs-inline
+                      tabs-block
                       ]}
           {:id :toolbar
            :title "Toolbar"
@@ -1909,5 +1960,13 @@
                       toolbar
                       toolbar-colors
                       toolbar-dense
+                      ]}
+          {:id :tooltip
+           :title "Tooltips"
+           :documentation tooltips-header
+           :examples [
+                      tooltips
+                      tooltip-directions
+                      tooltip-sizes
                       ]}
           ])))

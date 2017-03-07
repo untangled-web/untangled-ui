@@ -14,9 +14,9 @@ section: Objects
   box-shadow: var(--shadow-1);
   display: inline-block;
   left: 0;
+  margin-bottom: 43px;
   padding: var(--padding-calendar);
   position: static !important;
-  margin-bottom: 43px;
   top: 0;
   z-index: 10 !important;
 
@@ -24,7 +24,7 @@ section: Objects
 
    .c-button + & { margin-top: 43px; }
 
-   &--up {margin-bottom: 43px; }
+   &--up { margin-bottom: 43px; }
 }
 
 
@@ -83,8 +83,8 @@ section: Objects
 .c-calendar--raised,
 .o-calendar--raised {
   box-shadow: var(--shadow-3);
-  position: absolute !important;
   margin-bottom: 0;
+  position: absolute !important;
 }
 
 

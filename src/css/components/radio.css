@@ -4,10 +4,10 @@ section: Components
 ---*/
 
 :root {
-  --backgroundColor-radio: var(--white);
-  --backgroundColor-radio--checked: var(--white);
+  --backgroundColor-radio: var(--color-primary-contrast);
+  --backgroundColor-radio--checked: var(--color-primary-contrast);
   --borderColor-radio: var(--grey-600);
-  --borderColor-radio--checked: var(--green-700);
+  --borderColor-radio--checked: var(--color-primary);
   --counter-size: 10px;
   --counter-offset: 5px;
 }
@@ -33,7 +33,7 @@ section: Components
     background-color: var(--backgroundColor-radio);
     border: 2px solid var(--borderColor-radio);
     border-radius: 50px;
-    content: '';
+    content: "";
     display: inline-block;
     float: left;
     font-size: var(--fontSize--small);
@@ -50,7 +50,7 @@ section: Components
      @apply --fade-out;
      background-color: var(--borderColor-radio--checked);
      border-radius: 50px;
-     content: '';
+     content: "";
      height: var(--counter-size);
      left: var(--counter-offset);
      position: absolute;
@@ -61,9 +61,9 @@ section: Components
 }
 
 
-.c-radio:focus + label,
-.c-radio + label:active,
-.c-radio:checked + label:active {
+.c-radio:focus + label::before,
+.c-radio + label:active::before,
+.c-radio:checked + label:active::before {
   box-shadow: var(--toggle-focus-shadow);
 }
 
@@ -90,28 +90,29 @@ section: Components
 
 .c-radio--expanded {
   & + label {
-    padding-left: 27px;
     margin-right: .5em;
+    padding-left: 27px;
   }
 }
 
 
 /* Pipes
- * This is a new utility that should be further developed for responsiveness and better box model handling.
+ * This is a new utility that should be further developed
+ * for responsiveness and better box model handling.
  */
 
 .has-xpipe {
-  position: relative;
   overflow: hidden;
   padding-bottom: 3px;
+  position: relative;
 
   &::before,
   &::after {
     background-color: var(--grey-200);
-    content: '';
-    width: 50%;
+    content: "";
     height: 6px;
     position: absolute;
+    width: 50%;
     z-index: -1;
 
     .u-bottom & { bottom: 10px; }

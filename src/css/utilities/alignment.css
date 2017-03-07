@@ -37,32 +37,90 @@ section: Utilities
   #LEADER-MARGIN
 \*------------------------------------*/
 
-.u-leader--tenth { margin-top: calc(var(--global-line-height) * .1) !important; }
-.u-leader--eighth { margin-top: calc(var(--global-line-height) * var(--eighth)) !important; }
-.u-leader--sixth { margin-top: calc(var(--global-line-height) * .1666) !important; }
-.u-leader--fifth { margin-top: calc(var(--global-line-height) * .2) !important; }
-.u-leader--quarter { margin-top: calc(var(--global-line-height) * .25) !important; }
-.u-leader--third { margin-top: calc(var(--global-line-height) * .3) !important; }
-.u-leader--half { margin-top: calc(var(--global-line-height) * .5) !important; }
-.u-leader { margin-top: var(--global-line-height) !important; }
-.u-leader--double { margin-top: calc(var(--global-line-height) * 2) !important; }
-.u-leader--triple { margin-top: calc(var(--global-line-height) * 3) !important; }
+.u-leader--tenth {
+  margin-top: calc(var(--global-line-height) * .1) !important;
+}
+
+.u-leader--eighth {
+  margin-top: calc(var(--global-line-height) * var(--eighth)) !important;
+}
+
+.u-leader--sixth {
+  margin-top: calc(var(--global-line-height) * .1666) !important;
+}
+
+.u-leader--fifth {
+  margin-top: calc(var(--global-line-height) * .2) !important;
+}
+
+.u-leader--quarter {
+  margin-top: calc(var(--global-line-height) * .25) !important;
+}
+
+.u-leader--third {
+  margin-top: calc(var(--global-line-height) * .3) !important;
+}
+
+.u-leader--half {
+  margin-top: calc(var(--global-line-height) * .5) !important;
+}
+
+.u-leader {
+  margin-top: var(--global-line-height) !important;
+}
+
+.u-leader--double {
+  margin-top: calc(var(--global-line-height) * 2) !important;
+}
+
+.u-leader--triple {
+  margin-top: calc(var(--global-line-height) * 3) !important;
+}
 
 
 /*------------------------------------*\
   #TRAILER-MARGIN
 \*------------------------------------*/
 
-.u-trailer--tenth { margin-bottom: calc(var(--global-line-height) * .1) !important; }
-.u-trailer--eighth { margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important; }
-.u-trailer--sixth { margin-bottom: calc(var(--global-line-height) * .1666) !important; }
-.u-trailer--fifth { margin-bottom: calc(var(--global-line-height) * .2) !important; }
-.u-trailer--quarter { margin-bottom: calc(var(--global-line-height) * .25) !important; }
-.u-trailer--third { margin-bottom: calc(var(--global-line-height) * .3) !important; }
-.u-trailer--half { margin-bottom: calc(var(--global-line-height) * .5) !important; }
-.u-trailer { margin-bottom: var(--global-line-height) !important; }
-.u-trailer--double { margin-bottom: calc(var(--global-line-height) * 2) !important; }
-.u-trailer--triple { margin-bottom: calc(var(--global-line-height) * 3) !important; }
+.u-trailer--tenth {
+  margin-bottom: calc(var(--global-line-height) * .1) !important;
+}
+
+.u-trailer--eighth {
+  margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important;
+}
+
+.u-trailer--sixth {
+  margin-bottom: calc(var(--global-line-height) * .1666) !important;
+}
+
+.u-trailer--fifth {
+  margin-bottom: calc(var(--global-line-height) * .2) !important;
+}
+
+.u-trailer--quarter {
+  margin-bottom: calc(var(--global-line-height) * .25) !important;
+}
+
+.u-trailer--third {
+  margin-bottom: calc(var(--global-line-height) * .3) !important;
+}
+
+.u-trailer--half {
+  margin-bottom: calc(var(--global-line-height) * .5) !important;
+}
+
+.u-trailer {
+  margin-bottom: var(--global-line-height) !important;
+}
+
+.u-trailer--double {
+  margin-bottom: calc(var(--global-line-height) * 2) !important;
+}
+
+.u-trailer--triple {
+  margin-bottom: calc(var(--global-line-height) * 3) !important;
+}
 
 
 /*------------------------------------*\
@@ -80,26 +138,85 @@ section: Utilities
   .u-bottom\@sm { align-items: flex-end; }
   .u-around\@sm { justify-content: space-around; }
   .u-between\@sm { justify-content: space-between; }
-  .u-leader--tenth\@sm { margin-top: calc(var(--global-line-height) * .1) !important; }
-  .u-leader--eighth\@sm { margin-top: calc(var(--global-line-height) * var(--eighth)) !important; }
-  .u-leader--sixth\@sm { margin-top: calc(var(--global-line-height) * .1666) !important; }
-  .u-leader--fifth\@sm { margin-top: calc(var(--global-line-height) * .2) !important; }
-  .u-leader--quarter\@sm { margin-top: calc(var(--global-line-height) * .25) !important; }
-  .u-leader--third\@sm { margin-top: calc(var(--global-line-height) * .3) !important; }
-  .u-leader--half\@sm { margin-top: calc(var(--global-line-height) * .5) !important; }
-  .u-leader\@sm { margin-top: var(--global-line-height) !important; }
-  .u-leader--double\@sm { margin-top: calc(var(--global-line-height) * 2) !important; }
-  .u-leader--triple\@sm { margin-top: calc(var(--global-line-height) * 3) !important; }
-  .u-trailer--tenth\@sm { margin-bottom: calc(var(--global-line-height) * .1) !important; }
-  .u-trailer--eighth\@sm { margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important; }
-  .u-trailer--sixth\@sm { margin-bottom: calc(var(--global-line-height) * .1666) !important; }
-  .u-trailer--fifth\@sm { margin-bottom: calc(var(--global-line-height) * .2) !important; }
-  .u-trailer--quarter\@sm { margin-bottom: calc(var(--global-line-height) * .25) !important; }
-  .u-trailer--third\@sm { margin-bottom: calc(var(--global-line-height) * .3) !important; }
-  .u-trailer--half\@sm { margin-bottom: calc(var(--global-line-height) * .5) !important; }
-  .u-trailer\@sm { margin-bottom: var(--global-line-height) !important; }
-  .u-trailer--double\@sm { margin-bottom: calc(var(--global-line-height) * 2) !important; }
-  .u-trailer--triple\@sm { margin-bottom: calc(var(--global-line-height) * 3) !important; }
+  .u-leader--tenth\@sm {
+    margin-top: calc(var(--global-line-height) * .1) !important;
+  }
+
+  .u-leader--eighth\@sm {
+    margin-top: calc(var(--global-line-height) * var(--eighth)) !important;
+  }
+
+  .u-leader--sixth\@sm {
+    margin-top: calc(var(--global-line-height) * .1666) !important;
+  }
+
+  .u-leader--fifth\@sm {
+    margin-top: calc(var(--global-line-height) * .2) !important;
+  }
+
+  .u-leader--quarter\@sm {
+    margin-top: calc(var(--global-line-height) * .25) !important;
+  }
+
+  .u-leader--third\@sm {
+    margin-top: calc(var(--global-line-height) * .3) !important;
+  }
+
+  .u-leader--half\@sm {
+    margin-top: calc(var(--global-line-height) * .5) !important;
+  }
+
+  .u-leader\@sm {
+    margin-top: var(--global-line-height) !important;
+  }
+
+  .u-leader--double\@sm {
+    margin-top: calc(var(--global-line-height) * 2) !important;
+  }
+
+  .u-leader--triple\@sm {
+    margin-top: calc(var(--global-line-height) * 3) !important;
+  }
+
+  .u-trailer--tenth\@sm {
+    margin-bottom: calc(var(--global-line-height) * .1) !important;
+  }
+
+  .u-trailer--eighth\@sm {
+    margin-bottom: calc(var(--global-line-height) * var(--eighth)) !important;
+  }
+
+  .u-trailer--sixth\@sm {
+    margin-bottom: calc(var(--global-line-height) * .1666) !important;
+  }
+
+  .u-trailer--fifth\@sm {
+    margin-bottom: calc(var(--global-line-height) * .2) !important;
+  }
+
+  .u-trailer--quarter\@sm {
+    margin-bottom: calc(var(--global-line-height) * .25) !important;
+  }
+
+  .u-trailer--third\@sm {
+    margin-bottom: calc(var(--global-line-height) * .3) !important;
+  }
+
+  .u-trailer--half\@sm {
+    margin-bottom: calc(var(--global-line-height) * .5) !important;
+  }
+
+  .u-trailer\@sm {
+    margin-bottom: var(--global-line-height) !important;
+  }
+
+  .u-trailer--double\@sm {
+    margin-bottom: calc(var(--global-line-height) * 2) !important;
+  }
+
+  .u-trailer--triple\@sm {
+    margin-bottom: calc(var(--global-line-height) * 3) !important;
+  }
 }
 
 

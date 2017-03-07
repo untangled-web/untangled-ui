@@ -54,9 +54,9 @@ section: Utilities
 
 .u-helper-text {
   @apply --top;
+  border-left: 2px solid var(--grey-200);
   font-size: var(--fontSize--tiny);
   line-height: 1rem;
-  border-left: 2px solid var(--grey-200);
   padding: 3px 0 1em 1rem;
 }
 
