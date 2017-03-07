@@ -1477,9 +1477,9 @@
     (dom/div #js {}
       (dom/button #js {:className "c-button"
                        :onClick   #(toggle-drawer this)} "Show/Hide Drawer Example")
-      (dom/div #js {:className (str "o-drawer o-drawer--right" (if drawer " is-open" ""))
+      (dom/div #js {:className (str "c-drawer c-drawer--right" (if drawer " is-open" ""))
                     :onClick   #(toggle-drawer this)}
-        (dom/header #js {:className "o-drawer__header  u-row u-middle"}
+        (dom/header #js {:className "c-drawer__header  u-row u-middle"}
           (dom/h1 #js {:className ""} "Drawer.io"))
         (dom/div #js {:className "c-list"}
 
@@ -1511,7 +1511,7 @@
               (dom/div #js {:className "u-row u-middle"}
                 (dom/div #js {:className ""} "Help & Feedback"))))
           ))
-      (dom/div #js {:className "o-drawer__close"
+      (dom/div #js {:className "c-drawer__close"
                     :onClick #(toggle-drawer this)}))))
 
 
