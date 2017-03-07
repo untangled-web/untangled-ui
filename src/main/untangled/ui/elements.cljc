@@ -102,7 +102,7 @@
   color (optional): :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative"
   [{:keys [className color] :as props :or {className ""}} & children]
   ; TODO: Stephen fix colors
-  (let [legal-colors #{:green :blue :magenta :grey :yellow :orange :red}
+  (let [legal-colors #{:primary :accent}
         classes      (cond-> className
                        :always (str " c-label")
                        (contains? legal-colors color) (str " c-label--" (name color)))

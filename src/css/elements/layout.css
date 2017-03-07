@@ -32,6 +32,18 @@ section: Elements
   /* stylelint-enable */
 }
 
+
+.t-fullscreen,
+:--fullscreen {
+  background-color: var(--black);
+  color: var(--white);
+  font-size: 125% !important;
+  margin-top: 0;
+  overflow-y: scroll;
+  padding: .75em .5rem;
+}
+
+
 @media print {
   :root {
     background-color: var(--white);
@@ -164,16 +176,6 @@ section: Elements
       }
     }
   }
-}
-
-
-:--fullscreen {
-  background-color: var(--black);
-  font-size: 125%;
-  line-height: 1.05;
-  margin-top: 0;
-  overflow-y: scroll;
-  padding: .75em .5rem;
 }
 
 

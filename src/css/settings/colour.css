@@ -227,18 +227,11 @@ section: Settings
 
   /* Label */
 
-  --color-label: var(--black);
-  --color-label-background: var(--white);
-  --color-label-grey-background: var(--grey-300);
-  --color-label-blue-background: var(--blue-200);
-  --color-label-orange-background: var(--orange-400);
-  --color-label-green-background: var(--green-400);
-  --color-label-red-background: var(--red-700);
-  --color-label-purple-background: var(--purple-500);
-  --color-label-magenta-background: var(--color-label-purple-background);
-  --color-label-orange-background: var(--orange-500);
-  --color-label-gold-background: var(--yellow-300);
-  --color-label-icon: var(--white);
+  --color-label--primary: var(--grey-200);
+  --color-label--secondary: var(--black);
+  --color-label-alt--primary: var(--color-primary);
+  --color-label-alt--accent: var(--color-accent);
+  --color-label-alt--secondary: var(--color-primary-contrast);
 
 
   /* Loader */

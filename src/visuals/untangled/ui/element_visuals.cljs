@@ -134,8 +134,8 @@
 
 (defcard labels-visual-regressions
   (dom/div nil
-    (for [color [:none :green :blue :magenta :grey :yellow :orange :red]
-          icon ["" (icon :add) (icon :close)]]
+    (for [color [:none :primary :accent]
+          icon ["" (icon :add)]]
       (e/ui-label {:color color :key (str color icon (rand-int 256))} icon "Default"))))
 
 (defcard field-visual-regressions
@@ -158,11 +158,7 @@
         style   [:none :bordered]
         size    [:regular :medium :large :xlarge :huge]
         content ["AV" (icon :supervisor_account)]]
-    (e/ui-avatar {:color color
-                  :style style
-                  :size size
-                  :key (str "avatar-" color style size (if (= content "AV") "text" "icon") (rand-int 99999))}
-      content)))
+    (e/ui-avatar {:color color :style style :size size} content)))
 
 (defcard loader-visual-regressions
   (l/row {}
