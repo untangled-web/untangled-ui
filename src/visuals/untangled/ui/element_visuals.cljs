@@ -243,6 +243,21 @@
         (dom/p nil " ")))))
 
 
+(defcard progress-visual-regressions
+  (dom/div nil
+    (e/ui-progress {})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "0"})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "25"})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "50"})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "75"})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "100"})))
+
+
 (defcard radio-visual-regressions
   (dom/div nil
     (e/ui-radio {:id "radio-1"})
@@ -250,6 +265,5 @@
 
 ;; TODO Need
 ;; -------------
-;; progress
 ;; switch
 ;; tabs

@@ -257,3 +257,10 @@
         (e/ui-modal-actions {}
           (e/ui-flat-button {:color :primary} "Cancel")
           (e/ui-flat-button {:color :primary} "Ok"))))))
+
+(defsample progress-visual-regressions
+  "# Progress"
+  (dom/div nil
+    (e/ui-progress {})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "70"})))
