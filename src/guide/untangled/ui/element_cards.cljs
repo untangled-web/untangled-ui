@@ -248,11 +248,10 @@
   Use `ui-modal` to render a modal dialog with title, body and action items (typically buttons).
 
   Sample shown below:"
-  (dom/div nil
-    (dom/div #js {}
-      (e/ui-modal {:active :true}
-        (e/ui-modal-title {} "Informative")
-        (e/ui-modal-body {} "You have been notified.")
-        (e/ui-modal-actions {}
-          (e/ui-flat-button {:color :primary} "Cancel")
-          (e/ui-flat-button {:color :primary} "Ok"))))))
+  (dom/div #js {:style #js {:height "200px" :position "relative"}}
+    (e/ui-modal {:active :true}
+      (e/ui-modal-title {} "Informative")
+      (e/ui-modal-body {} "You have been notified.")
+      (e/ui-modal-actions {}
+        (e/ui-flat-button {:color :primary} "Cancel")
+        (e/ui-flat-button {:color :primary} "Ok")))))
