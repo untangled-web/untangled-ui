@@ -487,7 +487,6 @@
 
   className (optional): additional class stylings to apply to the top level of the checkbox
   id: Name of the checkbox
-     style (optional):  indeterminate
   disabled (optional: true/false"
   [{:keys [id style disabled] :or {id ""} :as attrs}]
   (let [user-classes (get attrs :className "")
