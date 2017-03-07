@@ -64,13 +64,12 @@
          (e/ui-card {:title "Card Test" :color color :size size :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))
-            (dom/p nil (str "Size: " (name size)))
-            (dom/p nil (str "Actions: " (object? actions)))))))
+            (dom/p nil (str "Size: " (name size)))))))
 
 
      (l/row {}
-       (for [image          ["" "img/bubbles.png" "img/welcome_card.jpg"]
-             image-position [:none :top-left :top-right :bottom-left :bottom-right]]
+       (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
+             image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
            (e/ui-card {:title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
@@ -93,13 +92,12 @@
          (e/ui-card {:type :bordered :title "Card Test" :color color :size size :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))
-            (dom/p nil (str "Size: " (name size)))
-            (dom/p nil (str "Actions: " (object? actions)))))))
+            (dom/p nil (str "Size: " (name size)))))))
 
 
      (l/row {}
-       (for [image          ["" "img/bubbles.png" "img/welcome_card.jpg"]
-             image-position [:none :top-left :top-right :bottom-left :bottom-right]]
+       (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
+             image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
            (e/ui-card {:type :bordered :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
@@ -109,19 +107,16 @@
 (defcard card-transparent-visual-regressions
   (l/row {}
      (for [color [:neutral :primary :accent]
-           size [:normal :expand :wide]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
-       (l/col {:width 6 :key (str color size actions (rand-int 256))}
-         (e/ui-card {:type :transparent :title "Card Test" :color color :size size :actions actions}
+       (l/col {:width 6 :key (str color actions (rand-int 256))}
+         (e/ui-card {:type :transparent :title "Card Test" :color color :actions actions}
           (dom/div nil
-            (dom/p nil (str "Color: " (name color)))
-            (dom/p nil (str "Size: " (name size)))
-            (dom/p nil (str "Actions: " (object? actions)))))))
+            (dom/p nil (str "Color: " (name color)))))))
 
 
      (l/row {}
-       (for [image          ["" "img/bubbles.png" "img/welcome_card.jpg"]
-             image-position [:none :top-left :top-right :bottom-left :bottom-right]]
+       (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
+             image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
            (e/ui-card {:type :transparent :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
@@ -130,25 +125,11 @@
 
 (defcard card-square-visual-regressions
   (l/row {}
-    (for [color [:neutral :primary :accent]
-          size [:normal :expand :wide]
-          actions ["" (e/ui-flat-button {:color :primary} "Action")]]
-      (l/col {:width 6 :key (str color size actions (rand-int 256))}
-        (e/ui-card {:type :square :title "Card Test" :color color :size size :actions actions}
+    (for [size [:normal :expand :wide]]
+      (l/col {:width 6 :key (str size (rand-int 256))}
+        (e/ui-card {:type :square :title "Card Test" :size size}
           (dom/div nil
-            (dom/p nil (str "Color: " (name color)))
-            (dom/p nil (str "Size: " (name size)))
-            (dom/p nil (str "Actions: " (object? actions)))))))
-
-
-    (l/row {}
-      (for [image          ["" "img/bubbles.png" "img/welcome_card.jpg"]
-            image-position [:none :top-left :top-right :bottom-left :bottom-right]]
-        (l/col {:width 6 :key (str image image-position (rand-int 256))}
-          (e/ui-card {:type :square :title "Card Test" :color :primary :image image :image-position image-position}
-            (dom/div nil
-              (dom/p nil (str "Image: " image))
-              (dom/p nil (str "Image position: " (name image-position))))))))))
+            (dom/p nil (str "Size: " (name size)))))))))
 
 
 (defcard labels-visual-regressions
@@ -211,21 +192,11 @@
 
 (defcard notifications-visual-regressions
   (dom/div nil
-    (for [kind [:normal :informative :success :warning :error]]
+    (for [kind [:normal :informative :success :warning :error]
+          width [:normal :wide]]
       (dom/div nil
-        (e/ui-notification
-         {:kind kind :key kind}
+        (e/ui-notification {:kind kind :key (str kind width) :width width}
          ;; TODO Warning key prop needed on NotificationTitle but simply setting one doesn't suppress the error.
-         (e/ui-notification-title {:key (str "nvr-title-" kind)} (str (str/capitalize (name kind))))
-         (e/ui-notification-body {} "Your message here..."))
-        (dom/p nil " ")))))
-
-(defcard notifications-wide-visual-regressions
-  (dom/div nil
-    (for [kind [:normal :informative :success :warning :error]]
-      (dom/div nil
-        (e/ui-notification
-         {:kind kind :key (str kind "-wide") :width :wide}
-         (e/ui-notification-title {:key (str "nvr-wide-title-" kind)} (str (str/capitalize (name kind))))
+         (e/ui-notification-title {:key (str "nvr-title-" kind width)} (str (when (= width :wide) (str/capitalize (name width))) " " (str/capitalize (name kind))))
          (e/ui-notification-body {} "Your message here..."))
         (dom/p nil " ")))))
