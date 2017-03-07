@@ -56,9 +56,9 @@ section: Components
   }
 }
 
-.c-checkbox:focus + label,
-.c-checkbox + label:active,
-.c-checkbox:checked + label:active {
+.c-checkbox:focus + label::before,
+.c-checkbox + label:active::before,
+.c-checkbox:checked + label:active::before {
   box-shadow: var(--toggle-focus-shadow);
 }
 
