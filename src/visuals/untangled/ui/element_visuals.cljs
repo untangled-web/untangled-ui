@@ -210,11 +210,13 @@
     (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
 
 
-(defcard modals
-  (dom/div #js {:style #js {:height "200px"}}
-    (e/ui-modal {:active :true}
-      (e/ui-modal-title {} "Informative")
-      (e/ui-modal-body {} "You have been notified.")
-      (e/ui-modal-actions {}
-        (e/ui-flat-button {:color :primary} "Cancel")
-        (e/ui-flat-button {:color :primary} "Ok")))))
+(defcard modal
+  (e/ui-iframe {:height "200" :width "100%"}
+    (dom/div #js {}
+      (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+     (e/ui-modal {:active :true}
+       (e/ui-modal-title {} "Informative")
+       (e/ui-modal-body {} "You have been notified.")
+       (e/ui-modal-actions {}
+         (e/ui-flat-button {:color :primary} "Cancel")
+         (e/ui-flat-button {:color :primary} "Ok"))))))

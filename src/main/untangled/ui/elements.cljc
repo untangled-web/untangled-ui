@@ -447,12 +447,12 @@
           classes      (-> (str user-classes " c-modal" state))]
 
       (dom/div #js {}
-               (dom/div #js {:className (str classes) :style #js {:position "absolute"}}
+               (dom/div #js {:className (str classes)}
                         (dom/div #js {:className "c-modal__card"}
                                  (when title title)
                                  (when content content)
                                  (when actions actions)))
-               (dom/div #js {:className (str "c-backdrop" state) :style #js {:position "absolute"}})))))
+               (dom/div #js {:className (str "c-backdrop" state)})))))
 ;TODO: Change the position to fixed and wrap the example in ui-iframe.  My testing with this did not work as expected.
 
 (def ui-modal
