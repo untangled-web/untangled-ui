@@ -429,12 +429,12 @@
           title        (first-node ModalTitle children)
           content      (first-node ModalBody children)
           actions      (first-node ModalActions children)
-          state        (if (= active :true) " is-active" "")
+          state        (when active " is-active")
           user-classes (get props :className "")
           classes      (-> (str user-classes " c-modal" state))]
 
       (dom/div #js {}
-        (dom/div #js {:className (str classes)}
+        (dom/div #js {:className classes}
           (dom/div #js {:className "c-modal__card"}
             (when title title)
             (when content content)

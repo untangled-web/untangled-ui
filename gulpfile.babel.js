@@ -112,7 +112,6 @@ gulp.task('watch', ['styles'], () => {
 // Build production files, the default task
 gulp.task('default', cb =>
 runSequence(
-  'lint-css',
   'styles',
   cb
 )

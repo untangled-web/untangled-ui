@@ -19,7 +19,7 @@
           disabled [false true]
           active   [false true]]
       (e/ui-button {:className "extra" :color color :active active :disabled disabled
-                    :shape     shape :size size :key (str shape color size disabled active (rand-int 256))}
+                    :shape     shape :size size :key (str "btn-" shape color size disabled active)}
         (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-button {} "Label" (icon :arrow_forward))
     (e/ui-button {} (icon :arrow_back) "Label")))
@@ -32,7 +32,7 @@
           disabled [false true]
           active   [false true]]
       (e/ui-flat-button {:className "extra" :color color :active active :disabled disabled
-                         :shape     shape :size size  :key (str shape color size disabled active (rand-int 256))}
+                         :shape     shape :size size  :key (str "btn-flat-" shape color size disabled active)}
         (str shape " " color " " size " " (when disabled "disabled ") (when active "active "))))
     (e/ui-flat-button {} "Label" (icon :arrow_forward))
     (e/ui-flat-button {} (icon :arrow_back) "Label")))
@@ -45,7 +45,7 @@
           active   [false true]]
       (e/ui-circular-button {:className "extra" :color color :active active :disabled disabled
                              :title     (str (name color) " " (name size) " " (when disabled "disabled ") (when active "active "))
-                             :size      size  :key (str color size disabled active (rand-int 256))}
+                             :size      size  :key (str "btn-circular-" color size disabled active)}
         (icon :add)))))
 
 (defcard badges-visual-regressions
@@ -147,19 +147,22 @@
 (defcard messages-visual-regressions
   (dom/div nil
     (for [color [:none :neutral :alert :success :warning]
-          class ["" "u-font-size--semi-medium"]
-          icon  ["" (icon :close :modifiers ["small"]) (icon :close)]]
-      (e/ui-message {:color color :className class :key (str color class icon (rand-int 256))}
-        (str "This is a " (name color) " message"(when-not (str/blank? icon) (str " with an icon"))".") icon))))
+          class ["" "u-font-size--semi-medium"]]
+      (e/ui-message {:color color :className class :key (str "messages-" (name color) (name class))}
+        (str "This is a " (name color) " message.")))
+    (e/ui-message {}
+      (str "This is a message with an icon.") (e/ui-icon {:size :small :glyph :arrow_forward}))))
 
 (defcard avatar-visual-regressions
-  (dom/div nil
-    (for [color [:none :primary :accent]
-          style [:none :bordered]
-          size  [:regular :medium :large :xlarge :huge]
-          content ["AV" (icon :supervisor_account)]]
-      (dom/span nil
-        (e/ui-avatar {:color color :style style :size size :key (str color style size content)} content) "\u00A0"))))
+  (for [color   [:none :primary :accent]
+        style   [:none :bordered]
+        size    [:regular :medium :large :xlarge :huge]
+        content ["AV" (icon :supervisor_account)]]
+    (e/ui-avatar {:color color
+                  :style style
+                  :size size
+                  :key (str "avatar-" color style size (if (= content "AV") "text" "icon") (rand-int 99999))}
+      content)))
 
 (defcard loader-visual-regressions
   (l/row {}
@@ -194,10 +197,10 @@
   (dom/div nil
     (for [kind [:normal :informative :success :warning :error]
           width [:normal :wide]]
-      (dom/div nil
-        (e/ui-notification {:kind kind :key (str kind width) :width width}
+      (dom/div #js {:key (str "id-" kind width)}
+        (e/ui-notification {:kind kind :width width}
          ;; TODO Warning key prop needed on NotificationTitle but simply setting one doesn't suppress the error.
-         (e/ui-notification-title {:key (str "nvr-title-" kind width)} (str (when (= width :wide) (str/capitalize (name width))) " " (str/capitalize (name kind))))
+         (e/ui-notification-title {} (str (when (= width :wide) (str/capitalize (name width))) " " (str/capitalize (name kind))))
          (e/ui-notification-body {} "Your message here..."))
         (dom/p nil " ")))))
 
@@ -211,12 +214,23 @@
 
 
 (defcard modal
-  (e/ui-iframe {:height "200" :width "100%"}
-    (dom/div #js {}
-      (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-     (e/ui-modal {:active :true}
-       (e/ui-modal-title {} "Informative")
-       (e/ui-modal-body {} "You have been notified.")
-       (e/ui-modal-actions {}
-         (e/ui-flat-button {:color :primary} "Cancel")
-         (e/ui-flat-button {:color :primary} "Ok"))))))
+  (dom/div nil
+    (e/ui-iframe {:height "200" :width "100%"}
+     (dom/div #js {}
+       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+       (e/ui-modal {:active true}
+         (e/ui-modal-title {} "Informative")
+         (e/ui-modal-body {} "You have been notified.")
+         (e/ui-modal-actions {}
+           (e/ui-flat-button {:color :primary} "Cancel")
+           (e/ui-flat-button {:color :primary} "Ok")))))
+
+    (e/ui-iframe {:height "200" :width "100%"}
+     (dom/div #js {}
+       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+       (e/ui-modal {:active true}
+         (e/ui-modal-title {} "Informative")
+         (e/ui-modal-body {} "You have been notified.")
+         (e/ui-modal-actions {}
+           (e/ui-flat-button {:color :primary} "Cancel")
+           (e/ui-flat-button {:color :primary} "Ok")))))))
