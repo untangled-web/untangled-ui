@@ -234,6 +234,14 @@
       (e/ui-icon {} (icon :arrow_forward))
       (e/ui-icon {} (icon :arrow_drop_up)))))
 
+(defsample checkbox
+  "# Checkboxes"
+  (dom/div nil
+    (e/ui-checkbox {:id "checkbox-1"})
+    (e/ui-checkbox {:id "checkbox-2" :disabled true})
+    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
+    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
+
 (defsample modals
   "# Modals
 

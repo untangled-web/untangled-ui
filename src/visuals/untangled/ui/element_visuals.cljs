@@ -201,12 +201,13 @@
          (e/ui-notification-body {} "Your message here..."))
         (dom/p nil " ")))))
 
+
 (defcard checkbox
-   (dom/div nil
-    (e/ui-checkbox {:id "checkbox"} )
-    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
-    (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
-    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
+  (dom/div nil
+    (e/ui-checkbox {:id "checkbox-1"})
+    (e/ui-checkbox {:id "checkbox-2" :disabled true})
+    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
+    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
 
 
 (defcard modals

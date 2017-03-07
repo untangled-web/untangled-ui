@@ -469,23 +469,25 @@
   closes the modal or redirects the user."
   (om/factory Modal))
 
+
 (defn ui-checkbox
   "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
   className (optional): additional class stylings to apply to the top level of the checkbox
   id: Name of the checkbox
-  style (optional):  is-indeterminate :c-checkbox--informative"
-  [{:keys [id style] :or {id ""} :as attrs}]
-  (let [legal-styles #{:is-indeterminate :c-checkbox--informative}
+     style (optional):  indeterminate
+  disabled (optional: true/false"
+  [{:keys [id style disabled] :or {id ""} :as attrs}]
+  (let [legal-styles #{:indeterminate}
         user-classes (get attrs :className "")
         classes (cond-> (str user-classes " c-checkbox ")
-                        (contains? legal-styles style) (str (name style))
-                        )
+                        (contains? legal-styles style) (str "is-" (name style)))
         attrs (cond-> attrs
                       :always (assoc :type "checkbox")
-                      :always (dissoc :styles)
+                      :always (dissoc :style :disabled)
                       :always (assoc :className classes)
-                      :always (assoc :id (name id)))        ]
-    (dom/span #js {} (dom/input (clj->js attrs))
-              (dom/label #js {:htmlFor id} \u00A0))
-    ))
+                      :always (assoc :disabled disabled)
+                      :always (assoc :id (name id)))]
+    (dom/span nil
+      (dom/input (clj->js attrs))
+      (dom/label #js {:htmlFor id} \u00A0))))
