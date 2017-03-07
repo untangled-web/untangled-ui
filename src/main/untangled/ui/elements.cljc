@@ -10,8 +10,8 @@
 (defn ui-avatar
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :primary, :accent
-  size (optional): huge"
+  `:color` - :none (default), :primary, :accent
+  `:size` - :regular (default), huge"
   [{:keys [className color size style] :as props :or {className ""}} child]
   (let [legal-colors #{:primary :accent}
         legal-sizes  #{:medium :large :xlarge :huge}
@@ -98,18 +98,6 @@
   [{:keys [className size color disabled active] :or {className ""} :as props} & children]
   (apply ui-flat-button (update props :className str " c-button--circular") children))
 
-(def color-types
-  {:primary "c-card--primary"
-   :accent  "c-card--accent"})
-
-(def card-types
-  {:bordered    "c-card--bordered"
-   :transparent "c-card--transparent"
-   :square      "c-card--square"})
-
-(def size-types
-  {:expand "c-card--expand"
-   :wide   "c-card--wide"})
 
 (defn ui-card
   "Card component
@@ -131,7 +119,7 @@
     ...)
     all paramters optional
     "
-  [{:keys [type
+  [{:keys [style
            title
            color
            size
@@ -143,18 +131,20 @@
            ;; menu-icon
            ;; menu-items
            className] :as attrs} & children]
-  {:pre [(or (nil? type) (keyword? type))
+  {:pre [(or (nil? style) (keyword? style))
          (or (nil? title) (string? title))]}
-  (let [className  (or className "")
-        classes    (cond->
-                     (str "c-card " className)
-                     type (str " " (card-types type))
-                     size (str " " (size-types size))
-                     color (str " " (color-types color)))
-        attributes (-> attrs
-                     (merge {:className classes})
-                     (dissoc :title :type :color :size :actions :image :image-position :media-type :media)
-                     clj->js)]
+  (let [legal-styles #{:bordered :transparent :square}
+        legal-colors #{:primary :accent}
+        legal-sizes  #{:expand :wide}
+        className    (or className "")
+        classes      (cond-> (str "c-card " className)
+                       (contains? legal-styles style) (str " c-card--" (name style))
+                       (contains? legal-colors color) (str " c-card--" (name color))
+                       (contains? legal-sizes size) (str " c-card--" (name size)))
+        attributes   (-> attrs
+                       (merge {:className classes})
+                       (dissoc :title :style :color :size :actions :image :image-position :media-type :media)
+                       clj->js)]
     (dom/div attributes
       (when media
         (dom/div #js {:className (str "c-card__media")}
@@ -465,7 +455,6 @@
             (when content content)
             (when actions actions)))
         (dom/div #js {:className (str "c-backdrop" state)})))))
-;TODO: Change the position to fixed and wrap the example in ui-iframe.  My testing with this did not work as expected.
 
 (def ui-modal
   "Render a modal. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
