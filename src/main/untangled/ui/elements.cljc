@@ -7,45 +7,16 @@
 
 #?(:clj (def clj->js identity))
 
-(defn ui-circular-button
-  "Render a raised circle button. Props is a normal clj(s) map with React/HTML attributes plus:
-
-  :color - :neutral (default), :primary, :accent
-  :size  - :normal (default), :small
-  :active - true or false (default) -  Causes the button to look highlighted.
-
-  Any other React properties are allowed, including additional CSS classes.
-  "
-  [{:keys [className size color disabled active] :or {className ""} :as attrs} & children]
-  (let [legal-colors   #{:primary :accent}
-        legal-sizes    #{:small}
-        button-label   (fn [text]
-                         (dom/span #js {:className "c-button__content"} text))
-        fixed-children (map (fn [c]
-                              (if (string? c)
-                                (button-label c)
-                                c)) children)
-        classes        (cond-> (str className " c-button c-button--circular")
-                         disabled (str " is-disabled")
-                         active (str " is-active")
-                         (contains? legal-colors color) (str " c-button--" (name color))
-                         (contains? legal-sizes size) (str " c-button--" (name size)))
-        attrs          (cond-> attrs
-                         disabled (assoc :aria-disabled "true")
-                         :always (dissoc :disabled :active :color :size)
-                         :always (assoc :className classes))]
-    (apply dom/button (clj->js attrs) fixed-children)))
-
 (defn ui-flat-button
-  "Render a button that has no colored background (it is just the children), but renders a hover shape
-  when the mouse if over it.
+  "Render a button that looks more like a link that a button (it is just the children), but renders the hover shape
+  of a more traditional button when the mouse is over it.
 
   :color - :neutral (default), :primary, :accent
-  :shape - :rect (default), :round, or :wide
-  :size  - :normal (default), :small
-  :active - true or false (default) -  Causes the button to look highlighted.
+  :shape - :rect (default), :round, or :wide.  The shape when the mouse is over the button.
+  :size  - :normal (default), :small.  Small buttons are a bit more condensed.
+  :active - true or false (default).  Causes the button to look highlighted.
 
-  Any other React properties are allowed, including additional CSS classes.
+  Any normal HTML/React properties are allowed, including additional CSS classes.
   "
   [{:keys [className size color shape disabled active] :or {className ""} :as attrs} & children]
   (let [legal-colors   #{:primary :accent}
@@ -58,15 +29,13 @@
                                 (button-label c)
                                 c)) children)
         classes        (cond-> (str className " c-button")
-                         disabled (str " is-disabled")
                          active (str " is-active")
                          (contains? legal-colors color) (str " c-button--" (name color))
                          (contains? legal-shapes shape) (str " c-button--" (name shape))
                          (contains? legal-sizes size) (str " c-button--" (name size)))
-        attrs          (cond-> attrs
+        attrs          (cond-> (assoc attrs :className classes)
                          disabled (assoc :aria-disabled "true")
-                         :always (dissoc :disabled :active :color :shape :size)
-                         :always (assoc :className classes))]
+                         :always (dissoc :active :color :shape :size))]
     (apply dom/button (clj->js attrs) fixed-children)))
 
 (defn ui-button
@@ -79,22 +48,45 @@
 
   Any other React properties are allowed, including additional CSS classes.
   "
-  [{:keys [className size color shape disabled active] :or {className ""} :as attrs} & children]
-  (apply ui-flat-button (update attrs :className str " c-button--raised") children))
+  [{:keys [className size color shape disabled active] :or {className ""} :as props} & children]
+  (apply ui-flat-button (update props :className str " c-button--raised") children))
+
+(defn ui-circular-button
+  "Render a raised circle button of fixed size (configurable in CSS variables, see CSS guide).
+  Extra content will overflow out of the cirle. Props is a normal clj(s) map with React/HTML attributes plus:
+
+  :color - :neutral (default), :primary, :accent
+  :size  - :normal (default), :small
+  :active - true or false (default) -  Causes the button to look highlighted.
+
+  Any other React properties are allowed, including additional CSS classes.
+
+  Note that you will typically only be able to fit something like an icon in this kind of button, which is a perfect
+  circle.
+  "
+  [{:keys [className size color disabled active] :or {className ""} :as props} & children]
+  (apply ui-flat-button (update props :className str " c-button--circular") children))
 
 (defn ui-fader
-  "Wrap children in a div (props is a clj(s) map of normal React attributes) where the :visible attribute
+  "Wrap children in a span where the :visible attribute
   is a boolean indicating the visibility of the children.
 
-  When the resulting div becomes visible it fades in, and when it becomes hidden it fades out."
-  [{:keys [visible] :as props} & children]
+  Props is a clj(s) map of normal React attributes.
+
+  `:block?` - A boolean (default false). When true, emits a `div`, else `span`.
+
+  You can get this same effect using the `u-fade-in` and `u-fade-out` CSS classes. See the CSS Guide.
+
+  When the resulting span becomes visible it fades in, and when it becomes hidden it fades out."
+  [{:keys [block? visible] :as props} & children]
   (let [className (or (:className props) "")
-        classes   (str "u-row " className (if visible " u-fade-in" " u-fade-out"))
+        classes   (str className (if visible " u-fade-in" " u-fade-out"))
+        wrapper   (if block? dom/div dom/span)
         attrs     (-> props
                     (dissoc :visible)
                     (assoc :className classes)
                     clj->js)]
-    (apply dom/div attrs children)))
+    (apply wrapper attrs children)))
 
 (defn ui-badge
   "Render the given children within a badge. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -109,36 +101,32 @@
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
   color (optional): :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative"
   [{:keys [className color] :as props :or {className ""}} & children]
+  ; TODO: Stephen fix colors
   (let [legal-colors #{:green :blue :magenta :grey :yellow :orange :red}
         classes      (cond-> className
                        :always (str " c-label")
                        (contains? legal-colors color) (str " c-label--" (name color)))
         props        (-> props
                        (dissoc :color)
-                       (assoc :className classes)
-                       )]
+                       (assoc :className classes))]
     (apply dom/span (clj->js props) children)))
 
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  kind (optional): :text (default), :password, :date, :datetime, :datetime-local, :month, :week, :email, :number, :search, :tel, :time, :url, :color
-  size (optional): :small, :medium, :large
-  states that can be implemented (optional) :required, :focus, :invalid, :error"
-  [{:keys [size state kind] :or {size ""} :as attrs} placeholder]
+  `:size` (optional): :small, :medium, :large
+  `:state` (optional) can be one of :valid, :invalid, or :error"
+  [{:keys [size state] :or {size ""} :as attrs} placeholder]
   (let [legal-sizes  #{:small :medium :large}
-        legal-kinds #{:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color}
         user-classes (get attrs :className "")
         has          (fn [s] (contains? state s))
         classes      (cond-> (str user-classes " c-field ")
                        (contains? legal-sizes size) (str "c-field--" (name size))
-                       (has :focus) (str " has-focus")
                        (has :invalid) (str " is-invalid")
                        (has :error) (str " is-error"))
-        type         (if (contains? legal-kinds kind) (name kind) "text")
-        attrs        (cond-> (assoc attrs :type kind :className classes :placeholder (name placeholder))
-                       (contains? state :required) (assoc :required "true")
-                       :always (dissoc :size :state :kind))]
+        attrs        (-> attrs
+                       (assoc :className classes :placeholder (name placeholder))
+                       (dissoc :size :state :kind))]
     (dom/input (clj->js attrs))))
 
 (defn ui-message
@@ -147,8 +135,7 @@
   color (optional): :neutral, :alert, :success, :warning"
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:neutral :alert :success :warning}
-        classes      (cond-> className
-                       :always (str " c-message")
+        classes      (cond-> (str className " c-message")
                        (contains? legal-colors color) (str "--" (name color)))
         props        (-> props
                        (assoc :className classes)
@@ -384,10 +371,10 @@
         (dom/div #js {:className "c-card__actions"} actions))
       ;; TODO
       #_(when menu-items
-        (dom/div #js {:className "c-card__menu"}
-          (menu/menu :a
-            (icon (if menu-icon menu-icon :more_vert))
-            menu-items))))))
+          (dom/div #js {:className "c-card__menu"}
+            (menu/menu :a
+              (icon (if menu-icon menu-icon :more_vert))
+              menu-items))))))
 
 (defn ui-icon-bar
   "Render an icon bar using a vector of icons (each a map of attributes).
@@ -447,12 +434,12 @@
           classes      (-> (str user-classes " c-modal" state))]
 
       (dom/div #js {}
-               (dom/div #js {:className (str classes)}
-                        (dom/div #js {:className "c-modal__card"}
-                                 (when title title)
-                                 (when content content)
-                                 (when actions actions)))
-               (dom/div #js {:className (str "c-backdrop" state)})))))
+        (dom/div #js {:className (str classes)}
+          (dom/div #js {:className "c-modal__card"}
+            (when title title)
+            (when content content)
+            (when actions actions)))
+        (dom/div #js {:className (str "c-backdrop" state)})))))
 ;TODO: Change the position to fixed and wrap the example in ui-iframe.  My testing with this did not work as expected.
 
 (def ui-modal
@@ -480,14 +467,14 @@
   [{:keys [id style disabled] :or {id ""} :as attrs}]
   (let [legal-styles #{:indeterminate}
         user-classes (get attrs :className "")
-        classes (cond-> (str user-classes " c-checkbox ")
-                        (contains? legal-styles style) (str "is-" (name style)))
-        attrs (cond-> attrs
-                      :always (assoc :type "checkbox")
-                      :always (dissoc :style :disabled)
-                      :always (assoc :className classes)
-                      :always (assoc :disabled disabled)
-                      :always (assoc :id (name id)))]
+        classes      (cond-> (str user-classes " c-checkbox ")
+                       (contains? legal-styles style) (str "is-" (name style)))
+        attrs        (cond-> attrs
+                       :always (assoc :type "checkbox")
+                       :always (dissoc :style :disabled)
+                       :always (assoc :className classes)
+                       :always (assoc :disabled disabled)
+                       :always (assoc :id (name id)))]
     (dom/span nil
       (dom/input (clj->js attrs))
       (dom/label #js {:htmlFor id} \u00A0))))
