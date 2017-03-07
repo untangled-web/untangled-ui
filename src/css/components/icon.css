@@ -30,8 +30,8 @@ section: Components
 
 .c-icon-column {
   @apply --middle;
-  width: 52px;
   vertical-align: middle;
+  width: 52px;
 }
 
 

@@ -128,7 +128,7 @@
               ;; TODO Figure out why the link isn't loading with this code
               #_(untangled.ui.elements/ui-iframe {:width "360px" :height "640px"}
                 (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
-                 (om.dom/link #js {:rel "stylesheet" :href "css/untangled-ui-stylekit.css"})
+                 (om.dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
                  (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
                    (~symfn this#))
                  (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})

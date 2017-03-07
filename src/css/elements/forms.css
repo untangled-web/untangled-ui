@@ -13,14 +13,15 @@ section: Elements
 
 
 /* specify the progress cursor of updating elements */
-[aria-busy='true'] { cursor: progress; }
+[aria-busy="true"] { cursor: progress; }
 
 
 /* specify the pointer cursor of trigger elements */
 [aria-controls] { cursor: pointer; }
 
 
-/* specify the unstyled cursor of disabled, not-editable, or otherwise inoperable elements */
+/* specify the unstyled cursor of disabled,
+   not-editable, or otherwise inoperable elements */
 [aria-disabled] { cursor: default; }
 
 

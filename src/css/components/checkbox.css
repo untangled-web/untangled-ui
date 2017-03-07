@@ -5,9 +5,9 @@ section: Components
 
 :root {
   --color-checkbox: var(--grey-400);
-  --color-checkbox--checked: var(--green-500);
+  --color-checkbox--checked: var(--color-primary);
   --color-checkbox--indeterminate: var(--grey-400);
-  --color-checkbox--informative: var(--blue-400);
+  --color-checkbox--disabled: var(--grey-300);
 }
 
 .c-checkbox { @apply --hide-a11y; }
@@ -30,7 +30,7 @@ section: Components
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     display: block;
   }
 
@@ -80,24 +80,32 @@ section: Components
 
   &::after {
     background-color: var(--color-checkbox--indeterminate);
-    border: 2px solid var(--color-checkbox--indeterminate);
+    border-color: var(--color-checkbox--indeterminate);
   }
 }
 
-.c-checkbox--informative + label {
-  &::after {
-    border-width: 1px;
+.c-checkbox[disabled],
+.c-checkbox.is-disabled {
+  user-select: none;
+
+  & + label {
+      color: var(--color-checkbox--disabled);
+
+    &::after {
+      border-color: var(--color-checkbox--disabled);
+    }
   }
 }
 
-.c-checkbox--informative:checked + label {
-  &::before {
-    border-color: var(--color-checkbox--informative);
-  }
-  &::after {
-    background-color: transparent;
-    border: 1px solid var(--color-checkbox--informative);
-  }
+.c-checkbox:disabled:indeterminate,
+.c-checkbox.is-disabled:indeterminate,
+.c-checkbox:disabled.is-indeterminate,
+.c-checkbox.is-disabled.is-indeterminate,
+.c-checkbox:disabled:checked,
+.c-checkbox.is-disabled:checked {
+  & + label::after {
+    background-color: var(--color-checkbox--disabled);
+   }
 }
 
 .c-checkbox--stacked {

@@ -23,14 +23,15 @@
 (defviewport errors-form
   "A basic form"
   (dom/span nil
-    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
-      (dom/div #js {:className "o-toolbar__view"}
-        (dom/button #js {:className "c-button c-button--icon"}
-          (icons/icon :arrow_back))
-        (dom/span #js {:className "o-toolbar__label"} "Application"))
-      (dom/div #js {:className "o-toolbar__actions"}
-        (dom/button #js {:className "c-button c-button--icon"}
-          (icons/icon :more_vert))))
+    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "absolute"}};; Style for example
+      (dom/div #js {:className "c-toolbar__row"}
+       (dom/div #js {:className "c-toolbar__view"}
+         (dom/button #js {:className "c-button c-button--icon"}
+           (icons/icon :arrow_back))
+         (dom/span #js {:className "c-toolbar__label"} "Application"))
+       (dom/div #js {:className "c-toolbar__actions"}
+         (dom/button #js {:className "c-button c-button--icon"}
+           (icons/icon :more_vert)))))
 
     (l/row {}
       (l/col {:width 12}
@@ -82,15 +83,16 @@
 (defviewport errors-form-filled
   "Filled out form"
   (dom/span nil
-    (dom/div #js {:className "o-toolbar o-toolbar--raised o-toolbar--primary"}
-      (dom/div #js {:className "o-toolbar__view"}
-        (dom/button #js {:className "c-button c-button--icon"}
-          (icons/icon :arrow_back))
-        (dom/span #js {:className "o-toolbar__label"} "Application"))
-      (dom/div #js {:className "o-toolbar__actions"}
-        (dom/button #js {:className "c-button c-button--icon"}
-          (icons/icon :more_vert)))
-      )
+    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "absolute"}} ;; Style for example
+      (dom/div #js {:className "c-toolbar__row"}
+       (dom/div #js {:className "c-toolbar__view"}
+         (dom/button #js {:className "c-button c-button--icon"}
+           (icons/icon :arrow_back))
+         (dom/span #js {:className "c-toolbar__label"} "Application"))
+       (dom/div #js {:className "c-toolbar__actions"}
+         (dom/button #js {:className "c-button c-button--icon"}
+           (icons/icon :more_vert)))
+       ))
     (l/row {}
       (l/col {:width 12}
         (l/ui-vertical-margin {:before :half}

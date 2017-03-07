@@ -2,7 +2,7 @@
 import: ../README.md
 ---*/
 
-@import 'untangled-ui-stylekit';
+@import 'untangled-ui';
 
 /* stylelint-disable */
 .box-row { margin-bottom: 1rem; }
@@ -12,7 +12,7 @@ import: ../README.md
 .box--large,
 .box-nested,
 .box-row {
-  background-color: var(--blue-600);
+  background-color: var(--color-primary);
   color: var(--white);
   font-size: var(--fontSize--tiny);
   min-height: 2em;
@@ -22,9 +22,9 @@ import: ../README.md
   text-align: center;
 }
 
-.box-first { background-color: var(--blue-700); }
+.box-first { background-color: var(--blue-600); }
 
-.box-nested { background-color: var(--blue-800); }
+.box-nested { background-color: var(--blue-700); }
 
 .box--large { height: 5rem; }
 
@@ -77,8 +77,9 @@ import: ../README.md
 
 .ui-viewport-container {
   display: inline-block;
-  width: 360px;
   margin: 0 1.5em;
+  position: relative;
+  width: 360px;
 }
 
 .ui-viewport {

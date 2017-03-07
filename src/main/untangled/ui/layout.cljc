@@ -32,7 +32,7 @@
                     valign (str " u-" (name valign))
                     density (str " u-row--" (name density)))
         attrs     (-> props
-                    (dissoc :distribute-extra-columns)
+                    (dissoc :distribute-extra-columns :halign :valign :density)
                     (assoc :className classes)
                     clj->js)]
     (apply dom/div attrs children)))
@@ -61,7 +61,7 @@
                   lg-push (str " u-push--" lg-push "@lg")
                   xl-push (str " u-push--" xl-push "@xl"))
         attrs   (-> props
-                  (dissoc :width :sm-width :md-width :lg-width :xl-width :halign :valign :push)
+                  (dissoc :width :halign :valign :sm-width :md-width :lg-width :xl-width :push :sm-push :md-push :lg-push :xl-push)
                   (assoc :className classes)
                   clj->js)]
     (apply dom/div attrs children)))

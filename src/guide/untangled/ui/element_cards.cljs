@@ -37,7 +37,13 @@
   (dom/div nil
     (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} "Default Look"))
     (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} (icon :arrow_back) "With an icon"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} "Flat Look"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} (icon :arrow_back) "With an icon"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {:color :secondary :shape :wide} "Wide Secondary"))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {} (icon :arrow_back)))
+    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {:size :small} (icon :arrow_back)))
+    ))
 
 (defsample badge
   "# Badges
@@ -106,8 +112,15 @@
   Some samples are shown below:
   "
   (dom/div nil
+    (e/ui-avatar {} "AV")
+    (e/ui-avatar {:style :bordered} "BR")
     (e/ui-avatar {:color :primary} "PC")
+    (e/ui-avatar {:color :primary :style :bordered} "PB")
     (e/ui-avatar {:color :accent} "AC")
+    (e/ui-avatar {:color :accent :style :bordered} "AB")
+    (e/ui-avatar {:size :medium} "MD")
+    (e/ui-avatar {:size :large} "LG")
+    (e/ui-avatar {:size :xlarge} "XL")
     (e/ui-avatar {:size :huge} "HU")
     ;TODO: Add an image example
     (e/ui-avatar {} (icon :supervisor_account))))
@@ -121,7 +134,8 @@
   "
   (dom/div #js {:style #js {:height 50}}
     (e/ui-loader {})
-    (e/ui-loader {:color :neutral})))
+    (e/ui-loader {:color :primary})
+    (e/ui-loader {:color :accent})))
 
 
 (defsample icon-colors

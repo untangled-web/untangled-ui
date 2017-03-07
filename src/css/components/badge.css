@@ -12,7 +12,7 @@ section: Components
   --backgroundColor-badge--default: transparent;
   --backgroundColor-badge--positive: var(--green-600);
   --backgroundColor-badge--informative: var(--blue-600);
-  --backgroundColor-badge--informative-alt: var(--magenta-500);
+  --backgroundColor-badge--informative-alt: var(--purple-500);
   --backgroundColor-badge--live: var(--yellow-700);
   --backgroundColor-badge--alterable: var(--orange-600);
   --backgroundColor-badge--negative: var(--red-600);
@@ -82,9 +82,26 @@ section: Components
   color: var(--color-badge--default);
 }
 
-.c-badge--positive { background-color: var(--backgroundColor-badge--positive); }
-.c-badge--informative { background-color: var(--backgroundColor-badge--informative); }
-.c-badge--live { background-color: var(--backgroundColor-badge--live); }
-.c-badge--alterable { background-color: var(--backgroundColor-badge--alterable); }
-.c-badge--negative { background-color: var(--backgroundColor-badge--negative); }
-.c-badge--purple { background-color: var(--backgroundColor-badge--informative-alt); }
+.c-badge--positive {
+  background-color: var(--backgroundColor-badge--positive);
+}
+
+.c-badge--informative {
+  background-color: var(--backgroundColor-badge--informative);
+}
+
+.c-badge--live {
+  background-color: var(--backgroundColor-badge--live);
+}
+
+.c-badge--alterable {
+  background-color: var(--backgroundColor-badge--alterable);
+}
+
+.c-badge--negative {
+  background-color: var(--backgroundColor-badge--negative);
+}
+
+.c-badge--purple {
+  background-color: var(--backgroundColor-badge--informative-alt);
+}

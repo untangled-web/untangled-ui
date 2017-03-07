@@ -4,6 +4,19 @@ section: Components
 ---*/
 
 :root {
+  --backgroundColor-accordion: transparent;
+  --backgroundColor-accordion__action--informative: var(--blue-600);
+  --backgroundColor-accordion__action--informative--hover: var(--blue-700);
+  --backgroundColor-accordion__action--success: var(--green-600);
+  --backgroundColor-accordion__action--success--hover: var(--green-700);
+  --backgroundColor-accordion--hover: var(--blue-50);
+  --backgroundColor-accordion--selected: var(--blue-800);
+  --borderColor-accordion__title: var(--grey-900);
+  --borderColor-accordion__group: var(--grey-200);
+  --borderColor-accordion--nav: var(--grey-100);
+  --borderColor-accordion--nav__group: transparent;
+  --color-accordion__action--alt: var(--white);
+  --color-accordion--selected: var(--white);
   --fontSize-accordion__title: var(--fontSize--tiny);
   --size-accordion: 8px;
   --size-accordion__title: 10px;
@@ -24,7 +37,7 @@ section: Components
 
   & .is-nested {
     padding-left: var(--offset-nested);
-    text-indent: calc( -1 * var(--offset-nested));
+    text-indent: calc(-1 * var(--offset-nested));
 
     &:not(.is-active) {
       overflow: hidden;
@@ -35,7 +48,11 @@ section: Components
     &::before {
       @apply --triangle;
       @apply --triangle-right;
-      border-width: var(--size-accordion__nested-arrow) 0 var(--size-accordion__nested-arrow) calc(var(--size-accordion__nested-arrow) * 1.5);
+      border-width:
+        var(--size-accordion__nested-arrow)
+        0
+        var(--size-accordion__nested-arrow)
+        calc(var(--size-accordion__nested-arrow) * 1.5);
       margin-right: 4px;
       position: relative;
       transition: transform .1s ease;
@@ -68,7 +85,9 @@ section: Components
 
     &:active { box-shadow: inset 0 0 4px rgba(0, 0, 0, .42); }
 
-    &:not(.is-active) { border-bottom: 1px solid var(--borderColor-accordion__title); }
+    &:not(.is-active) {
+       border-bottom: 1px solid var(--borderColor-accordion__title);
+     }
 
     &.is-nested:hover {
       background-color: var(--backgroundColor-accordion--selected);
@@ -107,7 +126,9 @@ section: Components
       transition: none;
     }
 
-    &.is-active:not(:last-child) { border-bottom: 1px solid var(--borderColor-accordion__title); }
+    &.is-active:not(:last-child) {
+       border-bottom: 1px solid var(--borderColor-accordion__title);
+     }
   }
 
 
@@ -142,7 +163,9 @@ section: Components
 
 
     /* Disable border for first group if title isn't active */
-    .o-accordion__title:not(.is-active) + .o-accordion__content > &:first-child { border-top: none; }
+    .o-accordion__title:not(.is-active) + .o-accordion__content > &:first-child {
+      border-top: none;
+    }
   }
 
 
@@ -171,7 +194,10 @@ section: Components
     background-color: var(--backgroundColor-accordion__action--informative);
     color: var(--color-accordion__action--alt);
 
-    &:hover { background-color: var(--backgroundColor-accordion__action--informative--hover); }
+    &:hover {
+       background-color:
+         var(--backgroundColor-accordion__action--informative--hover);
+     }
 
     .c-icon { fill: var(--color-accordion__action--alt); }
   }
@@ -181,7 +207,9 @@ section: Components
     background-color: var(--backgroundColor-accordion__action--success);
     color: var(--color-accordion__action--alt);
 
-    &:hover { background-color: var(--backgroundColor-accordion__action--success--hover); }
+    &:hover {
+       background-color: var(--backgroundColor-accordion__action--success--hover);
+     }
 
     .c-icon { fill: var(--color-accordion__action--alt); }
   }
@@ -230,7 +258,9 @@ section: Components
 
   & .o-accordion__title {
     @apply --accordion__title;
-    padding: var(--size-accordion__title) calc(2 * var(--size-accordion__title)) !important;
+    padding:
+      var(--size-accordion__title)
+      calc(2 * var(--size-accordion__title)) !important;
   }
 
   & .o-accordion__title.is-nested {

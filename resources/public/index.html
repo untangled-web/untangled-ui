@@ -2,15 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- This enables smaller devices to view this site responsively -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,500,600"> <!-- This is the default webfont -->
+    <link rel="stylesheet" href="css/untangled-ui-guide.css">
     <title>Untangled Component Demo Cards</title>
 </head>
 <body>
-  <ul>
-    <li><a href="visuals.html">Visual Regression Tests (-Dvisuals)</a></li>
-    <li><a href="guide.html">Active Components Guide (-Dguide)</a></li>
-    <li><a href="guide-css.html">CSS Guide (-Dcss-guide)</a></li>
-    <li><a href="test.html">Specification Tests (-Dtest)</a></li>
-  </ul>
+  <header class="c-toolbar c-toolbar--framed c-toolbar--raised-">
+    <div class="c-toolbar__row">
+      <div class="u-column--6 u-middle">
+        <div class="o-toolbar__tile">
+          <img src="/img/logo.png" height="40" width="40" style="margin-top: 2px;">
+          <span class="u-font-size--semi-medium" style="position: relative; top: -12px; margin-left: 10px;">Untangled UI</span></div>
+      </div>
+    </div>
+  </header>
+  <main class="o-main">
+    <article class="o-article has-toolbar">
+      <div class="u-row">
+        <div class="u-column--12 u-column--6@md u-column--4@lg u-text-center">
+          <a class="c-card c-card--primary c-card--bordered" href="visuals.html">
+            <span class="c-card__title">
+              <h1 class="c-card__title-text">Visual Regression Tests</h1>
+            </span>
+            <span class="c-card__supporting-text">
+              <label class="is-optional" disabled>Build: </label> <code>-Dvisuals</code>
+            </span>
+          </a>
+        </div>
+      <div class="u-column--12 u-column--6@md u-column--4@lg u-text-center">
+          <a class="c-card c-card--primary c-card--bordered" href="guide.html">
+            <span class="c-card__title">
+                <h1 class="c-card__title-text">Active Components Guide</h1>
+            </span>
+            <span class="c-card__supporting-text">
+                  <label class="is-optional" disabled>Build: </label> <code>-Dguide</code>
+            </span>
+          </a>
+      </div>
+      <div class="u-column--12 u-column--6@md u-column--4@lg u-text-center">
+          <a class="c-card c-card--primary c-card--bordered" href="guide-css.html">
+            <span class="c-card__title">
+                <h1 class="c-card__title-text">CSS Guide</h1>
+            </span>
+            <span class="c-card__supporting-text">
+              <label class="is-optional" disabled>Build: </label> <code>-Dcss-guide</code>
+            </span>
+          </a>
+      </div>
+      <div class="u-column--12 u-column--6@md u-column--4@lg u-text-center">
+          <a class="c-card c-card--primary c-card--bordered" href="test.html">
+            <span class="c-card__title">
+                <h1 class="c-card__title-text">Specification Tests</h1>
+            </span>
+            <span class="c-card__supporting-text">
+              <label class="is-optional" disabled>Build: </label> <code>-Dtest</code>
+            </span>
+          </a>
+      </div>
+      </div>
+    </article>
+  </main>
 </body>
 </html>

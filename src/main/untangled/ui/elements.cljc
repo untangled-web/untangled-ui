@@ -1,12 +1,40 @@
 (ns untangled.ui.elements
   (:require [om.dom :as dom]
             [om.next :as om :refer [defui]]
+            [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
 
-; (defn ui-fab-button "Render a perfect circle button that contains the given children (typically an icon)." [props & children])
+(defn ui-circular-button
+  "Render a raised circle button. Props is a normal clj(s) map with React/HTML attributes plus:
+
+  :color - :neutral (default), :primary, :accent
+  :size  - :normal (default), :small
+  :active - true or false (default) -  Causes the button to look highlighted.
+
+  Any other React properties are allowed, including additional CSS classes.
+  "
+  [{:keys [className size color disabled active] :or {className ""} :as attrs} & children]
+  (let [legal-colors   #{:primary :accent}
+        legal-sizes    #{:small}
+        button-label   (fn [text]
+                         (dom/span #js {:className "c-button__content"} text))
+        fixed-children (map (fn [c]
+                              (if (string? c)
+                                (button-label c)
+                                c)) children)
+        classes        (cond-> (str className " c-button c-button--circular")
+                         disabled (str " is-disabled")
+                         active (str " is-active")
+                         (contains? legal-colors color) (str " c-button--" (name color))
+                         (contains? legal-sizes size) (str " c-button--" (name size)))
+        attrs          (cond-> attrs
+                         disabled (assoc :aria-disabled "true")
+                         :always (dissoc :disabled :active :color :size)
+                         :always (assoc :className classes))]
+    (apply dom/button (clj->js attrs) fixed-children)))
 
 (defn ui-flat-button
   "Render a button that has no colored background (it is just the children), but renders a hover shape
@@ -37,7 +65,7 @@
                          (contains? legal-sizes size) (str " c-button--" (name size)))
         attrs          (cond-> attrs
                          disabled (assoc :aria-disabled "true")
-                         :always (dissoc :type :shape)
+                         :always (dissoc :disabled :active :color :shape :size)
                          :always (assoc :className classes))]
     (apply dom/button (clj->js attrs) fixed-children)))
 
@@ -108,7 +136,7 @@
         attrs        (cond-> attrs
                        (contains? state :required) (assoc :required "true")
                        :always (assoc :type "text")
-                       :always (dissoc :size)
+                       :always (dissoc :size :state)
                        :always (assoc :className classes)
                        :always (assoc :placeholder (name placeholder)))]
     (dom/input (clj->js attrs))))
@@ -132,25 +160,27 @@
 
   color (optional): :primary, :accent
   size (optional): huge"
-  [{:keys [className color size] :as props :or {className ""}} child]
+  [{:keys [className color size style] :as props :or {className ""}} child]
   (let [legal-colors #{:primary :accent}
-        legal-sizes  #{:huge}
+        legal-sizes  #{:medium :large :xlarge :huge}
+        legal-styles #{:bordered}
         user-classes (get props :className "")
         classes      (cond-> user-classes
                        :always (str " c-avatar")
                        (contains? legal-colors color) (str " c-avatar--" (name color))
-                       (contains? legal-sizes size) (str " c-avatar--" (name size)))
+                       (contains? legal-sizes size) (str " c-avatar--" (name size))
+                       (contains? legal-styles style) (str " c-avatar--" (name style)))
         props        (-> props
                        (assoc :className classes)
-                       (dissoc :color :size))]
+                       (dissoc :color :size :style))]
     (dom/span (clj->js props) child)))
 
 (defn ui-loader
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  color (optional): :neutral"
+  color (optional): :primary :accent"
   [{:keys [className color] :as props :or {className ""}}]
-  (let [legal-colors #{:neutral}
+  (let [legal-colors #{:primary :accent}
         user-classes (get props :className "")
         classes      (cond-> user-classes
                        :always (str " c-loader")
@@ -178,7 +208,7 @@
                         (contains? legal-sizes size) (str " c-icon--" (name size)))
          props        (-> props
                         (assoc :className classes)
-                        (dissoc :size :color))]
+                        (dissoc :size :color :glyph))]
      (dom/span (clj->js props) (if glyph
                                  (icon glyph)
                                  child)))))
@@ -281,61 +311,100 @@
    (defn ui-iframe [props child]
      ((om/factory IFrame) (assoc props :child child))))
 
-(def density-types
-  {:inset    "c-card--inset"
-   :collapse "c-card--collapse"})
+(def color-types
+  {:primary "c-card--primary"
+   :accent  "c-card--accent"})
 
 (def card-types
-  {:rounded     "c-card--round"
+  {:bordered    "c-card--bordered"
    :transparent "c-card--transparent"
-   :ruled       "c-card--ruled"
-   :zone        "c-card--zone"
-   :ruled-zone  "c-card--ruled c-card--zone"})
+   :square      "c-card--square"})
 
-(defn build-title
-  "Helper function for building up the title bar of the card."
-  [title]
-  (dom/div #js {:className "c-card__title"}
-    (dom/h1 #js {:className "c-card__heading"} title)))
+(def size-types
+  {:expand "c-card--expand"
+   :wide   "c-card--wide"})
 
 (defn ui-card
   "Card component
-   usage
-   (c/ui-card {:active true/false
-                :title \"Some Title\"
-                :type :rounded | :transparent | :ruled | :zone | :ruled-zone}
-                :density :collapse | inset
+
+   Usage
+   (c/ui-card {:title          \"Some Title\"
+               :color          :primary | :accent
+               :type           :bordered | :transparent | :square
+               :size           :expand | :wide
+               :image          \"path/to/image/file.jpeg\"
+               :image-position :cover | :top-left | :top-right | :bottom-left | :bottom-right
+               :actions        (ui-button \"Some Action\")
+               :media          URL
+               :media-type     :image | :video (TODO Youtube?)
+
+               ;;TODO
+               :menu-icon :more_vert
+               :menu-items [:ia \"This\" :ib \"that\"]}
     ...)
     all paramters optional
     "
-  [{:keys [active type title density className] :as attrs} & children]
-  {:pre [(contains? #{nil true false} active)
-         (or (nil? type) (keyword? type))
+  [{:keys [type
+           title
+           color
+           size
+           image
+           image-position
+           actions
+           media-type
+           media
+           ;; menu-icon
+           ;; menu-items
+           className] :as attrs} & children]
+  {:pre [(or (nil? type) (keyword? type))
          (or (nil? title) (string? title))]}
   (let [className  (or className "")
         classes    (cond->
                      (str "c-card " className)
-                     active (str " is-active")
                      type (str " " (card-types type))
-                     density (str " " (density-types density)))
+                     size (str " " (size-types size))
+                     color (str " " (color-types color)))
         attributes (-> attrs
                      (merge {:className classes})
-                     (dissoc :active :title :type)
+                     (dissoc :title :type :color :size :actions :image :image-position :media-type :media)
                      clj->js)]
-    (apply dom/div attributes (when title (build-title title)) children)))
+    (dom/div attributes
+      (when media
+        (dom/div #js {:className (str "c-card__media")}
+          (when (= media-type :image) (dom/img #js {:className "c-card__media-content" :src media}))))
+      (when title
+        (dom/div #js {:className (str "c-card__title"
+                                   (when image " c-card__title--image")
+                                   (when image-position (str " c-card__title--image-" (name image-position))))
+                      :style     #js {:backgroundImage (when (= color (or :primary :accent)) (str "url(" image ")"))}}
+          (dom/h1 #js {:className "c-card__title-text"} title)))
+      (when children
+        (apply dom/div #js {:className "c-card__supporting-text"} children))
+      (when actions
+        (dom/div #js {:className "c-card__actions"} actions))
+      ;; TODO
+      #_(when menu-items
+        (dom/div #js {:className "c-card__menu"}
+          (menu/menu :a
+            (icon (if menu-icon menu-icon :more_vert))
+            menu-items))))))
 
 (defn ui-icon-bar
-  "Render an icon bar giving using a vector of icons (each a map of attributes).
-   Can optionally be render vertically ond/or shifting.
+  "Render an icon bar using a vector of icons (each a map of attributes).
+   Can optionally render vertically and/or shifting.
    Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  orientation (optional): :vertical or :horizontal (default)
-  shifting (optional): :true"
+   Usage
+   (c/ui-icon-bar {:orientation  :vertical or :horizontal (default)
+                   :shifting     :true
+   ...)
+   all parameters are optional
+   "
   [{:keys [className orientation shifting] :as props :or {className ""}} & children]
   (let [user-classes    (get props :className "")
-        top-level-class (cond-> (str user-classes " o-iconbar")
-                          (= orientation :vertical) (str " o-iconbar--rail")
-                          (= shifting :true) (str " o-iconbar--shifting"))]
+        top-level-class (cond-> (str user-classes " c-iconbar")
+                          (= orientation :vertical) (str " c-iconbar--rail")
+                          (= shifting :true) (str " c-iconbar--shifting"))]
     (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
 

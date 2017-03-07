@@ -68,20 +68,22 @@
       (dom/div #js {:className left-class}
         (dom/select #js {:id        :left-selector
                          :className "o-column-switcher"
+                         :value     left-value
                          :onChange  (fn [evt]
                                       (om/update-state! this assoc
                                         :left-value (.-value (.-target evt))
                                         :right-value (- 12 (.-value (.-target evt)))))}
-          (map (fn [n idx] (dom/option #js {:key idx :value n :selected (= left-value n)} (str "u-column--" n)))
+          (map (fn [n idx] (dom/option #js {:key (str idx "-" n) :value n } (str "u-column--" n)))
             (range 1 13))))
       (dom/div #js {:className right-class}
         (dom/select #js {:id        :right-selector
                          :className "o-column-switcher"
+                         :value     right-value
                          :onChange  (fn [evt]
                                       (om/update-state! this assoc
                                         :left-value (- 12 (.-value (.-target evt)))
                                         :right-value (.-value (.-target evt))))}
-          (map (fn [n idx] (dom/option #js {:key idx :value n :selected (= right-value n)} (str "u-column--" n)))
+          (map (fn [n idx] (dom/option #js {:key (str idx "-" n) :value n } (str "u-column--" n)))
             (range 1 13)))))))
 
 (defexample grid-example-autopilot
