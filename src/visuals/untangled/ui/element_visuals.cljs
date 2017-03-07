@@ -229,3 +229,10 @@
          (e/ui-notification-title {:key (str "nvr-wide-title-" kind)} (str (str/capitalize (name kind))))
          (e/ui-notification-body {} "Your message here..."))
         (dom/p nil " ")))))
+
+(defcard checkbox
+   (dom/div nil
+    (e/ui-checkbox {:id "checkbox"} )
+    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate}} )
+    (e/ui-checkbox {:id "checkbox" :style #{:c-checkbox--informative}} )
+    (e/ui-checkbox {:id "checkbox" :style #{:is-indeterminate :c-checkbox--informative}} )))
