@@ -168,8 +168,8 @@ section: Components
   }
 
 .c-card--square {
-  height: var(--size-card--square);
-  width: var(--size-card--square);
+  height: var(--size-card--square) !important;
+  width: var(--size-card--square) !important;
 }
 
 .c-card--transparent { @apply --card-reset; }
