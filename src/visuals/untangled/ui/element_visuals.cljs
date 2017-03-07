@@ -164,11 +164,11 @@
 
 (defcard loader-visual-regressions
   (l/row {}
-    (l/col {:width 4}
+    (l/col {:width 4 :halign :center}
       (e/ui-loader {}))
-    (l/col {:width 4}
+    (l/col {:width 4 :halign :center}
       (e/ui-loader {:color :primary}))
-    (l/col {:width 4}
+    (l/col {:width 4 :halign :center}
       (e/ui-loader {:color :accent}))))
 
 
