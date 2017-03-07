@@ -101,7 +101,6 @@
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
   color (optional): :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative"
   [{:keys [className color] :as props :or {className ""}} & children]
-  ; TODO: Stephen fix colors
   (let [legal-colors #{:primary :accent}
         classes      (cond-> className
                        :always (str " c-label")
