@@ -154,11 +154,13 @@
       (str "This is a message with an icon.") (e/ui-icon {:size :small :glyph :arrow_forward}))))
 
 (defcard avatar-visual-regressions
-  (for [color   [:none :primary :accent]
-        style   [:none :bordered]
-        size    [:regular :medium :large :xlarge :huge]
-        content ["AV" (icon :supervisor_account)]]
-    (e/ui-avatar {:color color :style style :size size} content)))
+  (dom/div nil
+    (for [color [:none :primary :accent]
+         style [:none :bordered]
+         size  [:regular :medium :large :xlarge :huge]]
+     (dom/span #js {:key (str "id" color style size)}
+       (e/ui-avatar {:color color :style style :size size} "AV")
+       (e/ui-avatar {:color color :style style :size size} (icon :supervisor_account))))))
 
 (defcard loader-visual-regressions
   (l/row {}
