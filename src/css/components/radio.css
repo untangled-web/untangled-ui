@@ -4,10 +4,10 @@ section: Components
 ---*/
 
 :root {
-  --backgroundColor-radio: var(--white);
-  --backgroundColor-radio--checked: var(--white);
+  --backgroundColor-radio: var(--color-primary-contrast);
+  --backgroundColor-radio--checked: var(--color-primary-contrast);
   --borderColor-radio: var(--grey-600);
-  --borderColor-radio--checked: var(--green-700);
+  --borderColor-radio--checked: var(--color-primary);
   --counter-size: 10px;
   --counter-offset: 5px;
 }
@@ -61,9 +61,9 @@ section: Components
 }
 
 
-.c-radio:focus + label,
-.c-radio + label:active,
-.c-radio:checked + label:active {
+.c-radio:focus + label::before,
+.c-radio + label:active::before,
+.c-radio:checked + label:active::before {
   box-shadow: var(--toggle-focus-shadow);
 }
 
