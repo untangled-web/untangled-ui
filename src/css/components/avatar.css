@@ -106,7 +106,7 @@
 
 .c-avatar--bordered {
   background-color: var(--color-primary-contrast);
-  border: var(--borderSize-avatar) solid var(--color-avatar--secondary);
+  border: var(--borderSize-avatar) solid var(--color-avatar);
   line-height: calc(var(--size-avatar) - var(--borderSize-avatar));
 
   &.c-avatar--primary { border-color: var(--color-avatar-alt--primary); }
