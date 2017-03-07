@@ -134,7 +134,8 @@
   "
   (dom/div #js {:style #js {:height 50}}
     (e/ui-loader {})
-    (e/ui-loader {:color :neutral})))
+    (e/ui-loader {:color :primary})
+    (e/ui-loader {:color :accent})))
 
 
 (defsample icon-colors

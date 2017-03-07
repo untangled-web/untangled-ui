@@ -939,11 +939,18 @@
 
 (defexample loader
   "# Loader"
-  (dom/div nil
-    (dom/div #js {:className "u-row u-center u-trailer"}
+  (l/row {}
+    (l/col {:width 3 :halign :center}
       (dom/div #js {:className "c-loader"}))
-    (dom/div #js {:className "u-row u-center"}
-      (dom/div #js {:className "c-loader c-loader--neutral"}))))
+    (l/col {:width 3 :halign :center}
+      (dom/div #js {:className "c-loader c-loader--primary"}))
+    (l/col {:width 3 :halign :center}
+      (dom/div #js {:className "c-loader c-loader--accent"}))
+    (l/col {:width 3 :halign :center}
+      (dom/button #js {:className "c-button c-button--raised c-button--primary"}
+        (dom/span #js {:className "c-loader c-loader--inverted"}))
+      (dom/button #js {:className "c-button c-button--raised"}
+        (dom/span #js {:className "c-loader"})))))
 
 
 ;; -------------------------

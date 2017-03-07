@@ -9,6 +9,7 @@ section: Components
 
 .c-loader {
   border-radius: 50%;
+  display: inline-block;
   height: var(--size-loader);
   clear: both;
   position: relative;
