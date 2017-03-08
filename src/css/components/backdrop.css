@@ -1,12 +1,3 @@
-/*---
-title: Backdrop
-section: Components
----*/
-
-/* DEPRECATED
-   .o-backdrop */
-
-.o-backdrop,
 .c-backdrop {
   @apply --fade-out;
   @apply --position-full;

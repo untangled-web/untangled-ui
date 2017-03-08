@@ -1,13 +1,3 @@
-/*---
-title: Dropdowns
-section: Components
----*/
-
-/* DEPRECATED
- * .c-menu__toggle, .c-dropdown__text-toggle, .c-dropdown__content
- */
-
-
 :root {
   --height-menu-select--small: 26px;
   --height-menu-select--large: 42px;

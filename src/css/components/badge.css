@@ -1,12 +1,3 @@
-/* ---
-title: Badges
-section: Components
----*/
-
-/* DEPRECATED
- * .c-badge--round
- */
-
 :root {
   --backgroundColor-badge: var(--grey-400);
   --backgroundColor-badge--default: transparent;
@@ -24,28 +15,25 @@ section: Components
   --padding-badge--icon: 4px;
   --size-badge--small: 14px;
   --size-badge--icon: 30px;
-  --badge: {
-    border-radius: var(--borderRadius-badge);
-    color: var(--color-badge);
-    display: inline-block;
-    font-size: var(--fontSize--tiny);
-    line-height: 22px;
-    max-width: 100%;
-    outline: 0;
-    padding: var(--padding-badge);
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    user-select: none;
-    vertical-align: middle;
-    white-space: nowrap;
-  };
 }
 
 .c-badge {
-  @apply --badge;
   background-color: var(--backgroundColor-badge);
+  border-radius: var(--borderRadius-badge);
+  color: var(--color-badge);
+  display: inline-block;
+  font-size: var(--fontSize--tiny);
+  line-height: 22px;
+  max-width: 100%;
+  outline: 0;
+  padding: var(--padding-badge);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
 
   &:empty { display: none; }
 
@@ -65,7 +53,6 @@ section: Components
   min-width: var(--size-badge--small);
 }
 
-.c-badge--round,
 .c-badge--icon {
   height: var(--size-badge--icon);
   padding: var(--padding-badge--icon);
@@ -75,33 +62,4 @@ section: Components
     height: calc(var(--size-badge--icon) - 10px);
     width: calc(var(--size-badge--icon) - 10px);
   }
-}
-
-.c-badge--default {
-  background-color: var(--backgroundColor-badge--default);
-  color: var(--color-badge--default);
-}
-
-.c-badge--positive {
-  background-color: var(--backgroundColor-badge--positive);
-}
-
-.c-badge--informative {
-  background-color: var(--backgroundColor-badge--informative);
-}
-
-.c-badge--live {
-  background-color: var(--backgroundColor-badge--live);
-}
-
-.c-badge--alterable {
-  background-color: var(--backgroundColor-badge--alterable);
-}
-
-.c-badge--negative {
-  background-color: var(--backgroundColor-badge--negative);
-}
-
-.c-badge--purple {
-  background-color: var(--backgroundColor-badge--informative-alt);
 }
