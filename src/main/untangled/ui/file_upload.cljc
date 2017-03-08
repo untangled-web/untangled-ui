@@ -19,32 +19,27 @@
     [ring.util.response :as resp])
     #?(:clj
     [ring.util.request :as ru])
-    [om.next.protocols :as omp])
+    [om.next.protocols :as omp]
+    [clojure.set :as set])
   (:refer-clojure :exclude [send])
-  #?(:clj
-     (:import [java.io File]))
   #?(:cljs (:import [goog.net XhrIo EventType])))
 
 ;; Server-side
-(defprotocol FileUpload
-  (upload-prefix [this] "Returns the exact URI at which to install the file upload POST handler.")
-  (is-allowed? [this request] "Return true if the given file upload request is acceptable (e.g. authorized)")
-  (store [this ^File file] "Save the given file. Return an ID that this file will be known by with respect to this file upload component.")
-  (retrieve ^File [this id] "Return a file with the content that was previously stored. Id is what save originally returned.")
-  (delete [this id] "Ensure that the space consumed by file with id is no reclaimed."))
-
-(defrecord FileUploadComponent [tmp]
-  component/Lifecycle
-  (start [this] this)
-  (stop [this] this))
+#?(:clj
+   (defprotocol IFileUpload
+     (upload-prefix [this] "Returns the exact URI at which to install the file upload POST handler.")
+     (is-allowed? [this request] "Return true if the given file upload request is acceptable (e.g. authorized)")
+     (store [this file] "Save the given file. Return an ID that this file will be known by with respect to this file upload component.")
+     (retrieve [this id] "Return a file with the content that was previously stored. Id is what save originally returned.")
+     (delete [this id] "Ensure that the space consumed by file with id is no reclaimed.")))
 
 #?(:clj
    (defn handle-file-upload
      "Request handler for file uploads. See `wrap-file-upload` for a middleware version of this."
-     [req ^FileUpload upload]
+     [req upload]
      (when-not (is-allowed? upload req)
        (throw (ex-info "Upload denied" {})))
-     (let [{:keys [filename content-type size ^File tempfile]} (get-in req [:params "file"])
+     (let [{:keys [filename content-type size tempfile]} (get-in req [:params "file"])
            id      (get-in req [:params "id"])
            real-id (store upload tempfile)]
        (-> {id real-id}
@@ -65,35 +60,23 @@
      You'll need to create (probably as a component) an upload component that
      implements the FileUpload protocol (shown as `upload-component` in the example).
      "
-     [h ^FileUpload upload]
-     (let [prefix (upload-prefix upload)
+     [h upload]
+     (let [prefix          (upload-prefix upload)
            is-file-upload? (fn [req] (= (ru/path-info req) prefix))]
        (fn [r]
          (if (is-file-upload? r)
            (handle-file-upload r upload)
            (h r))))))
 
-(declare FileUpload File cancel-file-upload add-file)
+(declare File cancel-file-upload add-file)
 
 (defn file-upload-ident
   "Given a file upload control's ID, returns the ident for that upload control."
-  [id] [:file-upload/by-id id])
+  [id] [:untangled.ui.file-upload/by-id id])
+
 (defn file-ident [id]
   "Given a upload file's ID, returns the ident for that file"
-  [:file-upload-file/by-id id])
-
-(defn file-upload-input
-  "Declare (in a form-spec) a field that represents file upload(s).
-
-  `accept`: (optional) String of comma-separated mime types that the files can have.
-  `multiple?`: (optional) True/false. Can the user upload multiple files? (default false)
-  "
-  [name & {:keys [accept multiple? className]}]
-  (assoc (f/subform-element name FileUpload :one)
-    :input/accept accept
-    :input/multiple? (boolean multiple?)
-    :input/css-class className
-    :input/type ::f/file-upload))
+  [:untangled.ui.file-upload.file/by-id id])
 
 (defmethod f/form-field-valid? `upload-complete?
   [_ value params]
@@ -112,7 +95,7 @@
                      (assoc (f/radio-input :file/status #{:done :transfer-in-progress :failed})
                        :input/validator `upload-complete?)])
   static om/IQuery
-  (query [this] [f/form-key :file/id :file/name :file/size :file/progress :file/status])
+  (query [this] [f/form-key :file/id :file/name :file/size :file/progress :file/status :ui/js-file])
   static om/Ident
   (ident [this props] (file-ident (:file/id props)))
   Object
@@ -123,7 +106,7 @@
           {:keys [file/id file/name file/size file/progress file/status] :as props} (om/props this)
           label      (cropped-name name 20)]
       (if renderFile
-        (renderFile props)
+        (renderFile this)
         (dom/li #js {:key (str "file-" id)} (str label " (" size " bytes) ")
           (case status
             :failed (dom/span nil "FAILED!")
@@ -131,6 +114,11 @@
             (dom/span nil "Sending..." progress "%"))
           (e/ui-icon {:onClick #(onCancel id)
                       :glyph   :cancel}))))))
+(defn get-js-file
+  "Returns a js/File object for the given file input properties. Useful if you want
+  to do some ui-related operations, such as showing a preview of the file."
+  [file-props]
+  (-> file-props :ui/js-file meta :js-file))
 
 (def ui-file
   "Render a file that is to be (or is in the process of being) uploaded."
@@ -138,18 +126,24 @@
 
 #?(:clj (def clj->js identity))
 
-(defui FileUpload
+(defn current-files
+  "Returns the current set of files that a file upload component is managing."
+  [file-upload]
+  (:file-upload/files file-upload))
+
+(defui FileUploadInput
   static f/IForm
   (form-spec [this] [(f/id-field :file-upload/id)
                      (f/subform-element :file-upload/files File :many)])
   static uc/InitialAppState
-  (initial-state [cls {:keys [id]}] (f/build-form FileUpload {:file-upload/id id :file-upload/files []}))
+  (initial-state [cls {:keys [id]}] (f/build-form FileUploadInput {:file-upload/id id :file-upload/files []}))
   static om/IQuery
   (query [this] [f/form-key f/form-root-key :file-upload/id
                  {:file-upload/files (om/get-query File)}])
   static om/Ident
   (ident [this props] (file-upload-ident (:file-upload/id props)))
   Object
+
   (render [this]
     (let [{:keys [file-upload/id file-upload/files] :as props} (om/props this)
           {:keys [accept multiple? renderControl renderFile]} (om/get-computed this)
@@ -207,10 +201,9 @@
   :renderControl - A custom `(fn [onChange accept multiple?] DOM)` that will render the DOM for the control that appears to allow
   users to add files. Must output at least an `input` of type `file` with onChange set to the function it
   receives. If set, `accept` is the acceptable MIME types, and `multiple?` is if the control should allow more
-  than one file to be selected. The FileUpload system itself will hide this control if it is not multiple and
-  a file has been selected.
-  "
-  (om/factory FileUpload {:keyfn :file-upload/id}))
+  than one file to be selected. The upload input UI component will hide the control if it is not multiple and
+  a file has been selected."
+  (om/factory FileUploadInput {:keyfn :file-upload/id}))
 
 (defmethod f/form-field* ::f/file-upload [component form field & params]
   (let [{:keys [id name] :as upload-data} (f/current-value form field)
@@ -326,5 +319,21 @@
                                                                  :file/name     (.-name js-file)
                                                                  :file/size     (.-size js-file)
                                                                  :file/progress 0
+                                                                 ; IMPORTANT: not serializable as a prop.
+                                                                 ; but meta-data does not need to be.
+                                                                 :ui/js-file    (with-meta {} {:js-file js-file})
                                                                  :file/status   :transfer-in-progress}))))))
      (file-upload [env] true)))
+
+(defn file-upload-input
+  "Declare (in a form-spec) a field that represents file upload(s).
+
+  `accept`: (optional) String of comma-separated mime types that the files can have.
+  `multiple?`: (optional) True/false. Can the user upload multiple files? (default false)
+  "
+  [name & {:keys [accept multiple? className]}]
+  (assoc (f/subform-element name FileUploadInput :one)
+    :input/accept accept
+    :input/multiple? (boolean multiple?)
+    :input/css-class className
+    :input/type ::f/file-upload))

@@ -16,7 +16,7 @@
     [untangled.client.impl.network :as net]
     [clojure.string :as str]
     [untangled.icons :as i]
-    [untangled.ui.file-upload :refer [FileUpload file-upload-input file-upload-networking]]
+    [untangled.ui.file-upload :refer [FileUploadInput file-upload-input file-upload-networking]]
     [untangled.client.logging :as log])
   (:refer-clojure :exclude [send])
   (:import [goog.net XhrIo EventType]))
@@ -30,7 +30,7 @@
 
 (defui ^:once KitchenSink
   static uc/InitialAppState
-  (initial-state [this params] (f/build-form this {:db/id 1 :short-story (uc/get-initial-state FileUpload {:id :story})}))
+  (initial-state [this params] (f/build-form this {:db/id 1 :short-story (uc/get-initial-state FileUploadInput {:id :story})}))
   static f/IForm
   (form-spec [this] [(f/id-field :db/id)
                      (f/text-input :text)
@@ -42,7 +42,7 @@
                      (file-upload-input :short-story)])
   static om/IQuery
   (query [this] [f/form-root-key f/form-key :db/id :text :number :mood :done? :rating :essay
-                 {:short-story (om/get-query FileUpload)}])
+                 {:short-story (om/get-query FileUploadInput)}])
   static om/Ident
   (ident [this props] [:sink/by-id (:db/id props)])
   Object

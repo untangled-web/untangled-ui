@@ -16,21 +16,27 @@
     [untangled.client.impl.network :as net]
     [clojure.string :as str]
     [untangled.icons :as i]
-    [untangled.ui.file-upload :refer [FileUpload file-upload-input file-upload-networking]]
+    [untangled.ui.file-upload :refer [IFileUpload FileUploadInput file-upload-input file-upload-networking]]
     [untangled.client.logging :as log])
   (:refer-clojure :exclude [send])
   (:import [goog.net XhrIo EventType]))
 
+(defn field-with-label
+  "A non-library helper function, written by you to help lay out your form."
+  [comp form name label & params]
+  (dom/div #js {:className (str "form-group" (if (f/invalid? form name) " has-error" ""))}
+    (dom/label #js {:className "col-sm-2" :htmlFor name} label)
+    (dom/div #js {:className "col-sm-10"} (apply f/form-field comp form name params))))
 
 (defui ^:once FileUploadDemo
   static uc/InitialAppState
   (initial-state [this params]
-    (f/build-form this {:db/id 1 :short-story (uc/get-initial-state FileUpload {:id :story})}))
+    (f/build-form this {:db/id 1 :short-story (uc/get-initial-state FileUploadInput {:id :story})}))
   static f/IForm
   (form-spec [this] [(f/id-field :db/id)
                      (file-upload-input :short-story)])
   static om/IQuery
-  (query [this] [f/form-root-key f/form-key :db/id :text {:short-story (om/get-query FileUpload)}])
+  (query [this] [f/form-root-key f/form-key :db/id :text {:short-story (om/get-query FileUploadInput)}])
   static om/Ident
   (ident [this props] [:example/by-id (:db/id props)])
   Object
@@ -66,6 +72,16 @@
   2. Run the server
   3. Add file-upload networking as an extra remote in Untangled Client (requires v0.8.1+, and Om alpha48+)
   4. Load the page through your server (not figwheel).
+
+  ## Understanding File Upload
+
+  The lifecycle of the file upload control is meant to be tied to form interactions and submission. You can use
+  the file upload without forms, but in that case you'll need to write some mutation code that you trigger to
+  tell your server what the file upload is for.
+
+  The abstract composition of a file upload into your application takes the following steps:
+
+
 
   ### Customizing the Ring Stack
 
@@ -107,6 +123,74 @@
     :networking {:remote      (net/make-untangled-network \"/api\" :global-error-callback identity)
                  :file-upload (untangled.ui.file-upload/file-upload-networking)})
   ```
+
+  ## Customizing the Rendering
+
+  You can customize how the overall upload UI looks in a few ways.
+
+  ### Changing the UI of the Upload Button
+
+  The default rendering shows an upload button. Once files are selected this button possibly goes away (e.g.
+  if `multiple?` is false). The button itself can be customized using the `:renderControl` computed property
+  (which can be passed to the ui-file-upload as a computed prop, or through the form field rendering as an
+  add-on parameter).
+
+  The function is responsible for hooking up to a HTML file input onChange event, and invoking the
+  `upload/add-file` mutation on each file that is to be added.
+
+  ### Changing the UI of the Individual Files
+
+  The file upload control *always* renders the current list of files in a `ul` DOM parent. Each
+  file in this list can be customized using the `:renderFile` parameter, which should be a function
+  that receives the file component and renders the correct DOM. This function will be called during upload
+  refreshes, and the `:file/progress` in props will indicate progres and `:file/status` will indicate
+  if the transfer is still active. The computed props will include an `onCancel` function that you can
+  call to cancel the inclusion of the file (i.e. you can hook a call to `onCancel` up to a cancel button
+  in your rendering).
+
+  ```
+  (defn render-a-file [file-comp]
+    (let [onCancel   (om/get-computed file-comp :onCancel)
+          {:keys [file/id file/name file/size file/progress file/status] :as props} (om/props file-comp)]
+      (dom/li #js {:key (str \"file-\" id)} (str label \" (\" size \" bytes) \")
+        (case status
+          :failed (dom/span nil \"FAILED!\")
+          :done (dom/span nil \"Ready.\")
+          (dom/span nil \"Sending...\" progress \"%\"))
+        (e/ui-icon {:onClick #(onCancel id)
+                    :glyph   :cancel}))))))
+  ```
+
+  ### Rendering Details Outside of the Control
+
+  `(current-files upload-control)` returns the current file list. You could use this to add a file count
+  to a part of the UI that is outside of the control, as long as you've got access to the control's properties
+  (e.g. in the parent).
+
+  ### Showing Image Previews
+
+  The file component props can be used to access a low-level `js/File` object of the file you're uploading.
+  This can be used to do things like show image previews of images you're uploading.
+
+  Calling `(get-js-file file-props)` will return the `js/File` object of the file.
+
+  From there, you can use regular React DOM tricks (e.g. `:ref`) to do the rest in a custom
+  file row rendering:
+
+  TODO: TEST THIS AND REFINE IT!!!
+
+  (defn render-a-file [file-comp]
+    (let [onCancel   (om/get-computed file-comp :onCancel)
+          {:keys [file/id file/name file/size file/progress file/status] :as props} (om/props file-comp)
+          js-file (get-js-file props)]
+      (dom/li #js {:key (str \"file-\" id)} (str label \" (\" size \" bytes) \")
+        (case status
+          :failed (dom/span nil \"FAILED!\")
+          :done (dom/span nil \"Ready.\")
+          (dom/span nil \"Sending...\" progress \"%\"))
+        (dom/img #js {:width \"100px\" :ref (fn [c] (.setFile js-file))})
+        (e/ui-icon {:onClick #(onCancel id)
+                    :glyph   :cancel}))))))
 
   "
   (dc/mkdn-pprint-source FileUploadDemo))

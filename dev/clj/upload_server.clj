@@ -125,11 +125,11 @@
   component/Lifecycle
   (start [this] this)
   (stop [this] this)
-  upload/FileUpload
+  upload/IFileUpload
   (upload-prefix [this] "/file_upload")
   (is-allowed? [this request] true)
-  (store [this ^File file] (timbre/info "Pretending to save file") 42)
-  (retrieve ^File [this id] nil)
+  (store [this file] (timbre/info "Pretending to save file") 42)
+  (retrieve [this id] nil)
   (delete [this id] nil))
 
 (defn make-system [config-path]
