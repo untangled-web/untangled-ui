@@ -3,7 +3,8 @@
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.ui.layout :as l]
             [untangled.icons :as icons]
-            [om.dom :as dom]))
+            [om.dom :as dom]
+            [untangled.ui.elements :as e]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START OF EXAMPLES
@@ -1603,7 +1604,7 @@
   (dom/div #js {:className "c-modal c-modal--fullscreen"}
     (dom/div #js {:className "c-modal__card"}
 
-      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised c-toolbar--inline"}
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
         (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
          (dom/div #js {:className "c-toolbar__view"}
            (dom/button #js {:className "c-button c-button--icon"} (icons/icon :close))
@@ -1677,7 +1678,7 @@
     (dom/div #js {:className "c-toolbar" :style #js {:position "static"}}
       (dom/div #js {:className "c-toolbar__row"}
         (dom/button #js {:className "c-button c-button--icon"}
-            (icons/icon :menu))
+          (e/ui-icon {:glyph :menu}))
 
         (dom/div #js {:className "c-toolbar__actions"}
 
