@@ -320,6 +320,7 @@
 
 (defn ui-label
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
   `:color` :none (default), :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative
   "
   [{:keys [className color] :as props :or {className ""}} & children]
