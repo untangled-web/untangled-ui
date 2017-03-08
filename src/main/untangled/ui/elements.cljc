@@ -477,8 +477,8 @@
 (def ui-notification
   "Render a notification. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  type: : :success, :warning, :error, :informative
-  size (optional): :wide
+  `:type` :none (default), :success, :warning, :error, :informative
+  `:size` :normal (default), :wide
 
   You should include two children of this node:
 
@@ -493,8 +493,8 @@
 (defn ui-progress
   "Render a progress element. Props is a normal clj(s) map with React/HTML attributes plus:
 
-  className (optional): additional class stylings to apply to the progress element
-  id: Name of the progress control
+  `:className` - additional class stylings to apply to the progress element
+  `:id` - Name of the progress control
   "
   [{:keys [id style] :or {id ""} :as attrs}]
   (let [user-classes (get attrs :className "")
