@@ -28,11 +28,6 @@
   border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
-.c-toolbar--inline {
-  position: static;
-}
-
-
 
 .c-toolbar__row {
   @apply --row;
@@ -91,14 +86,13 @@
   }
 
 .c-toolbar__row--dense {
-  height: 48px;
+  --height-toolbar: 48px;
+  height: var(--height-toolbar);
 
   @media print { display: none; }
 }
 
-.c-toolbar__row--expanded {
-  height: auto;
-}
+.c-toolbar__row--expanded { height: auto; }
 
 
 .c-toolbar__label {
