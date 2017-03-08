@@ -240,7 +240,20 @@
     (e/ui-checkbox {:id "checkbox-1"})
     (e/ui-checkbox {:id "checkbox-2" :disabled true})
     (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
-    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
+    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})
+    (dom/div nil
+      (e/ui-checkbox {:id "checkbox-5"})
+      (dom/label #js {:className "is-optional"} "With a label!"))
+    (dom/div nil
+      (e/ui-checkbox {:id "checkbox-6" :disabled true})
+      (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
+    (dom/div nil
+      (e/ui-checkbox {:id "checkbox-7" :style :indeterminate})
+      (dom/label #js {:className "is-optional"} "With a label!"))
+    (dom/div nil
+      (e/ui-checkbox {:id "checkbox-8" :style :indeterminate :disabled true})
+      (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
+    ))
 
 (defsample modals
   "# Modals
@@ -264,3 +277,16 @@
     (e/ui-progress {})
     (dom/p nil " ")
     (e/ui-progress {:max "100" :value "70"})))
+
+(defsample radio
+  (dom/div nil
+    (e/ui-radio {:id "radio-1"})
+    (dom/div nil
+      (e/ui-radio {:id "radio-2"})
+      (dom/label #js {:className "is-optional" :htmlFor "radio-2"} "With a label!"))
+    (e/ui-radio {:id "radio-3" :disabled true})
+    (dom/div nil
+      (e/ui-radio {:id "radio-4" :disabled true})
+      (dom/label #js {:className "is-optional" :htmlFor "radio-4" :disabled true} "With a label!"))
+    ))
+
