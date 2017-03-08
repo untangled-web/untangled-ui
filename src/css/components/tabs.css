@@ -12,7 +12,13 @@ section: Components
   --padding-tab: 12px;
 }
 
-.c-tabs { @apply --row; }
+.c-tabs {
+  @apply --row;
+
+  .c-toolbar__row &:first-child {
+    @media (--md-up) { margin-left: -var(--padding-tab); }
+  }
+}
 
 
 .c-tab {

@@ -235,7 +235,7 @@
           (dom/div #js {:className "c-toolbar__row"}
             (dom/span #js {:className "u-font-size--semi-medium"} "UI Styleguide")
             (dom/div #js {:className "u-column"
-                          :style     #js {:marginTop "8px"}}
+                          :style     #js {:marginTop "7px"}}
               (tabs this :parts/selected-part part-names))
             (dom/div #js {:className "u-column--3 u-end u-hide@sm u-hide@md"}
               (ui-search searchbar))))

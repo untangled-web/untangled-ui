@@ -57,27 +57,27 @@ section: Settings
   --red-800: #c62622;
   --red-900: #b71c1c;
 
-  --green-50:  #c5e1a5;
-  --green-100: #badb93;
-  --green-200: #afd581;
-  --green-300: #a3cf70;
-  --green-400: #97c95e;
-  --green-500: #8bc34a;
-  --green-600: #74ac3e;
-  --green-700: #5e9433;
-  --green-800: #487e28;
-  --green-900: #33691e;
+  --green-50:  #1bc5ac;
+  --green-100: #19b9a1;
+  --green-200: #17ac96;
+  --green-300: #15a08b;
+  --green-400: #139481;
+  --green-500: #118776;
+  --green-600: #107c6b;
+  --green-700: #0e7062;
+  --green-800: #0c6558;
+  --green-900: #0a5a4e;
 
-  --purple-50:  #ce9ed8;
-  --purple-100: #c57fd0;
-  --purple-200: #bb6bc8;
-  --purple-300: #b158c0;
-  --purple-400: #a741b8;
-  --purple-500: #9c27b0;
-  --purple-600: #9024aa;
-  --purple-700: #8321a5;
-  --purple-800: #771e9f;
-  --purple-900: #6a1b9a;
+  --purple-50:  #eaecf8;
+  --purple-100: #d2d4f0;
+  --purple-200: #b9bce7;
+  --purple-300: #a2a4dc;
+  --purple-400: #8b8ed0;
+  --purple-500: #7477c3;
+  --purple-600: #5e63b4;
+  --purple-700: #474ea4;
+  --purple-800: #303a93;
+  --purple-900: #152681;
 
   --grey-50:  #f5f5f0;
   --grey-100: #eeeee7;
@@ -118,10 +118,10 @@ section: Settings
 
   --color-shadow: rgba(51, 51, 42, .6);
 
-  --color-primary: var(--blue-500);
-  --color-primary-dark: var(--blue-700);
-  --color-accent: var(--orange-500);
-  --color-accent-dark: var(--orange-700);
+  --color-primary: var(--green-500);
+  --color-primary-dark: var(--green-700);
+  --color-accent: var(--purple-500);
+  --color-accent-dark: var(--purple-700);
   --color-primary-contrast: var(--white);
   --color-accent-contrast: var(--white);
 

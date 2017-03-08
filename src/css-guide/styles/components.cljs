@@ -1670,11 +1670,12 @@
         lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
-    (dom/div #js {:className "c-toolbar" :style #js {:position "static"}}
-      (dom/div #js {:className "c-toolbar__row"}
+    (dom/div #js {:className "c-toolbar"}
+      (dom/div #js {:className "c-toolbar__button"}
         (dom/button #js {:className "c-button c-button--icon"}
           (e/ui-icon {:glyph :menu}))
-
+        )
+      (dom/div #js {:className "c-toolbar__row"}
         (dom/div #js {:className "c-toolbar__actions"}
 
           (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
@@ -1697,11 +1698,12 @@
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
     (dom/div nil
 
-      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
+        (dom/div #js {:className "c-toolbar__button"}
+          (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :menu)))
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
-            (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :menu))
             (dom/span #js {:className "c-toolbar__label"} "Primary toolbar"))
 
           (dom/div #js {:className "c-toolbar__actions"}
@@ -1715,11 +1717,12 @@
 
       (dom/p nil " ")
 
-      (dom/div #js {:className "c-toolbar c-toolbar--dark c-toolbar--raised" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar c-toolbar--dark c-toolbar--raised"}
+        (dom/div #js {:className "c-toolbar__button"}
+          (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :arrow_back)))
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
-            (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :arrow_back))
             (dom/span #js {:className "c-toolbar__label"} "Dark toolbar"))
 
           (dom/div #js {:className "c-toolbar__actions"}
@@ -1740,11 +1743,12 @@
         get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
-      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "static"}}
+      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"}
+        (dom/div #js {:className "c-toolbar__button"}
+          (dom/button #js {:className "c-button c-button--icon"}
+              (icons/icon :menu)))
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
-            (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :menu))
             (dom/span #js {:className "c-toolbar__label"} "Second row is dense"))
 
           (dom/div #js {:className "c-toolbar__actions"}

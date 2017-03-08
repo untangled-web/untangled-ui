@@ -122,9 +122,9 @@ section: Components
 .c-button--colored {
   color: var(--color-button-alt--primary);
 
-  &:hover { background-color: color(var(--blue-50) a(40%)); }
+  &:hover { background-color: color(var(--color-button-alt--primary) a(30%)); }
 
-  &:--active { background-color: color(var(--blue-50) a(60%)); }
+  &:--active { background-color: color(var(--color-button-alt--primary) a(40%)); }
 
   &:focus:not(:active),
    &.is-focused { background-color: var(--color-button-alt--focus); }
@@ -138,9 +138,9 @@ section: Components
 .c-button--accent {
   color: var(--color-button-alt--accent);
 
-  &:hover { background-color: color(var(--orange-50) a(40%)); }
+  &:hover { background-color: color(var(--color-button-alt--accent) a(30%)); }
 
-  &:--active { background-color: color(var(--orange-50) a(60%)); }
+  &:--active { background-color: color(var(--color-button-alt--accent) a(40%)); }
 
   &:focus:not(:active),
   &.is-focused { background-color: var(--color-button-accent--focus); }

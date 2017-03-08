@@ -12,6 +12,7 @@
   background-color: var(--color-toolbar);
   color: var(--color-toolbar-secondary);
   font-size: var(--fontSize--normalPlus);
+  position: relative;
 }
 
 .c-toolbar--raised { box-shadow: var(--shadow-2); }
