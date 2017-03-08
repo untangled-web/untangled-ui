@@ -109,10 +109,12 @@ section: Components
 
 
   .c-field__input {
+    background-color: transparent;
     border: none;
     flex: 1 1 0%;
     font-size: var(--field-font-size);
     margin-bottom: 0;
+    min-width: 50px;
     width: auto;
   }
 
@@ -167,3 +169,43 @@ section: Components
 
 
 .c-field--inlay { padding-left: 35px; }
+
+
+.c-toolbar {
+  .c-field {
+    background-color: color(var(--grey-500) a(15%));
+    border-radius: 2px;
+    border-bottom: none;
+    height: 36px;
+    transition: background-color .1s ease-in-out;
+
+    &:hover {
+      background-color: color(var(--grey-500) a(25%));
+     }
+
+    & > .c-icon {
+      color: var(--grey-600);
+      margin: 4px 20px;
+    }
+  }
+
+  .c-field__input::placeholder {
+    color: var(--grey-600);
+  }
+}
+
+.c-toolbar--dark,
+.c-toolbar--primary {
+  .c-field {
+    background-color: color(var(--white) a(15%));
+
+    &:hover {
+      background-color: color(var(--white) a(25%));
+     }
+  }
+
+.c-field__input::placeholder {
+  color: var(--white);
+}
+}
+

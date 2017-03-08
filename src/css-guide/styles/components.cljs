@@ -877,20 +877,15 @@
   "### Types"
   (dom/div #js {}
     (dom/span #js {:className "c-label"} "Default")
-    (dom/span #js {:className "c-label c-label--green"} "Positive")
-    (dom/span #js {:className "c-label c-label--blue"} "Informative")
-    (dom/span #js {:className "c-label c-label--magenta"} "Informative Alt")
-    (dom/span #js {:className "c-label c-label--grey"} "Neutral")
-    (dom/span #js {:className "c-label c-label--yellow"} "Live")
-    (dom/span #js {:className "c-label c-label--orange"} "Alterable")
-    (dom/span #js {:className "c-label c-label--red"} "Negative")))
+    (dom/span #js {:className "c-label c-label--primary"} "Primary")
+    (dom/span #js {:className "c-label c-label--accent"} "Accent")))
 
 (defexample label-icons
   "### With Icons"
   (dom/div #js {}
-    (dom/span #js {:className "c-label c-label--green"}
+    (dom/span #js {:className "c-label c-label--primary"}
       (icons/icon :add) " Add ")
-    (dom/span #js {:className "c-label c-label--red"}
+    (dom/span #js {:className "c-label c-label--accent"}
       (icons/icon :close) " Remove ")))
 
 

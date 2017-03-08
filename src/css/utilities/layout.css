@@ -12,11 +12,14 @@
 
   .u-layout__page {
     @apply --full-viewport;
-    display: flex;
-    flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
+  }
+
+  .u-layout__page--fixed {
+    display: flex;
+    flex-direction: column;
   }
 
   .u-layout__header {

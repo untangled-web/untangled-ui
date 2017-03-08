@@ -12,16 +12,7 @@ section: Components
   --padding-tab: 12px;
 }
 
-.c-tabs {
-  @apply --row;
-
-  .c-toolbar__row:not(:first-child) & {
-    @media (--md-up) {
-      margin-left: calc(var(--width-button--icon) + var(--frame-quarter) + var(--frame-quarter) - var(--padding-tab)); /* Icon button combined width minus left padding of menu button */
-    }
-
-  }
-}
+.c-tabs { @apply --row; }
 
 
 .c-tab {
@@ -39,9 +30,7 @@ section: Components
 
   &:hover { border-bottom-color: var(--borderColor-tab--hover); }
 
-   &:active {
-     background-color: var(--color-tab--active);
-    }
+  &:active { background-color: var(--color-tab--active); }
 
   &.is-active {
      background-color: transparent;
