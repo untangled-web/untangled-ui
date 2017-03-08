@@ -26,6 +26,32 @@ title: Visibility
 }
 
 
+.s-markuplint {
+  html:not([lang]),
+  html[lang=""] { outline: 5px solid lightgrey; }
+
+  :--control:not([id]),
+  label:not([for]) { outline: 5px solid grey; }
+
+  :--control:not([name]) { outline: 5px solid darkgrey; }
+
+  img:not([alt]) { outline: 5px solid orange; }
+
+  img[alt=""] { outline: 5px solid darkorange; }
+
+
+  button:empty,
+  a:empty { outline: 5px solid cyan; }
+
+  a:not([href]),
+  a[href="#"],
+  a[href=""],
+  a[href*="javascript:void(0)"] { outline: 5px solid rosybrown; }
+
+  *[style] { outline: 5px solid red; }
+}
+
+
 .u-pulse,
 .has-pulse {
   animation: pulse 2s infinite;
