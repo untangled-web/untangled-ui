@@ -1,12 +1,3 @@
-/*---
-section: Utilities
-title: Visibility
----*/
-
-/* DEPRECATED
-   .has-pulse */
-
-
 .s-healthcheck {
   [class] { outline: 5px solid lightgrey; }
 
@@ -52,8 +43,7 @@ title: Visibility
 }
 
 
-.u-pulse,
-.has-pulse {
+.u-pulse {
   animation: pulse 2s infinite;
   will-change: box-shadow;
 
