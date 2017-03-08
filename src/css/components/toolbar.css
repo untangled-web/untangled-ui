@@ -8,6 +8,7 @@
   align-items: baseline;
   background-color: var(--color-toolbar);
   color: var(--grey-900);
+  min-height: var(--height-toolbar);
   font-size: 20px;
 }
 
@@ -87,7 +88,7 @@
 
 .c-toolbar__row--dense {
   --height-toolbar: 48px;
-  height: var(--height-toolbar);
+  min-height: var(--height-toolbar);
 
   @media print { display: none; }
 }

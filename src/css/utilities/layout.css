@@ -27,7 +27,6 @@
     justify-content: flex-start;
     margin: 0;
     max-height: 1000px;
-    min-height: 64px;
     padding: 0;
     transition-duration: .2s;
     transition-timing-function: cubic-bezier(.4, 0, .2, 1);
