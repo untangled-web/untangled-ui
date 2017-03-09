@@ -35,7 +35,7 @@
 
 
   .c-list__row.is-active {
-    background-color: var(--grey-200);
+    color: var(--color-primary);
 
     .c-icon { fill: var(--grey-500); }
   }
