@@ -3,7 +3,7 @@
   --size-toolbar__button: 48px;
   --indent-toolbar__row: 80px;
   --marginX-toolbar__button: calc(var(--indent-toolbar__row) - var(--size-toolbar__button));
-  --color-toolbar: var(--white);
+  --color-toolbar: transparent;
   --color-toolbar-secondary: var(--grey-900);
 }
 
