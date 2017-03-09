@@ -506,18 +506,15 @@
     (dom/progress (clj->js attrs))))
 
 (defn ui-radio
-  "Render a radio (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+  "Render a HTML radio (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
   `:className` - additional class stylings to apply to the top level of the checkbox
-  `:id` - Name of the checkbox
   "
-  [{:keys [id style] :or {id ""} :as attrs}]
-  (let [user-classes (get attrs :className "")
-        classes      (cond-> (str user-classes " c-radio "))
-        attrs        (cond-> attrs
-                       :always (assoc :type "radio")
-                       :always (assoc :className classes)
-                       :always (assoc :id (name id)))]
+  [{:keys [className id] :as props}]
+  (let [classes (str className " c-radio ")
+        attrs   (assoc props :type "radio"
+                             :className classes
+                             :id id)]
     (dom/span nil
       (dom/input (clj->js attrs))
       (dom/label #js {:htmlFor id} \u00A0))))
