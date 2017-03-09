@@ -7,7 +7,7 @@ section: Components
   --height-tab: 48px;
   --fontSize-tab: 13px;
   --color-tab--active: rgba(255, 255, 255, .1);
-  --borderColor-tab--hover: var(--color-accent);
+  --color-tab--primary: var(--color-primary);
   --borderColor-tab--active: var(--color-accent);
   --padding-tab: 12px;
 }
@@ -15,7 +15,7 @@ section: Components
 .c-tabs {
   @apply --row;
 
-  .c-toolbar__row &:first-child {
+  .c-toolbar__row &:first-child:not(:last-child) {
     @media (--md-up) { margin-left: -var(--padding-tab); }
   }
 }
@@ -23,18 +23,22 @@ section: Components
 
 .c-tab {
   background: transparent;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   color: currentColor;
   font-size: var(--fontSize-tab);
+  font-weight: bold;
   height: var(--height-tab);
   max-width: 264px;
   min-width: 72px;
-  opacity: .75;
+  opacity: .60;
   padding: 0 var(--padding-tab);
   text-transform: uppercase;
-  transition: border var(--global-duration) ease, background-color var(--global-duration) ease;
+  transition:
+    background-color var(--global-duration) ease,
+    border var(--global-duration) ease,
+    opacity var(--global-duration) ease;
 
-  &:hover { border-bottom-color: var(--borderColor-tab--hover); }
+  &:hover { opacity: 1; }
 
   &:active { background-color: var(--color-tab--active); }
 
@@ -42,10 +46,17 @@ section: Components
      background-color: transparent;
      border-bottom-color: var(--borderColor-tab--active);
      box-shadow: none;
-     font-weight: bold;
      opacity: 1;
   }
-
-  :--fullscreen & { font-size: .9rem; }
 }
 
+.c-tab--primary {
+  &.is-active {
+    color: var(--color-tab--primary);
+    border-bottom-color: var(--color-tab--primary);
+  }
+}
+
+.c-tab--contrast {
+  &.is-active { border-bottom-color: currentColor; }
+}
