@@ -100,7 +100,7 @@
            size [:normal :expand :wide]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
        (l/col {:width 6 :key (str color size actions (rand-int 256))}
-         (e/ui-card {:type :bordered :title "Card Test" :color color :size size :actions actions}
+         (e/ui-card {:style :bordered :title "Card Test" :color color :size size :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))
             (dom/p nil (str "Size: " (name size)))))))
@@ -110,7 +110,7 @@
        (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
              image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
-           (e/ui-card {:type :bordered :title "Card Test" :color :primary :image image :image-position image-position}
+           (e/ui-card {:style :bordered :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
               (dom/p nil (str "Image position: " (name image-position))))))))))
@@ -120,7 +120,7 @@
      (for [color [:neutral :primary :accent]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
        (l/col {:width 6 :key (str color actions (rand-int 256))}
-         (e/ui-card {:type :transparent :title "Card Test" :color color :actions actions}
+         (e/ui-card {:style :transparent :title "Card Test" :color color :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))))))
 
@@ -129,7 +129,7 @@
        (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
              image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
-           (e/ui-card {:type :transparent :title "Card Test" :color :primary :image image :image-position image-position}
+           (e/ui-card {:style :transparent :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
               (dom/p nil (str "Image position: " (name image-position))))))))))
@@ -138,7 +138,7 @@
   (l/row {}
     (for [size [:normal :expand :wide]]
       (l/col {:width 6 :key (str size (rand-int 256))}
-        (e/ui-card {:type :square :title "Card Test" :size size}
+        (e/ui-card {:style :square :title "Card Test" :size size}
           (dom/div nil
             (dom/p nil (str "Size: " (name size)))))))))
 
@@ -219,16 +219,7 @@
           (e/ui-modal-actions {}
             (e/ui-flat-button {:color :primary} "Cancel")
             (e/ui-flat-button {:color :primary} "Ok")))))
-
-    (e/ui-iframe {:height "200" :width "100%"}
-      (dom/div #js {}
-        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-        (e/ui-modal {:active true}
-          (e/ui-modal-title {} "Informative")
-          (e/ui-modal-body {} "You have been notified.")
-          (e/ui-modal-actions {}
-            (e/ui-flat-button {:color :primary} "Cancel")
-            (e/ui-flat-button {:color :primary} "Ok")))))))
+    ))
 
 
 (defcard notifications-visual-regressions
@@ -245,17 +236,11 @@
 
 (defcard progress-visual-regressions
   (dom/div nil
-    (e/ui-progress {})
-    (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "0"})
-    (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "25"})
-    (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "50"})
-    (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "75"})
-    (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "100"})))
+    (e/ui-progress {:className "u-trailer--half"})
+    (for [value [0 25 50 75 100]
+          size  [:regular :dense]]
+      (e/ui-progress {:max "100" :value value :size size :className "u-trailer--half" :key (str "id-" value size)})
+      )))
 
 
 (defcard radio-visual-regressions

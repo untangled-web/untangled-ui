@@ -35,14 +35,15 @@
   Some samples are shown below:
   "
   (dom/div nil
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} "Default Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {} (icon :arrow_back) "With an icon"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-button {:color :secondary :shape :wide} "Wide Secondary"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} "Flat Look"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {} (icon :arrow_back) "With an icon"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-flat-button {:color :secondary :shape :wide} "Wide Secondary"))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {} (icon :arrow_back)))
-    (dom/div #js {:style #js {:marginTop "10px"}} (e/ui-circular-button {:size :small} (icon :arrow_back)))
+    (e/ui-button {} "Default Look")
+    (e/ui-button {} (icon :arrow_back) "With an icon")
+    (e/ui-button {:color :primary} "Primary look")
+    (e/ui-button {:color :accent :shape :wide} "Wide Accent")
+    (e/ui-flat-button {} "Flat Look")
+    (e/ui-flat-button {} (icon :arrow_back) "With an icon")
+    (e/ui-flat-button {:color :accent :shape :wide} "Wide Accent")
+    (e/ui-circular-button {} (icon :arrow_back))
+    (e/ui-circular-button {:size :small} (icon :arrow_back))
     ))
 
 (defsample badge
@@ -54,7 +55,7 @@
   "
   (dom/div nil
     (dom/div #js {:style #js {:marginTop "10px"}} "A plain badge: " (e/ui-badge {} "6"))
-    (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {}
+    (dom/div #js {:style #js {:marginTop "10px"}} "A button with a badge: " (e/ui-button {:color :primary}
                                                                               "Inbox " (e/ui-badge {} "6")))))
 
 (defsample label
@@ -65,16 +66,11 @@
   Some samples are shown below:
   "
   (dom/div nil
-    (e/ui-label {} "Default")
-    (e/ui-label {:color :green} "Green")
-    (e/ui-label {:color :blue} "Blue")
-    (e/ui-label {:color :magenta} "Magenta")
-    (e/ui-label {:color :grey} "Grey")
-    (e/ui-label {:color :yellow} "Yellow")
-    (e/ui-label {:color :orange} "Orange")
-    (e/ui-label {:color :red} "Red")
-    (e/ui-label {:color :green} (icon :add) "Add")
-    (e/ui-label {:color :red} (icon :close) "Remove")))
+    (for [colors [:default :primary :accent]
+          icons  [:none :close]]
+      (e/ui-label {:color colors :key (str "id-" colors icons)}
+        (name colors)
+        (icon icons)))))
 
 (defsample field-sizes
   "# Fields
@@ -82,10 +78,8 @@
   Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (e/ui-field {} "Default field")
-    (e/ui-field {:size :small} "Small field")
-    (e/ui-field {:size :medium} "Medium field")
-    (e/ui-field {:size :large} "Large field")))
+    (mapv (fn [sizes] (e/ui-field {:size sizes} (name sizes)))
+      [:regular :small :medium :large])))
 
 (defsample field-states
    "# Fields
@@ -93,11 +87,8 @@
    Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
    "
    (dom/div nil
-      (e/ui-field {} "Default field")
-      (e/ui-field {:state #{:required}} "Required field")
-      (e/ui-field {:state #{:focus}} "Focused field")
-      (e/ui-field {:state #{:invalid}} "Invalid field")
-      (e/ui-field {:state #{:error}} "Field")))
+     (mapv (fn [states] (e/ui-field {:state states} (name states)))
+       [:valid :invalid :error])))
 
 (defsample field-types
    "# Fields
@@ -105,7 +96,7 @@
    Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
    "
    (dom/div nil
-      (mapv (fn [kind] (e/ui-field {:kind kind} (name kind)))
+      (mapv (fn [type] (e/ui-field {:type type} (name type)))
             [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample message
@@ -116,13 +107,9 @@
   Some samples are shown below:
   "
   (dom/div nil
-    (e/ui-message {} "This is default message.")
-    (e/ui-message {:color :neutral} "This is neutral message.")
-    (e/ui-message {:color :alert} "This is an alert message.")
-    (e/ui-message {:color :success} "This is a success message.")
-    (e/ui-message {:color :warning} "This is a warning message.")
-    (e/ui-message {:color :warning} "This is a warning message with another child." (icon :arrow_forward))
-    (e/ui-message {:className "h2"} "This is message using a standard H2 class name.")))
+    (mapv (fn [colors] (e/ui-message {:color colors} (str "This is a " (name colors) " message")))
+      [:default :informative :alert :success :warning])
+    (e/ui-message {:color :warning} "This is a warning message with another child." (e/ui-icon {:glyph :arrow_forward :size :small}))))
 
 (defsample avatar
   "# Avatars
@@ -276,7 +263,9 @@
   (dom/div nil
     (e/ui-progress {})
     (dom/p nil " ")
-    (e/ui-progress {:max "100" :value "70"})))
+    (e/ui-progress {:max "100" :value "70"})
+    (dom/p nil " ")
+    (e/ui-progress {:max "100" :value "50" :size :dense})))
 
 (defsample radio
   (dom/div nil

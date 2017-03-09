@@ -9,6 +9,20 @@
 
 ;; Helpers
 
+(defn- ui-toggle
+  "Render a HTML input (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
+
+  `:className` - additional class stylings to apply to the top level of the checkbox
+  "
+  [{:keys [type className id] :as props}]
+  (let [classes className
+        attrs   (assoc props :type type
+                             :className classes
+                             :id id)]
+    (dom/span nil
+      (dom/input (clj->js attrs))
+      (dom/label #js {:htmlFor id} \u00A0))))
+
 (defn ui-fader
   "Wrap children in a span where the :visible attribute
   is a boolean indicating the visibility of the children.
@@ -170,7 +184,7 @@
 
    `:title` - \"Some Title\"
    `:color` - :primary | :accent
-   `:type` - :bordered | :transparent | :square
+   `:styles` - :bordered | :transparent | :square
    `:size` - :expand | :wide
    `:image` - \"path/to/image/file.jpeg\"
    `:image-position` - :cover | :top-left | :top-right | :bottom-left | :bottom-right
@@ -241,20 +255,11 @@
   TODO:
   `:checked` - true, false, or :partial
   "
-  [{:keys [id style] :or {id ""} :as attrs}]
-  (let [legal-styles #{:indeterminate}
-        user-classes (get attrs :className "")
-        classes      (cond-> (str user-classes " c-checkbox ")
-                       (contains? legal-styles style) (str "is-" (name style)))
-        attrs        (cond-> attrs
-                       :always (assoc :type "checkbox")
-                       :always (dissoc :style)
-                       :always (assoc :className classes)
-                       :always (assoc :id (name id)))]
-    (dom/span nil
-      (dom/input (clj->js attrs))
-      (dom/label #js {:htmlFor id} \u00A0))))
-
+  [{:keys [id state] :or {id ""} :as attrs}]
+  (let [legal-states #{:indeterminate}
+        classes      (cond-> (str " c-checkbox ")
+                       (contains? legal-states state) (str " is-" (name state)))]
+    (ui-toggle {:type "checkbox" :className classes :id id})))
 
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -264,15 +269,15 @@
   "
   [{:keys [size state] :or {size ""} :as attrs} placeholder]
   (let [legal-sizes  #{:small :medium :large}
+        legal-states #{:invalid :error}
         user-classes (get attrs :className "")
         has          (fn [s] (contains? state s))
         classes      (cond-> (str user-classes " c-field ")
-                       (contains? legal-sizes size) (str "c-field--" (name size))
-                       (has :invalid) (str " is-invalid")
-                       (has :error) (str " is-error"))
+                       (contains? legal-sizes size) (str " c-field--" (name size))
+                       (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
                        (assoc :className classes :placeholder (name placeholder))
-                       (dissoc :size :state :kind))]
+                       (dissoc :size :state))]
     (dom/input (clj->js attrs))))
 
 (defn ui-icon
@@ -324,7 +329,7 @@
   ([{:keys [className glyph label active] :as props :or {className "" label ""}}]
    (ui-icon-bar-item props (ui-icon {:glyph glyph})))
   ([{:keys [className label active] :as props :or {className ""}} icon-child]
-   (let [attrs (clj->js {(str className " c-iconbar__item " (when active "is-active"))})]
+   (let [attrs (clj->js (str className " c-iconbar__item " (when active "is-active")))]
      (dom/button attrs
        icon-child
        (dom/span #js {:className "c-iconbar__label"} label)))))
@@ -499,11 +504,14 @@
   `:className` - additional class stylings to apply to the progress element
   `:max` - The integer value that we're targeting for completion
   `:value` - The integer value of where we're at
+  `:size` :regular (default), :small
 
   If neither max or value are given, it will render as an indeterminate progress (in progress, but not complete).
   "
-  [{:keys [max value className] :or {className ""} :as props}]
-  (let [classes (str className " c-progress ")
+  [{:keys [max value className size] :or {className ""} :as props}]
+  (let [legal-sizes #{:dense}
+        classes (cond-> (str className " c-progress ")
+                      (contains? legal-sizes size) (str " c-progress--" (name size)))
         attrs   (assoc props :className classes)]
     (dom/progress (clj->js attrs))))
 
@@ -511,12 +519,12 @@
   "Render a HTML radio (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
   `:className` - additional class stylings to apply to the top level of the checkbox
+
+  TODO: After modifying this to use ui-toggle the html attrs are not passing through.
   "
   [{:keys [className id] :as props}]
   (let [classes (str className " c-radio ")
         attrs   (assoc props :type "radio"
                              :className classes
                              :id id)]
-    (dom/span nil
-      (dom/input (clj->js attrs))
-      (dom/label #js {:htmlFor id} \u00A0))))
+    (ui-toggle {:type "radio" :className classes :id id})))
