@@ -1680,21 +1680,22 @@
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
 
-    (e/ui-iframe {:width "100%" :backgroundImage "img/welcome_card.jpg"}
-      (dom/div #js {:className "c-toolbar"}
-        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-        (dom/div #js {:className "c-toolbar__button"}
-          (dom/button #js {:className "c-button c-button--icon"}
-            (e/ui-icon {:glyph :menu})))
+    (e/ui-iframe {:width "100%" :height "300px"}
+      (dom/div #js { :style #js {:backgroundColor "#efefef" :height "300px"}}
+        (dom/div #js {:className "c-toolbar"}
+         (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+         (dom/div #js {:className "c-toolbar__button"}
+           (dom/button #js {:className "c-button c-button--icon"}
+             (e/ui-icon {:glyph :menu})))
 
-        (dom/div #js {:className "c-toolbar__row"}
-          (dom/div #js {:className "c-toolbar__actions"}
+         (dom/div #js {:className "c-toolbar__row"}
+           (dom/div #js {:className "c-toolbar__actions"}
 
-            (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+             (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
 
-            (dom/button #js {:className "c-button c-button--icon"
-                             :title     "Kevin Mitnick"}
-              (icons/icon :account_circle))))))))
+             (dom/button #js {:className "c-button c-button--icon"
+                              :title     "Kevin Mitnick"}
+               (icons/icon :account_circle)))))))))
 
 
 (defexample toolbar-colors
