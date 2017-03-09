@@ -273,26 +273,6 @@
                        (dissoc :size :state :kind))]
     (dom/input (clj->js attrs))))
 
-
-(defn ui-icon-bar
-  "Render an icon bar using a vector of icons (each a map of attributes).
-   Can optionally render vertically and/or shifting.
-   Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
-
-   `:orientation` :vertical or :horizontal (default)
-   `:shifting` :true or :false (default)
-
-   all parameters are optional
-   "
-  [{:keys [className orientation shifting] :as props :or {className ""}} & children]
-  (let [user-classes    (get props :className "")
-        top-level-class (cond-> (str user-classes " c-iconbar")
-                          (= orientation :vertical) (str " c-iconbar--rail")
-                          (= shifting :true) (str " c-iconbar--shifting"))]
-    (dom/div #js {}
-      (apply dom/nav #js {:className top-level-class} children))))
-
-
 (defn ui-icon
   "Render an icon. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
@@ -317,19 +297,47 @@
                                  (icon glyph)
                                  child)))))
 
+(defn ui-icon-bar
+  "Render an icon bar using a vector of icons (each a map of attributes).
+   Can optionally render vertically and/or shifting.
+   Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+   `:orientation` :vertical or :horizontal (default)
+   `:shifting` true or false (default)
+
+   TODO: Example, talk about children
+
+   all parameters are optional
+   "
+  [{:keys [className orientation shifting] :as props :or {className ""}} & children]
+  (let [user-classes    (get props :className "")
+        top-level-class (cond-> (str user-classes " c-iconbar")
+                          (= orientation :vertical) (str " c-iconbar--rail")
+                          shifting (str " c-iconbar--shifting"))]
+    (dom/div #js {:className top-level-class}
+      (apply dom/nav #js {:className top-level-class} children))))
+
+(defn ui-icon-bar-item
+  "TODO: "
+  ([{:keys [className glyph label active] :as props :or {className "" label ""}}]
+   (ui-icon-bar-item props (ui-icon {:glyph glyph})))
+  ([{:keys [className label active] :as props :or {className ""}} icon-child]
+   (let [attrs (clj->js {(str className " c-iconbar__item " (when active "is-active"))})]
+     (dom/button attrs
+       icon-child
+       (dom/span #js {:className "c-iconbar__label"} label)))))
 
 (defn ui-label
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  `:color` :none (default), :positive, :informative, :informative-alt, :neutral, :live, :alterable, :negative
+  `:color` :none (default), :primary, :accent
   "
   [{:keys [className color] :as props :or {className ""}} & children]
   (let [legal-colors #{:primary :accent}
         classes      (cond-> className
                        :always (str " c-label")
                        (contains? legal-colors color) (str " c-label--" (name color)))
-        props        (-> props
-                       (dissoc :color)
+        props        (-> (dissoc props :color)
                        (assoc :className classes))]
     (apply dom/span (clj->js props) children)))
 
@@ -341,22 +349,20 @@
   [{:keys [className color] :as props :or {className ""}}]
   (let [legal-colors #{:primary :accent}
         user-classes (get props :className "")
-        classes      (cond-> user-classes
-                       :always (str " c-loader")
+        classes      (cond-> (str user-classes " c-loader")
                        (contains? legal-colors color) (str " c-loader--" (name color)))
-        props        (cond-> props
-                       :always (assoc :className classes)
-                       :always (dissoc :color))]
+        props        (-> props
+                       (assoc :className classes)
+                       (dissoc :color))]
     (dom/div (clj->js props))))
-
 
 (defn ui-message
   "Render the given children within a message. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  `:color` :none (default), :neutral, :alert, :success, :warning
+  `:color` :none(default), :alert, :success, :warning, :informative
   "
   [{:keys [className color] :as props :or {className ""}} & children]
-  (let [legal-colors #{:neutral :alert :success :warning}
+  (let [legal-colors #{:informative :alert :success :warning}
         classes      (cond-> (str className " c-message")
                        (contains? legal-colors color) (str "--" (name color)))
         props        (-> props
@@ -364,38 +370,34 @@
                        (dissoc :color))]
     (apply dom/div (clj->js props) children)))
 
-
 (defui ModalTitle
   Object
   (render [this]
     (dom/div #js {:className "c-modal__title"} (om/children this))))
 
-
 (def ui-modal-title
   "Render a notification title. Should only be used in a ui-modal"
   (om/factory ModalTitle))
-
 
 (defui ModalBody
   Object
   (render [this]
     (dom/div #js {:className "c-modal__content"} (om/children this))))
+
 (def ui-modal-body
   "Render a notification body. Should only be used in a ui-modal"
   (om/factory ModalBody))
-
 
 (defui ModalActions
   Object
   (render [this]
     (dom/div #js {:className "c-modal__actions"} (om/children this))))
 
-
 (def ui-modal-actions
   "Render a notification action area. Should only be used in a ui-modal"
   (om/factory ModalActions))
 
-
+; TODO: Rename to Dialog, modal as a boolean attribute?
 (defui Modal
   Object
   (render [this]
@@ -407,7 +409,6 @@
           state        (when active " is-active")
           user-classes (get props :className "")
           classes      (-> (str user-classes " c-modal" state))]
-
       (dom/div #js {}
         (dom/div #js {:className classes}
           (dom/div #js {:className "c-modal__card"}
@@ -415,7 +416,6 @@
             (when content content)
             (when actions actions)))
         (dom/div #js {:className (str "c-backdrop" state)})))))
-
 
 (def ui-modal
   "Render a modal. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -430,7 +430,6 @@
   The `title-nodes` can be any inline DOM (or just a string), as can body-nodes.  Action-notes must include at least one button that
   closes the modal or redirects the user."
   (om/factory Modal))
-
 
 (defui NotificationTitle
   Object
@@ -478,33 +477,33 @@
 (def ui-notification
   "Render a notification. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
+  `:onClose` (optional) - A function to call when the notification's close button is pressed
   `:type` :none (default), :success, :warning, :error, :informative
   `:size` :normal (default), :wide
 
   You should include two children of this node:
 
-  (ui-notification {}
-    (ui-notification-title {} title-nodes)
-    (ui-notification-body {} body-nodes))
+  (when show-notification?
+    (ui-notification {:onClose (fn [] (om/transact! this `[(my-close-notification-mutation)]))}
+      (ui-notification-title {} title-nodes)
+      (ui-notification-body {} body-nodes)))
 
   The `title-nodes` can be any inline DOM (or just a string), as can body-nodes."
   (om/factory Notification))
 
-
 (defn ui-progress
-  "Render a progress element. Props is a normal clj(s) map with React/HTML attributes plus:
+  "Render an HTML progress element. Props is a normal clj(s) map with React/HTML attributes plus:
 
   `:className` - additional class stylings to apply to the progress element
-  `:id` - Name of the progress control
-  "
-  [{:keys [id style] :or {id ""} :as attrs}]
-  (let [user-classes (get attrs :className "")
-        classes      (cond-> (str user-classes " c-progress "))
-        attrs        (cond-> attrs
-                       :always (assoc :className classes)
-                       :always (assoc :id (name id)))]
-    (dom/progress (clj->js attrs))))
+  `:max` - The integer value that we're targeting for completion
+  `:value` - The integer value of where we're at
 
+  If neither max or value are given, it will render as an indeterminate progress (in progress, but not complete).
+  "
+  [{:keys [max value className] :or {className ""} :as props}]
+  (let [classes (str className " c-progress ")
+        attrs   (assoc props :className classes)]
+    (dom/progress (clj->js attrs))))
 
 (defn ui-radio
   "Render a radio (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
