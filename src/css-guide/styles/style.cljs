@@ -103,27 +103,16 @@
              [:800 "#f07700"]
              [:900 "#cc5000"]])
 
-(def red [[:50 "#ffebee"]
-          [:100 "#ffd3d5"]
-          [:200 "#ffbbbb"]
-          [:300 "#faa296"]
-          [:400 "#f38773"]
-          [:500 "#e96d4f"]
-          [:600 "#de512d"]
-          [:700 "#d03000"]
-          [:800 "#b51c01"]
-          [:900 "#990000"]])
-
-(def yellow [[:50 "#fff9e8"]
-             [:100 "#fff3d1"]
-             [:200 "#ffeebb"]
-             [:300 "#ffe49e"]
-             [:400 "#ffdd84"]
-             [:500 "#ffd666"]
-             [:600 "#ffc838"]
-             [:700 "#ffba0a"]
-             [:800 "#fda704"]
-             [:900 "#fa9400"]])
+(def red [[:50 "#f6e6df"]
+          [:100 "#fbc7b2"]
+          [:200 "#fba986"]
+          [:300 "#f7895b"]
+          [:400 "#ef6830"]
+          [:500 "#dd4907"]
+          [:600 "#bb3d0a"]
+          [:700 "#99320c"]
+          [:800 "#78260c"]
+          [:900 "#5a1b0a"]])
 
 (def green [[:50  "#def6f3"]
             [:100 "#b6e7de"]
@@ -192,13 +181,12 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
 "
 
+    (color-palette "Green" green)
+    (color-palette "Purple" purple)
     (color-palette "Blue" blue)
     (color-palette "Orange" orange)
     (color-palette "Red" red)
-    (color-palette "Yellow" yellow)
-    (color-palette "Green" green)
     (color-palette "Grey" grey)
-    (color-palette "Purple" purple)
     (color-palette "" neutral)
 
 
@@ -221,12 +209,12 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
     (color-theme "Backgrounds & Borders" [[:--backgroundColor-page (get-color neutral 1)]
                                           [:--color-shadow         "rgba(51, 51, 42, .6)"]
-                                          [:--color-primary        (get-color blue 9)]
-                                          [:--color-secondary      (get-color orange 8)]
+                                          [:--color-primary        (get-color green 5)]
+                                          [:--color-secondary      (get-color purple 5)]
                                           [:--highlight-announcement (get-color blue 0)]
                                           [:--highlight-error        (get-color red 0)]
                                           [:--highlight-success      (get-color green 0)]
-                                          [:--highlight-warning      (get-color yellow 0)]])
+                                          [:--highlight-warning      (get-color orange 0)]])
 
 
 
@@ -235,7 +223,6 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
                                 [:.is-positive        (get-color green 6)]
                                 [:.is-informative     (get-color blue 9)]
                                 [:.is-neutral         (get-color grey 5)]
-                                [:.is-live            (get-color yellow 8)]
                                 [:.is-alterable       (get-color orange 8)]
                                 [:.is-negative        (get-color red 7)]])
 

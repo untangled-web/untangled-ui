@@ -6,7 +6,6 @@ section: Components
 @import "card";
 
 :root {
-  --backgroundColor-notification--negative: color(var(--yellow-50) a(50%));
   --backgroundColor-notification--informative: var(--blue-400);
   --color-notification--informative: var(--white);
   --color-notification-icon: var(--blue-500);
@@ -100,15 +99,11 @@ section: Components
 
 
 .c-notification--warning {
-  background-color: var(--backgroundColor-notification--negative);
-
   & > .c-icon { color: var(--color-notification-icon--warning); }
 }
 
 
 .c-notification--error {
-  background-color: var(--backgroundColor-notification--negative);
-
   & > .c-icon { color: var(--color-notification-icon--error); }
 }
 

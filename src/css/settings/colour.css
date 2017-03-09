@@ -35,27 +35,16 @@ section: Settings
   --blue-800: #155ab5;
   --blue-900: #0d47a1;
 
-  --yellow-50:  #fff59d;
-  --yellow-100: #fff390;
-  --yellow-200: #fff27f;
-  --yellow-300: #ffef6d;
-  --yellow-400: #ffed58;
-  --yellow-500: #ffeb3b;
-  --yellow-600: #fee037;
-  --yellow-700: #fdd534;
-  --yellow-800: #fcca30;
-  --yellow-900: #fbc02d;
-
-  --red-50:  #ef9a9a;
-  --red-100: #f28b86;
-  --red-200: #f47c72;
-  --red-300: #f56b5d;
-  --red-400: #f5584a;
-  --red-500: #f44336;
-  --red-600: #e53a2f;
-  --red-700: #d53029;
-  --red-800: #c62622;
-  --red-900: #b71c1c;
+  --red-50:  #f6e6df;
+  --red-100: #fbc7b2;
+  --red-200: #fba986;
+  --red-300: #f7895b;
+  --red-400: #ef6830;
+  --red-500: #dd4907;
+  --red-600: #bb3d0a;
+  --red-700: #99320c;
+  --red-800: #78260c;
+  --red-900: #5a1b0a;
 
   --green-50:  #def6f3;
   --green-100: #b6e7de;
@@ -112,7 +101,6 @@ section: Settings
   --color-positive: var(--green-600);
   --color-informative: var(--blue-900);
   --color-neutral: var(--grey-500);
-  --color-live: var(--yellow-800);
   --color-alterable: var(--orange-800);
   --color-negative: var(--red-700);
 
@@ -185,7 +173,7 @@ section: Settings
   /* Control */
 
   --color-control-background: var(--white);
-  --color-control-background--alterable: var(--yellow-100);
+  --color-control-background--alterable: var(--orange-100);
   --color-control-background--negative: var(--red-100);
   --color-control-background--positive: var(--green-100);
   --color-control-border: var(--grey-500);
@@ -221,8 +209,8 @@ section: Settings
 
   /* Input */
 
-  --backgroundColor-input--note: var(--yellow-100);
-  --borderColor-input--note: var(--yellow-400);
+  --backgroundColor-input--note: var(--orange-100);
+  --borderColor-input--note: var(--orange-400);
 
 
   /* Label */
@@ -249,7 +237,7 @@ section: Settings
   --backgroundColor-modal__title: var(--grey-200);
   --backgroundColor-modal--primary:  var(--blue-800);
   --backgroundColor-modal--success: var(--green-800);
-  --backgroundColor-modal--warning: var(--yellow-700);
+  --backgroundColor-modal--warning: var(--orange-700);
   --color-modal__title: var(--color-page);
   --color-modal__action: rgba(255, 255, 255, .5);
 
@@ -298,7 +286,7 @@ section: Settings
   --highlight-announcement: var(--blue-50);
   --highlight-error: var(--red-50);
   --highlight-success: var(--green-50);
-  --highlight-warning: var(--yellow-50);
+  --highlight-warning: var(--orange-50);
 }
 
 /* Social Media */
@@ -326,7 +314,6 @@ section: Settings
   --positive-copy: var(--green-600);
   --informative-copy: var(--blue-700);
   --neutral-copy: var(--grey-700);
-  --live-copy: var(--yellow-700);
   --alterable-copy: var(--orange-700);
   --negative-copy: var(--red-600);
   --shadow-color: var(--color-shadow);
