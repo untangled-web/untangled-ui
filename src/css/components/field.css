@@ -177,6 +177,7 @@ section: Components
     border-radius: 2px;
     border-bottom: none;
     height: 36px;
+    padding-right: 20px;
     transition: background-color .1s ease-in-out;
 
     &:hover {
