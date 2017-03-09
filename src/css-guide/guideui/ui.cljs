@@ -88,7 +88,7 @@
         selected-idx (get (om/props component) field)
         get-class    (fn [idx] (str "link" (if (= idx selected-idx) " is-active" "")))
         select-item  (fn [idx] (m/set-integer! component field :value idx))]
-    (dom/div #js {:className "u-row c-menu--inline"}
+    (dom/div #js {:className "c-menu--inline"}
       (map-indexed (fn [idx nm]
                      (dom/button #js {:className (str (get-class idx) " c-tab")
                                       :key       idx
@@ -127,7 +127,7 @@
                                          (let [v (.. evt -target -value)]
                                            (om/transact! this `[(search/update-results ~{:term v})])))
                           :onFocus     #(m/set-value! this :ui/open true)
-                          :placeholder "Search"
+                          :placeholder "Search Untangled UI"
                           :className   "c-field__input"})
           #_(dom/span #js {:className "c-icon"} (untangled.icons/material-icon :search))
           )
@@ -206,10 +206,11 @@
     (let [{:keys [part/selected-section part/sections part/title] :or {part/selected-section 0}} (om/props this)
           section-names (map :section/title sections)]
       (dom/div #js {:className "ui-part u-row"}
+        (dom/div #js {:className "u-column--12 u-column--10@md"}
+          (ui-section (nth sections selected-section)))
         (dom/div #js {:className "u-column--12 u-column--2@md"}
           (navlist this :part/selected-section section-names))
-        (dom/div #js {:className "u-column--12 u-column--10@md"}
-          (ui-section (nth sections selected-section)))))))
+        ))))
 
 (def ui-part (om/factory Part {:keyfn :part/title}))
 
@@ -228,17 +229,24 @@
     (let [{:keys [parts/selected-part parts searchbar] :or {parts/selected-part 0}} (om/props this)
           part-names (map :part/title parts)]
       (dom/div #js {:className "u-layout__page u-layout__page--fixed"}
-        (dom/header #js {:className "u-layout__header c-toolbar c-toolbar--raised c-toolbar--primary"}
+        (dom/header #js {:className "u-layout__header c-toolbar c-toolbar--raised"}
           (dom/div #js {:className "c-toolbar__button"}
             (dom/a #js {:href "/"}
               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:margin "4px"}})))
           (dom/div #js {:className "c-toolbar__row"}
-            (dom/span #js {:className "u-font-size--semi-medium"} "UI Styleguide")
-            (dom/div #js {:className "u-column"
+            #_(dom/span #js {:className "u-font-size--semi-medium"} "UI Styleguide")
+
+
+            (dom/div #js {:className "u-column--3 u-hide@sm"}
+              (ui-search searchbar))
+
+            (dom/div #js {:className "c-toolbar__spacer u-hide@sm"})
+
+            (dom/div #js {:className "u-column u-column--5@md u-end@md"
                           :style     #js {:marginTop "7px"}}
               (tabs this :parts/selected-part part-names))
-            (dom/div #js {:className "u-column--3 u-end u-hide@sm u-hide@md"}
-              (ui-search searchbar))))
+            ))
+
         (dom/main #js {:className "u-layout__content"}
           (dom/article #js {:className "o-article"}
             (dom/div #js {:className "ui-parts"}
