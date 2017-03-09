@@ -1,9 +1,15 @@
+:root {
+  --color-progress: var(--color-primary);
+  --color-progress--secondary: color(var(--color-primary) a(25%));
+  --color-progress--indeterminate: var(--grey-300);
+  --height-progress: 4px;
+  --height-progress--dense: calc(var(--height-progress) - 2);
+}
+
 .c-progress:not(value) {
   position: relative;
 
-  &::-webkit-progress-bar {
-     background-color: var(--grey-300);
-   }
+  &::-webkit-progress-bar { background-color: var(--color-progress--indeterminate); }
 
   & .c-progress__bar {
     /* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
@@ -23,36 +29,34 @@
   }
 
   & .c-progress__bar:first-child {
-      animation-name: indeterminate1;
-      left: 0;
-      z-index: 1;
-    }
+    animation-name: indeterminate1;
+    left: 0;
+    z-index: 1;
+  }
 }
 
 /* Styling the determinate progress element */
 
 .c-progress {
   /* Add dimensions */
-  height: 4px;
+  height: var(--height-progress);
   width: 100%;
 
   &[value] {
     appearance: none; /* Get rid of the default appearance */
     background-color: whiteSmoke; /* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
     border: none; /* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
-    color: royalblue; /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+    color: var(--color-progress); /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
     margin: 0 0 1.5em;
     position: relative;
   }
 }
 
-.c-progress[value]::-webkit-progress-bar {
-  background-color: var(--blue-50);
-}
+.c-progress--dense { height: var(--height-progress--dense); }
 
-.c-progress[value]::-webkit-progress-value {
-  background-color: var(--blue-700);
-}
+.c-progress[value]::-webkit-progress-bar { background-color: var(--color-progress--secondary); }
+
+.c-progress[value]::-webkit-progress-value { background-color: var(--color-progress); }
 
 /* Fallback technique styles */
 .c-progress__bar {
