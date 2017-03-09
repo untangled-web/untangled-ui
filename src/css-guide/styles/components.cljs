@@ -958,15 +958,31 @@
 
 (defexample tabs
   "### Basic"
-  (dom/div #js {:className "u-row"}
-    (dom/button #js {:className "c-tab"} "Widgets")
+  (dom/div #js {:className "c-tabs"}
+    (dom/button #js {:className "c-tab is-active"} "Widgets")
     (dom/button #js {:className "c-tab"} "Doodads")
     (dom/button #js {:className "c-tab"} "Apparatuses")
     (dom/button #js {:className "c-tab"} "Things")))
 
-(defexample tabs-block
-  "### Block"
-  (dom/div #js {:className "u-row"}
+(defexample tabs-colors
+  "### Colors"
+  (dom/div nil
+    (dom/div #js {:className "c-tabs"}
+      (dom/button #js {:className "c-tab c-tab--primary is-active"} "Widgets")
+      (dom/button #js {:className "c-tab c-tab--primary"} "Doodads")
+      (dom/button #js {:className "c-tab c-tab--primary"} "Apparatuses")
+      (dom/button #js {:className "c-tab c-tab--primary"} "Things"))
+
+    (dom/div #js {:className "t-dark"}
+      (dom/div #js {:className "c-tabs"}
+       (dom/button #js {:className "c-tab c-tab--contrast is-active"} "Widgets")
+       (dom/button #js {:className "c-tab c-tab--contrast"} "Doodads")
+       (dom/button #js {:className "c-tab c-tab--contrast"} "Apparatuses")
+       (dom/button #js {:className "c-tab c-tab--contrast"} "Things")))))
+
+(defexample tabs-dropdown
+  "### With Dropdowns"
+  (dom/div #js {:className "c-tabs"}
     (dom/button #js {:className "c-tab"} "Widgets")
     (dom/button #js {:className "c-tab"} "Doodads")
     (dom/button #js {:className "c-tab"} "Apparatuses")
@@ -990,13 +1006,6 @@
           (dom/button #js {:className "c-menu__item"} "Thingamajig"))
         (dom/li #js {}
           (dom/button #js {:className "c-menu__item"} "Thinger")))))))
-
-(defexample tabs-inline
-  "### Inline"
-  (dom/div #js {:className "u-row"}
-    (dom/button #js {:className "c-tab is-active"} "Link 1")
-    (dom/button #js {:className "c-tab"} "Link 2")
-    (dom/button #js {:className "c-tab"} "Link 3")))
 
 
 ;; -------------------------
@@ -1670,20 +1679,22 @@
         lang-item-selected (or (if (= (:id changed-menu) :lang) (:selected-item changed-menu) nil) "English-US")
         menu-action (fn [menu opened item]
                       (om/update-state! this assoc :changed-menu {:id menu :open-state opened :selected-item item}))]
-    (dom/div #js {:className "c-toolbar"}
-      (dom/div #js {:className "c-toolbar__button"}
-        (dom/button #js {:className "c-button c-button--icon"}
-          (e/ui-icon {:glyph :menu}))
-        )
-      (dom/div #js {:className "c-toolbar__row"}
-        (dom/div #js {:className "c-toolbar__actions"}
 
-          (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+    (e/ui-iframe {:width "100%" :backgroundImage "img/welcome_card.jpg"}
+      (dom/div #js {:className "c-toolbar"}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+        (dom/div #js {:className "c-toolbar__button"}
+          (dom/button #js {:className "c-button c-button--icon"}
+            (e/ui-icon {:glyph :menu})))
 
-          (dom/button #js {:className "c-button c-button--icon"
-                           :title "Kevin Mitnick"}
-            (icons/icon :account_circle))
-          )))))
+        (dom/div #js {:className "c-toolbar__row"}
+          (dom/div #js {:className "c-toolbar__actions"}
+
+            (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+
+            (dom/button #js {:className "c-button c-button--icon"
+                             :title     "Kevin Mitnick"}
+              (icons/icon :account_circle))))))))
 
 
 (defexample toolbar-colors
@@ -1743,32 +1754,34 @@
         get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
-      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"}
-        (dom/div #js {:className "c-toolbar__button"}
-          (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :menu)))
-        (dom/div #js {:className "c-toolbar__row"}
-          (dom/div #js {:className "c-toolbar__view"}
-            (dom/span #js {:className "c-toolbar__label"} "Second row is dense"))
+    (e/ui-iframe {:width "100%"}
+      (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--dark"}
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+       (dom/div #js {:className "c-toolbar__button"}
+         (dom/button #js {:className "c-button c-button--icon"}
+           (icons/icon :menu)))
+       (dom/div #js {:className "c-toolbar__row"}
+         (dom/div #js {:className "c-toolbar__view"}
+           (dom/span #js {:className "c-toolbar__label"} "Second row is dense"))
 
-          (dom/div #js {:className "c-toolbar__actions"}
-            (dom/button #js {:className "c-button c-button--icon"}
-              (icons/icon :help))
+         (dom/div #js {:className "c-toolbar__actions"}
+           (dom/button #js {:className "c-button c-button--icon"}
+             (icons/icon :help))
 
-            (dom/span #js {:title "Kevin Mitnick"}
-              (dom/button #js {:className "c-button c-button--icon"}
-                (icons/icon :account_circle)))
-            ))
-        (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
-        (dom/ul #js {:className "c-tabs"}
-          (dom/button #js {:className (get-class :widgets)
-                           :onClick   #(select-item :widgets)} "Widgets")
-          (dom/button #js {:className (get-class :doodads)
-                           :onClick   #(select-item :doodads)} "Doodads")
-          (dom/button #js {:className (get-class :apparatuses)
-                           :onClick   #(select-item :apparatuses)} "Apparatuses")
-          (dom/button #js {:className (get-class :things)
-                           :onClick   #(select-item :things)} "Things"))))))
+           (dom/span #js {:title "Kevin Mitnick"}
+             (dom/button #js {:className "c-button c-button--icon"}
+               (icons/icon :account_circle)))
+           ))
+       (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
+         (dom/ul #js {:className "c-tabs"}
+           (dom/button #js {:className (get-class :widgets)
+                            :onClick   #(select-item :widgets)} "Widgets")
+           (dom/button #js {:className (get-class :doodads)
+                            :onClick   #(select-item :doodads)} "Doodads")
+           (dom/button #js {:className (get-class :apparatuses)
+                            :onClick   #(select-item :apparatuses)} "Apparatuses")
+           (dom/button #js {:className (get-class :things)
+                            :onClick   #(select-item :things)} "Things")))))))
 
 
 
@@ -1951,8 +1964,8 @@
            :documentation tabs-header
            :examples [
                       tabs
-                      tabs-inline
-                      tabs-block
+                      tabs-colors
+                      tabs-dropdown
                       ]}
           {:id :toolbar
            :title "Toolbar"

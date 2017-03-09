@@ -88,9 +88,9 @@
         selected-idx (get (om/props component) field)
         get-class    (fn [idx] (str "link" (if (= idx selected-idx) " is-active" "")))
         select-item  (fn [idx] (m/set-integer! component field :value idx))]
-    (dom/div #js {:className "c-menu--inline"}
+    (dom/div #js {:className "c-tabs u-end@md" :style #js {:marginTop "7px"}}
       (map-indexed (fn [idx nm]
-                     (dom/button #js {:className (str (get-class idx) " c-tab")
+                     (dom/button #js {:className (str (get-class idx) " c-tab c-tab--primary")
                                       :key       idx
                                       :onClick   #(select-item idx)} nm)) part-names))))
 
@@ -118,7 +118,7 @@
     (let [{:keys [ui/open results ui/search]} (om/props this)
           open       (and open (pos? (count results)))
           menu-class (str "c-dropdown__menu" (when open " is-active"))]
-      (dom/div #js {:className "c-dropdown"}
+      (dom/div #js {:className "c-dropdown u-hide@sm"}
         (dom/div #js {:className "c-field"}
           (uic/icon :search)
           (dom/input #js {:type        "text"
@@ -234,18 +234,9 @@
             (dom/a #js {:href "/"}
               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:margin "4px"}})))
           (dom/div #js {:className "c-toolbar__row"}
-            #_(dom/span #js {:className "u-font-size--semi-medium"} "UI Styleguide")
-
-
-            (dom/div #js {:className "u-column--3 u-hide@sm"}
-              (ui-search searchbar))
-
+            (ui-search searchbar)
             (dom/div #js {:className "c-toolbar__spacer u-hide@sm"})
-
-            (dom/div #js {:className "u-column u-column--5@md u-end@md"
-                          :style     #js {:marginTop "7px"}}
-              (tabs this :parts/selected-part part-names))
-            ))
+            (tabs this :parts/selected-part part-names)))
 
         (dom/main #js {:className "u-layout__content"}
           (dom/article #js {:className "o-article"}
