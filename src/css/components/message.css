@@ -4,7 +4,7 @@ section: Components
 ---*/
 
 :root {
-  --color-message: var(--color-informative);
+  --color-message: var(--color-neutral);
   --fontSize-message: var(--fontSize--tiny);
   --message: {
     color: var(--color-message);
@@ -36,8 +36,8 @@ section: Components
 }
 
 
-.c-message--neutral {
-  --color-message: var(--color-neutral);
+.c-message--informative {
+  --color-message: var(--color-informative);
   @apply --message;
 }
 
