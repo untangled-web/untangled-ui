@@ -154,8 +154,8 @@
 (defcard field-visual-regressions
   (dom/div nil
     (for [size [:normal :small :medium :large]
-          state [:none :required :focus :invalid :error]]
-      (e/ui-field {:size size :state #{state} :key (str size state (rand-int 256))} (str (name size) " " (name state) " field")))))
+          states [:valid :invalid :error]]
+      (e/ui-field {:size size :state states :key (str size states (rand-int 256))} (str (name size) " " (name states) " field")))))
 
 
 ;; TODO Need icon-bar
