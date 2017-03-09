@@ -237,7 +237,9 @@
 
   `:className` - additional class stylings to apply to the top level of the checkbox
   `:id` string - Name of the checkbox
-  `:style` :none (default), :indeterminate
+
+  TODO:
+  `:checked` - true, false, or :partial
   "
   [{:keys [id style] :or {id ""} :as attrs}]
   (let [legal-styles #{:indeterminate}
