@@ -125,16 +125,16 @@
              [:800 "#fda704"]
              [:900 "#fa9400"]])
 
-(def green [[:50 "#e6fff8"]
-            [:100 "#b6f5e3"]
-            [:200 "#8adec2"]
-            [:300 "#5ac7a1"]
-            [:400 "#09b081"]
-            [:500 "#00996e"]
-            [:600 "#008962"]
-            [:700 "#007a56"]
-            [:800 "#006d4d"]
-            [:900 "#005f43"]])
+(def green [[:50  "#def6f3"]
+            [:100 "#b6e7de"]
+            [:200 "#94d7ca"]
+            [:300 "#75c6b7"]
+            [:400 "#5ab4a3"]
+            [:500 "#42a291"]
+            [:600 "#2e9080"]
+            [:700 "#1e7f6f"]
+            [:800 "#106c5e"]
+            [:900 "#0a5a4e"]])
 
 (def grey [[:50 "#fcfcf9"]
            [:100 "#e4e3e0"]
@@ -147,9 +147,16 @@
            [:800 "#47473e"]
            [:900 "#33332a"]])
 
-(def magenta [[:500 "#d95db7"]])
-
-(def purple [[:a100 "#831dcb"]])
+(def purple [[:50  "#eaecf8"]
+              [:100 "#d2d4f0"]
+              [:200 "#b9bce7"]
+              [:300 "#a2a4dc"]
+              [:400 "#8b8ed0"]
+              [:500 "#7477c3"]
+              [:600 "#5e63b4"]
+              [:700 "#474ea4"]
+              [:800 "#303a93"]
+              [:900 "#152681"]])
 
 (def neutral [[:black "#000000"]
               [:white "#ffffff"]])
@@ -167,6 +174,10 @@
 
 This collection of CSS colors are intended to serve the interface of all our product applications and all the
 components you can see in this document.
+
+To make your own color palettes, it is recommended to start with 1-3 colors that work well together and use their HEX
+values with the [Chroma.js Color Scale Helper](https://gka.github.io/palettes/#colors=lightyellow,orange,deeppink,darkred|steps=10|bez=1|coL=1)
+so that you get 10 HEX values that are evenly distributed into a color scale.
 
 ##### Example Usage
 
@@ -187,7 +198,6 @@ components you can see in this document.
     (color-palette "Yellow" yellow)
     (color-palette "Green" green)
     (color-palette "Grey" grey)
-    (color-palette "Magenta" magenta)
     (color-palette "Purple" purple)
     (color-palette "" neutral)
 
