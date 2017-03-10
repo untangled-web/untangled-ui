@@ -9,19 +9,7 @@
 
 ;; Helpers
 
-(defn- ui-toggle
-  "Render a HTML input (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
-  `:className` - additional class stylings to apply to the top level of the checkbox
-  "
-  [{:keys [type className id] :as props}]
-  (let [classes className
-        attrs   (assoc props :type type
-                             :className classes
-                             :id id)]
-    (dom/span nil
-      (dom/input (clj->js attrs))
-      (dom/label #js {:htmlFor id} \u00A0))))
 
 (defn ui-fader
   "Wrap children in a span where the :visible attribute
@@ -198,17 +186,8 @@
 
    all paramters optional
     "
-  [{:keys [style
-           title
-           color
-           size
-           image
-           image-position
-           actions
-           media-type
-           media
-           ;; menu-icon
-           ;; menu-items
+  [{:keys [style title color size image image-position actions media-type media
+           ; TODO: menu-icon menu-items
            className] :as attrs} & children]
   {:pre [(or (nil? style) (keyword? style))
          (or (nil? title) (string? title))]}
@@ -246,20 +225,38 @@
               menu-items))))))
 
 
-(defn ui-checkbox
-  "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+(let [render-input (fn [{:keys [type id] :as props}]
+                     (dom/span nil
+                       (dom/input (clj->js props))
+                       (dom/label #js {:htmlFor id} \u00A0)))]
 
-  `:className` - additional class stylings to apply to the top level of the checkbox
-  `:id` string - Name of the checkbox
+  (defn ui-radio
+    "Render a HTML radio (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
-  TODO:
-  `:checked` - true, false, or :partial
-  "
-  [{:keys [id state] :or {id ""} :as attrs}]
-  (let [legal-states #{:indeterminate}
-        classes      (cond-> (str " c-checkbox ")
-                       (contains? legal-states state) (str " is-" (name state)))]
-    (ui-toggle {:type "checkbox" :className classes :id id})))
+    `:className` - additional class stylings to apply to the top level of the checkbox
+    `:id` - Required. A unique ID. Will not render correctly without one.
+    "
+    [{:keys [className id] :as props}]
+    (assert id "DOM ID is required on radio")
+    (let [classes (str className " c-radio")
+          attrs   (assoc props :type "radio"
+                               :className classes)]
+      (render-input attrs)))
+
+  (defn ui-checkbox
+    "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+
+    `:className` - additional class stylings to apply to the top level of the checkbox
+    `:id` string - Unique DOM ID. Required for correct rendering.
+    `:checked` - true, false, or :partial
+    "
+    [{:keys [id state checked] :as props}]
+    (assert id "DOM ID is required on checkbox")
+    (let [classes (cond-> (str " c-checkbox ")
+                    (= :partial checked) (str " is-" (name state)))
+          checked (boolean checked)
+          attrs   (assoc props :type "checkbox" :checked checked :className classes)]
+      (render-input attrs))))
 
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -510,21 +507,9 @@
   "
   [{:keys [max value className size] :or {className ""} :as props}]
   (let [legal-sizes #{:dense}
-        classes (cond-> (str className " c-progress ")
+        classes     (cond-> (str className " c-progress ")
                       (contains? legal-sizes size) (str " c-progress--" (name size)))
-        attrs   (assoc props :className classes)]
+        attrs       (assoc props :className classes)]
     (dom/progress (clj->js attrs))))
 
-(defn ui-radio
-  "Render a HTML radio (without the label). Props is a normal clj(s) map with React/HTML attributes plus:
 
-  `:className` - additional class stylings to apply to the top level of the checkbox
-
-  TODO: After modifying this to use ui-toggle the html attrs are not passing through.
-  "
-  [{:keys [className id] :as props}]
-  (let [classes (str className " c-radio ")
-        attrs   (assoc props :type "radio"
-                             :className classes
-                             :id id)]
-    (ui-toggle {:type "radio" :className classes :id id})))
