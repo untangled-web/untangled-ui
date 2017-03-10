@@ -3,7 +3,7 @@
   --shadow-drawer: var(--shadow-2);
   --backgroundColor-drawer-header: var(--white);
   --borderColor-drawer: var(--borderColor);
-  --color-drawer-header: var(--color-page);
+  --color-drawer-header: var(--color-text);
 }
 
 .c-drawer {
@@ -68,7 +68,7 @@
 
 .c-drawer__action {
   background-color: var(--white);
-  color: var(--color-page);
+  color: var(--color-text);
   display: inline-block;
   font-family: inherit;
   font-size: 18px;

@@ -10,7 +10,7 @@ section: Elements
 
 :root {
   /* stylelint-disable root-no-standard-properties */
-  background-color: var(--backgroundColor-page);
+  background-color: var(--color-page);
   box-sizing: border-box;
   cursor: default;
   margin: 0;

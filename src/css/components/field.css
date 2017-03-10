@@ -19,7 +19,7 @@ section: Components
   border-bottom: solid var(--borderColor-field);
   border-radius: 0;
   border-width: 0 0 1px;
-  color: var(--color-page);
+  color: var(--color-text);
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -60,7 +60,7 @@ section: Components
 
 
   &.is-error {
-     border-bottom-color: var(--color-negative);
+     border-bottom-color: var(--borderColor-field--error);
      border-width: 0 0 2px;
      padding-bottom: 0;
   }

@@ -13,6 +13,7 @@
   color: var(--color-toolbar-secondary);
   font-size: var(--fontSize--normalPlus);
   position: relative;
+  width: 100%;
 }
 
 .c-toolbar--raised { box-shadow: var(--shadow-2); }
@@ -48,8 +49,13 @@
   align-self: stretch;
   flex-wrap: nowrap;
   margin: 0;
-  padding: 0 40px 0 80px;
+  padding: 0;
   min-height: var(--height-toolbar);
+
+  @media (--md-up) {
+    padding: 0 40px 0 80px;
+  }
+
 
   * { flex-shrink: 0; }
 

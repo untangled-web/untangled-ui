@@ -60,3 +60,21 @@ section: Components
 .c-tab--contrast {
   &.is-active { border-bottom-color: currentColor; }
 }
+
+/* Inside a menu */
+
+.has-menu {
+  & > .c-tab,
+  &.c-tab {
+    &::before {
+       @apply --triangle;
+       @apply --triangle-bottom;
+       border-width: 5px 4px 0;
+       content: "";
+       float: right;
+       margin: 3px 0 0 12px;
+       position: relative;
+       vertical-align: middle;
+    }
+  }
+}

@@ -9,7 +9,7 @@ section: Elements
 
 :root {
   /* stylelint-disable root-no-standard-properties */
-  color: var(--color-page);
+  color: var(--color-text);
   font: var(--fontSize-page) / var(--lineHeight-page) var(--fontFamily-page);
   font-weight: var(--fontWeight-page);
   text-rendering: optimizeLegibility;
@@ -33,7 +33,7 @@ section: Elements
 
 ::selection {
   background-color: #add7ff;
-  color: var(--color-page);
+  color: var(--color-text);
   text-shadow: none;
 }
 

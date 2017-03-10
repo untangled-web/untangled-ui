@@ -53,7 +53,9 @@ gulp.task('styles', () => {
     postcssCustomMedia,
     postcssCustomSelectors,
     postcssNested,
-    postcssCssVariables,
+    postcssCssVariables({
+      preserve: 'computed'
+    }),
     postcssSelectorNot,
     postcssCalc,
     postcssColor,

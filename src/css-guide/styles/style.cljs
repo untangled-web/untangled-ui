@@ -47,10 +47,11 @@
 
 
 (defn color-block [color name hue-name]
-  (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
-  <span class='swatch__name'>--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-") )  name "</span>
-  <span class='swatch__code'>" color "</span>
-  </div>"))
+  (let [color-var-name (str "--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-")) name)]
+    (str "<div class='swatch' style='" (when (is-dark? color) "color: #fff;") "  background-color: var("color-var-name");'>
+  <span class='swatch__name'>"color-var-name"</span>
+  <span class='swatch__code'>" #_color "</span>
+  </div>")))
 
 
 (defn color-palette [hue-name color]
@@ -103,27 +104,27 @@
             [:800 "#106c5e"]
             [:900 "#0a5a4e"]])
 
-(def grey [[:50 "#fcfcf9"]
-           [:100 "#e4e3e0"]
-           [:200 "#cbcbc7"]
-           [:300 "#b4b4ae"]
-           [:400 "#9d9c96"]
-           [:500 "#86857e"]
-           [:600 "#706f68"]
-           [:700 "#5b5b52"]
-           [:800 "#47473e"]
-           [:900 "#33332a"]])
+(def grey [[:50 "#f9f9f9"]
+           [:100 "#dfdfdf"]
+           [:200 "#c6c6c6"]
+           [:300 "#aeaeae"]
+           [:400 "#969696"]
+           [:500 "#808080"]
+           [:600 "#696969"]
+           [:700 "#555555"]
+           [:800 "#3f3f3f"]
+           [:900 "#2c2c2c"]])
 
-(def purple [[:50  "#eaecf8"]
-              [:100 "#d2d4f0"]
-              [:200 "#b9bce7"]
-              [:300 "#a2a4dc"]
-              [:400 "#8b8ed0"]
-              [:500 "#7477c3"]
-              [:600 "#5e63b4"]
-              [:700 "#474ea4"]
-              [:800 "#303a93"]
-              [:900 "#152681"]])
+(def blue [[:50  "#eaecf8"]
+           [:100 "#d2d4f0"]
+           [:200 "#b9bce7"]
+           [:300 "#a2a4dc"]
+           [:400 "#8b8ed0"]
+           [:500 "#7477c3"]
+           [:600 "#5e63b4"]
+           [:700 "#474ea4"]
+           [:800 "#303a93"]
+           [:900 "#152681"]])
 
 (def neutral [[:black "#000000"]
               [:white "#ffffff"]])
@@ -150,7 +151,7 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
 ```css
 .c-button {
-  background-color: var(--purple-200);
+  background-color: var(--blue-200);
   color: var(--white);
 }
 ```
@@ -160,7 +161,7 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 "
 
     (color-palette "Green" green)
-    (color-palette "Purple" purple)
+    (color-palette "Blue" blue)
     (color-palette "Red" red)
     (color-palette "Grey" grey)
     (color-palette "" neutral)
@@ -183,23 +184,20 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
 "
 
-    (color-theme "Backgrounds & Borders" [[:--backgroundColor-page (get-color neutral 1)]
-                                          [:--color-shadow         "rgba(51, 51, 42, .6)"]
+    (color-theme "Backgrounds & Borders" [[:--color-page           (get-color neutral 1)]
                                           [:--color-primary        (get-color green 5)]
-                                          [:--color-secondary      (get-color purple 5)]
-                                          [:--highlight-announcement (get-color purple 0)]
-                                          [:--highlight-error        (get-color red 1)]
-                                          [:--highlight-success      (get-color green 0)]
-                                          [:--highlight-warning      (get-color red 0)]])
+                                          [:--color-accent         (get-color blue 5)]
+                                          [:--color-neutral        (get-color grey 5)]
+                                          [:--highlight-primary    (get-color green 1)]
+                                          [:--highlight-accent     (get-color blue 1)]
+                                          [:--highlight-neutral    (get-color grey 1)]])
 
 
 
-    (color-theme "Type Colors" [[:--color-page        (get-color grey 8)]
+    (color-theme "Type Colors" [[:--color-text        (get-color grey 8)]
                                 [:--color-placeholder (get-color grey 5)]
-                                [:.is-positive        (get-color green 6)]
-                                [:.is-informative     (get-color purple 9)]
-                                [:.is-neutral         (get-color grey 5)]
-                                [:.is-negative        (get-color red 7)]])
+                                [:--color-link        (get-color green 5)]
+                                ])
 
 
     (color-theme "Social Media" [[:--facebook "#4c66a4"]

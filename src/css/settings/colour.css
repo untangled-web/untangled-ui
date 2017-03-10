@@ -1,8 +1,3 @@
-/*---
-title: Colour
-section: Settings
----*/
-
 /*------------------------------------*\
   #COLOUR PALETTE
 \*------------------------------------*/
@@ -24,16 +19,16 @@ section: Settings
   --green-800: #106c5e;
   --green-900: #0a5a4e;
 
-  --purple-50:  #eaecf8;
-  --purple-100: #d2d4f0;
-  --purple-200: #b9bce7;
-  --purple-300: #a2a4dc;
-  --purple-400: #8b8ed0;
-  --purple-500: #7477c3;
-  --purple-600: #5e63b4;
-  --purple-700: #474ea4;
-  --purple-800: #303a93;
-  --purple-900: #152681;
+  --blue-50:  #eaecf8;
+  --blue-100: #d2d4f0;
+  --blue-200: #b9bce7;
+  --blue-300: #a2a4dc;
+  --blue-400: #8b8ed0;
+  --blue-500: #7477c3;
+  --blue-600: #5e63b4;
+  --blue-700: #474ea4;
+  --blue-800: #303a93;
+  --blue-900: #152681;
 
   --red-50:  #f6e6df;
   --red-100: #fbc7b2;
@@ -46,16 +41,16 @@ section: Settings
   --red-800: #78260c;
   --red-900: #5a1b0a;
 
-  --grey-50:  #f5f5f0;
-  --grey-100: #eeeee7;
-  --grey-200: #ddddd4;
-  --grey-300: #ccccc2;
-  --grey-400: #b3b2a8;
-  --grey-500: #9a998f;
-  --grey-600: #818076;
-  --grey-700: #6a695f;
-  --grey-800: #535348;
-  --grey-900: #3d3d33;
+  --grey-50:  #f9f9f9;
+  --grey-100: #dfdfdf;
+  --grey-200: #c6c6c6;
+  --grey-300: #aeaeae;
+  --grey-400: #969696;
+  --grey-500: #808080;
+  --grey-600: #696969;
+  --grey-700: #555;
+  --grey-800: #3f3f3f;
+  --grey-900: #2c2c2c;
 
   --black:      #000;
   --white:      #fff;
@@ -74,21 +69,23 @@ section: Settings
 /* Type and Globals */
 
 :root {
-  --color-page: var(--grey-800);
-  --color-placeholder: var(--grey-500);
-
   --color-primary: var(--green-500);
   --color-primary-dark: var(--green-700);
-  --color-accent: var(--purple-500);
-  --color-accent-dark: var(--purple-700);
+  --color-accent: var(--blue-500);
+  --color-accent-dark: var(--blue-700);
   --color-primary-contrast: var(--white);
   --color-accent-contrast: var(--white);
   --color-neutral: var(--grey-500);
 
-  --backgroundColor-page: var(--white);
+  --color-text: var(--grey-800);
+  --color-placeholder: var(--grey-500);
+  --color-link: var(--color-primary);
+
+  --color-page: var(--white);
   --borderColor: var(--grey-300);
   --borderColor-inactive: var(--grey-200);
 }
+
 
 /* Backgrounds and Borders */
 
@@ -154,7 +151,7 @@ section: Settings
 
   /* Menu */
 
-  --color-menu: var(--color-page);
+  --color-menu: var(--color-text);
   --color-menu-background: var(--white);
   --color-menu-link-background: transparent;
   --color-menu-link-background-enter: var(--grey-100);
@@ -201,27 +198,16 @@ section: Settings
 
   --backgroundColor-modal: var(--white);
   --backgroundColor-modal__title: var(--grey-200);
-  --color-modal__title: var(--color-page);
+  --color-modal__title: var(--color-text);
   --color-modal__action: rgba(255, 255, 255, .5);
 
+  /* Progress */
+  --color-progress: var(--color-primary);
+  --color-progress--secondary: color(var(--color-primary) a(25%));
+  --color-progress--indeterminate: var(--grey-300);
+
 }
 
-/* Navigation Colours */
-
-:root {
-  --backgroundColor-nav-active: var(--color-primary);
-  --backgroundColor-toolbar: var(--color-primary);
-  --backgroundColor-toolbar-secondary: var(--color-primary);
-  --borderColor-nav-active: var(--purple-900);
-  --borderColor-nav-hover: var(--purple-900);
-  --color-link: var(--color-primary);
-  --color-nav-active: var(--purple-900);
-  --color-nav-hover: var(--white);
-  --color-sidebar__toggle: var(--white);
-  --color-toolbar-secondary: var(--grey-500);
-  --color-toolbar-small: var(--grey-900);
-  --shadow-sidebar: rgba(0, 0, 0, .3);
-}
 
 /* Shadows */
 
@@ -242,10 +228,9 @@ section: Settings
 /* Highlight */
 
 :root {
-  --highlight-announcement: var(--purple-50);
-  --highlight-error: var(--red-100);
-  --highlight-success: var(--green-50);
-  --highlight-warning: var(--red-50);
+  --highlight-primary: var(--green-100);
+  --highlight-accent: var(--blue-100);
+  --highlight-neutral: var(--grey-100);
 }
 
 /* Social Media */

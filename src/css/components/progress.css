@@ -1,7 +1,4 @@
 :root {
-  --color-progress: var(--color-primary);
-  --color-progress--secondary: color(var(--color-primary) a(25%));
-  --color-progress--indeterminate: var(--grey-300);
   --height-progress: 4px;
   --height-progress--dense: calc(var(--height-progress) - 2);
 }
@@ -25,7 +22,7 @@
     animation-duration: .2s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-    background-color: var(--purple-500);
+    background-color: var(--color-progress);
   }
 
   & .c-progress__bar:first-child {

@@ -10,7 +10,7 @@
        [hickory.core :as hc]
        [untangled.client.mutations :as m]
        [untangled.client.core :as uc]
-       [untangled.ui.elements :as ue]
+       [untangled.ui.elements :as e]
        [om.next :as om :refer [defui]]
        [om.dom :as dom]
        [devcards.util.markdown :as md]
@@ -121,7 +121,10 @@
             (~'render [this#]
               (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
                  (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
-                   (~symfn this#))
+                   (e/ui-iframe {:height "570" :width "100%"}
+                     (om.dom/div nil
+                       (om.dom/link (cljs.core/clj->js {:rel "stylesheet" :href "css/untangled-ui.css"}))
+                       (~symfn this#))))
                  (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
                    (om.dom/div nil (devcards.core/markdown->react ~doc)))
                  )

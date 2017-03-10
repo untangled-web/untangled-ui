@@ -324,3 +324,51 @@ section: Components
 }
 
 
+/* Inside Menu */
+
+
+.has-menu {
+
+  & > .c-button,
+  &.c-button {
+    border-bottom: var(--grey-200) 1px solid;
+    font-size: inherit;
+    font-weight: normal;
+    margin: 6px 0;
+    text-align: left;
+    text-transform: none;
+    width: 100%;
+
+    &::before {
+     @apply --triangle;
+     @apply --triangle-bottom;
+     border-width: 5px 4px 0;
+     color: var(--grey-600);
+     content: "";
+     float: right;
+     margin: 1em .5rem 1em .75rem;
+     position: relative;
+     transition: transform .3s ease;
+     vertical-align: middle;
+   }
+  }
+
+
+  /* Flip the arrow to show the menu is open */
+  &:--active {
+    & > .c-button,
+    &.c-button {
+      &::before { transform: rotate(180deg); }
+    }
+  }
+
+
+  & > .c-button--wide,
+  &.c-button--wide {
+     height: auto;
+     margin-left: 0;
+     margin-right: 0;
+     padding: 4px 16px;
+     text-align: left;
+   }
+}

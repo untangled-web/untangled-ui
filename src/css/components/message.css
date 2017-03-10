@@ -6,52 +6,25 @@ section: Components
 :root {
   --color-message: var(--color-neutral);
   --fontSize-message: var(--fontSize--tiny);
-  --message: {
-    color: var(--color-message);
-    font-size: var(--fontSize-message);
-    transition: color var(--global-duration) ease;
-  };
 }
 
 
 .c-message {
-  @apply --message;
-
-  :--fullscreen & {
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
+  color: var(--color-message);
+  font-size: var(--fontSize-message);
+  transition: color var(--global-duration) ease;
 }
 
 
 .c-message--primary {
-  --color-message: var(--color-positive);
-  @apply --message;
-
-  :--fullscreen & {
-    --color-message: green;
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
+  color: var(--color-primary);
 }
 
 
 .c-message--accent {
-  --color-message: var(--color-informative);
-  @apply --message;
+  color: var(--color-accent);
 }
 
-
-.c-message--alert {
-  --color-message: var(--color-negative);
-  @apply --message;
-
-  :--fullscreen & {
-    --color-message: red;
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
+.is-error + .c-message {
+  color: var(--red-400);
 }
-
-
-.c-message--cap { text-transform: uppercase; }

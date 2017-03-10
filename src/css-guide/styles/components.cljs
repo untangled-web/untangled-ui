@@ -826,16 +826,6 @@
                 (dom/figcaption #js {} (str ".c-icon" sz)))
               ) sizes))))
 
-(defexample icon-colors
-  "### Colors "
-  (let [colors ["positive" "informative" "neutral" "negative"]]
-    (dom/div #js {}
-      (mapv (fn [color]
-              (dom/figure #js {:key color}
-                (dom/span #js {:className (str "c-icon is-" color)}
-                  (icons/icon :alarm))
-                (dom/figcaption #js {} (str "is-" color)))
-              ) colors))))
 
 (defexample icon-states
   "### States
@@ -1019,10 +1009,8 @@
   "A basic message"
   (dom/div #js {}
     (dom/div #js {:className "c-message"} "This is a message")
-    (dom/div #js {:className "c-message--neutral"} "This is a neutral message")
-    (dom/div #js {:className "c-message--alert"} "This is an alert message")
-    (dom/div #js {:className "c-message--success"} "This is a successful message")
-    (dom/div #js {:className "c-message--warning"} "This is a warning message")))
+    (dom/div #js {:className "c-message c-message--primary"} "This is a primary message")
+    (dom/div #js {:className "c-message c-message--accent"} "This is an accent message")))
 
 ;; -------------------------
 ;; Notifications
@@ -1104,8 +1092,16 @@
       (dom/progress #js {:className "c-progress"}))
 
     (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Indeterminate & Dense")
+      (dom/progress #js {:className "c-progress c-progress--dense"}))
+
+    (dom/div #js {:className "u-trailer"}
       (dom/h4 nil "Value")
-      (dom/progress #js {:className "c-progress" :max "100" :value "70"}))))
+      (dom/progress #js {:className "c-progress" :max "100" :value "70"}))
+
+    (dom/div #js {:className "u-trailer"}
+      (dom/h4 nil "Value & Small")
+      (dom/progress #js {:className "c-progress c-progress--dense" :max "100" :value "70"}))))
 
 
 
@@ -1874,7 +1870,6 @@
            :examples [
                       icons
                       icon-sizes
-                      icon-colors
                       icon-states
                       icon-library
                       ]}

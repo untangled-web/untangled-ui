@@ -3,6 +3,7 @@
             [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defviewport]]
             [untangled.icons :as icons]
             [untangled.ui.layout :as l]
+            [untangled.ui.elements :as e]
             [om.dom :as dom]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -23,7 +24,7 @@
 (defviewport errors-form
   "A basic form"
   (dom/span nil
-    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "absolute"}};; Style for example
+    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"};; Style for example
       (dom/div #js {:className "c-toolbar__row"}
        (dom/div #js {:className "c-toolbar__view"}
          (dom/button #js {:className "c-button c-button--icon"}
@@ -83,7 +84,7 @@
 (defviewport errors-form-filled
   "Filled out form"
   (dom/span nil
-    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary" :style #js {:position "absolute"}} ;; Style for example
+    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"} ;; Style for example
       (dom/div #js {:className "c-toolbar__row"}
        (dom/div #js {:className "c-toolbar__view"}
          (dom/button #js {:className "c-button c-button--icon"}
