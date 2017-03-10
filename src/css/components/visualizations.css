@@ -23,7 +23,7 @@ section: Objects
 
   .o-line-graph__value-line {
     fill: none;
-    stroke: var(--blue-600);
+    stroke: var(--color-primary);
     stroke-linecap: round;
     stroke-linejoin: bevel;
     stroke-width: 16px;

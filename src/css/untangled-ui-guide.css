@@ -12,7 +12,7 @@ import: ../README.md
 .box--large,
 .box-nested,
 .box-row {
-  background-color: var(--color-primary);
+  background-color: var(--purple-400);
   color: var(--white);
   font-size: var(--fontSize--tiny);
   min-height: 2em;
@@ -22,9 +22,9 @@ import: ../README.md
   text-align: center;
 }
 
-.box-first { background-color: var(--blue-600); }
+.box-first { background-color: var(--purple-600); }
 
-.box-nested { background-color: var(--blue-700); }
+.box-nested { background-color: var(--purple-700); }
 
 .box--large { height: 5rem; }
 
@@ -122,13 +122,13 @@ import: ../README.md
   .o-footer { padding: 1em; }
 
   .o-header {
-    background-color: var(--blue-900);
+    background-color: var(--purple-900);
     color: var(--white);
     position: static;
   }
 
   .o-nav {
-    background-color: var(--blue-50);
+    background-color: var(--purple-50);
     flex: 1 6 20%;
     order: 1;
   }

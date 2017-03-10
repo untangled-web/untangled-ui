@@ -62,7 +62,7 @@ section: Components
 
   &:checked + .c-switch__paddle {
   &::before {
-     background-color: var(--blue-700);
+     background-color: var(--color-primary);
      left: calc(100% - 20px);
    }
 

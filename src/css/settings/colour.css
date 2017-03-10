@@ -13,39 +13,6 @@ section: Settings
 /* stylelint-disable rule-properties-order */
 
 :root {
-  --orange-50:  #ffcc80;
-  --orange-100: #ffc16d;
-  --orange-200: #ffb75c;
-  --orange-300: #ffad4a;
-  --orange-400: #fea139;
-  --orange-500: #ff9800;
-  --orange-600: #f98d1d;
-  --orange-700: #f6820f;
-  --orange-800: #f37703;
-  --orange-900: #ef6c00;
-
-  --blue-50:  #b3dbff;
-  --blue-100: #9cccfc;
-  --blue-200: #84bdfa;
-  --blue-300: #6aaff7;
-  --blue-400: #47a0f4;
-  --blue-500: #2196f3;
-  --blue-600: #1e82de;
-  --blue-700: #1a6dc9;
-  --blue-800: #155ab5;
-  --blue-900: #0d47a1;
-
-  --red-50:  #f6e6df;
-  --red-100: #fbc7b2;
-  --red-200: #fba986;
-  --red-300: #f7895b;
-  --red-400: #ef6830;
-  --red-500: #dd4907;
-  --red-600: #bb3d0a;
-  --red-700: #99320c;
-  --red-800: #78260c;
-  --red-900: #5a1b0a;
-
   --green-50:  #def6f3;
   --green-100: #b6e7de;
   --green-200: #94d7ca;
@@ -67,6 +34,17 @@ section: Settings
   --purple-700: #474ea4;
   --purple-800: #303a93;
   --purple-900: #152681;
+
+  --red-50:  #f6e6df;
+  --red-100: #fbc7b2;
+  --red-200: #fba986;
+  --red-300: #f7895b;
+  --red-400: #ef6830;
+  --red-500: #dd4907;
+  --red-600: #bb3d0a;
+  --red-700: #99320c;
+  --red-800: #78260c;
+  --red-900: #5a1b0a;
 
   --grey-50:  #f5f5f0;
   --grey-100: #eeeee7;
@@ -99,12 +77,9 @@ section: Settings
   --color-page: var(--grey-800);
   --color-placeholder: var(--grey-500);
   --color-positive: var(--green-600);
-  --color-informative: var(--blue-900);
+  --color-informative: var(--purple-900);
   --color-neutral: var(--grey-500);
-  --color-alterable: var(--orange-800);
   --color-negative: var(--red-700);
-
-  --color-shadow: rgba(51, 51, 42, .6);
 
   --color-primary: var(--green-500);
   --color-primary-dark: var(--green-700);
@@ -173,11 +148,9 @@ section: Settings
   /* Control */
 
   --color-control-background: var(--white);
-  --color-control-background--alterable: var(--orange-100);
   --color-control-background--negative: var(--red-100);
   --color-control-background--positive: var(--green-100);
   --color-control-border: var(--grey-500);
-  --color-control-border--alterable: var(--orange-600);
   --color-control-border--negative: var(--red-500);
   --color-control-border--positive: var(--green-500);
 
@@ -209,9 +182,6 @@ section: Settings
 
   /* Input */
 
-  --backgroundColor-input--note: var(--orange-100);
-  --borderColor-input--note: var(--orange-400);
-
 
   /* Label */
 
@@ -228,16 +198,12 @@ section: Settings
   --color-loader--primary: var(--color-primary);
   --color-loader--accent: var(--color-accent);
   --color-loader--alt: var(--grey-200);
-  --color-loader-secondary: var(--blue-300);
 
 
   /* Modal */
 
   --backgroundColor-modal: var(--white);
   --backgroundColor-modal__title: var(--grey-200);
-  --backgroundColor-modal--primary:  var(--blue-800);
-  --backgroundColor-modal--success: var(--green-800);
-  --backgroundColor-modal--warning: var(--orange-700);
   --color-modal__title: var(--color-page);
   --color-modal__action: rgba(255, 255, 255, .5);
 
@@ -246,17 +212,13 @@ section: Settings
 /* Navigation Colours */
 
 :root {
-  --backgroundColor-nav-active: var(--orange-900);
-  --backgroundColor-sidebar: var(--white);
-  --backgroundColor-sidebar__toggle: var(--grey-200);
-  --backgroundColor-sidebar__toggle--hover: var(--grey-300);
+  --backgroundColor-nav-active: var(--color-primary);
   --backgroundColor-toolbar: var(--color-primary);
   --backgroundColor-toolbar-secondary: var(--color-primary);
-  --backgroundColor-toolbar-small: var(--blue-50);
-  --borderColor-nav-active: var(--blue-900);
-  --borderColor-nav-hover: var(--blue-900);
-  --color-link: var(--blue-700);
-  --color-nav-active: var(--blue-900);
+  --borderColor-nav-active: var(--purple-900);
+  --borderColor-nav-hover: var(--purple-900);
+  --color-link: var(--color-primary);
+  --color-nav-active: var(--purple-900);
   --color-nav-hover: var(--white);
   --color-sidebar__toggle: var(--white);
   --color-toolbar-secondary: var(--grey-500);
@@ -277,16 +239,16 @@ section: Settings
   --shadow-menu-picker:
     inset 0 10px 11px -7px rgba(0, 0, 0, .5),
     inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
-  --toggle-focus-shadow: 0 0 6px var(--blue-600);
+  --toggle-focus-shadow: 0 0 6px var(--color-primary);
 }
 
 /* Highlight */
 
 :root {
-  --highlight-announcement: var(--blue-50);
-  --highlight-error: var(--red-50);
+  --highlight-announcement: var(--purple-50);
+  --highlight-error: var(--red-100);
   --highlight-success: var(--green-50);
-  --highlight-warning: var(--orange-50);
+  --highlight-warning: var(--red-50);
 }
 
 /* Social Media */
@@ -303,29 +265,4 @@ section: Settings
   --twitter: #2fc2ef;
 }
 
-/* DEPRECATED Colors */
-
-:root {
-  /* Legacy Colors */
-  --color-secondary: var(--color-accent);
-  --background-color: var(--backgroundColor-page);
-  --body-copy: var(--color-page);
-  --placeholder-copy: var(--grey-500);
-  --positive-copy: var(--green-600);
-  --informative-copy: var(--blue-700);
-  --neutral-copy: var(--grey-700);
-  --alterable-copy: var(--orange-700);
-  --negative-copy: var(--red-600);
-  --shadow-color: var(--color-shadow);
-  --primary-color: var(--color-primary);
-  --secondary-color: var(--color-secondary);
-
-  --nav-color: var(--primary-color);
-  --nav-copy: var(--grey-500);
-  --nav-active-color: var(--blue-500);
-  --nav-active-copy: var(--white);
-  --link-color: var(--blue-700);
-  --bar-color: var(--primary-color);
-  --bar-border-color: var(--nav-active-color);
-}
 /* stylelint-enable */

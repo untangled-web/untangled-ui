@@ -1,6 +1,6 @@
 :root {
   --backgroundColor-drawer: var(--white);
-  --shadow-drawer: 0 0 5px var(--color-shadow);
+  --shadow-drawer: var(--shadow-2);
   --backgroundColor-drawer-header: var(--white);
   --borderColor-drawer: var(--borderColor);
   --color-drawer-header: var(--color-page);
@@ -53,7 +53,7 @@
 }
 
 .c-drawer__product {
-  color: var(--orange-900);
+  color: var(--color-primary);
   display: inline-block;
   font-size: 22px;
   font-weight: normal;
@@ -81,12 +81,12 @@
 
   &:--active {
      background-color: var(--grey-100);
-     color: var(--orange-900);
+     color: var(--color-primary);
   }
 
   .c-icon {
     color: var(--grey-700);
-    fill: var(--orange-900);
+    fill: var(--color-primary);
     margin-right: .5em;
   }
 }

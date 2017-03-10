@@ -81,28 +81,6 @@
   (val (nth hue weight)))
 
 
-(def blue [[:50 "#f0faff"]
-           [:100 "#cbdfee"]
-           [:200 "#a6c6dd"]
-           [:300 "#81adcc"]
-           [:400 "#5795bb"]
-           [:500 "#1c7dab"]
-           [:600 "#146590"]
-           [:700 "#0d4d76"]
-           [:800 "#05375c"]
-           [:900 "#0d2c54"]])
-
-(def orange [[:50 "#fff3e0"]
-             [:100 "#ffe5c8"]
-             [:200 "#ffd5af"]
-             [:300 "#ffc595"]
-             [:400 "#ffb67c"]
-             [:500 "#fea661"]
-             [:600 "#fa9748"]
-             [:700 "#f5872c"]
-             [:800 "#f07700"]
-             [:900 "#cc5000"]])
-
 (def red [[:50 "#f6e6df"]
           [:100 "#fbc7b2"]
           [:200 "#fba986"]
@@ -172,7 +150,7 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
 ```css
 .c-button {
-  background-color: var(--blue-200);
+  background-color: var(--purple-200);
   color: var(--white);
 }
 ```
@@ -183,8 +161,6 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
     (color-palette "Green" green)
     (color-palette "Purple" purple)
-    (color-palette "Blue" blue)
-    (color-palette "Orange" orange)
     (color-palette "Red" red)
     (color-palette "Grey" grey)
     (color-palette "" neutral)
@@ -211,19 +187,18 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
                                           [:--color-shadow         "rgba(51, 51, 42, .6)"]
                                           [:--color-primary        (get-color green 5)]
                                           [:--color-secondary      (get-color purple 5)]
-                                          [:--highlight-announcement (get-color blue 0)]
-                                          [:--highlight-error        (get-color red 0)]
+                                          [:--highlight-announcement (get-color purple 0)]
+                                          [:--highlight-error        (get-color red 1)]
                                           [:--highlight-success      (get-color green 0)]
-                                          [:--highlight-warning      (get-color orange 0)]])
+                                          [:--highlight-warning      (get-color red 0)]])
 
 
 
     (color-theme "Type Colors" [[:--color-page        (get-color grey 8)]
                                 [:--color-placeholder (get-color grey 5)]
                                 [:.is-positive        (get-color green 6)]
-                                [:.is-informative     (get-color blue 9)]
+                                [:.is-informative     (get-color purple 9)]
                                 [:.is-neutral         (get-color grey 5)]
-                                [:.is-alterable       (get-color orange 8)]
                                 [:.is-negative        (get-color red 7)]])
 
 
@@ -236,12 +211,6 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
                                  [:--trustyou "#3498db"]
                                  [:--tumblr "#35465c"]
                                  [:--twitter "#2fc2ef"]])
-
-
-    #_(color-theme "Highlights" [[:--highlight-announcement (get-color blue 0)]
-                                 [:--highlight-error        (get-color red 0)]
-                                 [:--highlight-success      (get-color green 0)]
-                                 [:--highlight-warning      (get-color yellow 0)]])
 
 
     "

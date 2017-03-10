@@ -8,7 +8,7 @@ section: Components
 :root {
   --color-icon: currentColor;
   --color-icon--passive: var(--grey-200);
-  --color-icon--active: var(--blue-400);
+  --color-icon--active: var(--color-primary);
   --margin-button__icon: 7px;
   --opacity-button--disabled: .35;
   --size-button__icon: 20px;

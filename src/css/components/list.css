@@ -75,7 +75,7 @@
 
 
     &.is-active {
-      background-color: var(--blue-700);
+      background-color: var(--color-primary);
       color: var(--white);
 
       .c-icon,

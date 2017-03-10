@@ -33,7 +33,7 @@
     position: relative;
 
     small {
-      color: var(--blue-800);
+      color: var(--color-primary);
       margin-bottom: 2em;
     }
   }

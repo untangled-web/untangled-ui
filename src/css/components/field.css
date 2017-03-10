@@ -5,8 +5,8 @@ section: Components
 
 :root {
   --borderColor-field: var(--grey-200);
-  --borderColor-field--focus: var(--blue-400);
-  --borderColor-field--invalid: var(--orange-500);
+  --borderColor-field--focus: var(--color-primary);
+  --borderColor-field--invalid: var(--red-200);
   --borderColor-field--error: var(--red-400);
   --field-font-size: 16px;
   --field-font-size--dense: 13px;

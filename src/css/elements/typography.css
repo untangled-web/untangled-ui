@@ -67,9 +67,7 @@ section: Elements
   }
 }
 
-a {
-  color: var(--blue-700);
-}
+a { color: var(--color-link); }
 
 a[href^="http"] {
   cursor: pointer;

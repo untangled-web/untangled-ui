@@ -6,11 +6,11 @@ section: Components
 @import "card";
 
 :root {
-  --backgroundColor-notification--informative: var(--blue-400);
+  --backgroundColor-notification--informative: var(--color-primary);
   --color-notification--informative: var(--white);
-  --color-notification-icon: var(--blue-500);
+  --color-notification-icon: var(--color-primary);
   --color-notification-icon--success: var(--green-700);
-  --color-notification-icon--warning: var(--orange-700);
+  --color-notification-icon--warning: var(--red-300);
   --color-notification-icon--error: var(--red-700);
 }
 

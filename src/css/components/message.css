@@ -42,12 +42,6 @@ section: Components
 }
 
 
-.c-message--warning {
-  --color-message: var(--color-alterable);
-  @apply --message;
-}
-
-
 .c-message--alert {
   --color-message: var(--color-negative);
   @apply --message;
