@@ -1,6 +1,6 @@
 :root {
-  --backgroundColor-badge: var(--grey-400);
-  --color-badge: var(--white);
+  --color-badge: var(--grey-400);
+  --color-badge--secondary: var(--white);
   --borderRadius-badge: 50px;
   --marginRight-badge: 6px;
   --padding-badge: 3px 8px;
@@ -10,12 +10,12 @@
 }
 
 .c-badge {
-  background-color: var(--backgroundColor-badge);
+  background-color: var(--color-badge);
   border-radius: var(--borderRadius-badge);
-  color: var(--color-badge);
+  color: var(--color-badge--secondary);
   display: inline-block;
   font-size: var(--fontSize--tiny);
-  line-height: 22px;
+  line-height: 12px;
   max-width: 100%;
   outline: 0;
   padding: var(--padding-badge);
@@ -33,11 +33,15 @@
 
   .c-button & {
     background-color: var(--white);
-    color: var(--color-button-alt--primary);
+    color: var(--color-text);
     margin-bottom: 3px;
   }
 
-  .c-icon:last-child { margin-left: 3px; }
+  .c-button--primary & { color: var(--color-button-alt--primary); }
+
+  .c-button--accent & { color: var(--color-button-accent--primary); }
+
+  .c-icon:last-child:not(:first-child) { margin-left: 3px; }
 }
 
 .c-badge--small {
