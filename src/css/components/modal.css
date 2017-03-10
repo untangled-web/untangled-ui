@@ -3,7 +3,7 @@
   --fontSize-modal__title: 20px;
 }
 
-.c-modal {
+.c-dialog {
   @apply --fade-out;
   @apply --position-top-left;
   @apply --text-center;
@@ -22,7 +22,7 @@
 }
 
 
-  .c-modal__card {
+  .c-dialog__card {
     background-color: var(--backgroundColor-modal);
     border-radius: calc(var(--global-rounded) / 2);
     box-shadow: var(--shadow-2);
@@ -38,39 +38,39 @@
     }
   }
 
-  .c-modal__title {
+  .c-dialog__title {
     font-size: var(--fontSize-modal__title);
     padding: 1em 1rem .85em;
   }
 
 
-  .c-modal__content {
+  .c-dialog__content {
     max-height: calc(100vh - 260px);
     overflow-y: scroll;
     padding: .85em 1rem 1em;
 
     &:first-child { padding-top: 1.25em; }
 
-    .c-modal__title + & { padding-top: 0; }
+    .c-dialog__title + & { padding-top: 0; }
   }
 
-  .c-modal__content--bordered {
+  .c-dialog__content--bordered {
     border-bottom: 1px solid var(--grey-200);
     border-top: 1px solid var(--grey-200);
   }
 
-  .c-modal__content--collapse {
+  .c-dialog__content--collapse {
     padding: 0 0 .5em;
   }
 
 
-  .c-modal__actions {
+  .c-dialog__actions {
     @apply --end;
     padding-left: .5rem;
   }
 
 /* Make all buttons stack to the right
-  .c-modal__actions--stacked {
+  .c-dialog__actions--stacked {
     & > .c-button {
     }
   }
@@ -79,13 +79,13 @@
 
 
 
-.c-modal--fullscreen {
+.c-dialog--fullscreen {
   @apply --fade-in;
   height: auto;
   position: static;
   text-align: start;
 
-  & .c-modal__card {
+  & .c-dialog__card {
     box-shadow: none;
     margin: 0;
     width: 100%;
