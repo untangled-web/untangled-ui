@@ -82,22 +82,22 @@
       [:regular :small :medium :large])))
 
 (defsample field-states
-   "# Fields
+  "# Fields
 
-   Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
-   "
-   (dom/div nil
-     (mapv (fn [states] (e/ui-field {:state states} (name states)))
-       [:valid :invalid :error])))
+  Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
+  "
+  (dom/div nil
+    (mapv (fn [states] (e/ui-field {:state states} (name states)))
+      [:valid :invalid :error])))
 
 (defsample field-types
-   "# Fields
+  "# Fields
 
-   Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
-   "
-   (dom/div nil
-      (mapv (fn [type] (e/ui-field {:type type} (name type)))
-            [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
+  Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
+  "
+  (dom/div nil
+    (mapv (fn [type] (e/ui-field {:type type} (name type)))
+      [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample message
   "# Messages
@@ -212,7 +212,7 @@
   "
   (dom/div nil
     (e/ui-icon-bar {}                                       ; FIXME: Shouldn't these lay out left-to-right in the space given?
-      (e/ui-icon {:glyph :local_activity :color :active}) ; FIXME: colors not working
+      (e/ui-icon {:glyph :local_activity :color :active})   ; FIXME: colors not working
       (e/ui-icon {:glyph :local_airport :color :passive})
       (e/ui-icon {:glyph :local_cafe}))
     (dom/br nil)
@@ -226,8 +226,8 @@
   (dom/div nil
     (e/ui-checkbox {:id "checkbox-1"})
     (e/ui-checkbox {:id "checkbox-2" :disabled true})
-    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
-    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})
+    (e/ui-checkbox {:id "checkbox-3"})
+    (e/ui-checkbox {:id "checkbox-4" :disabled true})
     (dom/div nil
       (e/ui-checkbox {:id "checkbox-5"})
       (dom/label #js {:className "is-optional"} "With a label!"))
@@ -235,10 +235,10 @@
       (e/ui-checkbox {:id "checkbox-6" :disabled true})
       (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
     (dom/div nil
-      (e/ui-checkbox {:id "checkbox-7" :style :indeterminate})
+      (e/ui-checkbox {:id "checkbox-7"})
       (dom/label #js {:className "is-optional"} "With a label!"))
     (dom/div nil
-      (e/ui-checkbox {:id "checkbox-8" :style :indeterminate :disabled true})
+      (e/ui-checkbox {:id "checkbox-8" :disabled true})
       (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
     ))
 
@@ -267,15 +267,39 @@
     (dom/p nil " ")
     (e/ui-progress {:max "100" :value "50" :size :dense})))
 
-(defsample radio
+(defcard radio
+  "# Radio buttons
+
+  Radio buttons render normal react controls for a radio button input with correct DOM. You may optionally
+  provide a label, as you would expect.
+
+  ```
   (dom/div nil
-    (e/ui-radio {:id "radio-1"})
+    (e/ui-radio {:id \"radio-1\" :onClick #(choose 1) :checked (= choice 1)})
     (dom/div nil
-      (e/ui-radio {:id "radio-2"})
-      (dom/label #js {:className "is-optional" :htmlFor "radio-2"} "With a label!"))
-    (e/ui-radio {:id "radio-3" :disabled true})
+      (e/ui-radio {:id \"radio-2\" :onClick #(choose 2) :checked (= choice 2)})
+      (dom/label #js {:className \"is-optional\" :htmlFor \"radio-2\"} \"With bel!\"))
+    (e/ui-radio {:id \"radio-3\" :onClick #(choose 3) :checked (= choice 3)
+                 :disabled true})
     (dom/div nil
-      (e/ui-radio {:id "radio-4" :disabled true})
-      (dom/label #js {:className "is-optional" :htmlFor "radio-4" :disabled true} "With a label!"))
-    ))
+      (e/ui-radio {:id \"radio-4\" :onClick #(choose 4) :checked (= choice 4)
+                   :disabled true})
+      (dom/label #js {:className \"is-optional\" :htmlFor \"radio-4\"
+                      :disabled true} \"With a label!\")))
+  ```
+  "
+  (fn [state _]
+    (let [choose (fn [v] (swap! state assoc :choice v))
+          choice (:choice @state)]
+      (dom/div nil
+        (e/ui-radio {:id "radio-1" :onClick #(choose 1) :checked (= choice 1)})
+        (dom/div nil
+          (e/ui-radio {:id "radio-2" :onClick #(choose 2) :checked (= choice 2)})
+          (dom/label #js {:className "is-optional" :htmlFor "radio-2"} "With bel!"))
+        (e/ui-radio {:id "radio-3" :onClick #(choose 3) :checked (= choice 3) :disabled true})
+        (dom/div nil
+          (e/ui-radio {:id "radio-4" :onClick #(choose 4) :checked (= choice 4) :disabled true})
+          (dom/label #js {:className "is-optional" :htmlFor "radio-4" :disabled true} "With a label!")))))
+  {:choice 1}
+  {:inspect-data true})
 
