@@ -828,7 +828,7 @@
 
 (defexample icon-colors
   "### Colors "
-  (let [colors ["positive" "informative" "neutral" "live" "alterable" "negative"]]
+  (let [colors ["positive" "informative" "neutral" "negative"]]
     (dom/div #js {}
       (mapv (fn [color]
               (dom/figure #js {:key color}
@@ -843,7 +843,7 @@
   NOTE: If you would like to include states on the icon itself, you can use
   the helper function `(untangled.icons/icon :icon-name :state [:positive])`
   "
-  (let [states ["active" "passive" "selectable" "disabled"]]
+  (let [states ["active" "passive" "disabled"]]
     (dom/div #js {}
       (mapv (fn [state]
               (dom/figure #js {:key state}

@@ -76,10 +76,6 @@ section: Settings
 :root {
   --color-page: var(--grey-800);
   --color-placeholder: var(--grey-500);
-  --color-positive: var(--green-600);
-  --color-informative: var(--purple-900);
-  --color-neutral: var(--grey-500);
-  --color-negative: var(--red-700);
 
   --color-primary: var(--green-500);
   --color-primary-dark: var(--green-700);
@@ -87,6 +83,7 @@ section: Settings
   --color-accent-dark: var(--purple-700);
   --color-primary-contrast: var(--white);
   --color-accent-contrast: var(--white);
+  --color-neutral: var(--grey-500);
 
   --backgroundColor-page: var(--white);
   --borderColor: var(--grey-300);

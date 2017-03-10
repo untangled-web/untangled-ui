@@ -238,7 +238,7 @@
         (apply dom/div #js {:className "c-card__supporting-text"} children))
       (when actions
         (dom/div #js {:className "c-card__actions"} actions))
-      ;; TODO
+      ;; TODO Add a dropdown menu to the top right of a card for associated secondary actions
       #_(when menu-items
           (dom/div #js {:className "c-card__menu"}
             (menu/menu :a
@@ -291,7 +291,7 @@
   "
   ([{:keys [className color size glyph] :as props :or {className ""}}] (ui-icon props nil))
   ([{:keys [className color size glyph] :as props :or {className ""}} child]
-   (let [legal-colors #{:neutral :positive :informative :live :alterable :negative :active :passive}
+   (let [legal-colors #{:neutral :positive :informative :negative :active :passive}
          legal-sizes  #{:small :medium :large :xlarge :huge}
          user-classes (get props :className "")
          classes      (cond-> (str user-classes " c-icon")

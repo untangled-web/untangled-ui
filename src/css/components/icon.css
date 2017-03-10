@@ -21,10 +21,8 @@ section: Components
   --size-icon: var(--size-icon--normal);
 
   --icon-dimensions: {
-    height: initial !important;
-    max-height: var(--size-icon) !important;
-    max-width: var(--size-icon) !important;
-    width: 100% !important;
+    height: var(--size-icon) !important;
+    width: var(--size-icon) !important;
   };
 }
 
@@ -59,18 +57,6 @@ section: Components
      color: var(--color-icon--passive) !important;
      fill: var(--color-icon--passive) !important;
    }
-
-  &.is-selectable {
-    cursor: pointer;
-    padding: 4px;
-    transition: all var(--global-duration) ease;
-
-    &:hover {
-      background-color: var(--color-icon);
-      border-radius: var(--global-rounded);
-      fill: var(--white);
-    }
-  }
 
   .c-button & {
     height: var(--size-button__icon);

@@ -24,7 +24,7 @@ section: Components
 }
 
 
-.c-message--success {
+.c-message--primary {
   --color-message: var(--color-positive);
   @apply --message;
 
@@ -36,7 +36,7 @@ section: Components
 }
 
 
-.c-message--informative {
+.c-message--accent {
   --color-message: var(--color-informative);
   @apply --message;
 }
