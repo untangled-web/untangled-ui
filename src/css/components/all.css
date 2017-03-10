@@ -12,6 +12,7 @@
  * Calendar...........A modal calendar
  * Checkbox...........Custom CSS and A11Y compatible checkbox
  * Drawer.............Mobile panes for high-level navigation
+ * Dialog..............Lets you expose more things when you want
  * Radio..............Custom CSS and A11Y compatible radios
  * Field..............A simple take on inputs for madlibs style editing
  * Icon...............Useful classes for doing things with icons
@@ -21,7 +22,6 @@
  * Loader.............Animated controls to show progress
  * Menu...............Select and menu join forces to create a dropdown
  * Message............Small text in varying colors
- * Modal..............Lets you expose more things when you want
  * Notification.......Informative dialogs
  * Table..............Responsive tabular data patterns
  * Tabs...............Navigable controls
@@ -48,7 +48,7 @@
 @import "loader";
 @import "menu";
 @import "message";
-@import "modal";
+@import "dialog";
 @import "notification";
 @import "pagination";
 @import "progress";
