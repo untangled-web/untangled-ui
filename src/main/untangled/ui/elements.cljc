@@ -3,6 +3,7 @@
             [om.next :as om :refer [defui]]
             [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
+            [untangled.events]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
@@ -24,7 +25,7 @@
   When the resulting span becomes visible it fades in, and when it becomes hidden it fades out."
   [{:keys [block? visible] :as props} & children]
   (let [className (or (:className props) "")
-        classes   (str className (if visible " u-fade-in" " u-fade-out"))
+        classes   (str className " u-fade-out" (when visible " u-fade-in"))
         wrapper   (if block? dom/div dom/span)
         attrs     (-> props
                     (dissoc :visible)
@@ -250,10 +251,9 @@
     `:id` string - Unique DOM ID. Required for correct rendering.
     `:checked` - true, false, or :partial
     "
-    [{:keys [id state checked] :as props}]
+    [{:keys [id state checked className] :as props}]
     (assert id "DOM ID is required on checkbox")
-    (let [classes (cond-> (str " c-checkbox ")
-                    (= :partial checked) (str " is-" (name state)))
+    (let [classes (str className " c-checkbox" (when (= :partial checked) " is-indeterminate"))
           checked (boolean checked)
           attrs   (assoc props :type "checkbox" :checked checked :className classes)]
       (render-input attrs))))
@@ -374,66 +374,83 @@
                        (dissoc :color))]
     (apply dom/div (clj->js props) children)))
 
-(defui ModalTitle
+(defui DialogTitle
   Object
   (render [this]
-    (dom/div #js {:className "c-modal__title"} (om/children this))))
+    (dom/div #js {:className "c-dialog__title"} (om/children this))))
 
-(def ui-modal-title
-  "Render a notification title. Should only be used in a ui-modal"
-  (om/factory ModalTitle))
+(def ui-dialog-title
+  "Render a dialog's title (using supplied DOM children). Should only be used in a ui-dialog"
+  (om/factory DialogTitle))
 
-(defui ModalBody
+(defui DialogBody
   Object
   (render [this]
-    (dom/div #js {:className "c-modal__content"} (om/children this))))
+    (dom/div #js {:className "c-dialog__content"} (om/children this))))
 
-(def ui-modal-body
-  "Render a notification body. Should only be used in a ui-modal"
-  (om/factory ModalBody))
+(def ui-dialog-body
+  "Render the body of a dialog (using the supplied DOM children). Should only be used in a ui-dialog"
+  (om/factory DialogBody))
 
-(defui ModalActions
+(defui DialogActions
   Object
   (render [this]
-    (dom/div #js {:className "c-modal__actions"} (om/children this))))
+    (dom/div #js {:className "c-dialog__actions"} (om/children this))))
 
-(def ui-modal-actions
-  "Render a notification action area. Should only be used in a ui-modal"
-  (om/factory ModalActions))
+(def ui-dialog-actions
+  "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
+  (om/factory DialogActions))
 
-; TODO: Rename to Dialog, modal as a boolean attribute?
-(defui Modal
+(defui Dialog
   Object
   (render [this]
-    (let [{:keys [active] :as props} (om/props this)
+    (let [{:keys [key full-screen visible modal onClose] :as props :or {key ""}} (om/props this)
           children     (om/children this)
-          title        (first-node ModalTitle children)
-          content      (first-node ModalBody children)
-          actions      (first-node ModalActions children)
-          state        (when active " is-active")
+          title        (first-node DialogTitle children)
+          content      (first-node DialogBody children)
+          actions      (first-node DialogActions children)
+          state        (when visible " is-active")
           user-classes (get props :className "")
-          classes      (-> (str user-classes " c-modal" state))]
-      (dom/div #js {}
-        (dom/div #js {:className classes}
-          (dom/div #js {:className "c-modal__card"}
+          classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))
+          dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes}
+                         (dom/div #js {:className "c-dialog__card"}
             (when title title)
             (when content content)
-            (when actions actions)))
-        (dom/div #js {:className (str "c-backdrop" state)})))))
+                           (when actions actions)))]
+      (if modal
+        (dom/div #js {:key key}
+          dialog-dom
+          (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
+                                      (when (and visible onClose (untangled.events/escape-key? evt))
+                                        (onClose)))
+                        :onClick    (fn [] (when (and visible onClose) (onClose))) :className (str "c-backdrop" state)}))
+        dialog-dom))))
 
-(def ui-modal
-  "Render a modal. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+(def ui-dialog
+  "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  You should include three children of this node:
+  Options:
 
-  (ui-modal {}
-    (ui-modal-title {} title-nodes)
-    (ui-modal-body {} body-nodes)
-    (ui-modal-actions {} action-nodes)
+  `:visible` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
+  in the DOM.
+  `:full-screen` - A boolean. Renders the dialog to consume the entire screen when true. (useful for mobile).
+  `:modal` - A boolean. When true the dialog will block the rest of the UI.
+  `:className` - Additional CSS classes to place on the dialog.
+  `:key` - React key
+  `:onClose` - A callback that advises *your* code that the user is indicating a desire to be out of the dialog
+  (e.g. the clicked on the modal backdrop). You must still set the visible flag since this is a stateless
+  rendering of a dialog UI, not an active stateful component.
+
+  You should include at most one of each of three following children for this node:
+
+  (ui-dialog {}
+    (ui-dialog-title {} title-nodes)
+    (ui-dialog-body {} body-nodes)
+    (ui-dialog-actions {} action-nodes)
 
   The `title-nodes` can be any inline DOM (or just a string), as can body-nodes.  Action-notes must include at least one button that
-  closes the modal or redirects the user."
-  (om/factory Modal))
+  closes the dialog or redirects the user."
+  (om/factory Dialog))
 
 (defui NotificationTitle
   Object
@@ -501,7 +518,7 @@
   `:className` - additional class stylings to apply to the progress element
   `:max` - The integer value that we're targeting for completion
   `:value` - The integer value of where we're at
-  `:size` :regular (default), :small
+  `:size` :regular (default), :dense
 
   If neither max or value are given, it will render as an indeterminate progress (in progress, but not complete).
   "

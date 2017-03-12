@@ -213,10 +213,10 @@
     (e/ui-iframe {:height "200" :width "100%"}
       (dom/div #js {}
         (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-        (e/ui-modal {:active true}
-          (e/ui-modal-title {} "Informative")
-          (e/ui-modal-body {} "You have been notified.")
-          (e/ui-modal-actions {}
+        (e/ui-dialog {:active true}
+          (e/ui-dialog-title {} "Informative")
+          (e/ui-dialog-body {} "You have been notified.")
+          (e/ui-dialog-actions {}
             (e/ui-flat-button {:color :primary} "Cancel")
             (e/ui-flat-button {:color :primary} "Ok")))))
     ))

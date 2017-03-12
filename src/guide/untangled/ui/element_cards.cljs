@@ -221,42 +221,103 @@
       (e/ui-icon {} (icon :arrow_forward))
       (e/ui-icon {} (icon :arrow_drop_up)))))
 
-(defsample checkbox
-  "# Checkboxes"
-  (dom/div nil
-    (e/ui-checkbox {:id "checkbox-1"})
-    (e/ui-checkbox {:id "checkbox-2" :disabled true})
-    (e/ui-checkbox {:id "checkbox-3"})
-    (e/ui-checkbox {:id "checkbox-4" :disabled true})
-    (dom/div nil
-      (e/ui-checkbox {:id "checkbox-5"})
-      (dom/label #js {:className "is-optional"} "With a label!"))
-    (dom/div nil
-      (e/ui-checkbox {:id "checkbox-6" :disabled true})
-      (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
-    (dom/div nil
-      (e/ui-checkbox {:id "checkbox-7"})
-      (dom/label #js {:className "is-optional"} "With a label!"))
-    (dom/div nil
-      (e/ui-checkbox {:id "checkbox-8" :disabled true})
-      (dom/label #js {:className "is-optional" :disabled true} "With a label!"))
-    ))
+(defcard checkbox
+  "# Checkboxes
 
-(defsample modals
-  "# Modals
+  These render a normal HTML checkbox input, but allow a partial select rendering (which is still internally held
+  as `true`). In other words, you will need to model the partial as your own state external from the control,
+  but it is also 100% compatible with a normal HTML checkbox input.
 
-  Use `ui-modal` to render a modal dialog with title, body and action items (typically buttons).
+  ```
+    (dom/div nil
+    (e/ui-checkbox {:checked current-state :id \"checkbox-5\"
+                    :onClick #(move-to-next-state)})
+    (dom/label #js {:className \"is-optional\"} \"With a label!\"))
+  ```
+  "
+  (fn [state _]
+    (let [current-state      (:checked @state)
+          states             (take 4 (cycle [false true :partial]))
+          next-state         (->> states
+                               (drop-while #(not= current-state %))
+                               second)
+          move-to-next-state (fn [] (swap! state assoc :checked next-state))]
+    (dom/div nil
+        (e/ui-checkbox {:checked current-state :id "checkbox-5" :onClick #(move-to-next-state)})
+        (dom/label #js {:className "is-optional"} "With a label!"))))
+  {:checked false}
+  {:inspect-data true})
 
-  Sample shown below:"
+(defcard dialog-not-modal
+  "# Dialogs
+
+  Use `ui-dialog` to render a modal dialog with title, body and action items (typically buttons).
+
+  ```
+  (e/ui-button {:onClick #(show-dialog)} \"Show Dialog\")
+  (dom/div #js {}
+    (e/ui-dialog {:visible is-visible :onClose #(hide-dialog)}
+      (e/ui-dialog-title {} \"Informative\")
+      (e/ui-dialog-body {} \"You have been notified.\")
+      (e/ui-dialog-actions {}
+        (e/ui-flat-button {:color :primary} \"Cancel\")
+        (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} \"Ok\"))))
+  ```
+  "
+  (fn [state _]
+    (let [show-dialog (fn [] (swap! state assoc :visible true))
+          hide-dialog (fn [] (swap! state assoc :visible false))
+          is-visible  (:visible @state)]
   (e/ui-iframe {:height "200" :width "100%"}
+        (dom/div nil
+          (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+          (e/ui-button {:onClick #(show-dialog)} "Show Dialog")
     (dom/div #js {}
+            (e/ui-dialog {:visible is-visible :onClose #(hide-dialog)}
+              (e/ui-dialog-title {} "Informative")
+              (e/ui-dialog-body {} "You have been notified.")
+              (e/ui-dialog-actions {}
+                (e/ui-flat-button {:color :primary} "Cancel")
+                (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))))
+  {:visible false}
+  {:inspect-data true})
+
+
+(defcard dialog-modal
+  "# Modal Dialogs
+
+  Use `ui-dialog` has a modal option. The backdrop gives an extra area from which you can recieve `onClose` events
+  to tell you the dialog wants to close (you still have to change the visible property, since this is a stateless
+  rendering).
+
+  ```
+  (e/ui-button {:onClick #(show-dialog)} \"Show Dialog\")
+  (dom/div #js {}
+    (e/ui-dialog {:visible is-visible :modal true :onClose #(hide-dialog)}
+      (e/ui-dialog-title {} \"Informative\")
+      (e/ui-dialog-body {} \"You have been notified.\")
+      (e/ui-dialog-actions {}
+        (e/ui-flat-button {:color :primary} \"Cancel\")
+        (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} \"Ok\"))))
+  ```
+  "
+  (fn [state _]
+    (let [show-dialog (fn [] (swap! state assoc :visible true))
+          hide-dialog (fn [] (swap! state assoc :visible false))
+          is-visible  (:visible @state)]
+      (e/ui-iframe {:height "200" :width "100%"}
+        (dom/div nil
       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-      (e/ui-modal {:active true}
-        (e/ui-modal-title {} "Informative")
-        (e/ui-modal-body {} "You have been notified.")
-        (e/ui-modal-actions {}
+          (e/ui-button {:onClick #(show-dialog)} "Show Dialog")
+          (dom/div #js {}
+            (e/ui-dialog {:visible is-visible :modal true :onClose #(hide-dialog)}
+              (e/ui-dialog-title {} "Informative")
+              (e/ui-dialog-body {} "You have been notified.")
+              (e/ui-dialog-actions {}
           (e/ui-flat-button {:color :primary} "Cancel")
-          (e/ui-flat-button {:color :primary} "Ok"))))))
+                (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))))
+  {:visible false}
+  {:inspect-data true})
 
 (defsample progress
   "# Progress"

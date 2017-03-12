@@ -46,6 +46,7 @@
                                :output-to     "resources/public/js/guide.js"
                                :output-dir    "resources/public/js/guide"
                                :preloads      [devtools.preload]
+                               :parallel-build true
                                :optimizations :none}}
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]

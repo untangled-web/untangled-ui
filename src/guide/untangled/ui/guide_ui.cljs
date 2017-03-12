@@ -9,6 +9,7 @@
     untangled.ui.Forms--09-Predefined-Fields
     untangled.ui.Forms--10-Full-Stack-Demo
     untangled.ui.menu-cards
+    untangled.ui.dialog-cards
     untangled.ui.image-tool-cards
     untangled.ui.calendar-cards
     untangled.ui.Layout--01-Basics
