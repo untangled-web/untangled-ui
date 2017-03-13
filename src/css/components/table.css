@@ -1,14 +1,5 @@
-/*---
-title: Tables
-section: Components
----*/
-
-:root {
-  --borderColor-table: var(--grey-300);
-}
-
 .c-table {
-  border-bottom: 1px solid var(--borderColor-table);
+  border-bottom: 1px solid var(--color-table);
   border-collapse: collapse;
   border-spacing: 0;
   display: table;
@@ -18,7 +9,7 @@ section: Components
 
   tbody {
     tr:not(:first-child) {
-      border-top: 1px solid var(--borderColor-table);
+      border-top: 1px solid var(--color-table);
 
       th,
       td { font-weight: normal; }
@@ -38,7 +29,7 @@ section: Components
 
     th,
     td {
-      border-right: 1px solid var(--borderColor-table);
+      border-right: 1px solid var(--color-table);
       padding: 0 5px;
 
       @media (--md-up) { text-align: right; }

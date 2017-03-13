@@ -1,8 +1,3 @@
-/*---
-title: Typography
-section: Elements
----*/
-
 /*------------------------------------*\
   #GLOBAL
 \*------------------------------------*/
@@ -26,7 +21,9 @@ section: Elements
 }
 
 
-.t-dark {
+.t-dark,
+.t-fullscreen,
+:--fullscreen {
   color: var(--white);
 }
 

@@ -35,10 +35,6 @@ import: ../README.md
 }
 
 .ui-example__description {
-  :--headings {
-    color: var(--grey-900);
-  }
-
   h1 {
     font-size: var(--fontSize--medium);
   }

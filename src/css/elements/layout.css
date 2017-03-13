@@ -22,23 +22,21 @@ section: Elements
 }
 
 
+.t-dark { background-color: var(--color-page-dark); }
+
+
 .t-fullscreen,
 :--fullscreen {
-  background-color: var(--black);
-  color: var(--white);
-  font-size: 125% !important;
+  background-color: var(--color-page-dark);
+  font-size: 150% !important;
   margin-top: 0;
   overflow-y: scroll;
-  padding: .75em .5rem;
 }
 
 
 @media print {
   :root { background-color: var(--white); }
 }
-
-
-.t-dark { background-color: #31312b; }
 
 
 ::before,
@@ -58,5 +56,3 @@ section: Elements
   -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, IE 11- */
   padding: 0;
 }
-
-

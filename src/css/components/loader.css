@@ -51,15 +51,15 @@ section: Components
 
 .c-loader--primary {
   &::before,
-  &::after {border-color: var(--color-loader--primary); }
+  &::after {border-color: var(--color-loader-primary); }
 }
 
 .c-loader--accent {
   &::before,
-  &::after { border-color: var(--color-loader--accent); }
+  &::after { border-color: var(--color-loader-accent); }
 }
 
 .c-loader--inverted {
   &::before,
-  &::after { border-color: var(--white); }
+  &::after { border-color: var(--color-loader-inverted); }
 }

@@ -1,9 +1,4 @@
 :root {
-  --backgroundColor-radio: var(--color-primary-contrast);
-  --backgroundColor-radio--checked: var(--color-primary-contrast);
-  --borderColor-radio: var(--grey-600);
-  --borderColor-radio--checked: var(--color-primary);
-  --color-radio--disabled: var(--grey-200);
   --counter-size: 10px;
   --counter-offset: 5px;
 }
@@ -13,8 +8,8 @@
 
   &:checked + label {
     &::before {
-     background-color: var(--backgroundColor-radio--checked);
-     border: 2px solid var(--borderColor-radio--checked);
+     background-color: var(--color-radio--secondary--checked);
+     border: 2px solid var(--color-radio--checked);
      transition: all var(--global-duration) ease;
     }
 
@@ -29,8 +24,8 @@
     z-index: 1;
 
     &::before {
-      background-color: var(--backgroundColor-radio);
-      border: 2px solid var(--borderColor-radio);
+      background-color: var(--color-radio--secondary);
+      border: 2px solid var(--color-radio--primary);
       border-radius: 50px;
       content: "";
       display: inline-block;
@@ -47,7 +42,7 @@
 
     &::after {
       @apply --fade-out;
-      background-color: var(--borderColor-radio--checked);
+      background-color: var(--color-radio--checked);
       border-radius: 50px;
       content: "";
       height: var(--counter-size);
@@ -59,6 +54,7 @@
     }
   }
 }
+
 
 .c-radio:focus + label::before,
 .c-radio + label:active::before,

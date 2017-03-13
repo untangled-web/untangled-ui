@@ -8,11 +8,11 @@
   .c-list__row {
     @apply --row;
     @apply --middle;
-    background-color: transparent;
+    background-color: var(--color-list--primary);
     padding: 0 1rem;
     transition: background-color .1s ease;
 
-    &.is-selectable:hover { background-color: var(--grey-50); }
+    &.is-selectable:hover { background-color: var(--color-list-selected--primary); }
 
 
     .c-icon {
@@ -25,17 +25,15 @@
 
 
   .c-list__row--bordered:not(:last-child) {
-    border-bottom: 1px solid var(--grey-200);
+    border-bottom: 1px solid var(--color-list__divider);
   }
 
 
-  .c-list__row--collapse {
-    padding: 0;
-  }
+  .c-list__row--collapse { padding: 0; }
 
 
   .c-list__row.is-active {
-    color: var(--color-primary);
+    color: var(--color-list-active--secondary);
 
     .c-icon { fill: var(--grey-500); }
   }
@@ -50,9 +48,7 @@
 
   .c-list__avatar--round {
     &,
-    & > img {
-      border-radius: 50px;
-    }
+    & > img { border-radius: 50px; }
   }
 
 
@@ -75,8 +71,8 @@
 
 
     &.is-active {
-      background-color: var(--color-primary);
-      color: var(--white);
+      background-color: var(--color-list__tile-active--primary);
+      color: var(--color-list__tile-active--secondary);
 
       .c-icon,
       .is-informative,
@@ -89,7 +85,7 @@
   }
 
   .c-list__title {
-    color: var(--grey-500);
+    color: var(--color-list__title);
     font-weight: bold;
   }
 
@@ -99,7 +95,7 @@
   }
 
   .c-list__subtext {
-    color: var(--grey-500);
+    color: var(--color-list__subtext);
   }
 
 .c-list--single {

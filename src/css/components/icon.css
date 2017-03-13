@@ -1,14 +1,4 @@
-/*---
-title: Icon
-section: Components
----*/
-
-/* --icon-dimensions - A temporary hack that can be removed once our supported browser target has native support for custom properties. Usually you just define a new property value and the relevant properties update with the new value. */
-
 :root {
-  --color-icon: currentColor;
-  --color-icon--passive: var(--grey-200);
-  --color-icon--active: var(--color-primary);
   --margin-button__icon: 7px;
   --opacity-button--disabled: .35;
   --size-button__icon: 20px;

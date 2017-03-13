@@ -50,7 +50,6 @@
   (let [color-var-name (str "--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-")) name)]
     (str "<div class='swatch' style='" (when (is-dark? color) "color: #fff;") "  background-color: var("color-var-name");'>
   <span class='swatch__name'>"color-var-name"</span>
-  <span class='swatch__code'>" #_color "</span>
   </div>")))
 
 
@@ -66,7 +65,6 @@
 (defn color-theme-block [color name hue-name]
   (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
   <span class='swatch__name'>" name "</span>
-  <span class='swatch__code'>" color "</span>
   </div>"))
 
 
@@ -184,20 +182,28 @@ so that you get 10 HEX values that are evenly distributed into a color scale.
 
 "
 
-    (color-theme "Backgrounds & Borders" [[:--color-page           (get-color neutral 1)]
-                                          [:--color-primary        (get-color green 5)]
-                                          [:--color-accent         (get-color blue 5)]
-                                          [:--color-neutral        (get-color grey 5)]
-                                          [:--highlight-primary    (get-color green 1)]
-                                          [:--highlight-accent     (get-color blue 1)]
-                                          [:--highlight-neutral    (get-color grey 1)]])
+    (color-theme "Backgrounds & Borders" [[:--color-page             (get-color neutral 1)]
+                                          [:--color-page-dark        (get-color grey 9)]
+                                          [:--color-primary          (get-color green 5)]
+                                          [:--color-primary-dark     (get-color green 7)]
+                                          [:--color-primary-highlight (get-color green 1)]
+                                          [:--color-primary-contrast (get-color neutral 1)]
+                                          [:--color-accent           (get-color blue 5)]
+                                          [:--color-accent-dark      (get-color blue 7)]
+                                          [:--color-accent-highlight (get-color blue 1)]
+                                          [:--color-accent-contrast  (get-color neutral 1)]
+                                          [:--color-neutral          (get-color grey 4)]
+                                          [:--color-neutral-highlight (get-color grey 1)]
+                                          [:--borderColor            (get-color grey 3)]
+                                          [:--borderColor-inactive   (get-color grey 2)]])
 
 
 
     (color-theme "Type Colors" [[:--color-text        (get-color grey 8)]
                                 [:--color-placeholder (get-color grey 5)]
                                 [:--color-link        (get-color green 5)]
-                                ])
+                                [:--color-error       (get-color red 4)]
+                                [:--color-invalid     (get-color red 2)]])
 
 
     (color-theme "Social Media" [[:--facebook "#4c66a4"]

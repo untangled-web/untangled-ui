@@ -1,17 +1,12 @@
-/*---
-title: Switch
-section: Components
----*/
-
 .c-switch {
-  background-color: var(--grey-200);
+  background-color: var(--color-switch--primary);
   border-radius: 10px;
   display: inline-block;
   height: 20px;
   user-select: none;
   width: 40px;
 
-  .t-dark & { background-color: var(--grey-800); }
+  .t-dark & { background-color: var(--color-switch-dark--primary); }
 
   label + & {
     left: .5rem;
@@ -28,18 +23,18 @@ section: Components
   width: 40px;
 
   & > .c-icon {
-    fill: var(--grey-400);
+    fill: var(--color-switch--secondary);
     height: 20px;
     position: relative;
     top: 0;
     transition: all .3s ease;
     width: 20px;
 
-    &:not(:last-of-type) { fill: var(--white); }
+    &:not(:last-of-type) { fill: var(--color-switch-alt--secondary); }
   }
 
   &::before {
-     background-color: var(--grey-400);
+     background-color: var(--color-switch-alt--secondary);
      border-radius: 100px;
      content: "";
      display: inline-block;
@@ -62,12 +57,12 @@ section: Components
 
   &:checked + .c-switch__paddle {
   &::before {
-     background-color: var(--color-primary);
+     background-color: var(--color-switch--checked);
      left: calc(100% - 20px);
    }
 
-  & > .c-icon { fill: var(--grey-400); }
+  & > .c-icon { fill: var(--color-switch--secondary); }
 
-  & > .c-icon:last-of-type { fill: var(--white); }
+  & > .c-icon:last-of-type { fill: var(--color-switch-alt--secondary); }
   }
 }

@@ -41,7 +41,12 @@ section: Components
 }
 
 
-.c-label--primary,
-.c-label--accent { color: var(--color-label-alt--secondary); }
-.c-label--primary { background-color: var(--color-label-alt--primary); }
-.c-label--accent { background-color: var(--color-label-alt--accent); }
+.c-label--primary {
+  background-color: var(--color-label-alt--primary);
+  color: var(--color-label-alt--secondary);
+}
+
+.c-label--accent {
+  background-color: var(--color-label-accent--primary);
+  color: var(--color-label-accent--secondary);
+}

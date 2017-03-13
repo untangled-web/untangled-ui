@@ -1,10 +1,4 @@
-/*---
-title: Messages
-section: Components
----*/
-
 :root {
-  --color-message: var(--color-neutral);
   --fontSize-message: var(--fontSize--tiny);
 }
 
@@ -16,15 +10,13 @@ section: Components
 }
 
 
-.c-message--primary {
-  color: var(--color-primary);
-}
+.c-message--primary { color: var(--color-message-alt-primary); }
 
 
-.c-message--accent {
-  color: var(--color-accent);
-}
+.c-message--accent { color: var(--color-message-accent-primary); }
 
-.is-error + .c-message {
-  color: var(--red-400);
-}
+
+.is-error + .c-message { color: var(--color-message-error); }
+
+
+.is-invalid + .c-message { color: var(--color-message-invalid); }

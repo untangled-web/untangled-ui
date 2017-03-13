@@ -3,14 +3,12 @@
   --size-toolbar__button: 48px;
   --indent-toolbar__row: 80px;
   --marginX-toolbar__button: calc(var(--indent-toolbar__row) - var(--size-toolbar__button));
-  --color-toolbar: transparent;
-  --color-toolbar-secondary: var(--grey-900);
 }
 
 .c-toolbar {
   align-items: baseline;
-  background-color: var(--color-toolbar);
-  color: var(--color-toolbar-secondary);
+  background-color: var(--color-toolbar--primary);
+  color: var(--color-toolbar--secondary);
   font-size: var(--fontSize--normalPlus);
   position: relative;
   width: 100%;
@@ -18,14 +16,18 @@
 
 .c-toolbar--raised { box-shadow: var(--shadow-2); }
 
-.c-toolbar--primary { background-color: var(--color-primary); }
+.c-toolbar--primary {
+  background-color: var(--color-toolbar-alt--primary);
+  color: var(--color-toolbar-alt--secondary);
+}
 
-.c-toolbar--dark { background-color: var(--grey-900); }
+.c-toolbar--dark {
+  background-color: var(--color-toolbar-dark--primary);
+  color: var(--color-toolbar-dark--secondary);
+}
 
 .c-toolbar--primary,
 .c-toolbar--dark {
-  color: var(--white);
-
   .c-icon { fill: var(--white); }
 }
 

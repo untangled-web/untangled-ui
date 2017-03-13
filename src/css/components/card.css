@@ -8,10 +8,9 @@ section: Components
   --margin-card: 0 0 1em;
   --size-card--square: 320px;
   --card: {
-    background-color: var(--white);
+    background-color: var(--color-card--primary);
     border-radius: 2px;
     box-shadow: var(--shadow-1);
-    color: var(--color-text);
     display: flex;
     flex-direction: column;
     font-size: var(--fontSize--semiNormal);
@@ -38,27 +37,25 @@ section: Components
 
 
   @media print {
-    border: 1px solid var(--black);
+    border: 1px solid var(--color-card-print);
     box-shadow: none;
   }
 
 
   .t-dark & {
-    background-color: var(--grey-800);
-    color: var(--white);
+    background-color: var(--color-card-dark--primary);
   }
 
 
   :--fullscreen & {
-    background-color: var(--grey-900);
-    color: var(--white);
+    background-color: var(--color-card-dark--primary);
   }
 }
 
 
   .c-card__title {
     align-items: center;
-    color: currentColor;
+    color: var(--color-card__title--secondary);
     display: flex;
     justify-content: stretch;
     line-height: normal;
@@ -68,13 +65,18 @@ section: Components
 
     .c-card--primary &,
     .c-card--accent & {
-      color: var(--white);
       height: 200px;
     }
 
-    .c-card--primary & { background-color: var(--color-primary); }
+    .c-card--primary & {
+      background-color: var(--color-card-alt--primary);
+      color: var(--color-card-alt--secondary);
+    }
 
-    .c-card--accent & { background-color: var(--color-accent); }
+    .c-card--accent & {
+      background-color: var(--color-card-accent--primary);
+      color: var(--color-card-accent--secondary);
+    }
   }
 
   .c-card__title--image {

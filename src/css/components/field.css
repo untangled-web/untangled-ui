@@ -4,10 +4,6 @@ section: Components
 ---*/
 
 :root {
-  --borderColor-field: var(--grey-200);
-  --borderColor-field--focus: var(--color-primary);
-  --borderColor-field--invalid: var(--red-200);
-  --borderColor-field--error: var(--red-400);
   --field-font-size: 16px;
   --field-font-size--dense: 13px;
   --field-min-height: 30px;
@@ -16,7 +12,7 @@ section: Components
 .c-field {
   @apply --middle;
   background-color: transparent;
-  border-bottom: solid var(--borderColor-field);
+  border-bottom: solid var(--color-field);
   border-radius: 0;
   border-width: 0 0 1px;
   color: var(--color-text);
@@ -35,7 +31,7 @@ section: Components
 
   &:focus,
   &.has-focus {
-    border-bottom-color: var(--borderColor-field--focus);
+    border-bottom-color: var(--color-field--focus);
     border-width: 0 0 2px;
     outline: none;
     padding-bottom: 0;
@@ -46,21 +42,21 @@ section: Components
   &:focus.is-invalid,
   &:invalid,
   &.is-invalid {
-     border-bottom-color: var(--borderColor-field--invalid);
+     border-bottom-color: var(--color-field--invalid);
      border-width: 0 0 2px;
      padding-bottom: 0;
    }
 
 
   &:focus.is-error {
-     border-bottom-color: var(--borderColor-field--error);
+     border-bottom-color: var(--color-field--error);
      border-width: 0 0 2px;
      padding-bottom: 0;
    }
 
 
   &.is-error {
-     border-bottom-color: var(--borderColor-field--error);
+     border-bottom-color: var(--color-field--error);
      border-width: 0 0 2px;
      padding-bottom: 0;
   }
@@ -86,19 +82,19 @@ section: Components
     border: 1px solid var(--white);
     border-radius: 2px;
     box-shadow:
-      0 0 1px 1px var(--borderColor-field),
-      0 0 1px 1px var(--borderColor-field),
-      0 0 1px 1px var(--borderColor-field),
-      0 0 1px 1px var(--borderColor-field);
+      0 0 1px 1px var(--color-field),
+      0 0 1px 1px var(--color-field),
+      0 0 1px 1px var(--color-field),
+      0 0 1px 1px var(--color-field);
     padding: 0;
   }
 
   &[type="color"]:focus::-webkit-color-swatch-wrapper {
      box-shadow:
-       0 0 1px 1px var(--borderColor-field--focus),
-       0 0 1px 1px var(--borderColor-field--focus),
-       0 0 1px 1px var(--borderColor-field--focus),
-       0 0 1px 1px var(--borderColor-field--focus);
+       0 0 1px 1px var(--color-field--focus),
+       0 0 1px 1px var(--color-field--focus),
+       0 0 1px 1px var(--color-field--focus),
+       0 0 1px 1px var(--color-field--focus);
   }
 
   &[type="color"]::-webkit-color-swatch {

@@ -9,17 +9,13 @@
   --paddingX-expansion-panel: 1.5em;
   --lineHeight-expansion-panel: 1.5em;
   --margin-expansion-panel__button: .5em;
-  --color-expansion-panel: var(--grey-700);
-  --color-expansion-panel__icon: var(--color-expansion-panel);
-  --color-expansion-panel__title: var(--grey-900);
-  --border-expansion-panel: var(--grey-200) 1px solid;
-  --backgroundColor-expansion-panel--focus: var(--grey-50);
+  --border-expansion-panel: var(--color-expansion-panel__divider) 1px solid;
 }
 
 .c-expansion-panel {
   background-color: var(--white);
   box-shadow: var(--shadow-1);
-  color: var(--color-expansion-panel);
+  color: var(--color-expansion-panel--secondary);
   font-size: var(--fontSize-expansion-panel);
   margin: 0;
   overflow: hidden;
@@ -28,7 +24,7 @@
   width: 100%;
 
   &:focus:not(.is-expanded) {
-     background-color: var(--backgroundColor-expansion-panel--focus);
+     background-color: var(--color-expansion-panel--focus);
    }
 
   &:not(:first-child).is-expanded {
@@ -110,7 +106,7 @@
   transition: background .2s ease, height .2s ease, opacity .3s ease, padding-top .2s ease, padding-bottom .2s ease;
 
   &.is-selectable:focus,
-  &.is-selectable:hover { background-color: var(--backgroundColor-expansion-panel--focus); }
+  &.is-selectable:hover { background-color: var(--color-expansion-panel--focus); }
 
   .c-expansion-panel:not(.is-expanded) & {
     border: 0 solid transparent;

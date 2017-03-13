@@ -1,14 +1,6 @@
-/*---
-title: Tabs
-section: Components
----*/
-
 :root {
   --height-tab: 48px;
   --fontSize-tab: 13px;
-  --color-tab--active: rgba(255, 255, 255, .1);
-  --color-tab--primary: var(--color-primary);
-  --borderColor-tab--active: var(--color-accent);
   --padding-tab: 12px;
 }
 
@@ -44,7 +36,7 @@ section: Components
 
   &.is-active {
      background-color: transparent;
-     border-bottom-color: var(--borderColor-tab--active);
+     border-bottom-color: var(--color-tab--active);
      box-shadow: none;
      opacity: 1;
   }

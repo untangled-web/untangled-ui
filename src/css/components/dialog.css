@@ -23,7 +23,7 @@
 
 
   .c-dialog__card {
-    background-color: var(--backgroundColor-modal);
+    background-color: var(--color-dialog--primary);
     border-radius: calc(var(--global-rounded) / 2);
     box-shadow: var(--shadow-2);
     margin: 1em 1rem;
@@ -31,11 +31,6 @@
     min-width: 280px;
     pointer-events: auto;
     position: relative;
-
-    small {
-      color: var(--color-primary);
-      margin-bottom: 2em;
-    }
   }
 
   .c-dialog__title {
@@ -69,7 +64,7 @@
     padding-left: .5rem;
   }
 
-/* Make all buttons stack to the right
+/* TODO Make all buttons stack to the right
   .c-dialog__actions--stacked {
     & > .c-button {
     }

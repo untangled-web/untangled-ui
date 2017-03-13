@@ -1,13 +1,9 @@
 :root {
-  --backgroundColor-drawer: var(--white);
   --shadow-drawer: var(--shadow-2);
-  --backgroundColor-drawer-header: var(--white);
-  --borderColor-drawer: var(--borderColor);
-  --color-drawer-header: var(--color-text);
 }
 
 .c-drawer {
-  background-color: var(--backgroundColor-drawer);
+  background-color: var(--color-drawer--primary);
   bottom: 0;
   box-shadow: var(--shadow-drawer);
   left: -100%;
@@ -31,6 +27,21 @@
   &.is-open { right: 0; }
 }
 
+
+.c-drawer__header {
+  background-color: var(--color-drawer__header--primary);
+  border-bottom: 1px solid var(--color-drawer__divider);
+  color: var(--color-drawer__header--secondary);
+  height: 58px;
+  padding: 0 1em;
+}
+
+.c-drawer__group {
+  &:not(:last-child) { border-bottom: var(--color-drawer__divider) 1px solid; }
+}
+
+
+/* TODO Make this possible using backdrop */
 .c-drawer__close {
   @apply --fade-out;
   background-color: rgba(0, 0, 0, .5);
@@ -44,28 +55,7 @@
   .is-open + & { @apply --fade-in; }
 }
 
-.c-drawer__header {
-  background-color: var(--backgroundColor-drawer-header);
-  border-bottom: 1px solid var(--grey-200);
-  color: var(--color-drawer-header);
-  height: 58px;
-  padding: 0 1em;
-}
-
-.c-drawer__product {
-  color: var(--color-primary);
-  display: inline-block;
-  font-size: 22px;
-  font-weight: normal;
-  margin: 0 0 0 1em;
-  position: relative;
-  vertical-align: middle;
-}
-
-.c-drawer__group {
-  &:not(:last-child) { border-bottom: var(--borderColor-drawer) 1px solid; }
-}
-
+/* TODO Make this possible through list component */
 .c-drawer__action {
   background-color: var(--white);
   color: var(--color-text);
@@ -84,12 +74,5 @@
      color: var(--color-primary);
   }
 
-  .c-icon {
-    color: var(--grey-700);
-    fill: var(--color-primary);
-    margin-right: .5em;
-  }
+  .c-icon { margin-right: .5em; }
 }
-
-.c-drawer__account-name { font-size: var(--fontSize--semiMedium); }
-

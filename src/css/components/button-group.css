@@ -1,13 +1,7 @@
-/*---
-title: Button Groups
-section: Objects
----*/
-
-
 .o-button-group,
 .o-button-group--toggle {
   @apply --text-middle;
-  background-color: var(--grey-50);
+  background-color: var(--color-button-group);
   border-radius: 2px;
   box-shadow: var(--shadow-2);
   box-sizing: border-box;
