@@ -1,6 +1,4 @@
 :root {
-  --color-badge: var(--grey-400);
-  --color-badge--secondary: var(--white);
   --borderRadius-badge: 50px;
   --marginRight-badge: 6px;
   --padding-badge: 3px 8px;
@@ -42,6 +40,14 @@
   .c-button--accent & { color: var(--color-button-accent--primary); }
 
   .c-icon:last-child:not(:first-child) { margin-left: 3px; }
+}
+
+.c-badge--primary {
+  background-color: var(--color-badge--primary);
+}
+
+.c-badge--accent {
+  background-color: var(--color-badge--accent);
 }
 
 .c-badge--small {
