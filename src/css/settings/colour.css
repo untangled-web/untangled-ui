@@ -98,6 +98,12 @@
   --color-avatar-alt--accent: var(--color-accent);
   --color-avatar-alt--secondary: var(--color-primary-contrast);
 
+  /* Badge */
+  --color-badge--primary: var(--color-neutral);
+  --color-badge--secondary: var(--white);
+  --color-badge-alt--primary: var(--color-primary);
+  --color-badge-accent--primary: var(--color-accent);
+
   /* Backdrop */
 
   --color-backdrop: color(var(--black) a(60%));
