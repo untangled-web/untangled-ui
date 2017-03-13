@@ -181,17 +181,24 @@
   --color-control-border--secondary: var(--white);
   --color-control--checked: var(--color-primary);
   --color-control--disabled: var(--grey-300);
-  /* Checkbox */
-  --color-checkbox: var(--color-control-border--primary);
-  --color-checkbox--checked: var(--color-control--checked);
-  --color-checkbox--indeterminate: var(--color-control-border--primary);
-  --color-checkbox--disabled: var(--color-control--disabled);
   /* Radio */
   --color-radio--primary: var(--color-control-border--primary);
   --color-radio--secondary: var(--color-control-border--secondary);
   --color-radio--secondary--checked: var(--color-control-border--secondary);
   --color-radio--checked: var(--color-control--checked);
   --color-radio--disabled: var(--color-control--disabled);
+  /* Checkbox */
+  --color-checkbox: var(--color-control-border--primary);
+  --color-checkbox--checked: var(--color-control--checked);
+  --color-checkbox--indeterminate: var(--color-control-border--primary);
+  --color-checkbox--disabled: var(--color-control--disabled);
+  /* Switch */
+  --color-switch--primary: var(--grey-200);
+  --color-switch--secondary: var(--color-control-border--primary);
+  --color-switch--checked: var(--color-control--checked);
+  --color-switch-alt--secondary: var(--color-control-border--secondary);
+  --color-switch-dark--primary: var(--grey-800);
+
 
 
   /* Dialog */
@@ -293,14 +300,6 @@
   --color-progress: var(--color-primary);
   --color-progress--secondary: color(var(--color-primary) a(25%));
   --color-progress--indeterminate: var(--grey-300);
-
-
-  /* Switch */
-  --color-switch--primary: var(--grey-200);
-  --color-switch-dark--primary: var(--grey-800);
-  --color-switch--secondary: var(--grey-400);
-  --color-switch-alt--secondary: var(--white);
-  --color-switch--checked: var(--color-primary);
 
 
   /* Table */
