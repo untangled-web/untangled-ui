@@ -308,8 +308,8 @@
 
   /* Tabs */
   --color-tab--active: rgba(255, 255, 255, .1);
-  --color-tab--primary: var(--color-primary);
-  --color-tab--active: var(--color-accent);
+  --color-tab-alt--primary: var(--color-primary);
+  --color-tab-alt--active: var(--color-accent);
 
 
   /* Toolbar */

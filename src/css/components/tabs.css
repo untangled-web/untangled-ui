@@ -1,7 +1,13 @@
 :root {
+  --borderWidth-tab: 3px;
   --height-tab: 48px;
-  --fontSize-tab: 13px;
-  --padding-tab: 12px;
+  --maxWidth-tab: 264px;
+  --minWidth-tab: 72px;
+  --paddingX-tab: 12px;
+  --paddingY-tab: 0;
+  --opacity-tab: .6;
+  --opacity-tab--active: 1;
+  --opacity-tab--hover: 1;
 }
 
 .c-tabs {
@@ -14,38 +20,38 @@
 
 
 .c-tab {
-  background: transparent;
-  border-bottom: 3px solid transparent;
-  color: currentColor;
-  font-size: var(--fontSize-tab);
-  font-weight: bold;
+  background: var(--color-tab--primary, transparent);
+  border-bottom: var(--borderWidth-tab) solid transparent;
+  color: var(--color-tab--secondary, currentColor);
+  font-size: var(--fontSize-tab, 13px);
+  font-weight: var(--fontWeight-tab, bold);
   height: var(--height-tab);
-  max-width: 264px;
-  min-width: 72px;
-  opacity: .60;
-  padding: 0 var(--padding-tab);
+  max-width: var(--maxWidth-tab);
+  min-width: var(--minWidth-tab);
+  opacity: var(--opacity-tab);
+  padding: var(--paddingY-tab) var(--paddingX-tab);
   text-transform: uppercase;
   transition:
     background-color var(--global-duration) ease,
     border var(--global-duration) ease,
     opacity var(--global-duration) ease;
 
-  &:hover { opacity: 1; }
+  &:hover { opacity: var(--opacity-tab--hover); }
 
-  &:active { background-color: var(--color-tab--active); }
+  &:active { background-color: var(--color-tab-alt--active); }
 
   &.is-active {
      background-color: transparent;
-     border-bottom-color: var(--color-tab--active);
+     border-bottom-color: var(--color-tab-alt--active);
      box-shadow: none;
-     opacity: 1;
+     opacity: var(--opacity-tab--active);
   }
 }
 
 .c-tab--primary {
   &.is-active {
-    color: var(--color-tab--primary);
-    border-bottom-color: var(--color-tab--primary);
+    color: var(--color-tab-alt--primary);
+    border-bottom-color: var(--color-tab-alt--primary);
   }
 }
 
