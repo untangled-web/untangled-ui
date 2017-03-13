@@ -58,7 +58,11 @@
 (defexample badge-button
   "### In a button"
   (dom/p #js {}
+    (dom/button #js {:className "c-button c-button--raised"} " Messages "
+      (dom/span #js {:className "c-badge"} "37"))
     (dom/button #js {:className "c-button c-button--raised c-button--primary"} " Messages "
+      (dom/span #js {:className "c-badge"} "37"))
+    (dom/button #js {:className "c-button c-button--raised c-button--accent"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))))
 
 
