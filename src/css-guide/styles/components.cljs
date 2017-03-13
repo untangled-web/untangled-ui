@@ -1668,7 +1668,6 @@
        )
      )))
 
-
 (defexample toolbar
   "# Toolbar Example"
   (let [changed-menu (om/get-state this :changed-menu)

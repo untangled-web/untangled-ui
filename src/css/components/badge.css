@@ -8,7 +8,7 @@
 }
 
 .c-badge {
-  background-color: var(--color-badge);
+  background-color: var(--color-badge--primary);
   border-radius: var(--borderRadius-badge);
   color: var(--color-badge--secondary);
   display: inline-block;

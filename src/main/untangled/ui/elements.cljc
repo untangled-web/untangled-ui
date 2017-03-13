@@ -10,8 +10,6 @@
 
 ;; Helpers
 
-
-
 (defn ui-fader
   "Wrap children in a span where the :visible attribute
   is a boolean indicating the visibility of the children.
@@ -80,20 +78,22 @@
   "Render an icon or a short string within an avatar. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
   `:color` - :none (default), :primary, :accent
-  `:size` - :regular (default), huge"
-  [{:keys [className color size style] :as props :or {className ""}} child]
+  `:size` - :regular (default), :medium, :large, :xlarge:, :huge
+  `:kind` - :none (default), :bordered
+  "
+  [{:keys [className color size kind] :as props :or {className ""}} child]
   (let [legal-colors #{:primary :accent}
         legal-sizes  #{:medium :large :xlarge :huge}
-        legal-styles #{:bordered}
+        legal-kinds  #{:bordered}
         user-classes (get props :className "")
         classes      (cond-> user-classes
                        :always (str " c-avatar")
                        (contains? legal-colors color) (str " c-avatar--" (name color))
                        (contains? legal-sizes size) (str " c-avatar--" (name size))
-                       (contains? legal-styles style) (str " c-avatar--" (name style)))
+                       (contains? legal-kinds kind) (str " c-avatar--" (name kind)))
         props        (-> props
                        (assoc :className classes)
-                       (dissoc :color :size :style))]
+                       (dissoc :color :size :kind))]
     (dom/span (clj->js props) child)))
 
 
@@ -173,7 +173,7 @@
 
    `:title` - \"Some Title\"
    `:color` - :primary | :accent
-   `:styles` - :bordered | :transparent | :square
+   `:kind` - :bordered | :transparent | :square
    `:size` - :expand | :wide
    `:image` - \"path/to/image/file.jpeg\"
    `:image-position` - :cover | :top-left | :top-right | :bottom-left | :bottom-right
@@ -187,32 +187,34 @@
 
    all paramters optional
     "
-  [{:keys [style title color size image image-position actions media-type media
+  [{:keys [kind title color size image image-position actions media-type media
            ; TODO: menu-icon menu-items
            className] :as attrs} & children]
-  {:pre [(or (nil? style) (keyword? style))
+  {:pre [(or (nil? kind) (keyword? kind))
          (or (nil? title) (string? title))]}
-  (let [legal-styles #{:bordered :transparent :square}
+  (let [legal-kinds  #{:bordered :transparent :square}
         legal-colors #{:primary :accent}
         legal-sizes  #{:expand :wide}
         className    (or className "")
         classes      (cond-> (str "c-card " className)
-                       (contains? legal-styles style) (str " c-card--" (name style))
+                       (contains? legal-kinds kind) (str " c-card--" (name kind))
                        (contains? legal-colors color) (str " c-card--" (name color))
                        (contains? legal-sizes size) (str " c-card--" (name size)))
         attributes   (-> attrs
                        (merge {:className classes})
-                       (dissoc :title :style :color :size :actions :image :image-position :media-type :media)
-                       clj->js)]
+                       (dissoc :title :kind :color :size :actions :image :image-position :media-type :media)
+                       clj->js)
+        image-src    (when (= color (or :primary :accent)) (str "url(" image ")"))]
     (dom/div attributes
       (when media
         (dom/div #js {:className (str "c-card__media")}
-          (when (= media-type :image) (dom/img #js {:className "c-card__media-content" :src media}))))
+          (when (= media-type :image)
+            (dom/img #js {:className "c-card__media-content" :src media}))))
       (when title
         (dom/div #js {:className (str "c-card__title"
                                    (when image " c-card__title--image")
                                    (when image-position (str " c-card__title--image-" (name image-position))))
-                      :style     #js {:backgroundImage (when (= color (or :primary :accent)) (str "url(" image ")"))}}
+                      :style     #js {:backgroundImage image-src}}
           (dom/h1 #js {:className "c-card__title-text"} title)))
       (when children
         (apply dom/div #js {:className "c-card__supporting-text"} children))
@@ -288,7 +290,7 @@
   "
   ([{:keys [className color size glyph] :as props :or {className ""}}] (ui-icon props nil))
   ([{:keys [className color size glyph] :as props :or {className ""}} child]
-   (let [legal-colors #{:neutral :positive :informative :negative :active :passive}
+   (let [legal-colors #{:active :passive}
          legal-sizes  #{:small :medium :large :xlarge :huge}
          user-classes (get props :className "")
          classes      (cond-> (str user-classes " c-icon")
@@ -366,9 +368,9 @@
   `:color` :none(default), :alert, :success, :warning, :informative
   "
   [{:keys [className color] :as props :or {className ""}} & children]
-  (let [legal-colors #{:informative :alert :success :warning}
+  (let [legal-colors #{:primary :accent}
         classes      (cond-> (str className " c-message")
-                       (contains? legal-colors color) (str "--" (name color)))
+                       (contains? legal-colors color) (str " c-message--" (name color)))
         props        (-> props
                        (assoc :className classes)
                        (dissoc :color))]

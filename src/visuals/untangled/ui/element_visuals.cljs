@@ -14,16 +14,18 @@
 (defcard avatar-visual-regressions
   (dom/div nil
     (for [color [:none :primary :accent]
-          style [:none :bordered]
+          kind [:none :bordered]
           size  [:regular :medium :large :xlarge :huge]]
-      (dom/span #js {:key (str "id" color style size)}
-        (e/ui-avatar {:color color :style style :size size} "AV")
-        (e/ui-avatar {:color color :style style :size size} (icon :supervisor_account))))))
+      (dom/span #js {:key (str "id" color kind size)}
+        (e/ui-avatar {:color color :kind kind :size size} "AV")
+        (e/ui-avatar {:color color :kind kind :size size} (icon :supervisor_account))))))
 
 
 (defcard badges-visual-regressions
   (dom/div nil
+    (e/ui-button {} "Notifications " (e/ui-badge {} "8"))
     (e/ui-button {:color :primary} "Notifications " (e/ui-badge {} "8"))
+    (e/ui-button {:color :accent} "Notifications " (e/ui-badge {} "5"))
     (e/ui-badge {:className "hello"} "7")
     (e/ui-badge {} (icon :arrow_back))
     (e/ui-badge {} (icon :arrow_back) (icon :arrow_forward))))
@@ -100,7 +102,7 @@
            size [:normal :expand :wide]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
        (l/col {:width 6 :key (str color size actions (rand-int 256))}
-         (e/ui-card {:style :bordered :title "Card Test" :color color :size size :actions actions}
+         (e/ui-card {:kind :bordered :title "Card Test" :color color :size size :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))
             (dom/p nil (str "Size: " (name size)))))))
@@ -110,7 +112,7 @@
        (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
              image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
-           (e/ui-card {:style :bordered :title "Card Test" :color :primary :image image :image-position image-position}
+           (e/ui-card {:kind :bordered :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
               (dom/p nil (str "Image position: " (name image-position))))))))))
@@ -120,7 +122,7 @@
      (for [color [:neutral :primary :accent]
            actions ["" (e/ui-flat-button {:color :primary} "Action")]]
        (l/col {:width 6 :key (str color actions (rand-int 256))}
-         (e/ui-card {:style :transparent :title "Card Test" :color color :actions actions}
+         (e/ui-card {:kind :transparent :title "Card Test" :color color :actions actions}
           (dom/div nil
             (dom/p nil (str "Color: " (name color)))))))
 
@@ -129,7 +131,7 @@
        (for [image          ["img/bubbles.png" "img/welcome_card.jpg"]
              image-position [:top-left :top-right :bottom-left :bottom-right]]
          (l/col {:width 6 :key (str image image-position (rand-int 256))}
-           (e/ui-card {:style :transparent :title "Card Test" :color :primary :image image :image-position image-position}
+           (e/ui-card {:kind :transparent :title "Card Test" :color :primary :image image :image-position image-position}
             (dom/div nil
               (dom/p nil (str "Image: " image))
               (dom/p nil (str "Image position: " (name image-position))))))))))
@@ -138,17 +140,23 @@
   (l/row {}
     (for [size [:normal :expand :wide]]
       (l/col {:width 6 :key (str size (rand-int 256))}
-        (e/ui-card {:style :square :title "Card Test" :size size}
+        (e/ui-card {:kind :square :title "Card Test" :size size}
           (dom/div nil
             (dom/p nil (str "Size: " (name size)))))))))
 
 
 (defcard checkbox-visual-regressions
   (dom/div nil
-    (e/ui-checkbox {:id "checkbox-1"})
-    (e/ui-checkbox {:id "checkbox-2" :disabled true})
-    (e/ui-checkbox {:id "checkbox-3" :style :indeterminate})
-    (e/ui-checkbox {:id "checkbox-4" :style :indeterminate :disabled true})))
+    (dom/div nil
+      (dom/label #js {:className "is-optional" :style #js {:width "80px"}} "Normal ")
+      (e/ui-checkbox {:id "checkbox-1"})
+      (e/ui-checkbox {:id "checkbox-3" :checked true})
+      (e/ui-checkbox {:id "checkbox-3" :checked :partial}))
+    (dom/div nil
+      (dom/label #js {:className "is-optional" :style #js {:width "80px"}} "Disabled ")
+      (e/ui-checkbox {:id "checkbox-2" :disabled true})
+      (e/ui-checkbox {:id "checkbox-3" :checked true :disabled true})
+      (e/ui-checkbox {:id "checkbox-4" :checked :partial :disabled true}))))
 
 
 (defcard field-visual-regressions
@@ -164,12 +172,8 @@
 (defcard icon-colors-visual-regressions
   (dom/div nil
     (e/ui-icon {} (icon :alarm))
-    (e/ui-icon {:color :neutral} (icon :alarm))
-    (e/ui-icon {:color :positive} (icon :alarm))
-    (e/ui-icon {:color :informative} (icon :alarm))
-    (e/ui-icon {:color :live} (icon :alarm))
-    (e/ui-icon {:color :alterable} (icon :alarm))
-    (e/ui-icon {:color :negative} (icon :alarm))))
+    (e/ui-icon {:color :active} (icon :alarm))
+    (e/ui-icon {:color :passive} (icon :alarm))))
 
 
 (defcard icon-sizes-visual-regressions
@@ -200,7 +204,7 @@
 
 (defcard messages-visual-regressions
   (dom/div nil
-    (for [color [:none :neutral :alert :success :warning]
+    (for [color [:none :primary :accent]
           class ["" "u-font-size--semi-medium"]]
       (e/ui-message {:color color :className class :key (str "messages-" (name color) (name class))}
         (str "This is a " (name color) " message.")))
@@ -213,7 +217,7 @@
     (e/ui-iframe {:height "200" :width "100%"}
       (dom/div #js {}
         (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-        (e/ui-dialog {:active true}
+        (e/ui-dialog {:visible true}
           (e/ui-dialog-title {} "Informative")
           (e/ui-dialog-body {} "You have been notified.")
           (e/ui-dialog-actions {}

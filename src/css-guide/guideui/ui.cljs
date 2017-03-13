@@ -229,7 +229,8 @@
     (let [{:keys [parts/selected-part parts searchbar] :or {parts/selected-part 0}} (om/props this)
           part-names (map :part/title parts)]
       (dom/div #js {:className "u-layout__page u-layout__page--fixed"}
-        (dom/header #js {:className "u-layout__header c-toolbar c-toolbar--raised"}
+
+        (dom/header #js {:className (str "u-layout__header c-toolbar c-toolbar--raised")}
           (dom/div #js {:className "c-toolbar__button"}
             (dom/a #js {:href "/"}
               (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:margin "4px"}})))

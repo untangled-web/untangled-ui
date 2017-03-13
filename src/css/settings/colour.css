@@ -99,7 +99,7 @@
   --color-avatar-alt--secondary: var(--color-primary-contrast);
 
   /* Badge */
-  --color-badge--primary: var(--color-neutral);
+  --color-badge--primary: var(--grey-400);
   --color-badge--secondary: var(--white);
   --color-badge-alt--primary: var(--color-primary);
   --color-badge-accent--primary: var(--color-accent);
