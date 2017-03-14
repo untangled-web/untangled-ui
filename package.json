@@ -1,9 +1,10 @@
 {
   "name": "untangled-ui",
-  "version": "1.6.0",
   "description": "A PostCSS Framework for web apps",
-  "author": "NAVIS",
-  "license": "Copyright NAVIS, using the MIT public license.",
+  "version": "0.1.0",
+  "repository": "untangled-web/untangled-ui",
+  "author": "NAVIS <support@thenavisway.com> (http://thenavisway.com/)",
+  "license": "MIT",
   "main": "src/main/css/untangled-ui.css",
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -65,7 +66,6 @@
     "sw-precache": "^4.3.0"
   },
   "dependencies": {
-    "modernizr": "^3.2.0",
     "react-frame-component": "^1.0.0"
   },
   "repository": {
