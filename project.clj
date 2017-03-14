@@ -41,13 +41,27 @@
               [{:id           "guide"
                 :source-paths ["src/main" "src/guide"]
                 :figwheel     {:devcards true}
-                :compiler     {:main          untangled.ui.guide-ui
-                               :asset-path    "js/guide"
-                               :output-to     "resources/public/js/guide.js"
-                               :output-dir    "resources/public/js/guide"
-                               :preloads      [devtools.preload]
+                :compiler     {:main           untangled.ui.guide-ui
+                               :asset-path     "js/guide"
+                               :output-to      "resources/public/js/guide.js"
+                               :output-dir     "resources/public/js/guide"
+                               :preloads       [devtools.preload]
                                :parallel-build true
-                               :optimizations :none}}
+                               :optimizations  :none}}
+               {:id           "production-guide"
+                :source-paths ["src/main" "src/guide"]
+                :compiler     {:devcards      true
+                               :asset-path    "js/pg-js"
+                               :output-dir    "resources/public/js/pg-js"
+                               :output-to     "resources/public/js/guide.min.js"
+                               :optimizations :advanced}}
+               {:id           "production-visuals"
+                :source-paths ["src/main" "src/visuals"]
+                :compiler     {:devcards      true
+                               :asset-path    "js/pv-js"
+                               :output-dir    "resources/public/js/pv-js"
+                               :output-to     "resources/public/js/visuals.min.js"
+                               :optimizations :advanced}}
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]
                 :figwheel     {:devcards true}
@@ -65,6 +79,13 @@
                                :output-dir "resources/public/js/specs"
                                :preloads   [devtools.preload]
                                :asset-path "js/specs"}}
+               {:id           "production-css"
+                :source-paths ["src/main" "src/css-guide"]
+                :compiler     {:asset-path    "js/pcss"
+                               :optimizations :advanced
+                               :main          guideui.main
+                               :output-dir    "resources/public/js/pcss"
+                               :output-to     "resources/public/js/css-guide.min.js"}}
                {:id           "css-guide"
                 :figwheel     true
                 :source-paths ["dev" "src/main" "src/css-guide"]
