@@ -250,7 +250,9 @@
 (defcard radio-visual-regressions
   (dom/div nil
     (e/ui-radio {:id "radio-1"})
-    (e/ui-radio {:id "radio-2" :disabled true})))
+    (e/ui-radio {:id "radio-1" :checked true})
+    (e/ui-radio {:id "radio-2" :disabled true})
+    (e/ui-radio {:id "radio-2" :disabled true :checked true})))
 
 ;; TODO Need
 ;; -------------
