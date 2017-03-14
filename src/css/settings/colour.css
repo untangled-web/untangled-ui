@@ -52,7 +52,7 @@
   --grey-800: #3f3f3f;
   --grey-900: #2c2c2c;
 
-  --black:      #000;
+  --black:      #111;
   --white:      #fff;
 }
 
@@ -84,21 +84,17 @@
   --color-neutral-highlight: var(--grey-100);
   --borderColor: var(--grey-100);
   --borderColor-inactive: var(--grey-50);
-}
 
 
-/* Type and Globals */
+  /* Type and Globals */
 
-:root {
   --color-text: var(--grey-800);
   --color-placeholder: var(--grey-500);
   --color-link: var(--color-primary);
   --color-error: var(--red-400);
   --color-invalid: var(--red-200);
-}
 
 
-:root {
   /* Avatar */
   --color-avatar: var(--grey-200);
   --color-avatar--secondary: color(var(--grey-900) a(60%));
@@ -180,6 +176,7 @@
   --color-control-border--primary: var(--grey-400);
   --color-control-border--secondary: var(--white);
   --color-control--checked: var(--color-primary);
+  --color-control--unchecked: var(--grey-500);
   --color-control--disabled: var(--grey-300);
   /* Radio */
   --color-radio--primary: var(--color-control-border--primary);
@@ -196,7 +193,7 @@
   --color-switch--primary: var(--grey-200);
   --color-switch--secondary: var(--color-control-border--primary);
   --color-switch--checked: var(--color-control--checked);
-  --color-switch-alt--secondary: var(--color-control-border--secondary);
+  --color-switch-alt--secondary: var(--color-control--unchecked);
   --color-switch-dark--primary: var(--grey-800);
 
 
@@ -324,12 +321,10 @@
   /* Tooltip */
   --color-tooltip--primary: var(--black);
   --color-tooltip--secondary: var(--white);
-}
 
 
-/* Shadows */
+  /* Shadows */
 
-:root {
   --shadow-1: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
   --shadow-2: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);
   --shadow-3: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23);
@@ -341,11 +336,9 @@
     inset 0 10px 11px -7px rgba(0, 0, 0, .5),
     inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
   --toggle-focus-shadow: 0 0 6px var(--color-primary);
-}
 
-/* Social Media */
+  /* Social Media */
 
-:root {
   --facebook: #4c66a4;
   --google-plus: #dd4b39;
   --linkedin: #0077b5;
