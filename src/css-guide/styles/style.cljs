@@ -48,7 +48,7 @@
 
 (defn color-block [color name hue-name]
   (let [color-var-name (str "--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-")) name)]
-    (str "<div class='swatch' style='" (when (is-dark? color) "color: #fff;") "  background-color: var("color-var-name");'>
+    (str "<div class='swatch' style='" (if (is-dark? color) "color: #fff;" "color: #111;") "  background-color: var("color-var-name");'>
   <span class='swatch__name'>"color-var-name"</span>
   <span class='swatch__code'>"color"</span>
   </div>")))
@@ -64,7 +64,7 @@
 
 
 (defn color-theme-block [color name hue-name & {:keys [color-value]}]
-  (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
+  (str "<div class='swatch' style='"(if (is-dark? color) "color: #fff;" "color: #111;")"  background-color: " color ";'>
   <span class='swatch__name'>" name "</span>
   <span class='swatch__code'>" color-value "</span>
   </div>"))

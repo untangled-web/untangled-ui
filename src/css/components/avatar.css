@@ -34,13 +34,19 @@
   width: var(--size-avatar);
 
   & > .c-icon {
-    fill: var(--color-avatar--secondary);
+    fill: currentColor;
     height: 100%;
     padding: calc(calc(var(--size-avatar) - var(--size-icon--normal)) / 2);
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
+  }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    color: var(--grey-200);
   }
 }
 
@@ -105,7 +111,7 @@
 }
 
 .c-avatar--bordered {
-  background-color: var(--color-primary-contrast);
+  background-color: var(--color-avatar);
   border: var(--borderSize-avatar) solid var(--color-avatar);
   line-height: calc(var(--size-avatar) - var(--borderSize-avatar));
 

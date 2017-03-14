@@ -1,7 +1,3 @@
-/*---
-import: ../README.md
----*/
-
 @import 'untangled-ui';
 
 /* stylelint-disable */
@@ -51,14 +47,25 @@ import: ../README.md
     font-size: var(--fontSize--small);
     color: var(--grey-700);
     font-weight: 600;
+
+    .t-dark &,
+    .t-fullscreen & {
+      color: var(--grey-400);
+    }
   }
 
   code {
     background-color: var(--grey-50);
-    font-size: 16px;
-    border-radius: 2px;
+    font-size: var(--fontSize--semiNormal);
+    border-radius: var(--global-rounded);
     padding: .2em 0;
     margin: 0;
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      background-color: var(--black);
+    }
   }
 
   pre {
@@ -68,6 +75,12 @@ import: ../README.md
     padding: 1em;
     line-height: 1.5;
     margin-bottom: 1em;
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      background-color: var(--black);
+    }
   }
 }
 
@@ -99,16 +112,30 @@ import: ../README.md
 .ui-example__figure {
   border: 3px solid var(--grey-50);
   padding: 1em 5px;
+  margin-top: 1em;
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    border-color: var(--black);
+  }
 }
 
 .ui-example__source {
   background-color: var(--grey-50);
-  font-size: 16px;
-  line-height: 22px;
-  margin-bottom: 1em;
+  font-size: var(--fontSize--semiNormal);
+  line-height: 18px;
+  margin-bottom: 2em;
   padding: 5px 0;
   overflow-x: scroll;
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen {
+    background-color: var(--black);
+  }
 }
+
 
 ._example-layout {
 

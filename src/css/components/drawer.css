@@ -16,6 +16,12 @@
   z-index: 800;
 
   &.is-open { left: 0; }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--color-drawer-dark--primary);
+  }
 }
 
 .c-drawer--right {
@@ -34,6 +40,12 @@
   color: var(--color-drawer__header--secondary);
   height: 58px;
   padding: 0 1em;
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--color-drawer__header-dark--primary);
+  }
 }
 
 .c-drawer__group {

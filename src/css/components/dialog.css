@@ -1,6 +1,7 @@
 :root {
   --fontSize-dialog__title: var(--fontSize--normalPlus);
   --color-dialog__divider: var(--borderColor);
+  --radius-dialog: var(--global-rounded);
 }
 
 .c-dialog {
@@ -8,9 +9,9 @@
   @apply --position-top-left;
   @apply --text-center;
   height: 100%;
-  max-height: 100vh;
+  max-height: var(--height-dialog, 100vh);
   overflow: hidden;
-  position: fixed;
+  position: var(--position-dialog, fixed);
   text-align: left;
   width: 100%;
 
@@ -24,25 +25,31 @@
 
   .c-dialog__card {
     background-color: var(--color-dialog--primary);
-    border-radius: calc(var(--global-rounded) / 2);
+    border-radius: var(--radius-dialog);
     box-shadow: var(--shadow-2);
-    margin: 1em 1rem;
-    min-height: 100px;
-    min-width: 280px;
+    margin: var(--margin-dialog__card, 1em 1rem);
+    min-height: var(--height-dialog__card, 100px);
+    min-width: var(--width-dialog__card, 280px);
     pointer-events: auto;
     position: relative;
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      background-color: var(--color-dialog-dark--primary);
+    }
   }
 
   .c-dialog__title {
     font-size: var(--fontSize-dialog__title);
-    padding: 1em 1rem .85em;
+    padding: var(--padding-dialog__title, 1em 1rem .85em);
   }
 
 
   .c-dialog__content {
-    max-height: 82vh;
+    max-height: var(--height-dialog__content, 82vh);
     overflow-y: scroll;
-    padding: .85em 1rem 1em;
+    padding: var(--padding-dialog__content, .85em 1rem 1em);
 
     &:first-child { padding-top: 1.25em; }
 
@@ -55,13 +62,13 @@
   }
 
   .c-dialog__content--collapse {
-    padding: 0 0 .5em;
+    padding: var(--padding-dialog__content--collapse, 0 0 .5em);
   }
 
 
   .c-dialog__actions {
     @apply --end;
-    padding-left: .5rem;
+    padding-left: var(--paddingLeft-dialog__actions, .5rem);
   }
 
 /* TODO Make all buttons stack to the right
@@ -70,6 +77,7 @@
     }
   }
 */
+
 
 
 

@@ -5,7 +5,7 @@
 
 .c-calendar,
 .o-calendar {
-  background: var(--color-calendar);
+  background: var(--color-calendar--primary);
   border-radius: var(--global-rounded);
   box-shadow: var(--shadow-1);
   display: inline-block;
@@ -21,6 +21,12 @@
    .c-button + & { margin-top: 43px; }
 
    &--up { margin-bottom: 43px; }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--grey-800);
+  }
 }
 
 

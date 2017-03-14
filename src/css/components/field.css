@@ -103,6 +103,17 @@ section: Components
   }
 }
 
+.t-dark,
+.t-fullscreen,
+:--fullscreen {
+  .c-field,
+  .c-field__input {
+    &::placeholder {
+      color: var(--grey-300);
+     }
+  }
+}
+
 
   .c-field__input {
     background-color: transparent;
@@ -167,6 +178,8 @@ section: Components
 .c-field--inlay { padding-left: 35px; }
 
 
+/* Inside a toolbar */
+
 .c-toolbar {
   .c-field {
     background-color: color(var(--grey-500) a(15%));
@@ -201,8 +214,8 @@ section: Components
      }
   }
 
-.c-field__input::placeholder {
-  color: var(--white);
-}
+  .c-field__input::placeholder {
+    color: var(--white);
+  }
 }
 

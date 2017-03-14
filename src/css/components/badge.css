@@ -55,6 +55,11 @@
   min-width: var(--size-badge--small);
 }
 
+.c-badge--large {
+  padding: 3px;
+  text-indent: 4px;
+}
+
 .c-badge--icon {
   height: var(--size-badge--icon);
   padding: var(--padding-badge--icon);

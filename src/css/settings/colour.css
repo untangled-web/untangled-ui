@@ -92,7 +92,7 @@
   --color-neutral-dark: var(--grey-700);
   --color-neutral-highlight: var(--grey-100);
   --color-neutral-contrast: var(--white);
-  --borderColor: var(--color-neutral-highlight);
+  --borderColor: color(var(--color-neutral) a(.25));
   --borderColor-inactive: var(--grey-50);
 
 
@@ -106,7 +106,7 @@
 
 
   /* Avatar */
-  --color-avatar: var(--grey-200);
+  --color-avatar: color(var(--grey) a(.5));
   --color-avatar--secondary: color(var(--grey-900) a(60%));
   --color-avatar-alt--primary: var(--color-primary);
   --color-avatar-alt--accent: var(--color-accent);
@@ -119,7 +119,7 @@
 
 
   /* Badge */
-  --color-badge--primary: var(--grey-400);
+  --color-badge--primary: color(var(--grey) a(.7));
   --color-badge--secondary: var(--white);
   --color-badge-alt--primary: var(--color-primary);
   --color-badge-accent--primary: var(--color-accent);
@@ -148,26 +148,26 @@
   --color-button-accent--focus: var(--white);
 
   /* Dark theme buttons */
-  --color-button-dark--primary: color(var(--grey) a(18%));
+  --color-button-dark--primary: color(var(--grey) a(.2));
   --color-button-dark--secondary: var(--color-primary-contrast);
-  --color-button-dark--hover: color(var(--grey-800) a(18%));
-  --color-button-dark--active: color(var(--grey-600) a(18%));
-  --color-button-dark--focus: color(var(--black) a(10%));
+  --color-button-dark--hover: color(var(--grey-800) a(.2));
+  --color-button-dark--active: color(var(--grey) a(.7));
+  --color-button-dark--focus: color(var(--grey) a(.3));
 
   /* Disabled buttons */
   --color-button-disabled--primary: color(var(--black) a(12%));
   --color-button-disabled--secondary: color(var(--black) a(26%));
   --color-button-disabled--dark: color(var(--white) a(30%));
 
+  /* Button Icon */
+  --color-button-icon: color(var(--grey) a(.9));
 
   /* Button groups */
-  --color-button-group: var(--grey-50);
+  --color-button-group: color(var(--grey) a(.1));
 
 
-  /* Calendar */
-  --color-calendar: var(--white);
-  --color-calendar-hover: var(--grey-50);
-  --color-calendar-selected: var(--color-primary-highlight);
+
+
 
 
   /* Card */
@@ -178,8 +178,41 @@
 
   --color-card-alt--primary: var(--color-primary);
   --color-card-alt--secondary: var(--color-primary-contrast);
+
   --color-card-accent--primary: var(--color-accent);
   --color-card-accent--secondary: var(--color-accent-contrast);
+
+  /* Calendar */
+  --color-calendar--primary: var(--color-card--primary);
+  --color-calendar-dark--primary: var(--color-card-dark--primary);
+  --color-calendar-hover: color(var(--grey) a(.3));
+  --color-calendar-selected: color(var(--green) a(.3));
+
+  /* Dialog */
+  --color-dialog--primary: var(--color-card--primary);
+  --color-dialog-dark--primary: var(--color-card-dark--primary);
+
+  /* Drawer */
+  --color-drawer--primary: var(--color-card--primary);
+  --color-drawer-dark--primary: var(--color-card-dark--primary);
+  --color-drawer__header--primary: var(--color-drawer--primary);
+  --color-drawer__header--secondary: inherit;
+  --color-drawer__header-dark--primary: var(--color-drawer-dark--primary);
+  --color-drawer__divider: var(--borderColor);
+
+  /* Expansion Panel */
+  --color-expansion-panel--primary: var(--color-card--primary);
+  --color-expansion-panel--secondary: var(--grey-700);
+  --color-expansion-panel--focus: var(--grey-50);
+  --color-expansion-panel__title: var(--grey-900);
+  --color-expansion-panel__divider: var(--borderColor);
+
+  --color-expansion-panel-dark--primary: var(--grey-800);
+  --color-expansion-panel-dark--secondary: var(--grey-200);
+  --color-expansion-panel-dark__title: var(--grey-50);
+  --color-expansion-panel-dark--focus: var(--grey-700);
+
+
 
 
   /* Control */
@@ -188,42 +221,30 @@
   --color-control--checked: var(--color-primary);
   --color-control--unchecked: var(--grey);
   --color-control--disabled: var(--grey-300);
+
   /* Radio */
   --color-radio--primary: var(--color-control-border--primary);
   --color-radio--secondary: var(--color-control-border--secondary);
   --color-radio--secondary--checked: var(--color-control-border--secondary);
   --color-radio--checked: var(--color-control--checked);
   --color-radio--disabled: var(--color-control--disabled);
+
   /* Checkbox */
   --color-checkbox: var(--color-control-border--primary);
   --color-checkbox--checked: var(--color-control--checked);
   --color-checkbox--indeterminate: var(--color-control-border--primary);
   --color-checkbox--disabled: var(--color-control--disabled);
+
   /* Switch */
   --color-switch--primary: var(--grey-200);
   --color-switch--secondary: var(--color-control-border--primary);
   --color-switch--checked: var(--color-control--checked);
   --color-switch-alt--secondary: var(--color-control--unchecked);
-  --color-switch-dark--primary: var(--grey-800);
+  --color-switch-dark--primary: var(--grey-600);
 
 
 
-  /* Dialog */
-  --color-dialog--primary: var(--white);
 
-
-  /* Drawer */
-  --color-drawer--primary: var(--white);
-  --color-drawer__header--primary: var(--white);
-  --color-drawer__header--secondary: var(--color-text);
-  --color-drawer__divider: var(--borderColor);
-
-  /* Expansion Panel */
-  --color-expansion-panel--primary: var(--white);
-  --color-expansion-panel--secondary: var(--grey-700);
-  --color-expansion-panel--focus: var(--grey-50);
-  --color-expansion-panel__title: var(--grey-900);
-  --color-expansion-panel__divider: var(--borderColor);
 
 
   /* Field */
@@ -262,7 +283,7 @@
 
   /* List */
   --color-list--primary: transparent;
-  --color-list-selected--primary: var(--grey-50);
+  --color-list-selected--primary: color(var(--grey) a(.1));
   --color-list-active--secondary: var(--color-primary);
   --color-list__divider: var(--borderColor);
   --color-list__tile-active--primary: var(--color-primary);

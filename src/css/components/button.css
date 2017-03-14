@@ -65,21 +65,19 @@ section: Components
 
   &:hover {
      background-color: var(--color-button--hover);
-
-    :--dark & { background-color: var(--color-button-dark--hover); }
    }
 
   &:focus:not(:active),
   &.is-focused {
      background-color: var(--color-button--focus);
 
-    :--dark & { background-color: var(--color-button-dark--focus); }
+    .t-dark & { background-color: var(--color-button-dark--focus); }
    }
 
   &:--active {
      background-color: var(--color-button--active);
 
-    :--dark & { background-color: var(--color-button-dark--active); }
+    .t-dark & { background-color: var(--color-button-dark--active); }
    }
 
 
@@ -89,12 +87,11 @@ section: Components
     -ms-pointer-events: none;
     pointer-events: none;
 
-    :--dark & { color: var(--color-button-disabled--dark); }
+    .t-dark & { color: var(--color-button-disabled--dark); }
   }
 
   @media print { display: none; }
 
-  :--dark & { color: var(--color-button-dark--secondary); }
 
   :--fullscreen & {
     color: var(--color-button-dark--secondary);
@@ -204,14 +201,14 @@ section: Components
 .c-button--raised {
 
   &:--active {
-    background-color: var(--color-button--active);
+    background-color: var(--color-button-dark--active);
 
     &::after { box-shadow: var(--shadow-3); }
   }
 
   &:focus:not(:active),
    &.is-focused {
-    background-color: var(--color-button--active);
+    background-color: var(--color-button-dark--active);
 
     &::after { box-shadow: var(--shadow-focus); }
    }
@@ -224,9 +221,9 @@ section: Components
 
     &::after { box-shadow: none; }
 
-     :--dark & {
-       background-color: var(--color-button-dark--primary);
-       color: var(--color-button-disabled--dark);
+     .t-dark & {
+       background-color: var(--color-button-dark--primary) !important;
+       color: var(--color-button-disabled--dark) !important;
     }
    }
 
@@ -240,7 +237,7 @@ section: Components
     &:--active {
        background-color: var(--color-button-alt--active);
 
-      :--dark & { background-color: var(--color-button-alt--active); }
+      .t-dark & { background-color: var(--color-button-alt--active); }
      }
 
     &:focus:not(:active),
@@ -252,8 +249,6 @@ section: Components
      color: var(--color-button-disabled--secondary) !important;
    }
 
-   :--dark & { background-color: var(--color-button-alt--primary); }
-
 
   &.c-button--accent {
     background-color: var(--color-accent);
@@ -264,7 +259,7 @@ section: Components
     &:--active {
        background-color: var(--color-button-accent--active);
 
-      :--dark & { background-color: var(--color-button-dark--active); }
+      .t-dark & { background-color: var(--color-button-dark--active); }
     }
 
     &:focus:not(:active),
@@ -275,7 +270,7 @@ section: Components
        color: var(--color-button-disabled--secondary) !important;
      }
 
-  :--dark & { background-color: var(--color-button-accent--primary); }
+  .t-dark & { background-color: var(--color-button-accent--primary); }
   }
 }
 
@@ -286,7 +281,7 @@ section: Components
 .c-button--radial { border-radius: var(--global-radial) !important; }
 
 .c-button--icon {
-  color: var(--grey-700);
+  color: var(--color-button-icon);
   min-width: var(--width-button--icon);
   padding: 0;
 

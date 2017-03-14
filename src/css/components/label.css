@@ -13,7 +13,7 @@ section: Components
 
 .c-label {
   background-color: var(--color-label--primary);
-  border-radius: calc(var(--global-rounded) / 2);
+  border-radius: var(--global-rounded);
   color: var(--color-label--secondary);
   display: inline-block;
   font-size: var(--fontSize-label);
