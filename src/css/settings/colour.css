@@ -82,8 +82,8 @@
   --color-accent-contrast: var(--white);
   --color-neutral: var(--grey-400);
   --color-neutral-highlight: var(--grey-100);
-  --borderColor: var(--grey-300);
-  --borderColor-inactive: var(--grey-200);
+  --borderColor: var(--grey-100);
+  --borderColor-inactive: var(--grey-50);
 }
 
 

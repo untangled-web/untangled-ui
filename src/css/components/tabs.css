@@ -38,11 +38,11 @@
 
   &:hover { opacity: var(--opacity-tab--hover); }
 
-  &:active { background-color: var(--color-tab-alt--active); }
+  &:active { background-color: var(--color-tab--active); }
 
   &.is-active {
      background-color: transparent;
-     border-bottom-color: var(--color-tab-alt--active);
+     border-bottom-color: var(--color-tab--active);
      box-shadow: none;
      opacity: var(--opacity-tab--active);
   }
