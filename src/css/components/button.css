@@ -5,7 +5,7 @@ section: Components
 
 :root {
   --borderRadius-button: 2px;
-  --fontSize-button: 14px;
+  --fontSize-button: var(--fontSize--small); /* 14px */
   --fontSize-button--dense: calc(var(--fontSize-button) - 1px);
   --marginY-button: 6px;
   --marginX-button: var(--frame-quarter);
@@ -16,8 +16,6 @@ section: Components
   --size-button--dense: calc(var(--size-button) - 4px);
   --transitionDuration-button: .1s;
   --width-button--icon: 36px;
-
-
   --button--wide: {
     display: block;
     width: calc(100% - var(--marginX-button) - var(--marginX-button));

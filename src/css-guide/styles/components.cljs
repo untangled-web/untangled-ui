@@ -1589,13 +1589,13 @@
 
   ### Basic"
   (dom/div #js {:style #js {:position "relative" :height "400px"}}
-    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
-      (dom/div #js {:className "c-modal__card"}
-        (dom/div #js {:className "c-modal__title"} "Modal title")
-        (dom/div #js {:className "c-modal__content"}
-          (dom/span #js {} "This is a card in a modal, what will they think of next?")
+    (dom/div #js {:className (str "c-dialog is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-dialog__card"}
+        (dom/div #js {:className "c-dialog__title"} "Dialog title")
+        (dom/div #js {:className "c-dialog__content"}
+          (dom/span #js {} "This is a card in a dialog, what will they think of next?")
           )
-        (dom/div #js {:className "c-modal__actions"}
+        (dom/div #js {:className "c-dialog__actions"}
           (dom/button #js {:className "c-button c-button--primary"
                              :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
             (dom/button #js {:className "c-button c-button--primary"
@@ -1605,8 +1605,8 @@
 
 (defviewport modal-fullscreen-1
   "Fullscreen modal"
-  (dom/div #js {:className "c-modal c-modal--fullscreen"}
-    (dom/div #js {:className "c-modal__card"}
+  (dom/div #js {:className "c-dialog c-dialog--fullscreen"}
+    (dom/div #js {:className "c-dialog__card"}
 
       (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
         (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
@@ -1618,7 +1618,7 @@
 
       (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
-      (dom/div #js {:className "c-modal__content"}
+      (dom/div #js {:className "c-dialog__content"}
         (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
         (dom/input #js {:className "c-field" :placeholder "Location"})
         (dom/label #js {:className "is-optional u-leader--half"} "Start time")
@@ -1632,12 +1632,12 @@
 (defviewport modal-fullscreen-2
   "Fullscreen modal with another modal"
   (dom/div #js {:style #js {:position "relative" :height "570px"}}
-    (dom/div #js {:className (str "c-modal is-active") :style #js {:position "absolute"}}
-      (dom/div #js {:className "c-modal__card"}
-        (dom/div #js {:className "c-modal__content"}
+    (dom/div #js {:className (str "c-dialog is-active") :style #js {:position "absolute"}}
+      (dom/div #js {:className "c-dialog__card"}
+        (dom/div #js {:className "c-dialog__content"}
           (dom/span #js {} "Discard new event?")
           )
-        (dom/div #js {:className "c-modal__actions"}
+        (dom/div #js {:className "c-dialog__actions"}
           (dom/button #js {:className "c-button c-button--primary"
                              :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
             (dom/button #js {:className "c-button c-button--primary"
@@ -1645,8 +1645,8 @@
         ))
     (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})
 
-    (dom/div #js {:className "c-modal c-modal--fullscreen"}
-     (dom/div #js {:className "c-modal__card"}
+    (dom/div #js {:className "c-dialog c-dialog--fullscreen"}
+     (dom/div #js {:className "c-dialog__card"}
        (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
          (dom/div #js {:className "c-toolbar__row c-toolbar__row--expanded"}
           (dom/div #js {:className "c-toolbar__view"}
@@ -1656,7 +1656,7 @@
             (dom/button #js {:className "c-button"} "Save"))))
        (dom/div #js {:className "has-menu"}
          (dom/button #js {:className "c-button c-button--wide"} "untangler@untangled.io"))
-       (dom/div #js {:className "c-modal__content"}
+       (dom/div #js {:className "c-dialog__content"}
          (dom/input #js {:className "c-field c-field--large u-trailer" :placeholder "Event name"})
          (dom/input #js {:className "c-field" :placeholder "Location"})
          (dom/label #js {:className "is-optional u-leader--half"} "Start time")
@@ -1918,7 +1918,7 @@
                       messages
                       ]}
           {:id :modal
-           :title "Modal"
+           :title "Dialog"
            :examples [
                       modal-example
                       modal-fullscreen-1

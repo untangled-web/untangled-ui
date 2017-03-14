@@ -187,24 +187,26 @@ Additionally you can override the default `--green`, `--blue`, `--red`, `--grey`
 
     (color-theme "Backgrounds & Borders" [[:--color-page             (get-color neutral 1) "--white"]
                                           [:--color-page-dark        (get-color grey 9) "--grey-900"]
-                                          [:--color-primary          (get-color green 5) "--green-500"]
+                                          [:--color-primary          (get-color green 4) "--green"]
                                           [:--color-primary-dark     (get-color green 7) "--green-700"]
                                           [:--color-primary-highlight (get-color green 1) "--green-100"]
-                                          [:--color-primary-contrast (get-color neutral 1) "--grey-100"]
-                                          [:--color-accent           (get-color blue 5) "--blue-500"]
+                                          [:--color-primary-contrast (get-color neutral 1) "--white"]
+                                          [:--color-accent           (get-color blue 4) "--blue"]
                                           [:--color-accent-dark      (get-color blue 7) "--blue-700"]
                                           [:--color-accent-highlight (get-color blue 1) "--blue-100"]
                                           [:--color-accent-contrast  (get-color neutral 1) "--white"]
-                                          [:--color-neutral          (get-color grey 4) "--grey-400"]
+                                          [:--color-neutral          (get-color grey 4) "--grey"]
+                                          [:--color-neutral-dark     (get-color grey 7) "--grey-700"]
                                           [:--color-neutral-highlight (get-color grey 1) "--grey-100"]
-                                          [:--borderColor            (get-color grey 3) "--grey-300"]
-                                          [:--borderColor-inactive   (get-color grey 2) "--grey-200"]])
+                                          [:--color-neutral-contrast  (get-color neutral 1) "--white"]
+                                          [:--borderColor            (get-color grey 1) "--grey-100"]
+                                          [:--borderColor-inactive   (get-color grey 0) "--grey-50"]])
 
 
 
     (color-theme "Type Colors" [[:--color-text        (get-color grey 8) "--grey-800"]
-                                [:--color-placeholder (get-color grey 5) "--grey-500"]
-                                [:--color-link        (get-color green 5) "--green-500"]
+                                [:--color-placeholder (get-color grey 5) "--grey"]
+                                [:--color-link        (get-color green 5) "--green"]
                                 [:--color-error       (get-color red 4) "--red-400"]
                                 [:--color-invalid     (get-color red 2) "--red-200"]])
 

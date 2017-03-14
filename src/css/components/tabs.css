@@ -23,7 +23,7 @@
   background: var(--color-tab--primary, transparent);
   border-bottom: var(--borderWidth-tab) solid transparent;
   color: var(--color-tab--secondary, currentColor);
-  font-size: var(--fontSize-tab, 13px);
+  font-size: var(--fontSize-tab, var(--fontSize--tiny));
   font-weight: var(--fontWeight-tab, bold);
   height: var(--height-tab);
   max-width: var(--maxWidth-tab);

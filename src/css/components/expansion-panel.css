@@ -1,5 +1,5 @@
 :root {
-  --fontSize-expansion-panel: 15px;
+  --fontSize-expansion-panel: var(--fontSize--semiNormal);
   --height-expansion-panel: 3em;
   --paddingY-expansion-panel: 1em;
   --paddingY-expansion-panel__list-content:
