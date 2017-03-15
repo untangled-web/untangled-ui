@@ -252,7 +252,7 @@
           (dom/div #js {:className "c-drawer__action is-active"} "CSS Guide")
           (dom/a #js {:className "c-drawer__action" :href "test.html"} "Specification Tests")
           )
-        (dom/div #js {:className "c-drawer__close" :onClick #(toggle-drawer this)})
+        (dom/div #js {:className (str "c-backdrop" (when drawer " is-active")) :onClick #(toggle-drawer this)})
 
         (dom/main #js {:className "u-layout__content"}
           (dom/article #js {:className "o-article"}

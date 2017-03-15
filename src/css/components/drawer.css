@@ -74,26 +74,14 @@
 }
 
 .c-drawer__group {
-  &:not(:last-child) { border-bottom: var(--color-drawer__divider) 1px solid; }
+  &:not(:last-child) {
+    border-bottom: var(--color-drawer__divider) 1px solid;
+    margin-bottom: 3px;
+  }
 }
-
-
-/* TODO Make this possible using backdrop */
-.c-drawer__close {
-  @apply --fade-out;
-  background-color: rgba(0, 0, 0, .5);
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: calc(var(--zIndex-drawer) - 1) !important;
-
-  .is-open + & { @apply --fade-in; }
-}
-
 
 .c-drawer__action {
+  color: inherit;
   display: inline-block;
   font-family: inherit;
   font-size: var(--fontSize--semiNormal);

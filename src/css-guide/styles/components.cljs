@@ -1518,7 +1518,7 @@
              (dom/div #js {:className "c-drawer__action"}
                "Help & Feedback"))
            ))
-       (dom/div #js {:className "c-drawer__close"
+       (dom/div #js {:className (str "c-backdrop" (when drawer " is-active"))
                      :onClick   #(toggle-drawer this)})))))
 
 
