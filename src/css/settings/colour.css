@@ -216,7 +216,7 @@
 
 
   /* Control */
-  --color-control-border--primary: var(--grey-400);
+  --color-control-border--primary: color(var(--grey) a(.9));
   --color-control-border--secondary: var(--white);
   --color-control--checked: var(--color-primary);
   --color-control--unchecked: var(--grey);
@@ -225,7 +225,9 @@
   /* Radio */
   --color-radio--primary: var(--color-control-border--primary);
   --color-radio--secondary: var(--color-control-border--secondary);
+  --color-radio-dark--secondary: var(--color-page-dark);
   --color-radio--secondary--checked: var(--color-control-border--secondary);
+  --color-radio-dark--secondary--checked: var(--color-page-dark);
   --color-radio--checked: var(--color-control--checked);
   --color-radio--disabled: var(--color-control--disabled);
 
@@ -331,7 +333,7 @@
 
 
   /* Table */
-  --color-table: var(--grey-300);
+  --color-table: var(--borderColor);
 
 
   /* Tabs */

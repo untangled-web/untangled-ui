@@ -11,6 +11,12 @@
      background-color: var(--color-radio--secondary--checked);
      border: 2px solid var(--color-radio--checked);
      transition: all var(--global-duration) ease;
+
+      .t-dark &,
+      .t-fullscreen &,
+      :--fullscreen & {
+        background-color: var(--color-radio-dark--secondary--checked);
+      }
     }
 
     &::after { @apply --fade-in; }
@@ -38,6 +44,12 @@
       position: absolute;
       top: 0;
       width: 20px;
+
+      .t-dark &,
+      .t-fullscreen &,
+      :--fullscreen & {
+        background-color: var(--color-radio-dark--secondary);
+      }
    }
 
     &::after {
