@@ -1122,15 +1122,18 @@
   (let [selection (or (om/get-state this :selection) 1)
         select (fn [n] (om/update-state! this assoc :selection n))]
     (dom/div #js {}
-      (dom/input #js {:id      "r1" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
-                      :checked (= 1 selection) :onClick #(select 1)})
-      (dom/label #js {:id "r1l" :htmlFor "r1"} "A")
-      (dom/input #js {:id      "r2" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
-                      :checked (= 2 selection) :onClick #(select 2)})
-      (dom/label #js {:id "r2l" :htmlFor "r2"} "B")
-      (dom/input #js {:id      "r3" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
-                      :checked (= 3 selection) :onClick #(select 3)})
-      (dom/label #js {:htmlFor "r3"} "C"))))
+      (dom/div #js {:className "u-trailer--quarter"}
+        (dom/input #js {:id      "r1" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
+                        :checked (= 1 selection) :onClick #(select 1)})
+        (dom/label #js {:id "r1l" :htmlFor "r1"} "A"))
+      (dom/div #js {:className "u-trailer--quarter"}
+        (dom/input #js {:id      "r2" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
+                        :checked (= 2 selection) :onClick #(select 2)})
+        (dom/label #js {:id "r2l" :htmlFor "r2"} "B"))
+      (dom/div #js {:className "u-trailer--quarter"}
+        (dom/input #js {:id      "r3" :type "radio" :className "c-radio c-radio--expanded" :name "radiogroup"
+                        :checked (= 3 selection) :onClick #(select 3)})
+        (dom/label #js {:htmlFor "r3"} "C")))))
 
 (defexample radio-stacked
   "### Stacked"
@@ -1226,7 +1229,7 @@
       (dom/table #js {:className (str "c-table c-table--" kind)}
                  (dom/thead #js {}
                             (dom/tr #js {}
-                                    (dom/th #js {:scope "col"})
+                                    (dom/th #js {:scope "col"} "Agent")
                                     (dom/th #js {:scope "col" :className "c-table__priority-3"} "Opens")
                                     (dom/th #js {:scope "col" :className "c-table__priority-2"} "Open %")
                                     (dom/th #js {:scope "col" :className "c-table__priority-1"} "Clicks")
@@ -1238,7 +1241,9 @@
                                     (dom/th #js {:scope "col" :className "c-table__priority-6"} "Unsub %")))
                  (dom/tbody #js {}
                             (dom/tr #js {}
-                                    (dom/td #js {} "Auto Agent")
+                                    (dom/td #js {}
+                                      (dom/span #js {:className "c-table__label"} "Agent")
+                                      (dom/span #js {:className "c-table__content"} "GMC"))
                                     (dom/td #js {:className "c-table__priority-3"}
                                             (dom/span #js {:className "c-table__label"} "Opens")
                                             (dom/span #js {:className "c-table__content"} "300"))
@@ -1267,7 +1272,9 @@
                                             (dom/span #js {:className "c-table__label"} "Unsub %")
                                             (dom/span #js {:className "c-table__content"} "32")))
                             (dom/tr #js {}
-                                    (dom/td #js {} "First child entry")
+                              (dom/td #js {}
+                                (dom/span #js {:className "c-table__label"} "Agent")
+                                (dom/span #js {:className "c-table__content"} "Dodge"))
                                     (dom/td #js {:className "c-table__priority-3"}
                                             (dom/span #js {:className "c-table__label"} "Opens")
                                             (dom/span #js {:className "c-table__content"} "100"))
@@ -1296,7 +1303,9 @@
                                             (dom/span #js {:className "c-table__label"} "Unsub %")
                                             (dom/span #js {:className "c-table__content"} "18")))
                             (dom/tr #js {}
-                                    (dom/td #js {} "Second child entry")
+                              (dom/td #js {}
+                                (dom/span #js {:className "c-table__label"} "Agent")
+                                (dom/span #js {:className "c-table__content"} "Volvo"))
                                     (dom/td #js {:className "c-table__priority-3"}
                                             (dom/span #js {:className "c-table__label"} "Opens")
                                             (dom/span #js {:className "c-table__content"} "600"))
@@ -1325,7 +1334,9 @@
                                             (dom/span #js {:className "c-table__label"} "Unsub %")
                                             (dom/span #js {:className "c-table__content"} "42")))
                             (dom/tr #js {}
-                                    (dom/td #js {} "Third child entry")
+                              (dom/td #js {}
+                                (dom/span #js {:className "c-table__label"} "Agent")
+                                (dom/span #js {:className "c-table__content"} "Audi"))
                                     (dom/td #js {:className "c-table__priority-3"}
                                             (dom/span #js {:className "c-table__label"} "Opens")
                                             (dom/span #js {:className "c-table__content"} "300"))
