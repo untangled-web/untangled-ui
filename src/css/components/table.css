@@ -12,7 +12,14 @@
   }
 
 
-  tr { border-top: 1px solid var(--color-table); }
+  tr {
+    border-top: 1px solid var(--color-table);
+    transition: background-color var(--global-duration) ease-in-out;
+
+    &:hover {
+      background-color: color(var(--black) a(.05));
+     }
+  }
 
   td {
     height: 48px;
