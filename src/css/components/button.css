@@ -299,6 +299,10 @@ section: Components
     margin: 0 !important;
     width: 24px !important; /* IE11 Hack instead of inherit */
   }
+
+  .c-card__menu & {
+    color: var(--white);
+  }
 }
 
 
@@ -318,7 +322,6 @@ section: Components
 
 
 /* Inside Menu */
-
 
 .has-menu {
 

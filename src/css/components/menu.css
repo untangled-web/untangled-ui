@@ -50,6 +50,7 @@
 }
 
 
+.c-card__menu .c-menu,
 .c-menu--top-right,
 .c-menu--bottom-right {
   left: auto !important;
@@ -118,5 +119,3 @@
   position: relative;
   width: 100%;
 }
-
-

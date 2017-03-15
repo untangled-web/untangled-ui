@@ -115,6 +115,7 @@
       (dom/div #js {:key (str "menu-" (name id)) :className "has-menu"}
         (if (= menu-style :icon)
           (dom/button #js {:className "c-button c-button--icon"
+                           :title (tr-unsafe selected-label)
                            :onClick (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])

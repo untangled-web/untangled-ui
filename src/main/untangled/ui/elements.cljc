@@ -181,14 +181,9 @@
    `:media` - URL
    `:media-type` - :image | :video (TODO Youtube?)
 
-   ;;TODO
-   `:menu-icon` - :more_vert
-   `:menu-items` - [:ia \"This\" :ib \"that\"]}
-
    all paramters optional
     "
-  [{:keys [kind title color size image image-position actions media-type media
-           ; TODO: menu-icon menu-items
+  [{:keys [kind title color size image image-position actions media-type media menu
            className] :as attrs} & children]
   {:pre [(or (nil? kind) (keyword? kind))
          (or (nil? title) (string? title))]}
@@ -202,7 +197,7 @@
                        (contains? legal-sizes size) (str " c-card--" (name size)))
         attributes   (-> attrs
                        (merge {:className classes})
-                       (dissoc :title :kind :color :size :actions :image :image-position :media-type :media)
+                       (dissoc :title :kind :color :size :actions :image :image-position :media-type :media :menu)
                        clj->js)
         image-src    (when (= color (or :primary :accent)) (str "url(" image ")"))]
     (dom/div attributes
@@ -220,12 +215,10 @@
         (apply dom/div #js {:className "c-card__supporting-text"} children))
       (when actions
         (dom/div #js {:className "c-card__actions"} actions))
-      ;; TODO Add a dropdown menu to the top right of a card for associated secondary actions
-      #_(when menu-items
-          (dom/div #js {:className "c-card__menu"}
-            (menu/menu :a
-              (icon (if menu-icon menu-icon :more_vert))
-              menu-items))))))
+      (when menu
+        (dom/div #js {:className "c-card__menu"}
+          (menu/ui-menu menu :style :icon)
+          )))))
 
 
 (let [render-input (fn [{:keys [type id] :as props}]

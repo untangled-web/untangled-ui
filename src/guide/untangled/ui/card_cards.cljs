@@ -5,7 +5,9 @@
     [untangled.ui.sample-card :refer [defsample]]
     [om.dom :as dom]
     [untangled.ui.elements :as ele]
-    [untangled.client.core :as uc]))
+    [untangled.client.core :as uc]
+    [untangled.ui.menu :as m :refer [menu menu-item]]
+    [untangled.ui.elements :as e]))
 
 (defcard-doc
   "# Card
@@ -126,3 +128,10 @@
                 :image-position :cover
                 :size :wide}
     (dom/div nil "Content")))
+
+(defsample menu-card "Menu Card"
+  (ele/ui-card {:title "Menu Card"
+                :color :primary
+                :menu (menu :a "Label" [(menu-item :ia "Item Label")])}
+    (dom/div nil "Content")))
+

@@ -46,6 +46,8 @@
   will cause all menus to close
   - set-open : Opens/closes a menu by ID
   - select : Causes a particular item within the menu to be selected (does not trigger events)
+  - style : Changes the visual style of a menu between :normal button and :icon for a simpler trigger.
+
 
   Components can look up the state of a menu at the menu ident, which can be found using the `menus/ident`.
 
