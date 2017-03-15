@@ -250,7 +250,7 @@
           (dom/a #js {:className "c-drawer__action" :href "visuals.html"}
             (e/ui-icon {:glyph :visibility}) "Visual Regression Tests")
           (dom/a #js {:className "c-drawer__action" :href "guide.html"}
-            (e/ui-icon {:glyph :check_box}) "Active Components Guide")
+            (e/ui-icon {:glyph :check_box}) "Components Guide")
           (dom/div #js {:className "c-drawer__action is-active"}
             (e/ui-icon {:glyph :brush}) "CSS Guide")
           (dom/a #js {:className "c-drawer__action" :href "test.html"}
