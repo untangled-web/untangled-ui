@@ -250,7 +250,10 @@
 
 
   /* Field */
-  --color-field: var(--grey-200);
+  --color-field--primary: color(var(--grey) a(.5));
+  --color-field--secondary: var(--color-text);
+  --color-field-dark--secondary: var(--grey-50);
+  --color-field-dark--placeholder: var(--grey-300);
   --color-field--focus: var(--color-primary);
   --color-field--invalid: var(--color-invalid);
   --color-field--error: var(--color-error);
@@ -275,8 +278,9 @@
 
 
   /* Label */
-  --color-label--primary: var(--grey-200);
+  --color-label--primary: color(var(--grey) a(.3));
   --color-label--secondary: var(--black);
+  --color-label-dark--secondary: var(--white);
   --color-label-alt--primary: var(--color-primary);
   --color-label-alt--secondary: var(--color-primary-contrast);
   --color-label-accent--primary: var(--color-accent);

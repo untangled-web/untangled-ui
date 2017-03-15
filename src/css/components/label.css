@@ -38,6 +38,12 @@ section: Components
     margin: -3px -1px 0 -1px;
     width: var(--size-label-icon);
   }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    color: var(--color-label-dark--secondary);
+  }
 }
 
 

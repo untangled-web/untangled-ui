@@ -6,22 +6,21 @@ section: Components
 :root {
   --field-font-size: 16px;
   --field-font-size--dense: 13px;
-  --field-min-height: 30px;
+  --field-min-height: 36px;
 }
 
 .c-field {
   @apply --middle;
   background-color: transparent;
-  border-bottom: solid var(--color-field);
+  border-bottom: solid var(--color-field--primary);
   border-radius: 0;
   border-width: 0 0 1px;
-  color: var(--color-text);
+  color: var(--color-field--secondary);
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   font-family: inherit;
   font-size: var(--field-font-size);
-  height: 36px;
   margin: 6px 0;
   min-height: var(--field-min-height); /* IE11 Input Height */
   padding: 0 0 1px 0;
@@ -79,13 +78,13 @@ section: Components
   }
 
   &[type="color"]::-webkit-color-swatch-wrapper {
-    border: 1px solid var(--white);
+    border: 1px solid color(var(--white) a(0));
     border-radius: 2px;
     box-shadow:
-      0 0 1px 1px var(--color-field),
-      0 0 1px 1px var(--color-field),
-      0 0 1px 1px var(--color-field),
-      0 0 1px 1px var(--color-field);
+      0 0 1px 1px var(--color-field--primary),
+      0 0 1px 1px var(--color-field--primary),
+      0 0 1px 1px var(--color-field--primary),
+      0 0 1px 1px var(--color-field--primary);
     padding: 0;
   }
 
@@ -108,8 +107,9 @@ section: Components
 :--fullscreen {
   .c-field,
   .c-field__input {
+    color: var(--color-field-dark--secondary);
     &::placeholder {
-      color: var(--grey-300);
+      color: var(--color-field-dark--placeholder);
      }
   }
 }
