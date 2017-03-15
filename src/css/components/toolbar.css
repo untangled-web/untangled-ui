@@ -42,6 +42,10 @@
   text-align: center;
   top: 0;
   width: 48px;
+
+  & + .c-toolbar__row {
+    padding: 0 0 0 80px;
+  }
 }
 
 

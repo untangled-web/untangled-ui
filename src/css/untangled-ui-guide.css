@@ -1,5 +1,9 @@
 @import 'untangled-ui';
 
+.o-article {
+  margin-left: 1em;
+}
+
 /* stylelint-disable */
 .box-row { margin-bottom: 1rem; }
 

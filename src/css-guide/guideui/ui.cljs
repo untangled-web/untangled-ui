@@ -14,7 +14,8 @@
             styles.patterns
             [untangled.client.mutations :as m]
             [clojure.string :as str]
-            [devcards.core :as dc]))
+            [devcards.core :as dc]
+            [untangled.ui.elements :as e]))
 
 (def parts {"Learn" styles.getting-started/sections
             "Style"           styles.style/sections
@@ -214,6 +215,7 @@
 
 (def ui-part (om/factory Part {:keyfn :part/title}))
 
+(defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
 (defui ^:once Parts
   static uc/InitialAppState
@@ -227,17 +229,30 @@
   Object
   (render [this]
     (let [{:keys [parts/selected-part parts searchbar] :or {parts/selected-part 0}} (om/props this)
-          part-names (map :part/title parts)]
+          part-names (map :part/title parts)
+          drawer (boolean (om/get-state this :drawer))]
       (dom/div #js {:className "u-layout__page u-layout__page--fixed"}
 
         (dom/header #js {:className (str "u-layout__header c-toolbar c-toolbar--raised")}
           (dom/div #js {:className "c-toolbar__button"}
-            (dom/a #js {:href "/"}
-              (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:margin "4px"}})))
+            (dom/button #js {:className "c-button c-button--icon" :onClick #(toggle-drawer this)}
+              (e/ui-icon {:glyph :menu}))
+            )
           (dom/div #js {:className "c-toolbar__row"}
             (ui-search searchbar)
             (dom/div #js {:className "c-toolbar__spacer u-hide@sm"})
             (tabs this :parts/selected-part part-names)))
+
+        (dom/div #js {:className (str "c-drawer" (when drawer " is-open"))}
+          (dom/div #js {:className "c-drawer__header"}
+            (dom/img #js {:src "/img/logo.png" :height "35" :width "35"})
+            (dom/h1 nil "Untangled UI"))
+          (dom/a #js {:className "c-drawer__action" :href "visuals.html"} "Visual Regression Tests")
+          (dom/a #js {:className "c-drawer__action" :href "guide.html"} "Active Components Guide")
+          (dom/div #js {:className "c-drawer__action is-active"} "CSS Guide")
+          (dom/a #js {:className "c-drawer__action" :href "test.html"} "Specification Tests")
+          )
+        (dom/div #js {:className "c-drawer__close" :onClick #(toggle-drawer this)})
 
         (dom/main #js {:className "u-layout__content"}
           (dom/article #js {:className "o-article"}

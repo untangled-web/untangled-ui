@@ -1495,39 +1495,28 @@
        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
        (dom/button #js {:className "c-button"
                         :onClick   #(toggle-drawer this)} "Show/Hide Drawer Example")
-       (dom/div #js {:className (str "c-drawer c-drawer--right" (if drawer " is-open" ""))
-                     :onClick   #(toggle-drawer this)}
+       (dom/div #js {:className (str "c-drawer c-drawer--right" (when drawer " is-open"))}
          (dom/header #js {:className "c-drawer__header  u-row u-middle"}
-           (dom/h1 #js {:className ""} "Drawer.io"))
+           (dom/h1 #js {:className ""} "Just Another Drawer"))
          (dom/div #js {:className "c-list"}
 
-           (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
-             (dom/div #js {:className "c-list__tile"}
-               (dom/div #js {:className "u-row u-middle"}
-                 (dom/div #js {:className "c-list__avatar"} (icons/icon :games))
-                 (dom/div #js {:className "c-list__name"} "Games"))))
+           (dom/div #js {:className "c-drawer__group"}
+             (dom/div #js {:className "c-drawer__action"}
+               (icons/icon :games) "Games")
 
-           (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
-             (dom/div #js {:className "c-list__tile"}
-               (dom/div #js {:className "u-row u-middle"}
-                 (dom/div #js {:className "c-list__avatar"} (icons/icon :movie))
-                 (dom/div #js {:className "c-list__name"} "Movies"))))
+             (dom/div #js {:className "c-drawer__action"}
+               (icons/icon :movie) "Movies")
 
-           (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
-             (dom/div #js {:className "c-list__tile"}
-               (dom/div #js {:className "u-row u-middle"}
-                 (dom/div #js {:className "c-list__avatar"} (icons/icon :book))
-                 (dom/div #js {:className "c-list__name"} "Books"))))
+             (dom/div #js {:className "c-drawer__action"}
+               (icons/icon :book) "Books"))
 
-           (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
-             (dom/div #js {:className "c-list__tile"}
-               (dom/div #js {:className "u-row u-middle"}
-                 (dom/div #js {:className ""} "Settings"))))
+           (dom/div #js {:className "c-drawer__group"}
+             (dom/div #js {:className "c-drawer__subheader"} "Subheader")
+             (dom/div #js {:className "c-drawer__action"}
+               "Settings")
 
-           (dom/div #js {:className "c-list__row c-list__row--bordered is-selectable"}
-             (dom/div #js {:className "c-list__tile"}
-               (dom/div #js {:className "u-row u-middle"}
-                 (dom/div #js {:className ""} "Help & Feedback"))))
+             (dom/div #js {:className "c-drawer__action"}
+               "Help & Feedback"))
            ))
        (dom/div #js {:className "c-drawer__close"
                      :onClick   #(toggle-drawer this)})))))
