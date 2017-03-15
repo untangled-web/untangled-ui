@@ -7,7 +7,7 @@
             [om.dom :as dom]))
 
 (defarticle intro
-"# What is this?
+"# Untangled UI
 
 A styleguide of user interface patterns for web applications and websites built with a custom PostCSS preprocessor
 rendered with ClojureScript.
