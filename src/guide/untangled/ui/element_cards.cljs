@@ -78,8 +78,8 @@
   Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [sizes] (e/ui-field {:size sizes} (name sizes)))
-      [:regular :small :medium :large])))
+    (mapv (fn [sizes] (e/ui-field {:size sizes :key (str "ui-" sizes)} (name sizes)))
+      [:default :small :medium :large])))
 
 (defsample field-states
   "# Fields
@@ -87,7 +87,7 @@
   Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [states] (e/ui-field {:state states} (name states)))
+    (mapv (fn [states] (e/ui-field {:state states :key (str "ui-" states)} (name states)))
       [:valid :invalid :error])))
 
 (defsample field-types
@@ -96,7 +96,7 @@
   Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [type] (e/ui-field {:type type} (name type)))
+    (mapv (fn [type] (e/ui-field {:type type :key (str "ui-" type)} (name type)))
       [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample message
@@ -107,7 +107,7 @@
   Some samples are shown below:
   "
   (dom/div nil
-    (mapv (fn [colors] (e/ui-message {:color colors} (str "This is a " (name colors) " message")))
+    (mapv (fn [colors] (e/ui-message {:color colors :key (str "id-" colors)} (str "This is a " (name colors) " message")))
       [:default :primary :accent])
     (e/ui-message {:color :warning} "This is a warning message with another child." (e/ui-icon {:glyph :arrow_forward :size :small}))))
 

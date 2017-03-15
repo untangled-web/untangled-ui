@@ -16,15 +16,15 @@
 
   Props is a clj(s) map of normal React attributes.
 
-  `:block?` - A boolean (default false). When true, emits a `div`, else `span`.
+  `:inline?` - A boolean (default false). When true, emits a `span`, else `div`.
 
   You can get this same effect using the `u-fade-in` and `u-fade-out` CSS classes. See the CSS Guide.
 
   When the resulting span becomes visible it fades in, and when it becomes hidden it fades out."
-  [{:keys [block? visible] :as props} & children]
+  [{:keys [inline? visible] :as props} & children]
   (let [className (or (:className props) "")
         classes   (str className " u-fade-out" (when visible " u-fade-in"))
-        wrapper   (if block? dom/div dom/span)
+        wrapper   (if inline? dom/span dom/div)
         attrs     (-> props
                     (dissoc :visible)
                     (assoc :className classes)
@@ -457,7 +457,8 @@
 (defui NotificationTitle
   Object
   (render [this]
-    (dom/h1 #js {:className "c-notification_heading"} (om/children this))))
+    (let [{:keys [key] :as props :or {key ""}} (om/props this)]
+      (dom/h1 #js {:className "c-notification_heading" :key key} (om/children this)))))
 
 (def ui-notification-title
   "Render a notification title. Should only be used in a ui-notification"
@@ -474,7 +475,7 @@
 (defui Notification
   Object
   (render [this]
-    (let [{:keys [width kind onClose] :as props} (om/props this)
+    (let [{:keys [key width kind onClose] :as props :or {key ""}} (om/props this)
           children     (om/children this)
           title        (first-node NotificationTitle children)
           content      (first-node NotificationBody children)
@@ -489,7 +490,7 @@
                          :warning (icon :warning)
                          :error (icon :error)
                          (icon :info))]
-      (dom/div #js {:className classes}
+      (dom/div #js {:className classes :key key}
         type-icon
         (dom/div #js {:className "c-notification_content"}
           (when title title)
