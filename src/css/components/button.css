@@ -322,8 +322,8 @@ section: Components
 
 .has-menu {
 
-  & > .c-button,
-  &.c-button {
+  & > .c-button:not(.c-button--icon),
+  &.c-button:not(.c-button--icon) {
     border-bottom: var(--grey-200) 1px solid;
     font-size: inherit;
     font-weight: normal;

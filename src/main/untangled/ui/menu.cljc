@@ -107,16 +107,24 @@
   (render [this]
     (let [{:keys [menu/id menu/label menu/items menu/open? menu/selected-item]} (om/props this)
           onSelect       (or (om/get-computed this :onSelect) identity)
+          menu-style     (om/get-computed this :style)
           selected-id    selected-item
           selected-item  (find-first :menu-item/item-id selected-id items)
           selected-label (get selected-item :menu-item/label (tr-unsafe label))
           menu-class     (str "c-menu" (if open? " is-active" ""))]
       (dom/div #js {:key (str "menu-" (name id)) :className "has-menu"}
-        (dom/button #js {:onClick   (fn [evt]
+        (if (= menu-style :icon)
+          (dom/button #js {:className "c-button c-button--icon"
+                           :onClick (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
-                                      false)
-                         :className "c-button"} (tr-unsafe selected-label))
+                                      false)} (icon :more_vert))
+          (dom/button #js {:onClick   (fn [evt]
+                                       (.stopPropagation evt)
+                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
+                                       false)
+                          :className "c-button"} (tr-unsafe selected-label))
+          )
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
           (map (fn [{:keys [menu-item/item-id menu-item/label]}]
                  (dom/li #js {:key     (str "menu-item-" (name item-id))
@@ -142,4 +150,6 @@
 
     "
     [props & {:keys [style color onSelect] :or {style :normal color :primary}}]
-    (ui-menu-factory (om/computed props {:onSelect onSelect}))))
+    (ui-menu-factory (om/computed props {:onSelect onSelect :style style}))))
+
+
