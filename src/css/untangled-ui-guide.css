@@ -1,5 +1,9 @@
 @import 'untangled-ui';
 
+.is-primary {
+  color: var(--color-primary);
+}
+
 .o-article {
   margin-left: 1em;
 }
