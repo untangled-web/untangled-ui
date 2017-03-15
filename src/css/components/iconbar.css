@@ -2,7 +2,6 @@
   @apply --position-bottom;
   background-color: var(--color-iconbar-background);
   border-top: 1px solid var(--color-iconbar-border);
-  color: var(--color-iconbar-item);
   display: table;
   height: 56px;
   min-height: 56px;
@@ -16,6 +15,13 @@
     transition: all var(--global-duration) ease-in-out;
 
     .is-active & { margin: 0 auto 6px; }
+  }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--grey-800);
+    border-top: none;
   }
 }
 

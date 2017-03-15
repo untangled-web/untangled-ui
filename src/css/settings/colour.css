@@ -350,7 +350,7 @@
 
 
   /* Tooltip */
-  --color-tooltip--primary: var(--black);
+  --color-tooltip--primary: var(--black-rich);
   --color-tooltip--secondary: var(--white);
 
 
