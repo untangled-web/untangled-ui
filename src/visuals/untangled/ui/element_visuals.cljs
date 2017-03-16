@@ -166,9 +166,6 @@
       (e/ui-field {:size size :state states :key (str size states (rand-int 256))} (str (name size) " " (name states) " field")))))
 
 
-;; TODO Need icon-bar
-
-
 (defcard icon-colors-visual-regressions
   (dom/div nil
     (e/ui-icon {} (icon :alarm))

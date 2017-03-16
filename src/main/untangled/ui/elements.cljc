@@ -260,6 +260,26 @@
           attrs   (assoc props :type "checkbox" :checked checked :className classes)]
       (render-input attrs))))
 
+(defn ui-switch
+    "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
+
+    `:className` - additional class stylings to apply to the top level of the checkbox
+    `:id` string - Unique DOM ID. Required for correct rendering.
+    `:checked` - true, false, or :partial
+    "
+    [{:keys [id state checked className] :as props}]
+    (assert id "DOM ID is required on checkbox")
+    (let [classes (str className " c-switch__input")
+          type    "checkbox"
+          checked (boolean checked)
+          attrs   (assoc props :type "checkbox" :checked checked :className classes)]
+      (dom/div #js {:className "c-switch"}
+        (dom/input (clj->js attrs))
+        (dom/label #js {:className "c-switch__paddle"
+                       :htmlFor id
+                       :aria-hidden false}))))
+
+
 (defn ui-field
   "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 

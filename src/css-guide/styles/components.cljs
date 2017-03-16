@@ -1178,7 +1178,7 @@
                       :id        "h-switch-input-1"
                       :type      "checkbox"
                       :checked   (= active true)})
-      (dom/span #js {:className "c-switch__paddle"
+      (dom/label #js {:className "c-switch__paddle"
                      :aria-hidden false
                      :htmlFor "h-switch-input-1"}))))
 
@@ -1193,7 +1193,7 @@
                       :id        "h-switch-input-1"
                       :type      "checkbox"
                       :checked   (= active true)})
-      (dom/span #js {:className "c-switch__paddle"
+      (dom/label #js {:className "c-switch__paddle"
                      :htmlFor "h-switch-input-1"}
         (icons/icon :clear)
         (icons/icon :done)

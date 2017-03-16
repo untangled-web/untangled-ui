@@ -368,3 +368,28 @@
   {:choice 1}
   {:inspect-data true})
 
+
+(defcard switch
+  "# Switch
+
+  These render a switch input which is just a stylized checkbox.
+
+  ```
+    (dom/div nil
+    (e/ui-switch {:checked current-state :id \"switch-1\"
+                  :onClick #(move-to-next-state)})
+    (dom/label #js {:className \"is-optional\"} \"With a label!\"))
+  ```
+  "
+  (fn [state _]
+    (let [current-state      (:checked @state)
+          states             (take 4 (cycle [false true]))
+          next-state         (->> states
+                               (drop-while #(not= current-state %))
+                               second)
+          move-to-next-state (fn [] (swap! state assoc :checked next-state))]
+      (dom/div nil
+        (e/ui-switch {:checked current-state :id "switch-1" :onClick #(move-to-next-state)})
+        (dom/label #js {:className "is-optional" :htmlFor "switch-1"} "With a label!"))))
+  {:checked false}
+  {:inspect-data true})
