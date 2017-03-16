@@ -82,16 +82,17 @@
                                    :key       idx}
                        (dom/div #js {:className "c-list__tile"
                                      :onClick   #(select-item idx)}
-                         (dom/span #js {} nm)))) part-names))))
+                         (dom/div #js {} nm)))) part-names))))
 
 (defn tabs [component field options]
   (let [part-names   options
         selected-idx (get (om/props component) field)
         get-class    (fn [idx] (str "link" (if (= idx selected-idx) " is-active" "")))
         select-item  (fn [idx] (m/set-integer! component field :value idx))]
-    (dom/div #js {:className "c-tabs u-end@md" :style #js {:marginTop "7px"}}
+    (dom/div #js {:className "c-tabs u-end@md"}
       (map-indexed (fn [idx nm]
                      (dom/button #js {:className (str (get-class idx) " c-tab c-tab--primary")
+                                      :type      "button"
                                       :key       idx
                                       :onClick   #(select-item idx)} nm)) part-names))))
 
@@ -123,12 +124,14 @@
         (dom/div #js {:className "c-field"}
           (uic/icon :search)
           (dom/input #js {:type        "text"
+                          :id          "docsSearch"
                           :value       search
                           :onChange    (fn [evt]
                                          (let [v (.. evt -target -value)]
                                            (om/transact! this `[(search/update-results ~{:term v})])))
                           :onFocus     #(m/set-value! this :ui/open true)
                           :placeholder "Search Untangled UI"
+                          :title       "Search Untangled UI"
                           :className   "c-field__input"})
           #_(dom/span #js {:className "c-icon"} (untangled.icons/material-icon :search))
           )
@@ -153,7 +156,7 @@
   (render [this]
     (let [{:keys [example/path]} (om/props this)
           example-renderer (get-in parts (conj path :renderer))]
-      (dom/span nil
+      (dom/div nil
         (example-renderer)))))
 
 (def ui-example (om/factory Example {:keyfn :example/id}))
@@ -235,12 +238,12 @@
 
         (dom/header #js {:className (str "u-layout__header c-toolbar c-toolbar--raised")}
           (dom/div #js {:className "c-toolbar__button"}
-            (dom/button #js {:className "c-button c-button--icon" :onClick #(toggle-drawer this)}
+            (dom/button #js {:className "c-button c-button--icon" :onClick #(toggle-drawer this) :type "button"}
               (e/ui-icon {:glyph :menu}))
             )
           (dom/div #js {:className "c-toolbar__row"}
             (ui-search searchbar)
-            (dom/div #js {:className "c-toolbar__spacer u-hide@sm"})
+            (dom/div #js {:className "c-toolbar__spacer u-hide@sm" :aria-hidden true})
             (tabs this :parts/selected-part part-names)))
 
         (dom/div #js {:className (str "c-drawer" (when drawer " is-open"))}

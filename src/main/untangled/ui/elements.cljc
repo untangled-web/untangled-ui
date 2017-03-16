@@ -133,7 +133,7 @@
                          (contains? legal-colors color) (str " c-button--" (name color))
                          (contains? legal-shapes shape) (str " c-button--" (name shape))
                          (contains? legal-sizes size) (str " c-button--" (name size)))
-        attrs          (cond-> (assoc attrs :className classes)
+        attrs          (cond-> (assoc attrs :className classes :type "button")
                          disabled (assoc :aria-disabled "true")
                          :always (dissoc :active :color :shape :size))]
     (apply dom/button (clj->js attrs) fixed-children)))
@@ -190,8 +190,9 @@
   (let [legal-kinds  #{:bordered :transparent :square}
         legal-colors #{:primary :accent}
         legal-sizes  #{:expand :wide}
+        id-class     (gensym "c-card--")
         className    (or className "")
-        classes      (cond-> (str "c-card " className)
+        classes      (cond-> (str "c-card " id-class className)
                        (contains? legal-kinds kind) (str " c-card--" (name kind))
                        (contains? legal-colors color) (str " c-card--" (name color))
                        (contains? legal-sizes size) (str " c-card--" (name size)))
@@ -199,7 +200,10 @@
                        (merge {:className classes})
                        (dissoc :title :kind :color :size :actions :image :image-position :media-type :media :menu)
                        clj->js)
-        image-src    (when (= color (or :primary :accent)) (str "url(" image ")"))]
+        image-src    (str "url(" image ")")
+        background-image (->
+                           (when image (merge {:backgroundImage image-src}))
+                             clj->js)]
     (dom/div attributes
       (when media
         (dom/div #js {:className (str "c-card__media")}
@@ -208,8 +212,7 @@
       (when title
         (dom/div #js {:className (str "c-card__title"
                                    (when image " c-card__title--image")
-                                   (when image-position (str " c-card__title--image-" (name image-position))))
-                      :style     #js {:backgroundImage image-src}}
+                                   (when image-position (str " c-card__title--image-" (name image-position))))}
           (dom/h1 #js {:className "c-card__title-text"} title)))
       (when children
         (apply dom/div #js {:className "c-card__supporting-text"} children))
@@ -218,7 +221,11 @@
       (when menu
         (dom/div #js {:className "c-card__menu"}
           (menu/ui-menu menu :style :icon)
-          )))))
+          ))
+      (dom/style nil
+        (str "." id-class" .c-card__title { background-image: url(" image "); }")
+        )
+      )))
 
 
 (let [render-input (fn [{:keys [type id] :as props}]
@@ -259,16 +266,20 @@
   `:size` :regular (default), :small, :medium, :large
   `:state` :valid (default), :invalid, or :error
   "
-  [{:keys [size state] :or {size ""} :as attrs} placeholder]
+  [{:keys [size state type] :or {size ""} :as attrs} placeholder]
   (let [legal-sizes  #{:small :medium :large}
         legal-states #{:invalid :error}
         user-classes (get attrs :className "")
+        user-type    (if type type "text")
         has          (fn [s] (contains? state s))
         classes      (cond-> (str user-classes " c-field ")
                        (contains? legal-sizes size) (str " c-field--" (name size))
                        (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
-                       (assoc :className classes :placeholder (name placeholder))
+                       (assoc :className classes
+                              :placeholder (name placeholder)
+                              :aria-label (name placeholder)
+                              :type user-type)
                        (dissoc :size :state))]
     (dom/input (clj->js attrs))))
 
@@ -351,7 +362,7 @@
         classes      (cond-> (str user-classes " c-loader")
                        (contains? legal-colors color) (str " c-loader--" (name color)))
         props        (-> props
-                       (assoc :className classes)
+                       (assoc :className classes :aria-hidden false)
                        (dissoc :color))]
     (dom/div (clj->js props))))
 
@@ -489,6 +500,7 @@
           (when title title)
           (when content content))
         (dom/button #js {:onClick   (fn [evt] (when onClose (onClose)))
+                         :type      "button"
                          :className "c-button c-button--icon"} (icon :close))))))
 
 (def ui-notification
@@ -522,7 +534,7 @@
   (let [legal-sizes #{:dense}
         classes     (cond-> (str className " c-progress ")
                       (contains? legal-sizes size) (str " c-progress--" (name size)))
-        attrs       (assoc props :className classes)]
+        attrs       (assoc props :className classes :aria-hidden false)]
     (dom/progress (clj->js attrs))))
 
 

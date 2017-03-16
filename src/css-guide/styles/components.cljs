@@ -51,30 +51,25 @@
   "### Basic
 
   You can make a badge from a `span` or `div` element using the `.c-badge` classname."
-  (dom/a #js {:href "#"} "Inbox "
+  (dom/a #js {:href "guide-css.html"} "Inbox "
          (dom/span #js {:className "c-badge"} 7)))
 
 
 (defexample badge-button
   "### In a button"
   (dom/p #js {}
-    (dom/button #js {:className "c-button c-button--raised"} " Messages "
+    (dom/button #js {:className "c-button c-button--raised" :type "button"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))
-    (dom/button #js {:className "c-button c-button--raised c-button--primary"} " Messages "
+    (dom/button #js {:className "c-button c-button--raised c-button--primary" :type "button"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))
-    (dom/button #js {:className "c-button c-button--raised c-button--accent"} " Messages "
+    (dom/button #js {:className "c-button c-button--raised c-button--accent" :type "button"} " Messages "
       (dom/span #js {:className "c-badge"} "37"))))
 
 
 (defexample badge-icon
   "### Icon, no text"
   (dom/span #js {:className "c-badge c-badge--round"}
-    (dom/span #js {:className "c-icon"}
-      (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-        (dom/path #js {:d "M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42
-                           1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03
-                           9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87
-                           0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"})))))
+    (icons/icon :alarm)))
 
 
 ;; -------------------------
@@ -90,13 +85,13 @@
   "### Button types"
   (dom/div #js {:className "u-row u-center"}
     (dom/div #js {:className "u-column"}
-      (dom/button #js {:className "c-button c-button--primary c-button--circular"} (icons/icon :add))
+      (dom/button #js {:className "c-button c-button--primary c-button--circular" :type "button"} (icons/icon :add))
       (dom/div #js {:className "u-font-size--small u-leader"} "Circular button"))
     (dom/div #js {:className "u-column"}
-      (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Button")
+      (dom/button #js {:className "c-button c-button--primary c-button--raised" :type "button"} "Button")
       (dom/div #js {:className "u-font-size--small u-leader"} "Raised button"))
     (dom/div #js {:className "u-column"}
-      (dom/button #js {:className "c-button c-button--primary"} "Button")
+      (dom/button #js {:className "c-button c-button--primary" :type "button"} "Button")
       (dom/div #js {:className "u-font-size--small u-leader"} "Flat button"))))
 
 (defexample button-shape
@@ -105,11 +100,11 @@
   You can optionally use modifier classes that let you manipulate the size and shape of your button.
   "
   (dom/div #js {}
-    (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Regular")
-    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--round"} "Round")
-    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--dense"} "Dense")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary" :type "button"} "Regular")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--round" :type "button"} "Round")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--dense" :type "button"} "Dense")
     (dom/div #js {:className "u-trailer--quarter"}
-      (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--wide"} "Wide"))))
+      (dom/button #js {:className "c-button c-button--raised c-button--primary c-button--wide" :type "button"} "Wide"))))
 
 
 (defexample button-color
@@ -117,58 +112,58 @@
 
   Stateful color classes are provided to further communicate the intentions of your button action."
   (dom/div #js {}
-    (dom/button #js {:className "c-button"} "Flat")
-    (dom/button #js {:className "c-button c-button--primary"} "Flat Primary")
-    (dom/button #js {:className "c-button c-button--accent"} "Flat Accent")
-    (dom/button #js {:className "c-button c-button--raised"} "Raised")
-    (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Raised Primary")
-    (dom/button #js {:className "c-button c-button--raised c-button--accent"} "Raised Accent")))
+    (dom/button #js {:className "c-button" :type "button"} "Flat")
+    (dom/button #js {:className "c-button c-button--primary" :type "button"} "Flat Primary")
+    (dom/button #js {:className "c-button c-button--accent" :type "button"} "Flat Accent")
+    (dom/button #js {:className "c-button c-button--raised" :type "button"} "Raised")
+    (dom/button #js {:className "c-button c-button--raised c-button--primary" :type "button"} "Raised Primary")
+    (dom/button #js {:className "c-button c-button--raised c-button--accent" :type "button"} "Raised Accent")))
 
 
 (defview button-state
   "### Flat Button States"
   (dom/div #js {:className "u-row u-row--collapsed u-center"}
     (dom/div #js {:className "u-column--12 u-column--6@md"}
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button" :type "button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused" :type "button"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active" :type "button"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button" :disabled true :type "button"} "Disabled")))
 
-    (dom/div #js {:className "u-column--12 u-column--6@md t-dark" :style #js {:background "#444"}}
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button"} "Normal"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused"} "Focused"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active"} "Pressed"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button is-disabled"} "Disabled")))))
+    (dom/div #js {:className "u-column--12 u-column--6@md t-dark"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button" :type "button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-focused" :type "button"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button is-active" :type "button"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button" :disabled true :type "button"} "Disabled")))))
 
 
 (defview button-state-raised
   "### Raised Button States"
   (dom/div #js {:className "u-row u-row--collapsed u-center"}
     (dom/div #js {:className "u-column--12 u-column--6@md"}
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised"} "Normal"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-focused"} "Focused"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-active"} "Pressed"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised is-disabled"} "Disabled"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised" :type "button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-focused" :type "button"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised is-active" :type "button"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised" :disabled true :type "button"} "Disabled"))
       )
-    (dom/div #js {:className "u-column--12 u-column--6@md t-dark" :style #js {:background "#444"}}
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary"} "Normal"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-focused"} "Focused"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-active"} "Pressed"))
-      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised c-button--primary is-disabled"} "Disabled")))))
+    (dom/div #js {:className "u-column--12 u-column--6@md t-dark"}
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary" :type "button"} "Normal"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-focused" :type "button"} "Focused"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:className "c-button c-button--raised c-button--primary is-active" :type "button"} "Pressed"))
+      (dom/div #js {:className "u-leader u-trailer"} (dom/button #js {:aria-disabled "true" :className "c-button c-button--raised c-button--primary" :disabled true :type "button"} "Disabled")))))
 
 
 (defexample button-icon
 "### Buttons with icons"
   (dom/div nil
-    (dom/button #js {:className "c-button c-button--raised"}
+    (dom/button #js {:className "c-button c-button--raised" :type "button"}
       (icons/icon :arrow_back)
       (dom/span #js {:className "c-button__content"} "Left Icon"))
 
-    (dom/button #js {:className "c-button c-button--raised"}
+    (dom/button #js {:className "c-button c-button--raised" :type "button"}
       (dom/span #js {:className "c-button__content"} "Right Icon")
       (icons/icon :arrow_forward))
 
-    (dom/button #js {:title "Icon Button" :className "c-button c-button--icon"}
+    (dom/button #js {:title "Icon Button" :className "c-button c-button--icon" :type "button"}
       (icons/icon :translate))))
 
 
@@ -183,14 +178,14 @@
 (defexample card
   "### Basic"
   (dom/div #js {:className "u-row u-center"}
-    (dom/div #js {:className "c-card c-card--primary c-card--bordered c-card--wide"}
-     (dom/div #js {:className "c-card__title c-card__title--image-bottom-right"
-                   :style #js {:backgroundImage "url('img/bubbles.png')"}}
+    (dom/div #js {:className "c-card c-card--primary c-card--bordered c-card--wide c-card--3587358"}
+     (dom/div #js {:className "c-card__title c-card__title--image-bottom-right"}
        (dom/h1 #js {:className "c-card__title-text"} "Title"))
      (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
     suscipit id sed sapien. Sed sit amet sagittis ipsum.")
      (dom/div #js {:className "c-card__actions"}
-       (dom/button #js {:className "c-button c-button--primary"} "View Updates")))))
+       (dom/button #js {:className "c-button c-button--primary" :type "button"} "View Updates")))
+    (dom/style nil (str ".c-card--3587358 .c-card__title { background-image: url('img/bubbles.png'); }"))))
 
 (defexample card-transparent
   "### Transparent Card"
@@ -208,7 +203,7 @@
       (dom/div #js {:className "c-card__supporting-text"} "Suspendisse potenti. Phasellus ac ex sit amet erat elementum
     suscipit id sed sapien. Sed sit amet sagittis ipsum. A simple card, horizontal ruled.")
       (dom/div #js {:className "c-card__actions"}
-       (dom/button #js {:className "c-button c-button--accent"} "Action")))))
+       (dom/button #js {:className "c-button c-button--accent" :type "button"} "Action")))))
 
 (defexample card-states
   "### States"
@@ -275,6 +270,7 @@
         current (or (om/get-state this :selection) "Not Selected")]
     (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "150px"}}
       (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                       :type      "button"
                        :className "c-button "} current)
       (dom/div #js {:id          "test-dropdown"
                    :tabIndex    "-1"
@@ -297,6 +293,7 @@
          current    (or (om/get-state this :selection) "Top Left Aligned")]
       (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :type      "button"
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                      :className "c-menu c-menu--top-left"}
@@ -304,7 +301,7 @@
                  (dom/li #js {:key s :onClick (fn [evt]
                                                 (om/update-state! this assoc :open false)
                                                 (om/update-state! this assoc :selection s))}
-                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active")) :type "button"} s))) selections))))
 
     ;; Bottom left
 
@@ -313,6 +310,7 @@
           current    (or (om/get-state this :selection) "Bottom Left Aligned")]
       (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
         (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                         :type      "button"
                          :className "c-button "} current)
         (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                      :className "c-menu"}
@@ -320,7 +318,7 @@
                  (dom/li #js {:key s :onClick (fn [evt]
                                                 (om/update-state! this assoc :open false)
                                                 (om/update-state! this assoc :selection s))}
-                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections))))
+                   (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active")) :type "button"} s))) selections))))
 
     ;; Top right
 
@@ -330,6 +328,7 @@
       (dom/div #js {:className "u-end"}
         (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
           (dom/button #js {:onClick   #(om/update-state! this update :open not)
+                           :type      "button"
                            :className "c-button "} current)
           (dom/ul #js {:id        "test-dropdown" :tabIndex "-1" :aria-hidden "true"
                        :className "c-menu c-menu--top-right"}
@@ -337,7 +336,7 @@
                    (dom/li #js {:key s :onClick (fn [evt]
                                                   (om/update-state! this assoc :open false)
                                                   (om/update-state! this assoc :selection s))}
-                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active"))} s))) selections)))))
+                     (dom/button #js {:className (str "c-menu__item" (when (= s current) " is-active")) :type "button"} s))) selections)))))
 
 
     ;; Bottom right
@@ -345,20 +344,20 @@
     (let [open (boolean (om/get-state this :open))]
     (dom/div #js {:className "u-end" :style #js {:width "180px"}}
       (dom/div #js {:className (str "has-menu" (when open " is-active"))}
-        (dom/button #js {:onClick #(toggle-open this) :className "c-button "} "Bottom Right Aligned")
+        (dom/button #js {:onClick #(toggle-open this) :className "c-button " :type "button"} "Bottom Right Aligned")
         (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--bottom-right" :tabIndex "-1"}
           (dom/div #js {:className "c-menu__group"}
-            (dom/button #js {:className (str "c-menu__item")}
+            (dom/button #js {:className (str "c-menu__item") :type "button"}
               (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
               "Show ruler")
-            (dom/button #js {:className (str "c-menu__item")}
+            (dom/button #js {:className (str "c-menu__item") :type "button"}
               (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
               "Show grid"))
           (dom/div #js {:className "c-menu__group"}
-            (dom/button #js {:className (str "c-menu__item")}
+            (dom/button #js {:className (str "c-menu__item") :type "button"}
              (dom/div #js {:className "c-menu__item-icon"})
              "Hide layout")
-          (dom/button #js {:className (str "c-menu__item")}
+          (dom/button #js {:className (str "c-menu__item") :type "button"}
             (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
             "Show bleed"))
           ))))))
@@ -369,7 +368,7 @@
   (let [open (boolean (om/get-state this :open))
         items (mapv #(str "Item " %) (range 1 20))]
     (dom/div #js {:className (str "has-menu" (when open " is-active")) :style #js {:width "180px"}}
-      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown "} "Filter")
+      (dom/button #js {:onClick #(toggle-open this) :className "c-button c-button--dropdown " :type "button"} "Filter")
       (dom/div #js {:id "test-dropdown" :aria-hidden "true" :className "c-menu c-menu--large" :tabIndex "-1"}
         (dom/div #js {:className "c-field"}
           (icons/icon :search)
@@ -380,7 +379,7 @@
                    (dom/input #js {:type "checkbox" :id (str item "-cb") :className "c-checkbox"})
                    (dom/label #js {:htmlFor (str item "-cb")} item)))
             items))
-        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--primary c-button--wide"} "Apply")))))
+        (dom/button #js {:onClick #(om/update-state! this assoc :open false) :className "c-button c-button--primary c-button--wide" :type "button"} "Apply")))))
 
 
 (defexample menus-data
@@ -402,12 +401,15 @@
           (dom/div #js {:className "c-card c-card--collapse"}
             (dom/div #js {:className (str "has-menu" (when open " is-active"))}
              (dom/button #js {:onClick   #(toggle-open this)
+                              :type      "button"
                               :className "c-button c-button--wide"} (str "List: " name))
              (dom/div #js {:id        "test-dropdown" :aria-hidden "true"
                            :className "c-menu" :tabIndex "-1"}
                (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-1-items :menu-name "Menu 1")
+                                :type      "button"
                                 :className "c-menu__item"} "Menu 1")
                (dom/button #js {:onClick   #(om/update-state! this assoc :open false :menu menu-2-items :menu-name "Menu 2")
+                                :type      "button"
                                 :className "c-menu__item"} "Menu 2")))
            (dom/div #js {:className "c-list" :tabIndex "-1"}
              (map (fn [item]
@@ -434,17 +436,17 @@
        (dom/div #js {:className "c-expansion-panel__list-content"
                      :onClick #(om/update-state! this update :expanded-1 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Trip name")
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-1
              "Caribbean cruise"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"}
-         (dom/input #js {:className "c-field" :type "text" :placeholder "Type in a name for your trip..." :value "Caribbean cruise"})
+         (dom/input #js {:className "c-field" :type "text" :placeholder "Type in a name for your trip..." :value "Caribbean cruise" :id "inputAB"})
          (dom/div #js {:className "c-expansion-panel__actions"}
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
-               (dom/button #js {:className "c-button"} "Cancel")
-               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+               (dom/button #js {:className "c-button" :type "button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save"))))
          )))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
@@ -453,7 +455,7 @@
        (dom/div #js {:className "c-expansion-panel__list-content"
                      :onClick   #(om/update-state! this update :expanded-2 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Location")
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (if-not expanded-2
              "Barbados"
              (dom/span nil "Select trip destination" (icons/icon :help_outline))))
@@ -469,8 +471,8 @@
          (dom/div #js {:className "c-expansion-panel__actions"}
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
-               (dom/button #js {:className "c-button"} "Cancel")
-               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+               (dom/button #js {:className "c-button" :type "button"} "Cancel")
+               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save"))))
          )))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
@@ -479,9 +481,9 @@
        (dom/div #js {:className "c-expansion-panel__list-content"
                      :onClick #(om/update-state! this update :expanded-3 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Start and end dates")
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-3 "Start date: Feb 29, 2016"))
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-3 "End date: Not set"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for dates")))
@@ -492,7 +494,7 @@
        (dom/div #js {:className "c-expansion-panel__list-content"
                      :onClick #(om/update-state! this update :expanded-4 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Carrier")
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-4 "The best cruise line"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Controls for carrier")))
@@ -505,7 +507,7 @@
          (dom/div #js {:className "c-expansion-panel__title"}
            (dom/div nil "Meal preferences")
            (dom/div #js {:className "c-message--neutral"} "Optional"))
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-5 "Vegetarian"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
@@ -523,7 +525,7 @@
        (dom/div #js {:className "c-expansion-panel__list-content"
                      :onClick #(om/update-state! this update :expanded-1 not)}
          (dom/div #js {:className "c-expansion-panel__title"} "Question")
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-1 "What kind of beverage do you prefer?"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"}
@@ -540,6 +542,7 @@
                                :checked   true
                                :className "c-switch__input"})
                (dom/span #js {:className "c-switch__paddle"
+                              :aria-hidden false
                               :htmlFor   "h-switch-input-1"}))))
 
          (l/row {:density :collapse :valign :middle :className "u-trailer"}
@@ -557,37 +560,37 @@
               (l/col {:className "u-column has-xpipe has-start-pipe" :halign :center}
                 (icons/icon :sentiment_very_dissatisfied))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel1"}
                   "Extremely dissatisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "1" :id "sel1" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel2"}
                   "Moderately dissatisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "2" :id "sel2" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel3"}
                   "Slightly dissatisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "3" :id "sel3" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel4"}
                   "Neither satisfied nor dissatisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "4" :id "sel4" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel5"}
                   "Slightly satisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "5" :id "sel5" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel6"}
                   "Moderately satisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "6" :id "sel6" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe" :halign :center}
-                (dom/label #js {:className "is-optional u-trailer--third"}
+                (dom/label #js {:className "is-optional u-trailer--third" :htmlFor "sel7"}
                   "Extremely satisfied")
                 (dom/input #js {:className "c-radio" :type "radio" :value "7" :id "sel7" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
@@ -598,10 +601,10 @@
          (dom/div #js {:className "c-expansion-panel__actions"}
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
-               (dom/button #js {:className "c-button"} "Options")
-               (dom/button #js {:className "c-button"} "Move")
-               (dom/button #js {:className "c-button c-button--accent"} "Add Conditional")
-               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+               (dom/button #js {:type "button" :className "c-button"} "Options")
+               (dom/button #js {:type "button" :className "c-button"} "Move")
+               (dom/button #js {:type "button" :className "c-button c-button--accent"} "Add Conditional")
+               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
          )))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
@@ -614,26 +617,26 @@
            (if-not expanded-2
              "If beverage prefrerence is red wine."
              (dom/span nil "Select conditions first" (icons/icon :help_outline))))
-         (dom/div #js {:className "c-expansion-panel__info"}
+         (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (if-not expanded-2 "Would you like our gm to get in touch?"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
        (dom/div #js {:className "c-expansion-panel__secondary-content"}
 
          (l/row {:density :collapse :valign :middle :className "u-trailer"}
            (l/col {:width 1}
-             (dom/label nil "If answer ")
+             (dom/label #js {:htmlFor "cond-op"} "If answer ")
              )
            (l/col {:width 1}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:className "c-button"} "is"))
+               (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is"))
              )
            (l/col {:width 2}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:className "c-button"} "exactly"))
+               (dom/button #js {:type "button" :className "c-button"} "exactly"))
              )
            (l/col {:width 2}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:className "c-button"} "red wine"))
+               (dom/button #js {:type "button" :className "c-button"} "red wine"))
              )
            )
 
@@ -649,6 +652,7 @@
                                :id        "h-switch-input-1"
                                :className "c-switch__input"})
                (dom/span #js {:className "c-switch__paddle"
+                              :aria-hidden false
                               :htmlFor   "h-switch-input-1"}))))
 
          (l/row {:density :collapse :valign :middle :className "u-trailer"}
@@ -671,9 +675,9 @@
          (dom/div #js {:className "c-expansion-panel__actions"}
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
-               (dom/button #js {:className "c-button"} "Options")
-               (dom/button #js {:className "c-button"} "Move")
-               (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+               (dom/button #js {:type "button" :className "c-button"} "Options")
+               (dom/button #js {:type "button" :className "c-button"} "Move")
+               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
 
          )))
 
@@ -693,32 +697,32 @@
 
           (l/row {:density :collapse :valign :middle :className "u-trailer"}
             (l/col {:width 1}
-              (dom/label nil "If answer ")
+              (dom/label #js {:htmlFor "cond-op"} "If answer ")
               )
             (l/col {:width 1}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:className "c-button"} "is"))
+                (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is"))
               )
             (l/col {:width 2}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:className "c-button"} "exactly"))
+                (dom/button #js {:type "button" :className "c-button"} "exactly"))
               )
             (l/col {:width 2}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:className "c-button"} "red wine"))
+                (dom/button #js {:type "button" :className "c-button"} "red wine"))
               )
             )
 
           (l/row {:density :collapse :valign :middle :halign :center :className "u-trailer"}
-            (dom/button #js {:className "c-button c-button--primary c-button--raised"} "Choose a question")
+            (dom/button #js {:type "button" :className "c-button c-button--primary c-button--raised"} "Choose a question")
             )
 
           (dom/div #js {:className "c-expansion-panel__actions"}
             (l/row {:density :collapse}
               (dom/div #js {:className "u-column--12 u-end"}
-                (dom/button #js {:className "c-button"} "Options")
-                (dom/button #js {:className "c-button"} "Move")
-                (dom/button #js {:className "c-button c-button--primary"} "Save"))))
+                (dom/button #js {:type "button" :className "c-button"} "Options")
+                (dom/button #js {:type "button" :className "c-button"} "Move")
+                (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
 
           )))
 
@@ -736,17 +740,17 @@
 (defexample field
   "### Basic"
   (dom/div nil
-    (dom/input #js {:type "text" :required "true" :placeholder "Required field" :className "c-field"})
-    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field"})
+    (dom/input #js {:type "text" :required "true" :placeholder "Required field" :className "c-field" :id "field-reg"})
+    (dom/input #js {:type "text" :placeholder "Optional field" :className "c-field" :id "field-opt"})
     (mapv (fn [typ] (dom/div #js {:key typ :className ""}
-                      (dom/input #js {:type typ :placeholder typ :className "c-field"})))
+                      (dom/input #js {:type typ :placeholder typ :id (str "field-" typ) :className "c-field"})))
           ["text" "password" "date" "datetime" "datetime-local" "month" "week" "email" "number" "search" "tel" "time" "url" "color"])
 
     ;; File upload
     (l/row {:density :collapse}
       (l/col {:width 1}
         ;; This is the button to init the upload dialog
-        (dom/label #js {}
+        (dom/label #js {:htmlFor "file-input-text"}
          (dom/span #js {:className "c-button c-button--circular c-button--primary c-button--dense"}
            (icons/icon :file_upload)
            (dom/input #js {:type "file" :className "u-hide" :id "file-input-file"}))))
@@ -761,18 +765,18 @@
 (defexample field-sizes
   "### Sizes"
   (dom/div #js {}
-    (dom/input #js {:type "text" :className "c-field c-field--small" :placeholder "The quick brown fox..."})
-    (dom/input #js {:type "text" :className "c-field" :placeholder "The quick brown fox..."})
-    (dom/input #js {:type "text" :className "c-field c-field--medium" :placeholder "The quick brown fox..."})
-    (dom/input #js {:type "text" :className "c-field c-field--large" :placeholder "The quick brown fox..."})))
+    (dom/input #js {:type "text" :className "c-field c-field--small" :placeholder "The quick brown fox..." :id "field-small"})
+    (dom/input #js {:type "text" :className "c-field" :placeholder "The quick brown fox..." :id "field-regular"})
+    (dom/input #js {:type "text" :className "c-field c-field--medium" :placeholder "The quick brown fox..." :id "field-medium"})
+    (dom/input #js {:type "text" :className "c-field c-field--large" :placeholder "The quick brown fox..." :id "field-large"})))
 
 (defexample field-states
   "### States"
   (dom/div #js {}
-    (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus"})
-    (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid"})
-    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error"})
-    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true})
+    (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus" :id "field-focus"})
+    (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid" :id "field-invalid"})
+    (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error" :id "field-error"})
+    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true :id "field-disabled"})
     ))
 
 (defexample field-icon
@@ -782,7 +786,7 @@
       (icons/icon :search :className ["c-icon--framed"]))
     (l/col {:className "u-column"}
       (dom/div #js {:className "c-field"}
-       (dom/input #js {:type "search" :className "c-field__input" :placeholder "Search..."})))))
+       (dom/input #js {:type "search" :className "c-field__input" :placeholder "Search..." :id "field-icon"})))))
 
 (defexample field-content
   "### Content"
@@ -793,12 +797,12 @@
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
-       (dom/input #js {:type "text" :className "c-field__input"}))))
+       (dom/input #js {:type "text" :className "c-field__input" :id "field1"}))))
   )
 
 (defexample textarea
   "# Text Area"
-  (dom/textarea #js {:className "c-input c-input--multi-line"}))
+  (dom/textarea #js {:className "c-input c-input--multi-line" :id "textarea"}))
 
 ;; -------------------------
 ;; Icons
@@ -824,7 +828,7 @@
   (let [sizes ["--small" "" "--medium" "--large" "--xlarge" "--huge"]]
     (dom/div #js {}
       (mapv (fn [sz]
-              (dom/figure #js {:key (str "a" sz)}
+              (dom/figure #js {:role "group" :key (str "a" sz)}
                 (dom/span #js {:className (str "c-icon c-icon" sz)}
                   (icons/icon :alarm))
                 (dom/figcaption #js {} (str ".c-icon" sz)))
@@ -840,7 +844,7 @@
   (let [states ["active" "passive" "disabled"]]
     (dom/div #js {}
       (mapv (fn [state]
-              (dom/figure #js {:key state}
+              (dom/figure #js {:role "group" :key state}
                 (dom/span #js {:className (str "c-icon c-icon--large is-" state)}
                   (icons/icon :alarm))
                 (dom/figcaption #js {} (str "is-" state)))
@@ -853,7 +857,7 @@
   is recommended that you wrap icons with c-icon-{iconname}."
   (dom/div #js {}
     (mapv (fn [nm]
-            (dom/figure #js {:key nm}
+            (dom/figure #js {:role "group" :key nm}
               (dom/span #js {:className (str "c-icon c-icon-" nm)}
                 (icons/icon nm))
               (dom/figcaption #js {} (str nm)))
@@ -900,7 +904,7 @@
                     (dom/div #js {:className "c-list__tile"}
                              (dom/div #js {:className "u-row"}
                                       (dom/div #js {:className "c-list__avatar c-list__avatar--round"}
-                                               (dom/img #js {:src (:photo (util/mock-users :1))}))
+                                               (dom/img #js {:src (:photo (util/mock-users :1)) :alt (util/full-name :1)}))
                                       (dom/div #js {:className "c-list__name"}
                                                (dom/div nil "Brunch this weekend?")
                                                (dom/div nil
@@ -910,7 +914,7 @@
               (dom/div #js {:className "c-list__tile"}
                        (dom/div #js {:className "u-row"}
                                 (dom/div #js {:className "c-list__avatar c-list__avatar--round"}
-                                         (dom/img #js {:src (:photo (util/mock-users :2))}))
+                                         (dom/img #js {:src (:photo (util/mock-users :2)) :alt (util/full-name :2)}))
                                 (dom/div #js {:className "c-list__name"}
                                          (dom/div nil "Brunch this weekend?")
                                          (dom/div nil (dom/span nil (util/full-name :2))
@@ -931,16 +935,16 @@
   "# Loader"
   (l/row {}
     (l/col {:width 3 :halign :center}
-      (dom/div #js {:className "c-loader"}))
+      (dom/div #js {:className "c-loader" :aria-hidden false}))
     (l/col {:width 3 :halign :center}
-      (dom/div #js {:className "c-loader c-loader--primary"}))
+      (dom/div #js {:className "c-loader c-loader--primary" :aria-hidden false}))
     (l/col {:width 3 :halign :center}
-      (dom/div #js {:className "c-loader c-loader--accent"}))
+      (dom/div #js {:className "c-loader c-loader--accent" :aria-hidden false}))
     (l/col {:width 3 :halign :center}
-      (dom/button #js {:className "c-button c-button--raised c-button--primary"}
-        (dom/span #js {:className "c-loader c-loader--inverted"}))
-      (dom/button #js {:className "c-button c-button--raised"}
-        (dom/span #js {:className "c-loader"})))))
+      (dom/button #js {:className "c-button c-button--raised c-button--primary" :type "button"}
+        (dom/span #js {:className "c-loader c-loader--inverted" :aria-hidden false}))
+      (dom/button #js {:className "c-button c-button--raised" :type "button"}
+        (dom/span #js {:className "c-loader" :aria-hidden false})))))
 
 
 ;; -------------------------
@@ -953,53 +957,53 @@
 (defexample tabs
   "### Basic"
   (dom/div #js {:className "c-tabs"}
-    (dom/button #js {:className "c-tab is-active"} "Widgets")
-    (dom/button #js {:className "c-tab"} "Doodads")
-    (dom/button #js {:className "c-tab"} "Apparatuses")
-    (dom/button #js {:className "c-tab"} "Things")))
+    (dom/button #js {:className "c-tab is-active" :type "button"} "Widgets")
+    (dom/button #js {:className "c-tab" :type "button"} "Doodads")
+    (dom/button #js {:className "c-tab" :type "button"} "Apparatuses")
+    (dom/button #js {:className "c-tab" :type "button"} "Things")))
 
 (defexample tabs-colors
   "### Colors"
   (dom/div nil
     (dom/div #js {:className "c-tabs"}
-      (dom/button #js {:className "c-tab c-tab--primary is-active"} "Widgets")
-      (dom/button #js {:className "c-tab c-tab--primary"} "Doodads")
-      (dom/button #js {:className "c-tab c-tab--primary"} "Apparatuses")
-      (dom/button #js {:className "c-tab c-tab--primary"} "Things"))
+      (dom/button #js {:className "c-tab c-tab--primary is-active" :type "button"} "Widgets")
+      (dom/button #js {:className "c-tab c-tab--primary" :type "button"} "Doodads")
+      (dom/button #js {:className "c-tab c-tab--primary" :type "button"} "Apparatuses")
+      (dom/button #js {:className "c-tab c-tab--primary" :type "button"} "Things"))
 
     (dom/div #js {:className "t-dark"}
       (dom/div #js {:className "c-tabs"}
-       (dom/button #js {:className "c-tab c-tab--contrast is-active"} "Widgets")
-       (dom/button #js {:className "c-tab c-tab--contrast"} "Doodads")
-       (dom/button #js {:className "c-tab c-tab--contrast"} "Apparatuses")
-       (dom/button #js {:className "c-tab c-tab--contrast"} "Things")))))
+       (dom/button #js {:className "c-tab c-tab--contrast is-active" :type "button"} "Widgets")
+       (dom/button #js {:className "c-tab c-tab--contrast" :type "button"} "Doodads")
+       (dom/button #js {:className "c-tab c-tab--contrast" :type "button"} "Apparatuses")
+       (dom/button #js {:className "c-tab c-tab--contrast" :type "button"} "Things")))))
 
 (defexample tabs-dropdown
   "### With Dropdowns"
   (dom/div #js {:className "c-tabs"}
-    (dom/button #js {:className "c-tab"} "Widgets")
-    (dom/button #js {:className "c-tab"} "Doodads")
-    (dom/button #js {:className "c-tab"} "Apparatuses")
+    (dom/button #js {:className "c-tab" :type "button"} "Widgets")
+    (dom/button #js {:className "c-tab" :type "button"} "Doodads")
+    (dom/button #js {:className "c-tab" :type "button"} "Apparatuses")
     (dom/span #js {:className "has-menu"}
-      (dom/button #js {:className "c-tab is-active"} "Things")
+      (dom/button #js {:className "c-tab is-active" :type "button"} "Things")
       (dom/ul #js {:className "c-menu"}
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thingamabob"))
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thingamabob"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thingamajig"))
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thingamajig"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thinger")))
-      (dom/button #js {:className "c-tab"} "Doodads")
-      (dom/button #js {:className "c-tab"} "Apparatuses")
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thinger")))
+      (dom/button #js {:className "c-tab" :type "button"} "Doodads")
+      (dom/button #js {:className "c-tab" :type "button"} "Apparatuses")
       (dom/span #js {:className "has-menu"}
-      (dom/button #js {:className "c-tab is-active"} "Things")
+      (dom/button #js {:className "c-tab is-active" :type "button"} "Things")
       (dom/ul #js {:className "c-menu is-active"}
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thingamabob"))
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thingamabob"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thingamajig"))
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thingamajig"))
         (dom/li #js {}
-          (dom/button #js {:className "c-menu__item"} "Thinger")))))))
+          (dom/button #js {:className "c-menu__item" :type "button"} "Thinger")))))))
 
 
 ;; -------------------------
@@ -1034,7 +1038,7 @@
     (dom/div #js {:className "c-notification_content"}
       (dom/h1 #js {:className "c-notification_heading"} "Info Notification")
       (dom/p #js {} "Communicate a meaningful message."))
-    (dom/button #js {:className "c-button c-button--icon"}
+    (dom/button #js {:className "c-button c-button--icon" :type "button"}
       (icons/icon :close))))
 
 (defexample notification-success
@@ -1044,7 +1048,7 @@
     (dom/div #js {:className "c-notification_content"}
       (dom/h1 #js {:className "c-notification_heading"} "Successful Notification")
       (dom/p #js {} "Communicate a meaningful message."))
-    (dom/button #js {:className "c-button c-button--icon"}
+    (dom/button #js {:className "c-button c-button--icon" :type "button"}
       (icons/icon :close))))
 
 (defexample notification-warning
@@ -1054,7 +1058,7 @@
     (dom/div #js {:className "c-notification_content"}
       (dom/h1 #js {:className "c-notification_heading"} "Warning Notification")
       (dom/p #js {} "Communicate a meaningful message."))
-    (dom/button #js {:className "c-button c-button--icon"}
+    (dom/button #js {:className "c-button c-button--icon" :type "button"}
       (icons/icon :close))))
 
 (defexample notification-error
@@ -1064,20 +1068,18 @@
     (dom/div #js {:className "c-notification_content"}
       (dom/h1 #js {:className "c-notification_heading"} "Error Notification")
       (dom/p #js {} "Communicate a meaningful message."))
-    (dom/button #js {:className "c-button c-button--icon"}
+    (dom/button #js {:className "c-button c-button--icon" :type "button"}
       (icons/icon :close))))
 
 (defexample notification-wide
   "## Wide"
   (dom/div #js {:className "c-notification c-notification--wide c-notification--informative"}
-    (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--info" :viewBox "0 0 24 24"}
-      (dom/path #js {:d "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"}))
+    (icons/icon :info)
     (dom/div #js {:className "c-notification_content"}
       (dom/h1 #js {:className "c-notification_heading"} "Wide Notification")
       (dom/p #js {} "Communicate a meaningful message."))
-    (dom/button #js {:className "c-button c-button--icon"}
-      (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :className "c-icon c-icon--close" :viewBox "0 0 24 24"}
-        (dom/path #js {:d "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"})))))
+    (dom/button #js {:className "c-button c-button--icon" :type "button"}
+      (icons/icon :close))))
 
 
 
@@ -1093,19 +1095,19 @@
   (dom/div #js {}
     (dom/div #js {:className "u-trailer"}
       (dom/h4 nil "Indeterminate")
-      (dom/progress #js {:className "c-progress"}))
+      (dom/progress #js {:className "c-progress" :aria-hidden false}))
 
     (dom/div #js {:className "u-trailer"}
       (dom/h4 nil "Indeterminate & Dense")
-      (dom/progress #js {:className "c-progress c-progress--dense"}))
+      (dom/progress #js {:className "c-progress c-progress--dense" :aria-hidden false}))
 
     (dom/div #js {:className "u-trailer"}
       (dom/h4 nil "Value")
-      (dom/progress #js {:className "c-progress" :max "100" :value "70"}))
+      (dom/progress #js {:className "c-progress" :max "100" :value "70" :aria-hidden false}))
 
     (dom/div #js {:className "u-trailer"}
       (dom/h4 nil "Value & Small")
-      (dom/progress #js {:className "c-progress c-progress--dense" :max "100" :value "70"}))))
+      (dom/progress #js {:className "c-progress c-progress--dense" :max "100" :value "70" :aria-hidden false}))))
 
 
 
@@ -1177,6 +1179,7 @@
                       :type      "checkbox"
                       :checked   (= active true)})
       (dom/span #js {:className "c-switch__paddle"
+                     :aria-hidden false
                      :htmlFor "h-switch-input-1"}))))
 
 (defexample switch-icon
@@ -1210,160 +1213,165 @@
         set-kind (fn [k] (om/update-state! this assoc :kind k))]
     (dom/div #js {}
       (dom/div #js {}
-        (dom/label nil "View ")
+        (dom/span nil "View ")
         (dom/button #js {:aria-label "Default" :onClick #(set-kind nil)
+                         :type "button"
                          :className  (str "c-button c-button--small " (when (= kind nil) "is-active"))}
           (dom/span #js {:className "c-button__content"} "Default"))
         (dom/button #js {:aria-label "Swipe View" :onClick #(set-kind "swipe")
+                         :type "button"
                          :className  (str "c-button c-button--small " (when (= kind "swipe") "is-active"))}
           (icons/icon :view_headline)
           (dom/span #js {:className "c-button__content"} "Swipe"))
         (dom/button #js {:aria-label "Toggle View" :onClick #(set-kind "toggle")
+                         :type "button"
                          :className  (str "c-button c-button--small " (when (= kind "toggle") "is-active"))}
           (icons/icon :view_week)
           (dom/span #js {:className "c-button__content"} "Toggle"))
         (dom/button #js {:aria-label "Stacked View" :onClick #(set-kind "stacked")
+                         :type "button"
                          :className  (str "c-button c-button--small " (when (= kind "stacked") "is-active"))}
           (icons/icon :view_agenda)
           (dom/span #js {:className "c-button__content"} "Stacked")))
       (dom/table #js {:className (str "c-table c-table--" kind)}
-                 (dom/thead #js {}
-                            (dom/tr #js {}
-                                    (dom/th #js {:scope "col"} "Agent")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-3"} "Opens")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-2"} "Open %")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-1"} "Clicks")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-4"} "Click %")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-5"} "Booked")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-6"} "Attr Rev")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-6"} "Bounce %")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-6"} "Share %")
-                                    (dom/th #js {:scope "col" :className "c-table__priority-6"} "Unsub %")))
-                 (dom/tbody #js {}
-                            (dom/tr #js {}
-                                    (dom/td #js {}
-                                      (dom/span #js {:className "c-table__label"} "Agent")
-                                      (dom/span #js {:className "c-table__content"} "GMC"))
-                                    (dom/td #js {:className "c-table__priority-3"}
-                                            (dom/span #js {:className "c-table__label"} "Opens")
-                                            (dom/span #js {:className "c-table__content"} "300"))
-                                    (dom/td #js {:className "c-table__priority-2"}
-                                            (dom/span #js {:className "c-table__label"} "Open %")
-                                            (dom/span #js {:className "c-table__content"} "60"))
-                                    (dom/td #js {:className "c-table__priority-1"}
-                                            (dom/span #js {:className "c-table__label"} "Clicks")
-                                            (dom/span #js {:className "c-table__content"} "3000"))
-                                    (dom/td #js {:className "c-table__priority-4"}
-                                            (dom/span #js {:className "c-table__label"} "Click %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-5"}
-                                            (dom/span #js {:className "c-table__label"} "Booked")
-                                            (dom/span #js {:className "c-table__content"} "12000"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Attr Rev")
-                                            (dom/span #js {:className "c-table__content"} "32800"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Bounce %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Share %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Unsub %")
-                                            (dom/span #js {:className "c-table__content"} "32")))
-                            (dom/tr #js {}
-                              (dom/td #js {}
-                                (dom/span #js {:className "c-table__label"} "Agent")
-                                (dom/span #js {:className "c-table__content"} "Dodge"))
-                                    (dom/td #js {:className "c-table__priority-3"}
-                                            (dom/span #js {:className "c-table__label"} "Opens")
-                                            (dom/span #js {:className "c-table__content"} "100"))
-                                    (dom/td #js {:className "c-table__priority-2"}
-                                            (dom/span #js {:className "c-table__label"} "Open %")
-                                            (dom/span #js {:className "c-table__content"} "54"))
-                                    (dom/td #js {:className "c-table__priority-1"}
-                                            (dom/span #js {:className "c-table__label"} "Clicks")
-                                            (dom/span #js {:className "c-table__content"} "1200"))
-                                    (dom/td #js {:className "c-table__priority-4"}
-                                            (dom/span #js {:className "c-table__label"} "Click %")
-                                            (dom/span #js {:className "c-table__content"} "18"))
-                                    (dom/td #js {:className "c-table__priority-5"}
-                                            (dom/span #js {:className "c-table__label"} "Booked")
-                                            (dom/span #js {:className "c-table__content"} "6000"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Attr Rev")
-                                            (dom/span #js {:className "c-table__content"} "24000"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Bounce %")
-                                            (dom/span #js {:className "c-table__content"} "18"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Share %")
-                                            (dom/span #js {:className "c-table__content"} "18"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Unsub %")
-                                            (dom/span #js {:className "c-table__content"} "18")))
-                            (dom/tr #js {}
-                              (dom/td #js {}
-                                (dom/span #js {:className "c-table__label"} "Agent")
-                                (dom/span #js {:className "c-table__content"} "Volvo"))
-                                    (dom/td #js {:className "c-table__priority-3"}
-                                            (dom/span #js {:className "c-table__label"} "Opens")
-                                            (dom/span #js {:className "c-table__content"} "600"))
-                                    (dom/td #js {:className "c-table__priority-2"}
-                                            (dom/span #js {:className "c-table__label"} "Open %")
-                                            (dom/span #js {:className "c-table__content"} "72"))
-                                    (dom/td #js {:className "c-table__priority-1"}
-                                            (dom/span #js {:className "c-table__label"} "Clicks")
-                                            (dom/span #js {:className "c-table__content"} "960"))
-                                    (dom/td #js {:className "c-table__priority-4"}
-                                            (dom/span #js {:className "c-table__label"} "Click %")
-                                            (dom/span #js {:className "c-table__content"} "42"))
-                                    (dom/td #js {:className "c-table__priority-5"}
-                                            (dom/span #js {:className "c-table__label"} "Booked")
-                                            (dom/span #js {:className "c-table__content"} "3000"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Attr Rev")
-                                            (dom/span #js {:className "c-table__content"} "1200"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Bounce %")
-                                            (dom/span #js {:className "c-table__content"} "42"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Share %")
-                                            (dom/span #js {:className "c-table__content"} "42"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Unsub %")
-                                            (dom/span #js {:className "c-table__content"} "42")))
-                            (dom/tr #js {}
-                              (dom/td #js {}
-                                (dom/span #js {:className "c-table__label"} "Agent")
-                                (dom/span #js {:className "c-table__content"} "Audi"))
-                                    (dom/td #js {:className "c-table__priority-3"}
-                                            (dom/span #js {:className "c-table__label"} "Opens")
-                                            (dom/span #js {:className "c-table__content"} "300"))
-                                    (dom/td #js {:className "c-table__priority-2"}
-                                            (dom/span #js {:className "c-table__label"} "Open %")
-                                            (dom/span #js {:className "c-table__content"} "60"))
-                                    (dom/td #js {:className "c-table__priority-1"}
-                                            (dom/span #js {:className "c-table__label"} "Clicks")
-                                            (dom/span #js {:className "c-table__content"} "840"))
-                                    (dom/td #js {:className "c-table__priority-4"}
-                                            (dom/span #js {:className "c-table__label"} "Click %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-5"}
-                                            (dom/span #js {:className "c-table__label"} "Booked")
-                                            (dom/span #js {:className "c-table__content"} "12000"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Attr Rev")
-                                            (dom/span #js {:className "c-table__content"} "30800"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Bounce %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Share %")
-                                            (dom/span #js {:className "c-table__content"} "32"))
-                                    (dom/td #js {:className "c-table__priority-6"}
-                                            (dom/span #js {:className "c-table__label"} "Unsub %")
-                                            (dom/span #js {:className "c-table__content"} "32"))))))))
+        (dom/caption nil "Table Example")
+        (dom/thead nil
+          (dom/tr #js {:className "c-table__week"}
+             (dom/th #js {:scope "col"} "Agent")
+             (dom/th #js {:scope "col" :className "c-table__priority-3"} "Opens")
+             (dom/th #js {:scope "col" :className "c-table__priority-2"} "Open %")
+             (dom/th #js {:scope "col" :className "c-table__priority-1"} "Clicks")
+             (dom/th #js {:scope "col" :className "c-table__priority-4"} "Click %")
+             (dom/th #js {:scope "col" :className "c-table__priority-5"} "Booked")
+             (dom/th #js {:scope "col" :className "c-table__priority-6"} "Attr Rev")
+             (dom/th #js {:scope "col" :className "c-table__priority-6"} "Bounce %")
+             (dom/th #js {:scope "col" :className "c-table__priority-6"} "Share %")
+             (dom/th #js {:scope "col" :className "c-table__priority-6"} "Unsub %")))
+        (dom/tbody #js {}
+          (dom/tr #js {}
+            (dom/td #js {}
+              (dom/span #js {:className "c-table__label"} "Agent")
+              (dom/span #js {:className "c-table__content"} "GMC"))
+            (dom/td #js {:className "c-table__priority-3"}
+              (dom/span #js {:className "c-table__label"} "Opens")
+              (dom/span #js {:className "c-table__content"} "300"))
+            (dom/td #js {:className "c-table__priority-2"}
+              (dom/span #js {:className "c-table__label"} "Open %")
+              (dom/span #js {:className "c-table__content"} "60"))
+            (dom/td #js {:className "c-table__priority-1"}
+              (dom/span #js {:className "c-table__label"} "Clicks")
+              (dom/span #js {:className "c-table__content"} "3000"))
+            (dom/td #js {:className "c-table__priority-4"}
+              (dom/span #js {:className "c-table__label"} "Click %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-5"}
+              (dom/span #js {:className "c-table__label"} "Booked")
+              (dom/span #js {:className "c-table__content"} "12000"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Attr Rev")
+              (dom/span #js {:className "c-table__content"} "32800"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Bounce %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Share %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Unsub %")
+              (dom/span #js {:className "c-table__content"} "32")))
+          (dom/tr #js {}
+            (dom/td #js {}
+              (dom/span #js {:className "c-table__label"} "Agent")
+              (dom/span #js {:className "c-table__content"} "Dodge"))
+            (dom/td #js {:className "c-table__priority-3"}
+              (dom/span #js {:className "c-table__label"} "Opens")
+              (dom/span #js {:className "c-table__content"} "100"))
+            (dom/td #js {:className "c-table__priority-2"}
+              (dom/span #js {:className "c-table__label"} "Open %")
+              (dom/span #js {:className "c-table__content"} "54"))
+            (dom/td #js {:className "c-table__priority-1"}
+              (dom/span #js {:className "c-table__label"} "Clicks")
+              (dom/span #js {:className "c-table__content"} "1200"))
+            (dom/td #js {:className "c-table__priority-4"}
+              (dom/span #js {:className "c-table__label"} "Click %")
+              (dom/span #js {:className "c-table__content"} "18"))
+            (dom/td #js {:className "c-table__priority-5"}
+              (dom/span #js {:className "c-table__label"} "Booked")
+              (dom/span #js {:className "c-table__content"} "6000"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Attr Rev")
+              (dom/span #js {:className "c-table__content"} "24000"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Bounce %")
+              (dom/span #js {:className "c-table__content"} "18"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Share %")
+              (dom/span #js {:className "c-table__content"} "18"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Unsub %")
+              (dom/span #js {:className "c-table__content"} "18")))
+          (dom/tr #js {}
+            (dom/td #js {}
+              (dom/span #js {:className "c-table__label"} "Agent")
+              (dom/span #js {:className "c-table__content"} "Volvo"))
+            (dom/td #js {:className "c-table__priority-3"}
+              (dom/span #js {:className "c-table__label"} "Opens")
+              (dom/span #js {:className "c-table__content"} "600"))
+            (dom/td #js {:className "c-table__priority-2"}
+              (dom/span #js {:className "c-table__label"} "Open %")
+              (dom/span #js {:className "c-table__content"} "72"))
+            (dom/td #js {:className "c-table__priority-1"}
+              (dom/span #js {:className "c-table__label"} "Clicks")
+              (dom/span #js {:className "c-table__content"} "960"))
+            (dom/td #js {:className "c-table__priority-4"}
+              (dom/span #js {:className "c-table__label"} "Click %")
+              (dom/span #js {:className "c-table__content"} "42"))
+            (dom/td #js {:className "c-table__priority-5"}
+              (dom/span #js {:className "c-table__label"} "Booked")
+              (dom/span #js {:className "c-table__content"} "3000"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Attr Rev")
+              (dom/span #js {:className "c-table__content"} "1200"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Bounce %")
+              (dom/span #js {:className "c-table__content"} "42"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Share %")
+              (dom/span #js {:className "c-table__content"} "42"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Unsub %")
+              (dom/span #js {:className "c-table__content"} "42")))
+          (dom/tr #js {}
+            (dom/td #js {}
+              (dom/span #js {:className "c-table__label"} "Agent")
+              (dom/span #js {:className "c-table__content"} "Audi"))
+            (dom/td #js {:className "c-table__priority-3"}
+              (dom/span #js {:className "c-table__label"} "Opens")
+              (dom/span #js {:className "c-table__content"} "300"))
+            (dom/td #js {:className "c-table__priority-2"}
+              (dom/span #js {:className "c-table__label"} "Open %")
+              (dom/span #js {:className "c-table__content"} "60"))
+            (dom/td #js {:className "c-table__priority-1"}
+              (dom/span #js {:className "c-table__label"} "Clicks")
+              (dom/span #js {:className "c-table__content"} "840"))
+            (dom/td #js {:className "c-table__priority-4"}
+              (dom/span #js {:className "c-table__label"} "Click %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-5"}
+              (dom/span #js {:className "c-table__label"} "Booked")
+              (dom/span #js {:className "c-table__content"} "12000"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Attr Rev")
+              (dom/span #js {:className "c-table__content"} "30800"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Bounce %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Share %")
+              (dom/span #js {:className "c-table__content"} "32"))
+            (dom/td #js {:className "c-table__priority-6"}
+              (dom/span #js {:className "c-table__label"} "Unsub %")
+              (dom/span #js {:className "c-table__content"} "32"))))))))
 
 ;; -------------------------
 ;; Tooltips
@@ -1376,33 +1384,33 @@
 
 (defexample tooltips
   "### Basic"
-  (dom/button #js {:data-tooltip "Hey!" :className "c-button"} "Hover me!"))
+  (dom/button #js {:data-tooltip "Hey!" :className "c-button" :type "button"} "Hover me!"))
 
 (defexample tooltip-directions
   "### Directions"
   (dom/div #js {}
     (dom/div #js {:className "u-text-center"}
-      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "up" :className "c-button c-button--large"} "Hover me!"))
+      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "up" :className "c-button c-button--large" :type "button"} "Hover me!"))
     (dom/div #js {:className "u-text-center"}
-      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "left" :className "c-button c-button--large"} "Hover me!"))
+      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "left" :className "c-button c-button--large" :type "button"} "Hover me!"))
     (dom/div #js {:className "u-text-center"}
-      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "right" :className "c-button c-button--large"} "Hover me!"))
+      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "right" :className "c-button c-button--large" :type "button"} "Hover me!"))
     (dom/div #js {:className "u-text-center"}
-      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "down" :className "c-button c-button--large"} "Hover me!"))))
+      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-pos "down" :className "c-button c-button--large" :type "button"} "Hover me!"))))
 
 (defexample tooltip-sizes
   "### Sizes"
   (dom/div #js {}
     (dom/div #js {:className "u-text-center"} " "
-      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-length "small" :className "c-button c-button--large"} "Small") " ") " "
+      (dom/button #js {:data-tooltip "Hey!" :data-tooltip-length "small" :className "c-button c-button--large" :type "button"} "Small") " ") " "
     (dom/div #js {:className "u-text-center"} " "
-      (dom/button #js {:data-tooltip "Now that's a super big text we have over here right? Lorem ipsum dolor sit I'm done." :data-tooltip-length "medium" :className "c-button c-button--large"} "Medium") " ") " "
+      (dom/button #js {:data-tooltip "Now that's a super big text we have over here right? Lorem ipsum dolor sit I'm done." :data-tooltip-length "medium" :className "c-button c-button--large" :type "button"} "Medium") " ") " "
     (dom/div #js {:className "u-text-center"} " "
-      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "large" :className "c-button c-button--large"} "Large") " ") " "
+      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "large" :className "c-button c-button--large" :type "button"} "Large") " ") " "
     (dom/div #js {:className "u-text-center"} " "
-      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "xlarge" :className "c-button c-button--large"} "X-Large") " ") " "
+      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "xlarge" :className "c-button c-button--large" :type "button"} "X-Large") " ") " "
     (dom/div #js {:className "u-text-center"} " "
-      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "fit" :className "c-button c-button--large"} "My width will fit to element") " ") " "))
+      (dom/button #js {:data-tooltip "What about something really big? This may surpass your window dimensions. Imagine you're on that boring class with that boring teacher and you didn't slept so well last night. Suddenly you're sleeping in class. Can you believe it?!" :data-tooltip-length "fit" :className "c-button c-button--large" :type "button"} "My width will fit to element") " ") " "))
 
 
 (defn toggle-pause [this] (om/update-state! this update :pause not))
@@ -1410,11 +1418,13 @@
   "# Button Group"
   (let [pause (boolean (om/get-state this :pause))]
     (dom/div #js {}
-      (dom/label #js {:className ""} "Control")
-      (dom/div #js {:className "o-button-group--toggle"}
+      (dom/label #js {:htmlFor "target"} "Control")
+      (dom/div #js {:className "o-button-group--toggle" :id "target"}
         (dom/button #js {:className (str "c-button " (if pause "" " c-button--raised c-button--primary"))
+                         :type "button"
                          :onClick   #(toggle-pause this)} "Play")
         (dom/button #js {:className (str "c-button " (if (not pause) "" "c-button--raised c-button--primary"))
+                         :type "button"
                          :onClick   #(toggle-pause this)} "Pause")))))
 
 (defexample postfix-group
@@ -1441,31 +1451,30 @@
   "### Calendar Example"
   (dom/div #js {}
     (dom/div #js {:className "u-wrapper"}
-      (dom/label #js {:className "is-optional"} " X Date")
+      (dom/label #js {:className "is-optional" :htmlFor "dateInput"} " X Date")
       (dom/div #js {:className "c-field"}
-        (dom/input #js {:readOnly true :value "January 19, 2017" :className "c-field__input"}))
+        (dom/input #js {:readOnly true :value "January 19, 2017" :id "dateInput" :type "text" :className "c-field__input"}))
 
       (dom/div #js {:className "c-calendar"}
         (dom/header #js {:className "c-calendar__control u-middle"}
-          (dom/button #js {:title "Last Month" :className "c-button c-button--icon"}
+          (dom/button #js {:title "Last Month" :className "c-button c-button--icon" :type "button"}
             (icons/icon :keyboard_arrow_left))
           (dom/span #js {} "January 2017")
-          (dom/button #js {:title "Today" :className "c-button c-button--icon"}
+          (dom/button #js {:title "Today" :className "c-button c-button--icon" :type "button"}
             (icons/icon :today))
-          (dom/button #js {:title "Next Month" :className "c-button c-button--icon"}
+          (dom/button #js {:title "Next Month" :className "c-button c-button--icon" :type "button"}
             (icons/icon :keyboard_arrow_right)))
         (dom/div #js {:className "o-calendar__month"}
-          (dom/table #js {}
-            (dom/thead #js {}
-              (dom/tr #js {}
-                (dom/th #js {} "Su")
-                (dom/th #js {} "M")
-                (dom/th #js {} "Tu")
-                (dom/th #js {} "W")
-                (dom/th #js {} "Th")
-                (dom/th #js {} "F")
-                (dom/th #js {} "Sa")))
+          (dom/table #js {:role "presentation"}
             (dom/tbody #js {}
+              (dom/tr #js {:className "c-calendar__week"}
+                (dom/td #js {} "Su")
+                (dom/td #js {} "M")
+                (dom/td #js {} "Tu")
+                (dom/td #js {} "W")
+                (dom/td #js {} "Th")
+                (dom/td #js {} "F")
+                (dom/td #js {} "Sa"))
               (dom/tr #js {}
                 (dom/td #js {:className "c-calendar__day is-inactive"} "27")
                 (dom/td #js {:className "c-calendar__day is-inactive"} "28")
@@ -1526,18 +1535,18 @@
   "# Icon Bar"
   (dom/div #js {}
     (dom/nav #js {:className "c-iconbar"}
-      (dom/button #js {:className "c-iconbar__item is-active"}
+      (dom/button #js {:className "c-iconbar__item is-active" :type "button"}
         (icons/icon :home)
         (dom/span #js {:className "c-iconbar__label"} "Home"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :description)
         (dom/span #js {:className "c-iconbar__label"} "Docs"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :feedback)
         (dom/span #js {:className "c-iconbar__label"} "Support"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
+          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24" :role "img"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
         (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
@@ -1549,18 +1558,18 @@
   "
   (dom/div #js {}
     (dom/nav #js {:className "c-iconbar c-iconbar--rail"}
-      (dom/button #js {:className "c-iconbar__item is-active"}
+      (dom/button #js {:className "c-iconbar__item is-active" :type "button"}
         (icons/icon :home)
         (dom/span #js {:className "c-iconbar__label"} "Home"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :description)
         (dom/span #js {:className "c-iconbar__label"} "Docs"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :feedback)
         (dom/span #js {:className "c-iconbar__label"} "Support"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
+          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24" :role "img"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
         (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
@@ -1571,18 +1580,18 @@
   "
   (dom/div #js {}
     (dom/nav #js {:className "c-iconbar c-iconbar--shifting is-mobile"}
-      (dom/button #js {:className "c-iconbar__item is-active"}
+      (dom/button #js {:className "c-iconbar__item is-active" :type "button"}
         (icons/icon :home)
         (dom/span #js {:className "c-iconbar__label"} "Home"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :description)
         (dom/span #js {:className "c-iconbar__label"} "Docs"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (icons/icon :feedback)
         (dom/span #js {:className "c-iconbar__label"} "Support"))
-      (dom/button #js {:className "c-iconbar__item"}
+      (dom/button #js {:className "c-iconbar__item" :type "button"}
         (dom/span #js {:className "c-icon"}
-          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
+          (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24" :role "img"}
             (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
         (dom/span #js {:className "c-iconbar__label"} "Github")))))
 
@@ -1599,8 +1608,10 @@
           )
         (dom/div #js {:className "c-dialog__actions"}
           (dom/button #js {:className "c-button c-button--primary"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
+                           :type      "button"
+                           :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
             (dom/button #js {:className "c-button c-button--primary"
+                             :type      "button"
                              :onClick   #(om/update-state! this assoc :modal-visible false)} "Ok"))
         ))
     (dom/div #js {:className (str "c-backdrop _is-active") :style #js {:position "absolute"}})))
@@ -1686,16 +1697,16 @@
         (dom/div #js {:className "c-toolbar"}
          (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
          (dom/div #js {:className "c-toolbar__button"}
-           (dom/button #js {:className "c-button c-button--icon"}
+           (dom/button #js {:className "c-button c-button--icon" :type "button"}
              (e/ui-icon {:glyph :menu})))
 
          (dom/div #js {:className "c-toolbar__row"}
            (dom/div #js {:className "c-toolbar__actions"}
 
-             (dom/button #js {:className "c-button c-button--icon"} (icons/icon :help))
+             (dom/button #js {:className "c-button c-button--icon" :type "button"} (icons/icon :help))
 
              (dom/button #js {:className "c-button c-button--icon"
-                              :title     "Kevin Mitnick"}
+                              :title     "Kevin Mitnick" :type "button"}
                (icons/icon :account_circle)))))))))
 
 
@@ -1713,18 +1724,18 @@
 
       (dom/div #js {:className "c-toolbar c-toolbar--primary c-toolbar--raised"}
         (dom/div #js {:className "c-toolbar__button"}
-          (dom/button #js {:className "c-button c-button--icon"}
+          (dom/button #js {:className "c-button c-button--icon" :type "button"}
               (icons/icon :menu)))
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
             (dom/span #js {:className "c-toolbar__label"} "Primary toolbar"))
 
           (dom/div #js {:className "c-toolbar__actions"}
-            (dom/button #js {:className "c-button c-button--icon"}
+            (dom/button #js {:className "c-button c-button--icon" :type "button"}
               (icons/icon :help))
 
             (dom/span #js {:title "Kevin Mitnick"}
-              (dom/button #js {:className "c-button c-button--icon"}
+              (dom/button #js {:className "c-button c-button--icon" :type "button"}
                 (icons/icon :account_circle)))
             )))
 
@@ -1732,18 +1743,18 @@
 
       (dom/div #js {:className "c-toolbar c-toolbar--dark c-toolbar--raised"}
         (dom/div #js {:className "c-toolbar__button"}
-          (dom/button #js {:className "c-button c-button--icon"}
+          (dom/button #js {:className "c-button c-button--icon" :type "button"}
               (icons/icon :arrow_back)))
         (dom/div #js {:className "c-toolbar__row"}
           (dom/div #js {:className "c-toolbar__view"}
             (dom/span #js {:className "c-toolbar__label"} "Dark toolbar"))
 
           (dom/div #js {:className "c-toolbar__actions"}
-            (dom/button #js {:className "c-button c-button--icon"}
+            (dom/button #js {:className "c-button c-button--icon" :type "button"}
               (icons/icon :filter_list))
 
             (dom/span #js {:title "Kevin Mitnick"}
-              (dom/button #js {:className "c-button c-button--icon"}
+              (dom/button #js {:className "c-button c-button--icon" :type "button"}
                 (icons/icon :search)))
             ))))))
 
@@ -1760,29 +1771,33 @@
       (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--dark"}
         (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
        (dom/div #js {:className "c-toolbar__button"}
-         (dom/button #js {:className "c-button c-button--icon"}
+         (dom/button #js {:className "c-button c-button--icon" :type "button"}
            (icons/icon :menu)))
        (dom/div #js {:className "c-toolbar__row"}
          (dom/div #js {:className "c-toolbar__view"}
            (dom/span #js {:className "c-toolbar__label"} "Second row is dense"))
 
          (dom/div #js {:className "c-toolbar__actions"}
-           (dom/button #js {:className "c-button c-button--icon"}
+           (dom/button #js {:className "c-button c-button--icon" :type "button"}
              (icons/icon :help))
 
            (dom/span #js {:title "Kevin Mitnick"}
-             (dom/button #js {:className "c-button c-button--icon"}
+             (dom/button #js {:className "c-button c-button--icon" :type "button"}
                (icons/icon :account_circle)))
            ))
        (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
          (dom/ul #js {:className "c-tabs"}
            (dom/button #js {:className (get-class :widgets)
+                            :type      "button"
                             :onClick   #(select-item :widgets)} "Widgets")
            (dom/button #js {:className (get-class :doodads)
+                            :type      "button"
                             :onClick   #(select-item :doodads)} "Doodads")
            (dom/button #js {:className (get-class :apparatuses)
+                            :type      "button"
                             :onClick   #(select-item :apparatuses)} "Apparatuses")
            (dom/button #js {:className (get-class :things)
+                            :type      "button"
                             :onClick   #(select-item :things)} "Things")))))))
 
 

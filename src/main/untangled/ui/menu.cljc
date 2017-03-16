@@ -115,7 +115,8 @@
       (dom/div #js {:key (str "menu-" (name id)) :className "has-menu"}
         (if (= menu-style :icon)
           (dom/button #js {:className "c-button c-button--icon"
-                           :title (tr-unsafe selected-label)
+                           :type      "button"
+                           :title     (tr-unsafe selected-label)
                            :onClick (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
@@ -124,8 +125,9 @@
                                        (.stopPropagation evt)
                                        (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
                                        false)
-                          :className "c-button"} (tr-unsafe selected-label))
-          )
+                           :type      "button"
+                          :className  "c-button"} (tr-unsafe selected-label)))
+
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
           (map (fn [{:keys [menu-item/item-id menu-item/label]}]
                  (dom/li #js {:key     (str "menu-item-" (name item-id))
@@ -134,7 +136,8 @@
                                          (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :menu/open?])
                                          (when onSelect (onSelect item-id))
                                          false)}
-                   (dom/button #js {:className (str "c-menu__item"
+                   (dom/button #js {:type      "button"
+                                    :className (str "c-menu__item"
                                                  (when (= item-id selected-id) " is-active"))} label))) items))))))
 
 

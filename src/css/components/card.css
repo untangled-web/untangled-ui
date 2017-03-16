@@ -50,6 +50,8 @@ section: Components
   :--fullscreen & {
     background-color: var(--color-card-dark--primary);
   }
+
+  &:empty { display: none; }
 }
 
 

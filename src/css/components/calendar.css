@@ -59,6 +59,7 @@
     th,
     td { font-size: var(--fontSize--tiny); }
 
+    .c-calendar__week,
     th { text-transform: uppercase; }
   }
 

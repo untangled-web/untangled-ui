@@ -91,7 +91,7 @@
           move-to-next-state (fn [] (swap! state assoc :checked next-state))]
       (dom/div nil
         (e/ui-checkbox {:checked current-state :id "checkbox-5" :onClick #(move-to-next-state)})
-        (dom/label #js {:className "is-optional"} "With a label!"))))
+        (dom/label #js {:className "is-optional" :htmlFor "checkbox-5"} "With a label!"))))
   {:checked false}
   {:inspect-data true})
 

@@ -1,5 +1,9 @@
 @import 'untangled-ui';
 
+.com-rigsomelight-devcards-markdown > div > div:empty {
+  display: none;
+}
+
 .is-primary {
   color: var(--color-primary);
 }
