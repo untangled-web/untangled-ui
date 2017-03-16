@@ -1,33 +1,49 @@
-/*---
-section: Utilities
-title: Visibility
----*/
-
-/* DEPRECATED
-   .has-pulse */
-
-
 .s-healthcheck {
   [class] { outline: 5px solid lightgrey; }
 
-  [class*='__'] { outline: 5px solid grey; }
+  [class*="__"] { outline: 5px solid grey; }
 
-  [class*='--'] { outline: 5px solid darkgrey; }
+  [class*="--"] { outline: 5px solid darkgrey; }
 
-  [class^='o-'],
-  [class*=' o-'] { outline: 5px solid orange; }
+  [class^="o-"],
+  [class*=" o-"] { outline: 5px solid orange; }
 
-  [class^='c-'],
-  [class*=' c-'] { outline: 5px solid cyan; }
+  [class^="c-"],
+  [class*=" c-"] { outline: 5px solid cyan; }
 
-  [class*='@'] { outline: 5px solid rosybrown; }
+  [class*="@"] { outline: 5px solid rosybrown; }
 
-  [class^='_'] { outline: 5px solid red; }
+  [class^="_"] { outline: 5px solid red; }
 }
 
 
-.u-pulse,
-.has-pulse {
+.s-markuplint {
+  html:not([lang]),
+  html[lang=""] { outline: 5px solid lightgrey; }
+
+  :--control:not([id]),
+  label:not([for]) { outline: 5px solid grey; }
+
+  :--control:not([name]) { outline: 5px solid darkgrey; }
+
+  img:not([alt]) { outline: 5px solid orange; }
+
+  img[alt=""] { outline: 5px solid darkorange; }
+
+
+  button:empty,
+  a:empty { outline: 5px solid cyan; }
+
+  a:not([href]),
+  a[href="#"],
+  a[href=""],
+  a[href*="javascript:void(0)"] { outline: 5px solid rosybrown; }
+
+  *[style] { outline: 5px solid red; }
+}
+
+
+.u-pulse {
   animation: pulse 2s infinite;
   will-change: box-shadow;
 
@@ -36,7 +52,7 @@ title: Visibility
 
 
 .u-fade-out { @apply --fade-out; }
-.u-fade-out\@sm { @media (--sm) {@apply --fade-out;} }
+.u-fade-out\@sm { @media (--sm) { @apply --fade-out; } }
 .u-fade-in { @apply --fade-in; }
 .u-slide-out { @apply --slide-out; }
 .u-slide-out--inv { @apply --slide-out-inv; }
@@ -48,7 +64,7 @@ title: Visibility
 [hidden] { display: none !important; }
 
 
-[hidden][aria-hidden='false'],
+[hidden][aria-hidden="false"],
 .u-show\@reader {
   clip: rect(0 0 0 0);
   display: inherit;

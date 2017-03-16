@@ -6,41 +6,54 @@
 /**
  * CONTENTS
  * Badge..............Simple adaptable badges
+ * Button.............Visual style to represent actions in varying priority
+ * Button Group.......For when you can"t just have one button
  * Card...............Styles for many different kinds of cards
+ * Calendar...........A modal calendar
  * Checkbox...........Custom CSS and A11Y compatible checkbox
+ * Drawer.............Mobile panes for high-level navigation
+ * Dialog..............Lets you expose more things when you want
  * Radio..............Custom CSS and A11Y compatible radios
- * Dropdown...........Select and menu join forces to create a dropdown
  * Field..............A simple take on inputs for madlibs style editing
- * Icon...............Usefull classes for doing things with icons
+ * Icon...............Useful classes for doing things with icons
+ * Iconbar............Navigable set of icons
  * Input..............Simple input styles
  * Label..............Subjective indicators
- * List...............Simple way of organizing descendant information
  * Loader.............Animated controls to show progress
- * Menu...............Navigable controls
- * Message............Small text in varrying colors
+ * Menu...............Select and menu join forces to create a dropdown
+ * Message............Small text in varying colors
  * Notification.......Informative dialogs
- * Table..............Responsive tabbular data patterns
+ * Table..............Responsive tabular data patterns
+ * Tabs...............Navigable controls
+ * Toolbar............Great for housing actions and navigation
  * Tooltip............Short messages for documenting things
  */
 
-@import 'avatar';
-@import 'backdrop';
-@import 'badge';
-@import 'button';
-@import 'card';
-@import 'checkbox';
-@import 'radio';
-@import 'dropdown';
-@import 'expansion-panel';
-@import 'field';
-@import 'icon';
-@import 'input';
-@import 'label';
-@import 'list';
-@import 'loader';
-@import 'menu';
-@import 'message';
-@import 'notification';
-@import 'switch';
-@import 'table';
-@import 'tooltip';
+@import "avatar";
+@import "backdrop";
+@import "badge";
+@import "button";
+@import "button-group";
+@import "card";
+@import "calendar";
+@import "checkbox";
+@import "drawer";
+@import "radio";
+@import "expansion-panel";
+@import "field";
+@import "icon";
+@import "iconbar";
+@import "label";
+@import "list";
+@import "loader";
+@import "menu";
+@import "message";
+@import "dialog";
+@import "notification";
+@import "pagination";
+@import "progress";
+@import "switch";
+@import "table";
+@import "tabs";
+@import "toolbar";
+@import "tooltip";

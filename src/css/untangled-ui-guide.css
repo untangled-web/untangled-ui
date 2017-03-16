@@ -1,8 +1,16 @@
-/*---
-import: ../README.md
----*/
+@import 'untangled-ui';
 
-@import 'untangled-ui-stylekit';
+.com-rigsomelight-devcards-markdown > div > div:empty {
+  display: none;
+}
+
+.is-primary {
+  color: var(--color-primary);
+}
+
+.o-article {
+  margin-left: 1em;
+}
 
 /* stylelint-disable */
 .box-row { margin-bottom: 1rem; }
@@ -12,7 +20,7 @@ import: ../README.md
 .box--large,
 .box-nested,
 .box-row {
-  background-color: var(--blue-600);
+  background-color: var(--color-primary);
   color: var(--white);
   font-size: var(--fontSize--tiny);
   min-height: 2em;
@@ -22,9 +30,9 @@ import: ../README.md
   text-align: center;
 }
 
-.box-first { background-color: var(--blue-700); }
+.box-first { background-color: color(var(--black) a(25%)); }
 
-.box-nested { background-color: var(--blue-800); }
+.box-nested { background-color: color(var(--black) a(40%)); }
 
 .box--large { height: 5rem; }
 
@@ -35,10 +43,6 @@ import: ../README.md
 }
 
 .ui-example__description {
-  :--headings {
-    color: var(--grey-900);
-  }
-
   h1 {
     font-size: var(--fontSize--medium);
   }
@@ -55,14 +59,25 @@ import: ../README.md
     font-size: var(--fontSize--small);
     color: var(--grey-700);
     font-weight: 600;
+
+    .t-dark &,
+    .t-fullscreen & {
+      color: var(--grey-400);
+    }
   }
 
   code {
     background-color: var(--grey-50);
-    font-size: 16px;
-    border-radius: 2px;
+    font-size: var(--fontSize--semiNormal);
+    border-radius: var(--global-rounded);
     padding: .2em 0;
     margin: 0;
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      background-color: var(--black);
+    }
   }
 
   pre {
@@ -72,22 +87,67 @@ import: ../README.md
     padding: 1em;
     line-height: 1.5;
     margin-bottom: 1em;
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      background-color: var(--black);
+    }
   }
+}
+
+.ui-viewport-container {
+  display: inline-block;
+  margin: 0 1.5em;
+  position: relative;
+  width: 360px;
+}
+
+.ui-viewport {
+  display: inline-block;
+  box-shadow: 0 0 0 1px var(--grey-50);
+  overflow: hidden;
+
+}
+
+.ui-viewport--android {
+  border-bottom: 50px solid var(--black);
+  border-top: 20px solid var(--grey-400);
+}
+
+.ui-viewport--mobile {
+  height: 640px;
+  width: 360px;
+
 }
 
 .ui-example__figure {
   border: 3px solid var(--grey-50);
   padding: 1em 5px;
+  margin-top: 1em;
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    border-color: var(--black);
+  }
 }
 
 .ui-example__source {
   background-color: var(--grey-50);
-  font-size: 16px;
-  line-height: 22px;
-  margin-bottom: 1em;
+  font-size: var(--fontSize--semiNormal);
+  line-height: 18px;
+  margin-bottom: 2em;
   padding: 5px 0;
   overflow-x: scroll;
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen {
+    background-color: var(--black);
+  }
 }
+
 
 ._example-layout {
 
@@ -97,13 +157,13 @@ import: ../README.md
   .o-footer { padding: 1em; }
 
   .o-header {
-    background-color: var(--blue-900);
+    background-color: var(--color-primary);
     color: var(--white);
     position: static;
   }
 
   .o-nav {
-    background-color: var(--blue-50);
+    background-color: color(var(--color-primary) a(50%));
     flex: 1 6 20%;
     order: 1;
   }

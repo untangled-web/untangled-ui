@@ -1,16 +1,6 @@
-/*---
-title: Images
-section: Elements
----*/
-
-/* DEPRECATED
- * .o-image--small
- */
-
 img { max-width: 100%; }
 
-img.is-small,
-.o-image--small {
+img.is-small {
   max-height: 200px;
   max-width: 200px;
 }

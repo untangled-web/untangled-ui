@@ -1,0 +1,107 @@
+:root {
+  --height-progress: 4px;
+  --height-progress--dense: calc(var(--height-progress) - 2);
+}
+
+.c-progress:not(value) {
+  position: relative;
+
+  &::-webkit-progress-bar { background-color: var(--color-progress--indeterminate); }
+
+  & .c-progress__bar {
+    /* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
+    bottom: 0;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    transition: width .2s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  & .c-progress__bar:first-child,
+  & .c-progress__bar:last-child {
+    animation-duration: .2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    background-color: var(--color-progress);
+  }
+
+  & .c-progress__bar:first-child {
+    animation-name: indeterminate1;
+    left: 0;
+    z-index: 1;
+  }
+}
+
+/* Styling the determinate progress element */
+
+.c-progress {
+  /* Add dimensions */
+  height: var(--height-progress);
+  width: 100%;
+
+  &[value] {
+    appearance: none; /* Get rid of the default appearance */
+    background-color: whiteSmoke; /* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
+    border: none; /* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+    color: var(--color-progress); /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+    margin: 0 0 1.5em;
+    position: relative;
+  }
+}
+
+.c-progress--dense { height: var(--height-progress--dense); }
+
+.c-progress[value]::-webkit-progress-bar { background-color: var(--color-progress--secondary); }
+
+.c-progress[value]::-webkit-progress-value { background-color: var(--color-progress); }
+
+/* Fallback technique styles */
+.c-progress__bar {
+  background-color: whiteSmoke;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+
+  /* Dimensions should be similar to the parent progress element. */
+  height: 20px;
+  width: 100%;
+}
+
+.c-progress__bar span {
+  background-color: royalblue;
+  display: block;
+  text-indent: -9999px;
+}
+
+
+@keyframes indeterminate1 {
+  0% {
+    left: 0;
+    width: 0;
+  }
+
+  50% {
+    left: 25%;
+    width: 75%;
+  }
+
+  75% {
+    left: 100%;
+    width: 0;
+  }
+}
+
+@keyframes indeterminate2 {
+  0%, 50% {
+    left: 0;
+    width: 0;
+  }
+
+  75% {
+    left: 0;
+    width: 25%;
+  }
+
+  100% {
+    left: 100;
+    width: 0;
+  }
+}

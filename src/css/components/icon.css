@@ -1,14 +1,4 @@
-/*---
-title: Icon
-section: Components
----*/
-
-/* --icon-dimensions - A temporary hack that can be removed once our supported browser target has native support for custom properties. Usually you just define a new property value and the relevant properties update with the new value. */
-
 :root {
-  --color-icon: currentColor;
-  --color-icon--passive: var(--grey-200);
-  --color-icon--active: var(--blue-400);
   --margin-button__icon: 7px;
   --opacity-button--disabled: .35;
   --size-button__icon: 20px;
@@ -21,11 +11,15 @@ section: Components
   --size-icon: var(--size-icon--normal);
 
   --icon-dimensions: {
-    height: initial !important;
-    max-height: var(--size-icon) !important;
-    max-width: var(--size-icon) !important;
-    width: 100% !important;
+    height: var(--size-icon) !important;
+    width: var(--size-icon) !important;
   };
+}
+
+.c-icon-column {
+  @apply --middle;
+  vertical-align: middle;
+  width: 52px;
 }
 
 
@@ -44,21 +38,15 @@ section: Components
 
   &:--disabled { opacity: var(--opacity-button--disabled); }
 
-  &.is-active { fill: var(--color-icon--active); }
+  &.is-active {
+     color: var(--color-icon--active) !important;
+     fill: var(--color-icon--active) !important;
+   }
 
-  &.is-passive { fill: var(--color-icon--passive); }
-
-  &.is-selectable {
-    cursor: pointer;
-    padding: 4px;
-    transition: all var(--global-duration) ease;
-
-    &:hover {
-      background-color: var(--color-icon);
-      border-radius: var(--global-rounded);
-      fill: var(--white);
-    }
-  }
+  &.is-passive {
+     color: var(--color-icon--passive) !important;
+     fill: var(--color-icon--passive) !important;
+   }
 
   .c-button & {
     height: var(--size-button__icon);
@@ -75,6 +63,13 @@ section: Components
   }
 }
 
+
+.c-icon--framed {
+  margin: 6px 8px;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 8px;
+}
 
 .c-icon--small {
   --size-icon: var(--size-icon--small);

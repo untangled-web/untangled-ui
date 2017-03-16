@@ -1,38 +1,33 @@
-/*---
-title: Button Groups
-section: Objects
----*/
-
-
 .o-button-group,
 .o-button-group--toggle {
   @apply --text-middle;
-  background-color: var(--grey-50);
-  border-radius: 5px;
-  box-shadow: var(--shadow-3);
+  background-color: var(--color-button-group);
+  border-radius: 2px;
+  box-shadow: var(--shadow-2);
   box-sizing: border-box;
   display: inline-flex;
   flex: 0 1 auto;
   flex-flow: row wrap;
   height: auto;
   line-height: 46px;
-  margin: 6px 8px;
+  margin: 6px var(--frame-quarter);
   overflow: hidden;
-
-@media (--md-up) { margin-bottom: 0; }
 
   & .c-button {
     margin: 0;
 
     &::after { box-shadow: none; }
   }
-
-  .c-toolbar & { margin-bottom: 0 !important; }
 }
 
 .c-button--postfix {
   border-radius: 0;
 
-
-  &:last-child { border-radius: 0 var(--global-rounded) var(--global-rounded) 0; }
+  &:last-child {
+     border-radius:
+       0
+       var(--global-rounded)
+       var(--global-rounded)
+       0;
+  }
 }

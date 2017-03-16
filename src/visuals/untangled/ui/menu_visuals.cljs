@@ -12,6 +12,7 @@
 ; test
 
 (def menu-with-item (menu :a "Label" [(menu-item :ia "Item Label")]))
+(def menu-with-icon (menu :a "Label" [(menu-item :ia "Item Label")]))
 (def open-menu (m/set-open-impl menu-with-item true))
 (def menu-with-selection (m/select-impl menu-with-item :ia))
 (def open-menu-with-selection (m/set-open-impl menu-with-selection true))
@@ -23,3 +24,5 @@
 (defcard menu-open (m/ui-menu open-menu))
 
 (defcard menu-open-with-selection (m/ui-menu open-menu-with-selection))
+
+(defcard menu-icon (m/ui-menu menu-with-icon :style :icon))

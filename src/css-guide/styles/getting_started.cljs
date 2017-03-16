@@ -7,7 +7,7 @@
             [om.dom :as dom]))
 
 (defarticle intro
-"# What is this?
+"# Untangled UI
 
 A styleguide of user interface patterns for web applications and websites built with a custom PostCSS preprocessor
 rendered with ClojureScript.
@@ -36,7 +36,7 @@ utilities and produces a stylesheet that has a healthy inclining specificity gra
 
 # Getting Started
 
-Stylekit comes in a few different flavors to fit your needs. Please choose a flavor and follow the guide to get started.
+Untangled UI comes in a few different flavors to fit your needs. Please choose a flavor and follow the guide to get started.
 
 ## Components
 
@@ -97,22 +97,37 @@ the easiest way to modify and extend the styles.
   /* Standardized treatments */
   --global-duration: .1s;
   --global-margin: 8px;
-  --global-rounded: 4px;
-  --global-z-index: 100;
-  ```
+  --global-rounded: 2px;
+  --global-radial: 100px;
+  --global-circular: 50%;
 
+  /* z-index scale */
+  --zIndex-switch: 1;
+  --zIndex-sidebar: 2;
+  --zIndex-search: 2;
+  --zIndex-search--scrolled: calc(var(--zIndex-search) + 1);
+  --zIndex-card: 2;
+  --zIndex-card--pickedUp: calc(var(--zIndex-card) * 4);
+  --zIndex-buttonRaised: 2;
+  --zIndex-buttonRaised--pressed: calc(var(--zIndex-buttonRaised) * 4);
+  --zIndex-loader: 3;
+  --zIndex-appBar: 4;
+  --zIndex-snackbar: 6;
+  --zIndex-buttonFloat: 6;
+  --zIndex-buttonFloat--pressed: calc(var(--zIndex-buttonFloat) * 2);
+  --zIndex-bottomNav: 8;
+  --zIndex-menu: 8;
+  --zIndex-subMenu: calc(var(--zIndex-menu) + 1);
+  --zIndex-backdrop: 15;
+  --zIndex-modal: 16;
+  --zIndex-drawer: 16;
+  --zIndex-picker: 24;
+  --zIndex-dialog: 24;
 
-  ### Size
-
-  ```css
-  --global-duration: .1s;
-  --global-margin: 8px;
-  --global-rounded: 4px;
-  --global-line-height: 32px;
-  --global-z-index: 100;
+  /* Framed sizes */
   --frame-quarter: calc(var(--global-line-height) / 4); /* 8px */
   --frame-third: calc(var(--global-line-height) / 3); /* 10.6px */
-  --frame-half: calc(var(--global-line-height) / 2); /* 16px */
+  --frame-half: calc(var(--global-line-height) / 2); /* 16px or 1em */
   --frame: var(--global-line-height); /* 32px */
   --frame-double: calc(var(--global-line-height) * 2); /* 64px */
   --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
@@ -139,7 +154,7 @@ the easiest way to modify and extend the styles.
 
 (def sections
   (vec [;; NOTE: :examples is a list of example names, rendered in order given
-        {:id :settings-config :title "What is Stylekit?" :examples [intro]}
+        {:id :settings-config :title "What is this?" :examples [intro]}
         {:id :settings-config :title "Config" :examples [settings-config]}
         {:id :settings-global :title "Global" :examples [settings-global]}
         ]))

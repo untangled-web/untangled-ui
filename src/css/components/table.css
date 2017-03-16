@@ -1,51 +1,68 @@
-/*---
-title: Tables
-section: Components
----*/
-
-:root {
-  --borderColor-table: var(--grey-300);
-}
-
 .c-table {
-  border-bottom: 1px solid var(--borderColor-table);
   border-collapse: collapse;
   border-spacing: 0;
-  display: table;
   empty-cells: show;
   max-width: 100%;
   width: 100%;
 
+  caption {
+    text-align: left;
+    font-size: var(--fontSize--normalPlus);
+    height: 64px;
+    line-height: 64px;
+    padding: 0 24px;
+  }
+
   tbody {
-    tr:not(:first-child) {
-      border-top: 1px solid var(--borderColor-table);
-
-      th,
-      td { font-weight: normal; }
-    }
-
-    tr td:first-child {
-      @media (--md-up) { max-width: 12em; }
-    }
-
-    tr:first-child {
-      border-bottom: 1px solid var(--black);
-      border-top: 1px solid var(--black);
-
-      th,
-      td { font-weight: bold; }
-    }
-
-    th,
-    td {
-      border-right: 1px solid var(--borderColor-table);
-      padding: 0 5px;
-
-      @media (--md-up) { text-align: right; }
-
-      &:first-child { text-align: left; }
+    tr {
+      border-top: 1px solid var(--color-table);
     }
   }
+
+  th {
+    height: 56px;
+    font-size: var(--fontSize--tiny);
+    color: color(var(--black) a(.54));
+
+    .t-dark &,
+    .t-fullscreen &,
+    :--fullscreen & {
+      color: color(var(--white) a(.54));
+    }
+  }
+
+
+  tr {
+    transition: background-color var(--global-duration) ease-in-out;
+
+    &:hover {
+      background-color: color(var(--black) a(.05));
+     }
+  }
+
+  td {
+    height: 48px;
+
+    &:first-child {
+      @media (--md-up) { max-width: 12em; }
+    }
+  }
+
+
+  th,
+  td {
+    &:first-child {
+      text-align: left;
+      padding-left: 24px;
+    }
+
+    &:last-child { padding-right: 24px; }
+
+    &:not(:first-child):not(:last-child) { padding: 0 56px 0 0; }
+
+     &:not(:first-child) { text-align: right; }
+  }
+
 
   &__label {
     color: var(--grey-700);
@@ -58,7 +75,12 @@ section: Components
   &__content { font-weight: normal; }
 }
 
+/* Stacked */
+
+.c-table--stacked,
 .c-table--stack {
+  clear: both;
+
   tr {
     clear: both;
     display: table-row;
@@ -70,7 +92,9 @@ section: Components
   td {
     border-right: none !important;
     display: block;
-    text-align: left;
+    height: 32px;
+    text-align: left !important;
+    padding: .5em .5rem !important;
 
     @media (--md-up) {
       display: table-cell;
@@ -98,12 +122,22 @@ section: Components
 
   .c-table__label {
     display: inline-block;
+    padding: 0 .5em 0 0;
+    width: 30%;
 
     @media (--md-up) { display: none; }
   }
 
-  .c-table__content { font-size: var(--fontSize--semiMedium); }
+  .c-table__content {
+    @media (--sm) {
+      display: inline-block;
+      max-width: 67%;
+    }
+  }
 }
+
+/* Toggle */
+/* This requires a simple dropdown menu to toggle column visibility above the table */
 
 .c-table--toggle {
   .c-table__priority-6,
@@ -137,3 +171,19 @@ section: Components
     @media (min-width: 70em) { display: table-cell; }
   }
 }
+
+/* Swipe */
+/* This requires the first column to persist */
+/* Also you will need two arrow buttons above the table to navigate left and right */
+/* This should manage column visibility using `.u-hide` classes */
+
+.c-table--swipe {
+  .c-table--cell-persist {
+    border-right: 2px solid var(--grey-200);
+  }
+}
+
+.c-table--fix-persist {
+  table-layout: fixed;
+}
+

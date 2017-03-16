@@ -84,6 +84,8 @@
 ;; name of the thing being created. These can be used in InitialAppState to
 ;; all your user's to easily construct these without having to think about the map structure, enabling better
 ;; local reasoning.
+;; TODO(DEVELOPER): Add :menu/position with #{:bottom-left :bottom-right :top-left :top-right} options. Additionally,
+;; we should add a `.u-end` class to the `.has-menu` parent div if position is right aligned.
 (defn menu
   "Build a state tree for a menu to use in initial app state. The id of the menu should be globally unique."
   [id label items]
@@ -105,15 +107,27 @@
   (render [this]
     (let [{:keys [menu/id menu/label menu/items menu/open? menu/selected-item]} (om/props this)
           onSelect       (or (om/get-computed this :onSelect) identity)
-          selected-item  (find-first :menu-item/item-id selected-item items)
+          menu-style     (om/get-computed this :style)
+          selected-id    selected-item
+          selected-item  (find-first :menu-item/item-id selected-id items)
           selected-label (get selected-item :menu-item/label (tr-unsafe label))
-          menu-class     (str "c-dropdown__menu" (if open? " is-active" ""))]
-      (dom/div #js {:key (str "menu-" (name id)) :className "c-dropdown"}
-        (dom/button #js {:onClick   (fn [evt]
+          menu-class     (str "c-menu" (if open? " is-active" ""))]
+      (dom/div #js {:key (str "menu-" (name id)) :className "has-menu"}
+        (if (= menu-style :icon)
+          (dom/button #js {:className "c-button c-button--icon"
+                           :type      "button"
+                           :title     (tr-unsafe selected-label)
+                           :onClick (fn [evt]
                                       (.stopPropagation evt)
                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
-                                      false)
-                         :className "c-dropdown__select js-dropdown-toggle"} (tr-unsafe selected-label))
+                                      false)} (icon :more_vert))
+          (dom/button #js {:onClick   (fn [evt]
+                                       (.stopPropagation evt)
+                                       (om/transact! this `[(close-all {}) (set-open ~{:id id :open? (not open?)}) :menu/open?])
+                                       false)
+                           :type      "button"
+                          :className  "c-button"} (tr-unsafe selected-label)))
+
         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
           (map (fn [{:keys [menu-item/item-id menu-item/label]}]
                  (dom/li #js {:key     (str "menu-item-" (name item-id))
@@ -122,7 +136,10 @@
                                          (om/transact! this `[(close-all {}) (select ~{:id id :item-id item-id}) :menu/open?])
                                          (when onSelect (onSelect item-id))
                                          false)}
-                   (dom/button #js {:className "c-dropdown__link"} label))) items))))))
+                   (dom/button #js {:type      "button"
+                                    :className (str "c-menu__item"
+                                                 (when (= item-id selected-id) " is-active"))} label))) items))))))
+
 
 ;; Make sure you either render a key in your DOM or supply keyfn
 ;; It is a good idea to include a docstring here to help used understand things about how to use the component.
@@ -137,4 +154,6 @@
 
     "
     [props & {:keys [style color onSelect] :or {style :normal color :primary}}]
-    (ui-menu-factory (om/computed props {:onSelect onSelect}))))
+    (ui-menu-factory (om/computed props {:onSelect onSelect :style style}))))
+
+

@@ -12,7 +12,6 @@ import runSequence from 'run-sequence';
 import autoprefixer from 'autoprefixer';
 import mqpacker from 'css-mqpacker';
 import cssnano from 'cssnano';
-import stylelint from 'stylelint';
 import postcssImport from 'postcss-import';
 import postcssEach from 'postcss-each';
 import postcssApply from 'postcss-apply';
@@ -32,19 +31,31 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 const $ = gulpLoadPlugins();
 const AUTOPREFIXER_BROWSERS = ['last 2 versions'];
 
+gulp.task('lint-css', function lintCSS() {
+  const gulpStylelint = require('gulp-stylelint');
+  return gulp
+    .src('src/css/**/*.css')
+    .pipe(gulpStylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ]
+    }));
+});
+
 
 // Compile everything and test
 gulp.task('styles', () => {
   const PROCESSORS = [
     postcssImport({ glob: true }),
-    stylelint,
     postcssEach,
     postcssApply,
     postcssSimpleVars,
     postcssCustomMedia,
     postcssCustomSelectors,
     postcssNested,
-    postcssCssVariables,
+    postcssCssVariables({
+      preserve: 'computed'
+    }),
     postcssSelectorNot,
     postcssCalc,
     postcssColor,

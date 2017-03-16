@@ -52,6 +52,15 @@ section: Utilities
 .u-break-word { @apply --break-word; }
 
 
+.u-helper-text {
+  @apply --top;
+  border-left: 2px solid var(--grey-200);
+  font-size: var(--fontSize--tiny);
+  line-height: 1rem;
+  padding: 3px 0 1em 1rem;
+}
+
+
 .u-text-overlay {
   position: relative !important;
 
@@ -85,57 +94,6 @@ section: Utilities
 
     img { filter: blur(1px) brightness(80%) grayscale(80%); }
 
-  }
-}
-
-
-.is-positive {
-  color: var(--color-positive) !important;
-  fill: var(--color-positive) !important;
-
-  .c-icon {
-    color: currentColor !important;
-    fill: currentColor !important;
-  }
-
-  :--fullscreen & {
-    color: green !important;
-    fill: green !important;
-  }
-}
-
-
-.is-informative {
-  color: var(--color-informative) !important;
-  fill: var(--color-informative) !important;
-}
-
-
-.is-neutral {
-  color: var(--grey-300) !important;
-  fill: var(--grey-300) !important;
-}
-
-
-.is-live {
-  color: var(--color-live) !important;
-  fill: var(--color-live) !important;
-}
-
-
-.is-alterable {
-  color: var(--color-alterable) !important;
-  fill: var(--color-alterable) !important;
-}
-
-
-.is-negative {
-  color: var(--color-negative) !important;
-  fill: var(--color-negative) !important;
-
-  :--fullscreen & {
-    color: red !important;
-    fill: red !important;
   }
 }
 

@@ -10,6 +10,7 @@
        [hickory.core :as hc]
        [untangled.client.mutations :as m]
        [untangled.client.core :as uc]
+       [untangled.ui.elements :as e]
        [om.next :as om :refer [defui]]
        [om.dom :as dom]
        [devcards.util.markdown :as md]
@@ -98,15 +99,71 @@
                 (om.dom/div (cljs.core/clj->js {:className "u-row"})
                   (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12"})
                     (om.dom/div (cljs.core/clj->js {:className "ui-example"})
-                      (~symfn this#)
-                      #_(let [iframe#  (.createElement js/document "IFRAME")
-                              example# (.innerHTML iframe# (om.dom/div nil (~symfn this#)))]
-                          (.appendChild example# iframe#))))
-                  ))))
+                      (~symfn this#)))))))
           (def ~sym {:name          ~(name sym)
                      :documentation ~doc
                      :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
                      :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
+
+
+#?(:clj
+   (defmacro defviewport
+     "Define a DOM example. The body may reference `this` as if in the body of
+     an Om component `(render [this] ...)`"
+     [sym doc body]
+     (let [basename (str sym "-")
+           root     (gensym basename)
+           symfn    (symbol (str (name sym) "-code"))]
+       `(do
+          (defn ~symfn [~'this] ~body)
+          (om.next/defui ~root
+            ~'Object
+            (~'render [this#]
+              (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
+                 (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
+                   (e/ui-iframe {:height "570" :width "100%"}
+                     (om.dom/div nil
+                       (om.dom/link (cljs.core/clj->js {:rel "stylesheet" :href "css/untangled-ui.css"}))
+                       (~symfn this#))))
+                 (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
+                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                 )
+              ;; TODO Figure out why the link isn't loading with this code
+              #_(untangled.ui.elements/ui-iframe {:width "360px" :height "640px"}
+                (om.dom/span (cljs.core/clj->js {:className "ui-viewport-container"})
+                 (om.dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+                 (om.dom/div (cljs.core/clj->js {:className "ui-viewport ui-viewport--mobile ui-viewport--android"})
+                   (~symfn this#))
+                 (om.dom/div (cljs.core/clj->js {:className "c-message c-message--neutral u-leader--quarter"})
+                   (om.dom/div nil (devcards.core/markdown->react ~doc)))
+                 ))))
+          (def ~sym {:name          ~(name sym)
+                     :documentation ~doc
+                     :search-terms  ~(str/join " " (map str/lower-case [doc (name sym)]))
+                     :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
+
+
+#?(:clj
+   (defmacro defsnippet
+     "Define a DOM example. The body may reference `this` as if in the body of
+     an Om component `(render [this] ...)`"
+     [sym body]
+     (let [basename (str sym "-")
+           root     (gensym basename)
+           symfn    (symbol (str (name sym) "-code"))]
+       `(do
+          (defn ~symfn [~'this] ~body)
+          (om.next/defui ~root
+            ~'Object
+            (~'render [this#]
+              (om.dom/div (cljs.core/clj->js {:className "ui-example"})
+
+                (om.dom/div (cljs.core/clj->js {:className "u-row"})
+                  (om.dom/div (cljs.core/clj->js {:className "ui-example__source u-column--12"})
+                    (styles.util/source->react ~symfn ~body))))))
+          (def ~sym {:name          ~(name sym)
+                     :renderer      (om.next/factory ~root {:keyfn (fn [] ~(name root))})})))))
+
 
 (def attr-renames {
                    :class        :className
@@ -183,13 +240,13 @@
      "Render a section with examples."
      [id sections]
      (let [{:keys [title documentation examples]} (first (filter #(= id (:id %)) sections))]
-       (dom/div nil
+       (dom/span nil
          (dom/a #js {:id id}
            (dom/h1 nil title))
          (when documentation
            (dom/div #js {:className "ui-example__description"} (dc/markdown->react documentation)))
          (map-indexed (fn [idx render]
-                        (dom/div #js {:key (str "section-" idx)}
+                        (dom/span #js {:key (str "section-" idx)}
                           (render))) examples)))))
 
 #?(:cljs

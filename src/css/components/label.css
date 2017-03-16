@@ -5,133 +5,54 @@ section: Components
 
 :root {
   --fontSize-label: var(--fontSize--tiny);
-  --padding-label: 2px 3px 1px;
-  --margin-label--small: 6px;
-  --margin-label--large: 18px;
-  --margin-label--nested: 0 0 var(--margin-label--small) var(--margin-label--large);
-  --margin-label: 0 var(--margin-label--large) 0 0;
-  --size-label-icon: 15px;
-  --offset-label-icon: -3px;
-  --label-inline: {
-    display: inline-block;
-    font-size: var(--fontSize-label);
-    line-height: 1;
-    margin: var(--margin-label);
-    max-width: 100%;
-    outline: 0;
-    padding: var(--padding-label);
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    white-space: nowrap;
-  };
+  --padding-label: 0 3px;
+  --margin-label: 0 .5rem;
+  --size-label: 16px;
+  --size-label-icon: calc(var(--size-label) - 1);
 }
 
 .c-label {
-  @apply --label-inline;
-  background-color: var(--color-label-background);
-  border-radius: calc(var(--global-rounded) / 2);
-  color: var(--color-label);
+  background-color: var(--color-label--primary);
+  border-radius: var(--global-rounded);
+  color: var(--color-label--secondary);
+  display: inline-block;
+  font-size: var(--fontSize-label);
+  line-height: var(--size-label);
+  margin: var(--margin-label);
+  max-width: 100%;
+  outline: 0;
   overflow: hidden;
+  padding: var(--padding-label);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
   text-transform: uppercase;
   user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
 
   &:empty { display: none; }
 
-  :--fullscreen & {
-    --fontSize-label: 1rem;
-    font-size: var(--fontSize-label);
-  }
-
-  & .c-icon {
-    fill: var(--color-label-icon);
+  & > .c-icon {
     height: var(--size-label-icon);
-    margin-top: var(--offset-label-icon);
+    margin: -3px -1px 0 -1px;
     width: var(--size-label-icon);
   }
 
-  .u-end & { margin: var(--margin-label--nested); }
-
-  .t-dark & {
-    background-color: transparent;
-    color: var(--white);
-  }
-
-  .o-input & {
-    /* TODO Add vars to these units */
-    height: 16px;
-    margin: calc((30px - 16px) / 2) 3px;
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    color: var(--color-label-dark--secondary);
   }
 }
 
 
-  .c-label__actions {
-    background-color: var(--blue-50);
-    border-radius: var(--global-rounded);
-    display: inline-block;
-    left: 60%;
-    margin-bottom: 9px;
-    min-height: 23px;
-    opacity: 0;
-    padding: 0 6px 0 calc(6px + 4px);
-    position: absolute;
-    transition: opacity var(--global-duration) ease, left var(--global-duration) ease;
-    white-space: nowrap;
-    z-index: 1;
-
-    .c-icon {
-      fill: var(--blue-900);
-    }
-
-    .c-icon:not(:last-child) {
-      margin-right: 4px;
-    }
-
-    &:hover,
-    .c-label:hover + & {
-      left: calc(100% - 24px - 4px);
-      opacity: 1;
-    }
-  }
-
-
-.c-label--large {
-  font-size: 14px;
-  margin-bottom: 9px;
-  min-height: 23px;
-  padding: 0 6px;
-  text-transform: initial;
-  z-index: 2;
+.c-label--primary {
+  background-color: var(--color-label-alt--primary);
+  color: var(--color-label-alt--secondary);
 }
 
-
-/* DEPRECATED
- * Spectrum-based color classes
- * Labels should be unopinionated to content and culture. */
-
-.c-label--green,
-.c-label--positive {
-  background-color: var(--color-label-green-background);
-  color: var(--white);
-}
-.c-label--blue,
-.c-label--informative { background-color: var(--color-label-blue-background); }
-.c-label--magenta,
-.c-label--informative-alt {
-  background-color: var(--color-label-magenta-background);
-  color: var(--white);
-}
-.c-label--grey,
-.c-label--neutral { background-color: var(--color-label-grey-background); }
-
-.c-label--yellow,
-.c-label--gold,
-.c-label--live { background-color: var(--color-label-gold-background); }
-.c-label--orange,
-.c-label--alterable { background-color: var(--color-label-orange-background); }
-.c-label--red,
-.c-label--negative {
-  background-color: var(--color-label-red-background);
-  color: var(--white);
+.c-label--accent {
+  background-color: var(--color-label-accent--primary);
+  color: var(--color-label-accent--secondary);
 }

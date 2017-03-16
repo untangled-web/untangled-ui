@@ -1,96 +1,86 @@
-/*---
-title: Radio
-section: Components
----*/
-
 :root {
-  --backgroundColor-radio: var(--grey-200);
-  --backgroundColor-radio--checked: var(--green-300);
-  --backgroundColor-radio--informative: transparent;
-  --backgroundColor-radio--informative--checked: var(--blue-400);
-  --borderColor-radio: var(--grey-600);
-  --borderColor-radio--checked: var(--green-700);
-  --borderColor-radio--informative: var(--grey-600);
-  --borderColor-radio--informative--checked: var(--blue-400);
+  --counter-size: 10px;
+  --counter-offset: 5px;
 }
 
-.c-radio { @apply --hide-a11y; }
+.c-radio {
+  @apply --hide-a11y;
 
-.c-radio:checked + label {
-  &::before {
-    background-color: var(--backgroundColor-radio--checked);
-    border: 2px solid var(--borderColor-radio--checked);
-    transition: all var(--global-duration) ease;
+  &:checked + label {
+    &::before {
+     background-color: var(--color-radio--secondary--checked);
+     border: 2px solid var(--color-radio--checked);
+     transition: all var(--global-duration) ease;
+
+      .t-dark &,
+      .t-fullscreen &,
+      :--fullscreen & {
+        background-color: var(--color-radio-dark--secondary--checked);
+      }
+    }
+
+    &::after { @apply --fade-in; }
   }
-  &::after { @apply --fade-in; }
-}
 
-.c-radio + label {
-  cursor: pointer;
-  display: inline-block;
-  line-height: 19px;
-  margin-right: 10px;
-  padding-left: 19px;
-  position: relative;
-
-  &::before {
-    background-color: var(--backgroundColor-radio);
-    border: 2px solid var(--borderColor-radio);
-    border-radius: 50px;
-    content: '';
+  & + label {
+    cursor: pointer;
     display: inline-block;
-    float: left;
-    font-size: var(--fontSize--small);
-    height: 12px;
-    left: 0;
-    margin-bottom: 0;
-    margin-right: 8px;
-    position: absolute;
-    top: 4px;
-    width: 12px;
+    padding-left: 17px;
+    position: relative;
+    z-index: 1;
+
+    &::before {
+      background-color: var(--color-radio--secondary);
+      border: 2px solid var(--color-radio--primary);
+      border-radius: 50px;
+      content: "";
+      display: inline-block;
+      float: left;
+      font-size: var(--fontSize--small);
+      height: 20px;
+      left: 0;
+      margin-bottom: 0;
+      margin-right: 8px;
+      position: absolute;
+      top: 0;
+      width: 20px;
+
+      .t-dark &,
+      .t-fullscreen &,
+      :--fullscreen & {
+        background-color: var(--color-radio-dark--secondary);
+      }
+   }
+
+    &::after {
+      @apply --fade-out;
+      background-color: var(--color-radio--checked);
+      border-radius: 50px;
+      content: "";
+      height: var(--counter-size);
+      left: var(--counter-offset);
+      position: absolute;
+      top: var(--counter-offset);
+      width: var(--counter-size);
+      z-index: 5;
+    }
   }
 }
 
-.c-radio:focus + label,
-.c-radio + label:active,
-.c-radio:checked + label:active {
-  box-shadow: var(--toggle-focus-shadow);
-}
 
+.c-radio:focus + label::before,
+.c-radio + label:active::before,
+.c-radio:checked + label:active::before { box-shadow: var(--toggle-focus-shadow); }
 
-/* Alternate Blue */
+.c-radio:focus { box-shadow: var(--toggle-focus-shadow); }
 
-.c-radio--informative + label {
-  padding-left: 27px;
+.c-radio:disabled {
+  &,
+  & + label { user-select: none; }
 
-  &::before {
-    background-color: var(--backgroundColor-radio--informative);
-    border: 1px solid var(--borderColor-radio--informative);
-    border-radius: 50px;
-    content: '';
-    height: 20px;
-    top: 0;
-    width: 20px;
-  }
-
-  &::after {
-    @apply --fade-out;
-    background-color: var(--backgroundColor-radio--informative--checked);
-    border-radius: 50px;
-    content: '';
-    height: 6px;
-    left: 7px;
-    position: absolute;
-    top: 7px;
-    width: 6px;
-    z-index: 5;
-  }
-}
-
-.c-radio--informative:checked + label {
-  &::before {
-    background-color: transparent;
-    border: 1px solid var(--borderColor-radio--informative--checked);
+  & + label {
+    &::before { border-color: var(--color-radio--disabled); }
+    &::after { background-color: var(--color-radio--disabled); }
   }
 }
 
@@ -109,3 +99,56 @@ section: Components
     position: relative;
   }
 }
+
+
+.c-radio--expanded {
+  & + label {
+    margin-right: .5em;
+    padding-left: 27px;
+  }
+}
+
+
+/* Pipes
+ * This is a new utility that should be further developed
+ * for responsiveness and better box model handling.
+ */
+
+.has-xpipe {
+  overflow: hidden;
+  padding-bottom: 3px;
+  position: relative;
+
+  &::before,
+  &::after {
+    background-color: var(--grey-200);
+    content: "";
+    height: 6px;
+    position: absolute;
+    width: 50%;
+    z-index: 0;
+
+    .u-bottom & { bottom: 10px; }
+  }
+
+  &::before { left: 0; }
+
+  &::after { right: 0; }
+}
+
+.has-start-pipe,
+.has-end-pipe {
+  .c-icon {
+    background-color: var(--white);
+    border-radius: 50px;
+    position: relative;
+    top: 1px;
+    z-index: 1;
+  }
+}
+
+.has-start-pipe::before { display: none; }
+
+.has-end-pipe::after { display: none; }
+
+

@@ -1,7 +1,8 @@
 (ns styles.style
   (:require [om.next :as om :refer-macros [defui]]
-            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview]]
+            [styles.util :as util :refer [to-cljs] :refer-macros [source->react defexample defarticle defview defsnippet]]
             [om.dom :as dom]
+            [untangled.icons :as icons]
             [clojure.string :as str]))
 
 (def digit-values {"0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5
@@ -46,10 +47,11 @@
 
 
 (defn color-block [color name hue-name]
-  (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
-  <span class='swatch__name'>--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-") )  name "</span>
-  <span class='swatch__code'>" color "</span>
-  </div>"))
+  (let [color-var-name (str "--" (when-not (str/blank? hue-name) (str (str/lower-case hue-name) "-")) name)]
+    (str "<div class='swatch' style='" (if (is-dark? color) "color: #fff;" "color: #111;") "  background-color: var("color-var-name");'>
+  <span class='swatch__name'>"color-var-name"</span>
+  <span class='swatch__code'>"color"</span>
+  </div>")))
 
 
 (defn color-palette [hue-name color]
@@ -61,96 +63,69 @@
     "</div>"))
 
 
-(defn color-theme-block [color name hue-name]
-  (str "<div class='swatch' style='"(when (is-dark? color) "color: #fff;")"  background-color: " color ";'>
+(defn color-theme-block [color name hue-name & {:keys [color-value]}]
+  (str "<div class='swatch' style='"(if (is-dark? color) "color: #fff;" "color: #111;")"  background-color: " color ";'>
   <span class='swatch__name'>" name "</span>
-  <span class='swatch__code'>" color "</span>
+  <span class='swatch__code'>" color-value "</span>
   </div>"))
 
 
 (defn color-theme [theme-name color]
   (str "<div class='ui-palette ui-palette--theme u-column--12 u-column--4@md'>
   <h6>" theme-name"</h6>"
-    (str/join "\n" (map (fn [[k v]]
-                          (color-theme-block v (name k) theme-name))
+    (str/join "\n" (map (fn [[k v c]]
+                          (color-theme-block v (name k) theme-name :color-value (if c c v)))
                      color))
     "</div>"))
 
 (defn get-color [hue weight]
   (val (nth hue weight)))
 
+(def green [[:50  "#def6f3"]
+            [:100 "#b6e7de"]
+            [:200 "#94d7ca"]
+            [:300 "#75c6b7"]
+            [:400 "#5ab4a3"]
+            [:500 "#42a291"]
+            [:600 "#2e9080"]
+            [:700 "#1e7f6f"]
+            [:800 "#106c5e"]
+            [:900 "#0a5a4e"]])
 
-(def blue [[:50 "#f0faff"]
-           [:100 "#cbdfee"]
-           [:200 "#a6c6dd"]
-           [:300 "#81adcc"]
-           [:400 "#5795bb"]
-           [:500 "#1c7dab"]
-           [:600 "#146590"]
-           [:700 "#0d4d76"]
-           [:800 "#05375c"]
-           [:900 "#0d2c54"]])
+(def blue [[:50  "#eaecf8"]
+           [:100 "#d2d4f0"]
+           [:200 "#b9bce7"]
+           [:300 "#a2a4dc"]
+           [:400 "#8b8ed0"]
+           [:500 "#7477c3"]
+           [:600 "#5e63b4"]
+           [:700 "#474ea4"]
+           [:800 "#303a93"]
+           [:900 "#152681"]])
 
-(def orange [[:50 "#fff3e0"]
-             [:100 "#ffe5c8"]
-             [:200 "#ffd5af"]
-             [:300 "#ffc595"]
-             [:400 "#ffb67c"]
-             [:500 "#fea661"]
-             [:600 "#fa9748"]
-             [:700 "#f5872c"]
-             [:800 "#f07700"]
-             [:900 "#cc5000"]])
+(def red [[:50 "#f6e6df"]
+          [:100 "#fbc7b2"]
+          [:200 "#fba986"]
+          [:300 "#f7895b"]
+          [:400 "#ef6830"]
+          [:500 "#dd4907"]
+          [:600 "#bb3d0a"]
+          [:700 "#99320c"]
+          [:800 "#78260c"]
+          [:900 "#5a1b0a"]])
 
-(def red [[:50 "#ffebee"]
-          [:100 "#ffd3d5"]
-          [:200 "#ffbbbb"]
-          [:300 "#faa296"]
-          [:400 "#f38773"]
-          [:500 "#e96d4f"]
-          [:600 "#de512d"]
-          [:700 "#d03000"]
-          [:800 "#b51c01"]
-          [:900 "#990000"]])
+(def grey [[:50 "#f9f9f9"]
+           [:100 "#dfdfdf"]
+           [:200 "#c6c6c6"]
+           [:300 "#aeaeae"]
+           [:400 "#969696"]
+           [:500 "#808080"]
+           [:600 "#696969"]
+           [:700 "#555555"]
+           [:800 "#3f3f3f"]
+           [:900 "#2c2c2c"]])
 
-(def yellow [[:50 "#fff9e8"]
-             [:100 "#fff3d1"]
-             [:200 "#ffeebb"]
-             [:300 "#ffe49e"]
-             [:400 "#ffdd84"]
-             [:500 "#ffd666"]
-             [:600 "#ffc838"]
-             [:700 "#ffba0a"]
-             [:800 "#fda704"]
-             [:900 "#fa9400"]])
-
-(def green [[:50 "#e6fff8"]
-            [:100 "#b6f5e3"]
-            [:200 "#8adec2"]
-            [:300 "#5ac7a1"]
-            [:400 "#09b081"]
-            [:500 "#00996e"]
-            [:600 "#008962"]
-            [:700 "#007a56"]
-            [:800 "#006d4d"]
-            [:900 "#005f43"]])
-
-(def grey [[:50 "#fcfcf9"]
-           [:100 "#e4e3e0"]
-           [:200 "#cbcbc7"]
-           [:300 "#b4b4ae"]
-           [:400 "#9d9c96"]
-           [:500 "#86857e"]
-           [:600 "#706f68"]
-           [:700 "#5b5b52"]
-           [:800 "#47473e"]
-           [:900 "#33332a"]])
-
-(def magenta [[:500 "#d95db7"]])
-
-(def purple [[:a100 "#831dcb"]])
-
-(def neutral [[:black "#000000"]
+(def neutral [[:black "#111111"]
               [:white "#ffffff"]])
 
 
@@ -164,7 +139,24 @@
 
 #### Colour Palette
 
-This collection of CSS colors are intended to serve the interface of all our product applications and all the components you can see in this document.
+This collection of CSS colors are intended to serve the interface of all our product applications and all the
+components you can see in this document.
+
+
+#### Create your own palette
+
+To make your own color palettes, it is recommended to start with 1-3 colors that work well together and use their HEX
+values with the [Chroma.js Color Scale Helper](https://gka.github.io/palettes/#colors=lightyellow,orange,deeppink,darkred|steps=10|bez=1|coL=1)
+so that you get 10 HEX values that are evenly distributed into a color scale.
+
+Additionally you can override the default `--green`, `--blue`, `--red`, `--grey`, and/or neutral palettes included with your own colours.
+
+```css
+:root {
+  --green-100: green;
+  ...
+}
+```
 
 ##### Example Usage
 
@@ -176,54 +168,47 @@ This collection of CSS colors are intended to serve the interface of all our pro
 ```
 
 <div class='u-row'>
-
-"
-
-    (color-palette "Blue" blue)
-    (color-palette "Orange" orange)
-    (color-palette "Red" red)
-    (color-palette "Yellow" yellow)
+    "
     (color-palette "Green" green)
+    (color-palette "Blue" blue)
+    (color-palette "Red" red)
     (color-palette "Grey" grey)
-    (color-palette "Magenta" magenta)
-    (color-palette "Purple" purple)
     (color-palette "" neutral)
-
-
-
-
-
-
     "
 </div>
 
     #### Colour Theme
 
-    These colors are intended for very specific parts of the user interface. State classes are provided for colored text in this section so you can apply appropriate emotion to your work, `e.g. <span class='is-positive'>Your file has been saved!</span>`.
+    These colors are intended for very specific parts of the user interface.
 
     <div class='u-row'>
 
 "
 
-    (color-theme "Backgrounds & Borders" [[:--backgroundColor-page (get-color neutral 1)]
-                                          [:--color-shadow         "rgba(51, 51, 42, .6)"]
-                                          [:--color-primary        (get-color blue 9)]
-                                          [:--color-secondary      (get-color orange 8)]
-                                          [:--highlight-announcement (get-color blue 0)]
-                                          [:--highlight-error        (get-color red 0)]
-                                          [:--highlight-success      (get-color green 0)]
-                                          [:--highlight-warning      (get-color yellow 0)]])
+    (color-theme "Backgrounds & Borders" [[:--color-page             (get-color neutral 1) "--white"]
+                                          [:--color-page-dark        (get-color grey 9) "--grey-900"]
+                                          [:--color-primary          (get-color green 4) "--green"]
+                                          [:--color-primary-dark     (get-color green 7) "--green-700"]
+                                          [:--color-primary-highlight (get-color green 1) "--green-100"]
+                                          [:--color-primary-contrast (get-color neutral 1) "--white"]
+                                          [:--color-accent           (get-color blue 4) "--blue"]
+                                          [:--color-accent-dark      (get-color blue 7) "--blue-700"]
+                                          [:--color-accent-highlight (get-color blue 1) "--blue-100"]
+                                          [:--color-accent-contrast  (get-color neutral 1) "--white"]
+                                          [:--color-neutral          (get-color grey 4) "--grey"]
+                                          [:--color-neutral-dark     (get-color grey 7) "--grey-700"]
+                                          [:--color-neutral-highlight (get-color grey 1) "--grey-100"]
+                                          [:--color-neutral-contrast  (get-color neutral 1) "--white"]
+                                          [:--borderColor            (get-color grey 1) "--grey-100"]
+                                          [:--borderColor-inactive   (get-color grey 0) "--grey-50"]])
 
 
 
-    (color-theme "Type Colors" [[:--color-page        (get-color grey 8)]
-                                [:--color-placeholder (get-color grey 5)]
-                                [:.is-positive        (get-color green 6)]
-                                [:.is-informative     (get-color blue 9)]
-                                [:.is-neutral         (get-color grey 5)]
-                                [:.is-live            (get-color yellow 8)]
-                                [:.is-alterable       (get-color orange 8)]
-                                [:.is-negative        (get-color red 7)]])
+    (color-theme "Type Colors" [[:--color-text        (get-color grey 8) "--grey-800"]
+                                [:--color-placeholder (get-color grey 5) "--grey"]
+                                [:--color-link        (get-color green 5) "--green"]
+                                [:--color-error       (get-color red 4) "--red-400"]
+                                [:--color-invalid     (get-color red 2) "--red-200"]])
 
 
     (color-theme "Social Media" [[:--facebook "#4c66a4"]
@@ -237,12 +222,6 @@ This collection of CSS colors are intended to serve the interface of all our pro
                                  [:--twitter "#2fc2ef"]])
 
 
-    #_(color-theme "Highlights" [[:--highlight-announcement (get-color blue 0)]
-                                 [:--highlight-error        (get-color red 0)]
-                                 [:--highlight-success      (get-color green 0)]
-                                 [:--highlight-warning      (get-color yellow 0)]])
-
-
     "
 
     </div>
@@ -250,13 +229,302 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
     ))
 
+(defarticle docs-colour-customize
+  "#### Customize
+
+  Use these CSS custom properties to customize the colours of your app.
+
+  ```css
+  --color-page: var(--white);
+  --color-page-dark: var(--grey-900);
+  --color-primary: var(--green-500);
+  --color-primary-dark: var(--green-700);
+  --color-primary-highlight: var(--green-100);
+  --color-primary-contrast: var(--white);
+  --color-accent: var(--blue-500);
+  --color-accent-dark: var(--blue-700);
+  --color-accent-highlight: var(--blue-100);
+  --color-accent-contrast: var(--white);
+  --color-neutral: var(--grey-400);
+  --color-neutral-highlight: var(--grey-100);
+  --borderColor: var(--grey-100);
+  --borderColor-inactive: var(--grey-50);
 
 
-(def docs-media "Responsive breakpoints for styling for different devices and groups of devices. We divide devices up by `14em` units starting at `34em`. Using the `em` unit has been a proven browser compatible method of rendering media queries consistently.
+  /* Type and Globals */
+
+  --color-text: var(--grey-800);
+  --color-placeholder: var(--grey-500);
+  --color-link: var(--color-primary);
+  --color-error: var(--red-400);
+  --color-invalid: var(--red-200);
+
+
+  /* Avatar */
+  --color-avatar: var(--grey-200);
+  --color-avatar--secondary: color(var(--grey-900) a(60%));
+  --color-avatar-alt--primary: var(--color-primary);
+  --color-avatar-alt--accent: var(--color-accent);
+  --color-avatar-alt--secondary: var(--color-primary-contrast);
+
+
+  /* Backdrop */
+  --color-backdrop: color(var(--black) a(60%));
+  --color-backdrop--inverted: color(var(--white) a(60%));
+
+
+  /* Badge */
+  --color-badge--primary: var(--grey-400);
+  --color-badge--secondary: var(--white);
+  --color-badge-alt--primary: var(--color-primary);
+  --color-badge-accent--primary: var(--color-accent);
+
+
+  /* Button */
+  --color-button--primary: color(var(--grey-500) a(20%));
+  --color-button--secondary: var(--grey-900);
+  --color-button--hover: var(--color-button--primary);
+  --color-button--active: color(var(--grey-500) a(30%));
+  --color-button--focus: color(var(--black) a(6%));
+
+  /* Primary buttons */
+  --color-button-alt--primary: var(--color-primary);
+  --color-button-alt--secondary: var(--color-primary-contrast);
+  --color-button-alt--accent: var(--color-accent);
+  --color-button-alt--hover: var(--color-primary-dark);
+  --color-button-alt--active: var(--color-primary-dark);
+  --color-button-alt--focus: var(--white);
+
+  /* Accent buttons */
+  --color-button-accent--primary: var(--color-accent);
+  --color-button-accent--secondary: var(--color-accent-contrast);
+  --color-button-accent--hover: var(--color-accent-dark);
+  --color-button-accent--active: var(--color-accent-dark);
+  --color-button-accent--focus: var(--white);
+
+  /* Dark theme buttons */
+  --color-button-dark--primary: color(var(--grey-500) a(18%));
+  --color-button-dark--secondary: var(--color-primary-contrast);
+  --color-button-dark--hover: color(var(--grey-800) a(18%));
+  --color-button-dark--active: color(var(--grey-600) a(18%));
+  --color-button-dark--focus: color(var(--black) a(10%));
+
+  /* Disabled buttons */
+  --color-button-disabled--primary: color(var(--black) a(12%));
+  --color-button-disabled--secondary: color(var(--black) a(26%));
+  --color-button-disabled--dark: color(var(--white) a(30%));
+
+
+  /* Button groups */
+  --color-button-group: var(--grey-50);
+
+
+  /* Calendar */
+  --color-calendar: var(--white);
+  --color-calendar-hover: var(--grey-50);
+  --color-calendar-selected: var(--color-primary-highlight);
+
+
+  /* Card */
+  --color-card--primary: var(--white);
+  --color-card-dark--primary: var(--grey-800);
+  --color-card-print: var(--black);
+  --color-card__title--secondary: currentColor;
+
+  --color-card-alt--primary: var(--color-primary);
+  --color-card-alt--secondary: var(--color-primary-contrast);
+  --color-card-accent--primary: var(--color-accent);
+  --color-card-accent--secondary: var(--color-accent-contrast);
+
+
+  /* Control */
+  --color-control-border--primary: var(--grey-400);
+  --color-control-border--secondary: var(--white);
+  --color-control--checked: var(--color-primary);
+  --color-control--unchecked: var(--grey-500);
+  --color-control--disabled: var(--grey-300);
+  /* Radio */
+  --color-radio--primary: var(--color-control-border--primary);
+  --color-radio--secondary: var(--color-control-border--secondary);
+  --color-radio--secondary--checked: var(--color-control-border--secondary);
+  --color-radio--checked: var(--color-control--checked);
+  --color-radio--disabled: var(--color-control--disabled);
+  /* Checkbox */
+  --color-checkbox: var(--color-control-border--primary);
+  --color-checkbox--checked: var(--color-control--checked);
+  --color-checkbox--indeterminate: var(--color-control-border--primary);
+  --color-checkbox--disabled: var(--color-control--disabled);
+  /* Switch */
+  --color-switch--primary: var(--grey-200);
+  --color-switch--secondary: var(--color-control-border--primary);
+  --color-switch--checked: var(--color-control--checked);
+  --color-switch-alt--secondary: var(--color-control--unchecked);
+  --color-switch-dark--primary: var(--grey-800);
+
+
+
+  /* Dialog */
+  --color-dialog--primary: var(--white);
+
+
+  /* Drawer */
+  --color-drawer--primary: var(--white);
+  --color-drawer__header--primary: var(--white);
+  --color-drawer__header--secondary: var(--color-text);
+  --color-drawer__divider: var(--borderColor);
+
+  /* Expansion Panel */
+  --color-expansion-panel--primary: var(--white);
+  --color-expansion-panel--secondary: var(--grey-700);
+  --color-expansion-panel--focus: var(--grey-50);
+  --color-expansion-panel__title: var(--grey-900);
+  --color-expansion-panel__divider: var(--borderColor);
+
+
+  /* Field */
+  --color-field: var(--grey-200);
+  --color-field--focus: var(--color-primary);
+  --color-field--invalid: var(--color-invalid);
+  --color-field--error: var(--color-error);
+
+
+  /* Form */
+  --backgroundColor-form: var(--white);
+  --borderColor-form: var(--grey-600);
+
+
+  /* Icon */
+  --color-icon: currentColor;
+  --color-icon--passive: var(--color-neutral);
+  --color-icon--active: var(--color-primary);
+
+
+  /* Iconbar */
+  --color-iconbar-background: var(--white);
+  --color-iconbar-border: var(--borderColor);
+  --color-iconbar-item: var(--grey-700);
+  --color-iconbar-item-active: var(--color-primary);
+
+
+  /* Label */
+  --color-label--primary: var(--grey-200);
+  --color-label--secondary: var(--black);
+  --color-label-alt--primary: var(--color-primary);
+  --color-label-alt--secondary: var(--color-primary-contrast);
+  --color-label-accent--primary: var(--color-accent);
+  --color-label-accent--secondary: var(--color-accent-contrast);
+
+
+  /* List */
+  --color-list--primary: transparent;
+  --color-list-selected--primary: var(--grey-50);
+  --color-list-active--secondary: var(--color-primary);
+  --color-list__divider: var(--borderColor);
+  --color-list__tile-active--primary: var(--color-primary);
+  --color-list__tile-active--secondary: var(--white);
+  --color-list__title: var(--grey-500);
+  --color-list__subtext: var(--grey-500);
+
+
+  /* Loader */
+  --color-loader: var(--color-neutral);
+  --color-loader-primary: var(--color-primary);
+  --color-loader-accent: var(--color-accent);
+  --color-loader-inverted: var(--white);
+
+
+  /* Menu */
+  --color-menu: var(--color-text);
+  --color-menu-background: var(--white);
+  --color-menu-link-background: transparent;
+  --color-menu-link-background-enter: var(--grey-100);
+  --color-menu-link-active: var(--white);
+  --color-menu-link-background-active: var(--color-primary);
+  --color-menu-data-select: var(--grey-600);
+
+
+  /* Messages */
+  --color-message: var(--color-neutral);
+  --color-message-alt-primary: var(--color-primary);
+  --color-message-accent-primary: var(--color-accent);
+  --color-message-error: var(--color-error);
+  --color-message-invalid: var(--color-invalid);
+
+
+  /* Notification */
+  --color-notification-icon: var(--color-primary);
+  --color-notification-icon--success: var(--green-700);
+  --color-notification-icon--warning: var(--red-300);
+  --color-notification-icon--error: var(--red-700);
+
+
+  /* Progress */
+  --color-progress: var(--color-primary);
+  --color-progress--secondary: color(var(--color-primary) a(25%));
+  --color-progress--indeterminate: var(--grey-300);
+
+
+  /* Table */
+  --color-table: var(--grey-300);
+
+
+  /* Tabs */
+  --color-tab--active: rgba(255, 255, 255, .1);
+  --color-tab-alt--primary: var(--color-primary);
+  --color-tab-alt--active: var(--color-accent);
+
+
+  /* Toolbar */
+  --color-toolbar--primary: transparent;
+  --color-toolbar--secondary: currentColor;
+  --color-toolbar-alt--primary: var(--color-primary);
+  --color-toolbar-alt--secondary: var(--white);
+  --color-toolbar-dark--primary: var(--grey-900);
+  --color-toolbar-dark--secondary: var(--white);
+
+
+  /* Tooltip */
+  --color-tooltip--primary: var(--black);
+  --color-tooltip--secondary: var(--white);
+
+
+  /* Shadows */
+
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  --shadow-2: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);
+  --shadow-3: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23);
+  --shadow-4: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
+  --shadow-5: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
+  --shadow-focus: 0 0 8px rgba(0, 0, 0, .18), 0 8px 16px rgba(0, 0, 0, .36);
+  --shadow-menu: var(--shadow-1);
+  --shadow-menu-picker:
+    inset 0 10px 11px -7px rgba(0, 0, 0, .5),
+    inset 0 -10px 11px -7px rgba(0, 0, 0, .5);
+  --toggle-focus-shadow: 0 0 6px var(--color-primary);
+
+  /* Social Media */
+
+  --facebook: #4c66a4;
+  --google-plus: #dd4b39;
+  --linkedin: #0077b5;
+  --pinterest: #cb2027;
+  --stumbleupon: #ff4522;
+  --tripadvisor: #629d2a;
+  --trustyou: #3498db;
+  --tumblr: #35465c;
+  --twitter: #2fc2ef;
+  ```
+  ")
+
+
+
+(def docs-media "Responsive breakpoints for styling for different devices and groups of devices. We divide devices up
+by `14em` units starting at `34em`. Using the `em` unit has been a proven browser compatible method of rendering media queries consistently.
 
                     #### Flexible Breakpoints
 
-                    Target devices of a certain minimum width and everything larger than. If your writing mobile-first, then you would need to specify your desktop styles in a `@media (--lg-up)` breakpoint.
+                    Target devices of a certain minimum width and everything larger than. If your writing mobile-first,
+                    then you would need to specify your desktop styles in a `@media (--lg-up)` breakpoint.
 
                     ```css
                     /* For tiny devices you don't need to specify a media query. */
@@ -329,8 +597,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 ;; Positioning Examples
 
-(defexample positioning-example-fixed
-  "#### Fixed Classes"
+(defsnippet positioning-example-fixed
   (dom/div #js {}
     (dom/div #js {:className "u-fixed--top"})
     (dom/div #js {:className "u-fixed--top-center"})
@@ -342,8 +609,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
     (dom/div #js {:className "u-fixed--middle"})
     (dom/div #js {:className "u-fixed--middle-center"})))
 
-(defexample positioning-example-absolute
-  "#### Absolute Classes"
+(defsnippet positioning-example-absolute
   (dom/div #js {}
     (dom/div #js {:className "u-absolute--top"})
     (dom/div #js {:className "u-absolute--top-right"})
@@ -355,7 +621,9 @@ This collection of CSS colors are intended to serve the interface of all our pro
     (dom/div #js {:className "u-absolute--middle-center"})))
 
 (def docs-positioning-position
-  "You can directionally express which position you want to specify using these conventions:
+  "# Positioning
+
+  You can directionally express which position you want to specify using these conventions:
 
   `bottom | bottom-left | bottom-right | middle | top | top-left | top-right`
 
@@ -366,7 +634,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
   ```")
 
 (defexample positioning-example-rotate
-  ""
+  "# Rotate"
   (let [example-class-modifier (if (om/get-state this :rotate-visible) "" " u-hide")]
     (dom/div #js {}
       (dom/button #js {:className "c-button"
@@ -458,7 +726,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 (def typography-header
   "# Typography
 
-  ##### Source Sans Pro is the font family that Stylekit uses by default")
+  ##### Source Sans Pro is the font family this project uses by default")
 
 (defview typography-font-scale
   "#### Font Scale"
@@ -544,9 +812,13 @@ This collection of CSS colors are intended to serve the interface of all our pro
   "#### Ellipsis"
   (dom/div #js {:style #js {:width "300px"}}
     (dom/h1 #js {} "Before")
-    (dom/p #js {:className "is-negative"} "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to truncate this text.")
+    (dom/p #js {:className "is-negative"}
+      "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to
+      truncate this text.")
     (dom/h1 #js {} "After")
-    (dom/p #js {:className "u-ellipsis is-positive"} "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to truncate this text.")))
+    (dom/p #js {:className "u-ellipsis is-positive"}
+      "This is a very long string of text that will get cut off by exactly three dots forming an ellipsis character to
+      truncate this text.")))
 
 (defexample typography-break-word
   "#### Break Word"
@@ -556,23 +828,33 @@ This collection of CSS colors are intended to serve the interface of all our pro
     (dom/h1 #js {} "After")
     (dom/p #js {:className "u-break-word is-positive"} "SupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshiousSupercalifragalisticexpialadoshious")))
 
+
+(defexample typography-helper-text
+  "#### Helper Text"
+  (dom/div #js {}
+    (dom/div #js {:className "u-helper-text"}
+      (dom/div nil "Select a widget to go with your bike")
+      (dom/div nil (dom/a nil "Learn more")))))
+
 (defarticle docs-typography-customize
   "#### Customize
 
+  Use these CSS custom properties to customize your app's typography.
+
   ``` css
-  --fontFamily--sans: 'Source Sans Pro', sans-serif;
-  --fontFamily--monospaced: Consolas, \"Andale Mono WT\", \"Andale Mono\", \"Lucida Console\", \"Lucida Sans Typewriter\", \"DejaVu Sans Mono\", \"Bitstream Vera Sans Mono\", \"Liberation Mono\", \"Nimbus Mono L\", Monaco, \"Courier New\", Courier, monospace;
+  --fontFamily--sans: \"Source Sans Pro\", Helvetica, Arial, sans-serif;
+  --fontFamily--monospaced: monospace;
   --fontFamily-page: var(--fontFamily--sans);
-  --fontSize--tiny: .75rem;
-  --fontSize--small: .875rem;
-  --fontSize--semiNormal: 1rem;
-  --fontSize--normal: 1.125rem;
-  --fontSize--normalPlus: 1.25rem;
-  --fontSize--semiMedium: 1.5rem;
-  --fontSize--medium: 2rem;
-  --fontSize--semiLarge: 2.5rem;
-  --fontSize--large: 3rem;
-  --fontSize--xlarge: 4.7rem;
+  --fontSize--tiny: .75rem; /* 12px */
+  --fontSize--small: .875rem; /* 14px */
+  --fontSize--semiNormal: 1rem; /* 16px */
+  --fontSize--normal: 1.125rem; /* 18px */
+  --fontSize--normalPlus: 1.25rem; /* 20px */
+  --fontSize--semiMedium: 1.5rem; /* 24px */
+  --fontSize--medium: 2rem; /* 32px */
+  --fontSize--semiLarge: 2.5rem; /* 40px */
+  --fontSize--large: 3rem; /* 48px */
+  --fontSize--xlarge: 4.7rem; /* 75.2px */
   --fontSize-page: 100%;
   --fontSize-heading: var(--fontSize--normalPlus);
   --fontWeight-page: 400;
@@ -587,7 +869,8 @@ This collection of CSS colors are intended to serve the interface of all our pro
 (defexample visibility-show
   "### Show
 
-  This set of classes let you expose any element to the desired device(s). Just add one of the following classes and you will see your element on it's respective device."
+  This set of classes let you expose any element to the desired device(s). Just add one of the following classes and
+  you will see your element on it's respective device."
   (dom/div #js {}
     (dom/div #js {} "+ Shown All The Time")
     (dom/div #js {:className "u-show@sm"} "+ Shown for Small Only")
@@ -624,8 +907,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
   (dom/div #js {}
     (dom/button #js {:className "c-button c-button--large js-fade-control"} "Fade toggle")
     (dom/span #js {:className "c-icon c-icon--xlarge is-positive u-fade-out js-fade-example"}
-      (dom/svg #js {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
-        (dom/path #js {:d "M15 17v2h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm5-15H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM5 5h6v2H5V5zm15 15H4L20 4v16z"})))))
+      (icons/icon :supervisor_account))))
 
 
 
@@ -636,7 +918,7 @@ This collection of CSS colors are intended to serve the interface of all our pro
 
 (def sections
   (vec (sort-by :title [; NOTE: :examples is a list of example names, rendered in order given
-                        {:id :settings-colour :title "Colour" :examples [settings-colour]}
+                        {:id :settings-colour :title "Colour" :examples [settings-colour docs-colour-customize]}
                         {:id       :media
                          :title    "Media"
                          :documentation
@@ -656,11 +938,13 @@ This collection of CSS colors are intended to serve the interface of all our pro
                          :title    "Typography"
                          :documentation typography-header
                          :examples [typography-font-scale typography-no-bullet typography-no-bullets
-                                    typography-ellipsis typography-break-word  docs-typography-customize]}
+                                    typography-ellipsis typography-break-word typography-helper-text  docs-typography-customize]}
                         {:id       :visibility
                          :title    "Visibility"
                          :documentation
-                                   "Use simple utilities to hide or show elements across any span of devices"
+                                   "# Visibility
+
+                                   Use simple utilities to hide or show elements across any span of devices"
                          :examples [visibility-show visibility-hide visibility-fade]}
                         ])))
 

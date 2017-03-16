@@ -1,22 +1,18 @@
-/*---
-title: Calendar
-section: Objects
----*/
-
 :root {
+  --height-day: 32px;
   --padding-calendar: .75em 1rem;
 }
 
 .c-calendar,
 .o-calendar {
-  background: var(--white);
+  background: var(--color-calendar--primary);
   border-radius: var(--global-rounded);
   box-shadow: var(--shadow-1);
   display: inline-block;
   left: 0;
+  margin-bottom: 43px;
   padding: var(--padding-calendar);
   position: static !important;
-  margin-bottom: 43px;
   top: 0;
   z-index: 10 !important;
 
@@ -24,7 +20,13 @@ section: Objects
 
    .c-button + & { margin-top: 43px; }
 
-   &--up {margin-bottom: 43px; }
+   &--up { margin-bottom: 43px; }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--grey-800);
+  }
 }
 
 
@@ -57,22 +59,22 @@ section: Objects
     th,
     td { font-size: var(--fontSize--tiny); }
 
+    .c-calendar__week,
     th { text-transform: uppercase; }
   }
 
   .c-calendar__day,
   .o-calendar__day {
-    --day-height: 32px;
     border-radius: 50px;
-    height: var(--day-height);
-    min-width: var(--day-height);
+    height: var(--height-day);
+    min-width: var(--height-day);
     position: relative;
     transition: background-color var(--global-duration) ease-in-out;
-    width: var(--day-height);
+    width: var(--height-day);
 
-    &:hover { background-color: var(--grey-50); }
+    &:hover { background-color: var(--color-calendar-hover); }
 
-    &.is-active { background-color: var(--highlight-announcement); }
+    &.is-active { background-color: var(--color-calendar-selected); }
 
     &.is-inactive { visibility: hidden; }
 
@@ -83,8 +85,8 @@ section: Objects
 .c-calendar--raised,
 .o-calendar--raised {
   box-shadow: var(--shadow-3);
-  position: absolute !important;
   margin-bottom: 0;
+  position: absolute !important;
 }
 
 
@@ -97,12 +99,10 @@ section: Objects
 
 .c-calendar--up,
 .o-calendar--up {
-  bottom: 0;
+  bottom: 100%;
   top: auto;
 }
 
 .c-calendar--down,
-.o-calendar--down {
-  margin-top: 43px;
-}
+.o-calendar--down { margin-top: 43px; }
 

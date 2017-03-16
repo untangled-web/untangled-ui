@@ -4,21 +4,21 @@ section: Components
 ---*/
 
 :root {
-  /* Default button colors */
   --borderRadius-button: 2px;
-
-  --fontSize-button: 14px;
+  --fontSize-button: var(--fontSize--small); /* 14px */
   --fontSize-button--dense: calc(var(--fontSize-button) - 1px);
+  --marginY-button: 6px;
+  --marginX-button: var(--frame-quarter);
+  --opacity-button--disabled: .35;
+  --paddingY-button: 0;
+  --paddingX-button: var(--frame-quarter);
   --size-button: 36px;
   --size-button--dense: calc(var(--size-button) - 4px);
-
-  --opacity-button--disabled: .35;
   --transitionDuration-button: .1s;
-
-
+  --width-button--icon: 36px;
   --button--wide: {
     display: block;
-    width: 100%;
+    width: calc(100% - var(--marginX-button) - var(--marginX-button));
   };
 }
 
@@ -29,7 +29,7 @@ section: Components
   background: transparent;
   border: none;
   border-radius: var(--borderRadius-button);
-  color: var(--color-button--secondary);
+  color: currentColor /* var(--color-button--secondary) */;
   display: inline-block;
   font-family: inherit;
   font-size: var(--fontSize-button);
@@ -37,12 +37,12 @@ section: Components
   height: var(--size-button);
   letter-spacing: 0;
   line-height: var(--size-button);
-  margin: 6px var(--frame-quarter);
-  max-width: 100%;
+  margin: var(--marginY-button) var(--marginX-button);
+  max-width: calc(100% - var(--marginX-button) - var(--marginX-button));
   min-width: 64px;
   outline: none;
   overflow: visible; /* Internet Explorer 12- */
-  padding: 0 var(--frame-quarter);
+  padding: var(--paddingY-button) var(--paddingX-button);
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -61,9 +61,11 @@ section: Components
      padding: 0 !important;
    }
 
-  &[type="submit"] { -webkit-appearance: none; }
+  &[type="submit"] { appearance: none; }
 
-  &:hover { background-color: var(--color-button--hover); }
+  &:hover {
+     background-color: var(--color-button--hover);
+   }
 
   &:focus:not(:active),
   &.is-focused {
@@ -90,7 +92,6 @@ section: Components
 
   @media print { display: none; }
 
-  .t-dark & { color: var(--color-button-dark--secondary); }
 
   :--fullscreen & {
     color: var(--color-button-dark--secondary);
@@ -104,10 +105,10 @@ section: Components
 .c-button__content { @apply --start; }
 
 
-.c-button-small,
+.c-button--small,
 .c-button--dense {
-  height: var(--size-button--dense);
   font-size: var(--fontSize-button--dense);
+  height: var(--size-button--dense);
   line-height: var(--size-button--dense);
 }
 
@@ -116,47 +117,98 @@ section: Components
 .c-button--colored {
   color: var(--color-button-alt--primary);
 
+  &:hover { background-color: color(var(--color-button-alt--primary) a(30%)); }
+
+  &:--active { background-color: color(var(--color-button-alt--primary) a(40%)); }
+
   &:focus:not(:active),
    &.is-focused { background-color: var(--color-button-alt--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
 }
 
 .c-button--accent {
-  color: var(--color-accent);
+  color: var(--color-button-alt--accent);
+
+  &:hover { background-color: color(var(--color-button-alt--accent) a(30%)); }
+
+  &:--active { background-color: color(var(--color-button-alt--accent) a(40%)); }
 
   &:focus:not(:active),
   &.is-focused { background-color: var(--color-button-accent--focus); }
 
-  &:--disabled { color: var(--color-button-disabled--secondary); }
+  &:--disabled {
+    background-color: transparent;
+    color: var(--color-button-disabled--secondary);
+  }
+}
+
+.c-button--circular {
+  background: var(--color-button--primary);
+  border-radius: 50%;
+  height: 55px;
+  min-width: 44px;
+  width: 55px;
+
+  .c-button& .c-icon {
+    --icon-size: 26px;
+    height: var(--icon-size);
+    margin: 8px 0 !important;
+    width: var(--icon-size);
+  }
+
+  &::after {
+     border-radius: inherit;
+     bottom: 0;
+     box-shadow: var(--shadow-2);
+     content: "";
+     left: 0;
+     position: absolute;
+     right: 0;
+     top: 0;
+     transition: box-shadow var(--global-duration) ease;
+     z-index: 5;
+   }
+
+  &.c-button--small,
+  &.c-button--dense {
+     height: 44px;
+     width: 44px;
+   }
 }
 
 .c-button--raised {
   background: var(--color-button--primary);
 
   &::after {
-     border-radius: inherit;
-     bottom: 0;
-     box-shadow: var(--shadow-2);
-     content: '';
-     left: 0;
-     position: absolute;
-     transition: box-shadow var(--global-duration) ease;
-     right: 0;
-     top: 0;
-     z-index: 5;
-   }
+    border-radius: inherit;
+    bottom: 0;
+    box-shadow: var(--shadow-1);
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: box-shadow var(--global-duration) ease;
+    z-index: 5;
+  }
+}
 
+.c-button--circular,
+.c-button--raised {
 
   &:--active {
-    background-color: var(--color-button--active);
+    background-color: var(--color-button-dark--active);
 
     &::after { box-shadow: var(--shadow-3); }
   }
 
   &:focus:not(:active),
    &.is-focused {
-    background-color: var(--color-button--active);
+    background-color: var(--color-button-dark--active);
 
     &::after { box-shadow: var(--shadow-focus); }
    }
@@ -170,8 +222,8 @@ section: Components
     &::after { box-shadow: none; }
 
      .t-dark & {
-       background-color: var(--color-button-dark--primary);
-       color: var(--color-button-disabled--dark);
+       background-color: var(--color-button-dark--primary) !important;
+       color: var(--color-button-disabled--dark) !important;
     }
    }
 
@@ -192,7 +244,10 @@ section: Components
      &.is-focused { background-color: var(--color-button-alt--active); }
    }
 
-   .t-dark & { background-color: var(--color-button-alt--primary); }
+   &:--disabled {
+     background-color: var(--color-button-disabled--primary) !important;
+     color: var(--color-button-disabled--secondary) !important;
+   }
 
 
   &.c-button--accent {
@@ -210,6 +265,11 @@ section: Components
     &:focus:not(:active),
     &.is-focused { background-color: var(--color-button-accent--active); }
 
+    &:--disabled {
+       background-color: var(--color-button-disabled--primary) !important;
+       color: var(--color-button-disabled--secondary) !important;
+     }
+
   .t-dark & { background-color: var(--color-button-accent--primary); }
   }
 }
@@ -221,8 +281,9 @@ section: Components
 .c-button--radial { border-radius: var(--global-radial) !important; }
 
 .c-button--icon {
-  color: var(--grey-700);
-  min-width: 36px;
+  color: var(--color-button-icon);
+  min-width: var(--width-button--icon);
+  padding: 0;
 
   &:hover { color: var(--grey-800); }
 
@@ -234,9 +295,13 @@ section: Components
   &::after { opacity: 0 !important; }
 
   .c-icon {
-    height: 24px; /* IE11 Hack instead of inherit */
+    height: 24px !important; /* IE11 Hack instead of inherit */
     margin: 0 !important;
-    width: 24px; /* IE11 Hack instead of inherit */
+    width: 24px !important; /* IE11 Hack instead of inherit */
+  }
+
+  .c-card__menu & {
+    color: var(--white);
   }
 }
 
@@ -256,24 +321,50 @@ section: Components
 }
 
 
+/* Inside Menu */
+
 .has-menu {
-  display: inline-block;
-  position: relative;
-  width: 100%;
 
-  &.c-button {
-   border-bottom: var(--grey-200) 1px solid;
+  & > .c-button:not(.c-button--icon),
+  &.c-button:not(.c-button--icon) {
+    border-bottom: var(--grey-200) 1px solid;
+    font-size: inherit;
+    font-weight: normal;
+    margin: 6px 0;
+    text-align: left;
+    text-transform: none;
+    width: 100%;
 
-      &::before {
-         @apply --triangle;
-         @apply --triangle-bottom;
-         border-width: 5px 4px 0;
-         content: '';
-         float: right;
-         margin: 1em .5rem 1em .75rem;
-         position: relative;
-         vertical-align: middle;
-       }
+    &::before {
+     @apply --triangle;
+     @apply --triangle-bottom;
+     border-width: 5px 4px 0;
+     color: var(--grey-600);
+     content: "";
+     float: right;
+     margin: 1em .5rem 1em .75rem;
+     position: relative;
+     transition: transform .3s ease;
+     vertical-align: middle;
+   }
+  }
+
+
+  /* Flip the arrow to show the menu is open */
+  &:--active {
+    & > .c-button,
+    &.c-button {
+      &::before { transform: rotate(180deg); }
+    }
+  }
+
+
+  & > .c-button--wide,
+  &.c-button--wide {
+     height: auto;
+     margin-left: 0;
+     margin-right: 0;
+     padding: 4px 16px;
+     text-align: left;
    }
 }
-

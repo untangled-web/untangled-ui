@@ -199,21 +199,24 @@
 (defn- calendar-toolbar [this]
   (let [{:keys [calendar/id calendar/overlay-visible?] :as calendar} (om/props this)]
     (dom/header #js {:className "c-calendar__control"}
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Last Month"
-                         :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
-          (icon :keyboard_arrow_left))
-        (dom/span #js {:className "current"
-                       :onClick   #(om/transact! this `[(set-overlay-visible ~{:calendar-id id :visible? (not overlay-visible?)})])}
-          (displayed-date calendar))
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Today"
-                         :onClick   #(om/transact! this `[(set-date ~{:date (date) :calendar-id id})])}
-          (icon :today))
-        (dom/button #js {:className "c-button c-button--icon"
-                         :title     "Next Month"
-                         :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
-          (icon :keyboard_arrow_right))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :type      "button"
+                       :title     "Last Month"
+                       :onClick   #(om/transact! this `[(prior-month ~{:calendar-id id})])}
+        (icon :keyboard_arrow_left))
+      (dom/span #js {:className "current"
+                     :onClick   #(om/transact! this `[(set-overlay-visible ~{:calendar-id id :visible? (not overlay-visible?)})])}
+        (displayed-date calendar))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :type      "button"
+                       :title     "Today"
+                       :onClick   #(om/transact! this `[(set-date ~{:date (date) :calendar-id id})])}
+        (icon :today))
+      (dom/button #js {:className "c-button c-button--icon"
+                       :type      "button"
+                       :title     "Next Month"
+                       :onClick   #(om/transact! this `[(next-month ~{:calendar-id id})])}
+        (icon :keyboard_arrow_right))
       )))
 
 (def days-of-week-labels
@@ -226,11 +229,10 @@
         {:keys [refresh onDateSelected] :or {refresh []}} (om/get-computed this)]
     (dom/div #js {:className "c-calendar__month"}
       (dom/table nil
-        (dom/thead nil
-          (dom/tr nil
-            (for [label days-of-week-labels]
-              (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label)))))
         (dom/tbody nil
+          (dom/tr #js {:className "c-calendar__week"}
+            (for [label days-of-week-labels]
+              (dom/th #js {:key label :className "o-day-name"} (tr-unsafe label))))
           (for [week weeks]
             (dom/tr #js {:key (.toUTCString (first week)) :className "week"}
               (for [day week]

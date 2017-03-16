@@ -1,73 +1,77 @@
-/*---
-title: Switch
-section: Components
----*/
-
 .c-switch {
-  background-color: var(--grey-200);
+  background-color: var(--color-switch--primary);
   border-radius: 10px;
   display: inline-block;
   height: 20px;
   user-select: none;
   width: 40px;
 
-  .t-dark & { background-color: var(--grey-800); }
+  .t-dark & { background-color: var(--color-switch-dark--primary); }
 
   label + & {
     left: .5rem;
     position: relative;
     top: .25em;
   }
+
+  &.is-disabled { background-color: var(--color-switch-disabled--primary) }
 }
 
 .c-switch__paddle {
   display: inline-block;
-  position: relative;
-  margin-bottom: 0;
   height: 20px;
+  margin-bottom: 0;
+  position: relative;
   width: 40px;
 
   & > .c-icon {
-    fill: var(--grey-400);
-    width: 20px;
+    fill: var(--color-switch--secondary);
     height: 20px;
-    transition: all .3s ease;
-    top: 0;
     position: relative;
+    top: 0;
+    transition: all .3s ease;
+    width: 20px;
 
-    &:not(:last-of-type) { fill: var(--white); }
+    &:not(:last-of-type) { fill: var(--color-switch-alt--secondary); }
   }
 
   &::before {
+     background-color: var(--color-switch-alt--secondary);
+     border-radius: 100px;
      content: "";
      display: inline-block;
-     border-radius: 100px;
      height: 20px;
-     width: 20px;
-     position: absolute;
-     background-color: var(--grey-400);
-     top: 0;
      left: 0;
+     position: absolute;
+     top: 0;
      transition: all .2s ease;
+     width: 20px;
    }
 }
 
 .c-switch__input {
   height: 20px;
-  width: 40px;
   opacity: 0;
   pointer-events: none;
-  visibility: hidden;
   position: absolute;
+  visibility: hidden;
+  width: 40px;
 
   &:checked + .c-switch__paddle {
   &::before {
-     background-color: var(--blue-700);
+     background-color: var(--color-switch--checked);
      left: calc(100% - 20px);
    }
 
-  & > .c-icon { fill: var(--grey-400); }
+  & > .c-icon { fill: var(--color-switch--secondary); }
 
-  & > .c-icon:last-of-type { fill: var(--white); }
+  & > .c-icon:last-of-type { fill: var(--color-switch-alt--secondary); }
   }
+
+  &[disabled] + .c-switch__paddle::before {
+    background-color: var(--color-switch-disabled);
+   }
+  &:checked[disabled] + .c-switch__paddle::before {
+     background-color: var(--color-switch-disabled--checked);
+   }
 }

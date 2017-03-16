@@ -1,7 +1,7 @@
-# Untangled Stylekit
+# Untangled CSS Library
 
-This project is provided as an optional CSS toolkit for use with the Untangled Web Framework. It is generally applicable
-to any web-based project (it simply results in CSS). More documentation and usage guides coming very soon.
+This project is provided as an optional CSS library for use with Untangled UI. It is generally applicable
+to any web-based project (it simply results in CSS).
 
 ## Quick start
 
@@ -11,16 +11,16 @@ same level for synced releases.
 
 ### Install
 
-COMING SOON (ignore this for now)
+*Note:* Yarn only applies to you if your only using this framework, otherwise figwheel will install all the npm packages for you
 
 - **Soon** Download the latest release
 - Clone the repo: `git clone https://github.com/untangled-web/untangled-ui.git`
-- Install with [npm](https://www.npmjs.com): TODO
-- Install with [yarn](https://yarnpkg.com): TODO
+- Install [npm](https://www.npmjs.com/package/npm)
+- Install with [yarn](https://yarnpkg.com)
 
 ### Development
 
-If you're actively working on chaning CSS rules in this library, you
+If you're actively working on changing CSS rules in this library, you
 will want to clone this repository and run these commands:
 
 ``` shell
@@ -46,7 +46,7 @@ Make sure to add these things to your layout file. Optionally, for legacy browse
 </head>
 ```
 
-To continue on the path of layout, refer to the [example layout](#example-layout) section.
+To continue on the path of layout, refer to the [example layout](#example-layout) section in the CSS Guide.
 
 ### Layers
 

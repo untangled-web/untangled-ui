@@ -1,0 +1,115 @@
+:root {
+  --height-toolbar: 56px;
+  --size-toolbar__button: 48px;
+  --indent-toolbar__row: 80px;
+  --marginX-toolbar__button: calc(var(--indent-toolbar__row) - var(--size-toolbar__button));
+}
+
+.c-toolbar {
+  align-items: baseline;
+  background-color: var(--color-toolbar--primary);
+  color: var(--color-toolbar--secondary);
+  font-size: var(--fontSize--normalPlus);
+  position: relative;
+  width: 100%;
+}
+
+.c-toolbar--raised { box-shadow: var(--shadow-2); }
+
+.c-toolbar--primary {
+  background-color: var(--color-toolbar-alt--primary);
+  color: var(--color-toolbar-alt--secondary);
+}
+
+.c-toolbar--dark {
+  background-color: var(--color-toolbar-dark--primary);
+  color: var(--color-toolbar-dark--secondary);
+}
+
+.c-toolbar--primary,
+.c-toolbar--dark {
+  .c-icon { fill: var(--white); }
+}
+
+.c-toolbar--bordered { border-bottom: 1px solid rgba(0, 0, 0, .1); }
+
+.c-toolbar__button {
+  height: 48px;
+  left: 0;
+  margin: calc(calc(var(--height-toolbar) - var(--size-toolbar__button)) / 2) calc(var(--marginX-toolbar__button) / 2);
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 48px;
+
+  & + .c-toolbar__row {
+    padding: 0 0 0 80px;
+  }
+}
+
+
+.c-toolbar__row {
+  @apply --row;
+  @apply --middle;
+  align-self: stretch;
+  flex-wrap: nowrap;
+  margin: 0;
+  padding: 0;
+  min-height: var(--height-toolbar);
+
+  @media (--md-up) {
+    padding: 0 40px 0 80px;
+  }
+
+
+  * { flex-shrink: 0; }
+
+  @media print {
+    background-color: var(--white);
+    border-color: var(--black);
+    color: var(--black);
+    margin: 0 5% !important;
+  }
+}
+
+  .c-toolbar__view { flex: 1; }
+
+  .c-toolbar__actions {
+    @apply --end;
+    flex: 1;
+    order: 1; /* Last */
+
+    @media (--sm) {
+      &--desktop { display: none; }
+    }
+
+    @media (--md-up) {
+      &--handheld { display: none; }
+    }
+
+    @media print { display: none; }
+  }
+
+
+  .c-toolbar__action {
+    @media (--sm) {
+      display: inline-block;
+      margin: 0;
+      padding: 1em;
+    }
+  }
+
+  .c-toolbar__spacer { flex-grow: 1; }
+
+.c-toolbar__row--dense {
+  --height-toolbar: 48px;
+  min-height: var(--height-toolbar);
+
+  @media print { display: none; }
+}
+
+.c-toolbar__row--expanded {
+  height: auto;
+  min-height: auto;
+}

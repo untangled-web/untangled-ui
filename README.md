@@ -33,7 +33,6 @@ See the README-css.md for more details on working with the CSS itself.
 │   ├── css  ----------------- The CSS source files (which generate the CSS)
 │   │   ├── components
 │   │   ├── elements
-│   │   ├── objects
 │   │   ├── settings
 │   │   └── utilities
 │   ├── css-guide  ----------- An Om-based UI describing the CSS available
@@ -69,7 +68,7 @@ visual regression testing) in the `visuals` source folder.
 to show the callback/interactions working. Include devcard documentation that
 describes the use of the component. These go in the `guide` source folder.
 
-Please contact us on the `#untangled` channel of clojurians.slack.com if you 
+Please contact us on the `#untangled` channel of [clojurians.slack.com](http://clojurians.slack.com) if you 
 want to help.
 
 More guidelines below:
@@ -104,10 +103,10 @@ helps the user understand what generates UI and what does not.
 - Mutations should be written with `defmutation` so that their symbols end up in the namespace of the components.
 - Mutations should be written via helper functions of `(f state-map args)` that can be composed into other people's
 mutations, if necessary. The name of these helpers should be suffixed with `impl` (e.g. `close-all-impl`)
-- Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.ui.dropdowns/by-id`)
+- Idents for components should use Om table names prefixed to their namespace (e.g. `:untangled.ui.menu/by-id`)
     - Make this DRY. Define a table-name symbol as ::id. One stateful component per namespace.
 
-SEE COMMENTS IN `dropdowns.cljc`
+SEE COMMENTS IN `menu.cljc`
 
 #### Ensure Internationalization Will Work (IN PROGRESS)
 
@@ -117,8 +116,8 @@ First you should understand how Untangled does i18n:
 
 We use GNU gettext to extract strings from the source by compiling the source to js, and using `xgettext`. So, any
 calls to, say, `(tr "Hello")` turn into `tr("Hello")` in Javascript, which the predefined tools for gettext can work with
-(extraction, message merging, translator tools like POEdit). If you call tr on a variable, this doesn't work, since the
-js ends up as `tr(v)`. We have a function called `tr-unsafe` that allows you to use a varaible (`tr` will intentionally
+(extraction, message merging, translator tools like POEdit). If you call tr on a variable, this does not work, since the
+js ends up as `tr(v)`. We have a function called `tr-unsafe` that allows you to use a variable (`tr` will intentionally
 crash the compile if you use anything but a literal string for the reason), but since `tr-unsafe` will result in a js call that 
 cannot be extracted statically from source you must somehow tell gettext about the possible values that variable can have, 
 or your i18n will fail.
@@ -174,7 +173,7 @@ We expect standards around this to resolve rapidly, but please participate in th
 These are thoughts...interested in input at this early stage:
 
 - See exploration_cards in the `guide` build.
-- See dropdown_visuals and dropdowns in the `visuals` build.
+- See menu_visuals and menus in the `visuals` build.
 - Changes to appearance for stateful components should go through mutations
 - Mutations should be written in an IDE-friendly way using the new 0.7.1-SNAPSHOT+ untangled-client `defmutation`.
 - Lean towards having all of the UI components interact nicely with the VCR support viewer, so avoid using component
@@ -199,7 +198,8 @@ write specifications around those algorithms to help ensure correctness. Many of
 most components probably will not have specs; however, things like the forms support include a number of more interesting
 behaviors that need full testing support.
 
-The `css-guide` build is for the raw CSS with examples of the DOM/CSS rules to do raw rendering.
+The `css-guide` build is for the raw CSS with examples of the DOM/CSS rules to do raw rendering. Please note you will
+need to install [npm](https://www.npmjs.org/package/npm) in order to run this task. [Learn more](README-css.md)
 
 ```
 JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj
@@ -207,11 +207,11 @@ JVM_OPTS="-Dguide -Dvisuals" lein run -m clojure.main script/figwheel.clj
 
 Open a browser on (port settable `:figwheel` section of `project.clj`):
 
-http://localhost:8001/     - Index of the pages below, with their JVM OPT for running
-http://localhost:8001/guide.html
-http://localhost:8001/css-guide.html
-http://localhost:8001/visuals.html
-http://localhost:8001/test.html
+- [localhost:8001](http://localhost:8001/) *(Index of the pages below, with their JVM OPT for running)*
+- [localhost:8001/guide.html](http://localhost:8001/guide.html)
+- [localhost:8001/css-guide.html](http://localhost:8001/css-guide.html)
+- [localhost:8001/visuals.html](http://localhost:8001/visuals.html)
+- [localhost:8001/test.html](http://localhost:8001/test.html)
 
 ## Form Support (Nearly Complete)
 

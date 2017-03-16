@@ -2,33 +2,33 @@
   (:require [untangled-spec.core :refer-macros [behavior specification assertions component]]
             yahoo.intl-messageformat-with-locales
             [untangled.i18n.core :as i18n]
-            [cljs.test :refer-macros [is]]
-            [om.next :as om :refer-macros [defui]]
+            [cljs.test :refer [is]]
+            [om.next :as om :refer [defui]]
             [untangled.ui.calendar :as c]
             [om.dom :as dom]))
 
-(let [cal (c/calendar :start-date #(str "Date: ") (js/Date. "2013-09-03 12:00:00"))]
+(let [cal (c/calendar :start-date (js/Date. "2013-09-03 12:00:00"))]
   (specification "Calendar"
     (component "Initial State"
       (assertions
         "Has an ID"
-        (:id cal) => :start-date
+        (:calendar/id cal) => :start-date
 
         "Includes the current date"
-        (:month cal) => 9
-        (:day cal) => 3
-        (:year cal) => 2013
+        (:calendar/month cal) => 9
+        (:calendar/day cal) => 3
+        (:calendar/year cal) => 2013
 
         "Overlay is initially hidden"
-        (:overlay-visible? cal) => false
+        (:calendar/overlay-visible? cal) => false
 
         "Starts the weeks on the prior Sunday"
-        (.getDate (ffirst (:weeks cal))) => 1
-        (.getMonth (ffirst (:weeks cal))) => 8              ; js/Date numbers from zero
+        (.getDate (ffirst (:calendar/weeks cal))) => 1
+        (.getMonth (ffirst (:calendar/weeks cal))) => 8              ; js/Date numbers from zero
 
         "Includes the last Saturday"
-        (.getDate (last (last (:weeks cal)))) => 5
-        (.getMonth (last (last (:weeks cal)))) => 9))
+        (.getDate (last (last (:calendar/weeks cal)))) => 5
+        (.getMonth (last (last (:calendar/weeks cal)))) => 9))
 
     (behavior "Displayed Date is Internationalized"
       (reset! i18n/*current-locale* "de-DE")

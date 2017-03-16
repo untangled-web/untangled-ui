@@ -1,0 +1,112 @@
+:root {
+  --shadow-drawer: var(--shadow-2);
+  --maxWidth-drawer--small: 280px;
+  --maxWidth-drawer--medium: 320px;
+}
+
+.c-drawer {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  left: 0;
+  max-width: var(--maxWidth-drawer--small);
+  position: absolute;
+  top: 0;
+  transform: translateX(-110%);
+  transform-style: preserve-3d;
+  transition: transform .2s cubic-bezier(.4,0,.2,1);
+  width: calc(100% - var(--height-toolbar));
+  will-change: transform;
+  z-index: var(--zIndex-drawer);
+
+  @media (--md-up) {
+    max-width: var(--maxWidth-drawer--medium);
+  }
+
+  &.is-open { transform: translateX(0); }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--color-drawer-dark--primary) !important;
+  }
+}
+
+.c-drawer:not(.c-drawer--floating) {
+  background-color: var(--color-drawer--primary);
+  box-shadow: var(--shadow-drawer);
+}
+
+.c-drawer--floating {
+  border: none !important;
+}
+
+.c-drawer--right {
+  left: auto !important;
+  right: 0;
+  transform: translateX(110%);
+}
+
+.c-drawer--permanent {
+  transform: none;
+}
+
+.c-drawer__header {
+  align-items: center;
+  background-color: var(--color-drawer__header--primary);
+  border-bottom: 1px solid var(--color-drawer__divider);
+  color: var(--color-drawer__header--secondary);
+  display: flex;
+  height: 56px;
+  line-height: 56px;
+  padding: 0 1em;
+
+  :--headings { margin: 0; }
+
+  & > img:first-child { margin-right: .5rem; }
+
+  .t-dark &,
+  .t-fullscreen &,
+  :--fullscreen & {
+    background-color: var(--color-drawer__header-dark--primary);
+  }
+}
+
+.c-drawer__group {
+  &:not(:last-child) {
+    border-bottom: var(--color-drawer__divider) 1px solid;
+    margin-bottom: 3px;
+  }
+}
+
+.c-drawer__action {
+  color: inherit;
+  display: inline-block;
+  font-family: inherit;
+  font-size: var(--fontSize--semiNormal);
+  height: 50px;
+  line-height: 50px;
+  padding: 0 1rem;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color var(--global-duration) ease-in-out;
+  width: 100%;
+  will-change: background-color;
+
+  &:hover { background-color: color(var(--grey) a(.18)); }
+
+  &:--active {
+     background-color: color(var(--grey) a(.1));
+     color: var(--color-primary);
+  }
+
+  .c-icon { margin-right: 1.5rem; }
+}
+
+
+.c-drawer__subheader {
+  color: color(var(--grey) a(.9));
+  padding: 1em 1rem;
+}
+

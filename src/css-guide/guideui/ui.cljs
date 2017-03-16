@@ -14,9 +14,10 @@
             styles.patterns
             [untangled.client.mutations :as m]
             [clojure.string :as str]
-            [devcards.core :as dc]))
+            [devcards.core :as dc]
+            [untangled.ui.elements :as e]))
 
-(def parts {"Stylekit" styles.getting-started/sections
+(def parts {"Learn" styles.getting-started/sections
             "Style"           styles.style/sections
             "Layout"          styles.layout/sections
             ;; "Elements"        styles.elements/sections
@@ -81,18 +82,19 @@
                                    :key       idx}
                        (dom/div #js {:className "c-list__tile"
                                      :onClick   #(select-item idx)}
-                         (dom/span #js {} nm)))) part-names))))
+                         (dom/div #js {} nm)))) part-names))))
 
 (defn tabs [component field options]
   (let [part-names   options
         selected-idx (get (om/props component) field)
         get-class    (fn [idx] (str "link" (if (= idx selected-idx) " is-active" "")))
         select-item  (fn [idx] (m/set-integer! component field :value idx))]
-    (dom/ul #js {:className "c-menu c-menu--inline"}
+    (dom/div #js {:className "c-tabs u-end@md"}
       (map-indexed (fn [idx nm]
-                     (dom/li #js {:key idx}
-                       (dom/button #js {:className (str (get-class idx) " c-menu__link")
-                                        :onClick   #(select-item idx)} nm))) part-names))))
+                     (dom/button #js {:className (str (get-class idx) " c-tab c-tab--primary")
+                                      :type      "button"
+                                      :key       idx
+                                      :onClick   #(select-item idx)} nm)) part-names))))
 
 (defn toolbar [component field options]
   (let [part-names   options
@@ -118,16 +120,18 @@
     (let [{:keys [ui/open results ui/search]} (om/props this)
           open       (and open (pos? (count results)))
           menu-class (str "c-dropdown__menu" (when open " is-active"))]
-      (dom/div #js {:className "c-dropdown"}
-        (dom/div #js {:className "c-field c-field--medium"}
+      (dom/div #js {:className "c-dropdown u-hide@sm"}
+        (dom/div #js {:className "c-field"}
           (uic/icon :search)
           (dom/input #js {:type        "text"
+                          :id          "docsSearch"
                           :value       search
                           :onChange    (fn [evt]
                                          (let [v (.. evt -target -value)]
                                            (om/transact! this `[(search/update-results ~{:term v})])))
                           :onFocus     #(m/set-value! this :ui/open true)
-                          :placeholder "Search"
+                          :placeholder "Search Untangled UI"
+                          :title       "Search Untangled UI"
                           :className   "c-field__input"})
           #_(dom/span #js {:className "c-icon"} (untangled.icons/material-icon :search))
           )
@@ -206,13 +210,15 @@
     (let [{:keys [part/selected-section part/sections part/title] :or {part/selected-section 0}} (om/props this)
           section-names (map :section/title sections)]
       (dom/div #js {:className "ui-part u-row"}
+        (dom/div #js {:className "u-column--12 u-column--10@md"}
+          (ui-section (nth sections selected-section)))
         (dom/div #js {:className "u-column--12 u-column--2@md"}
           (navlist this :part/selected-section section-names))
-        (dom/div #js {:className "u-column--12 u-column--10@md"}
-          (ui-section (nth sections selected-section)))))))
+        ))))
 
 (def ui-part (om/factory Part {:keyfn :part/title}))
 
+(defn toggle-drawer [this] (om/update-state! this update :drawer not))
 
 (defui ^:once Parts
   static uc/InitialAppState
@@ -226,24 +232,44 @@
   Object
   (render [this]
     (let [{:keys [parts/selected-part parts searchbar] :or {parts/selected-part 0}} (om/props this)
-          part-names (map :part/title parts)]
-      (dom/div nil
-        (dom/div #js {:className "o-toolbar u-row--collapse u-trailer--half"}
-          (dom/div #js {:className "u-column--4 u-column--3@md u-column--2@lg u-middle"}
-            (dom/div #js {:className "o-toolbar__tile"}
-              (dom/img #js {:src "/img/logo.png" :height "40" :width "40" :style #js {:marginTop "2px"}})
-              (dom/span #js {:className "u-font-size--semi-medium"
-                             :style     #js {:position   "relative"
-                                             :top        "-12px"
-                                             :marginLeft "10px"}} "UI Styleguide")))
-          (dom/div #js {:className "u-column"
-                        :style     #js {:marginTop "20px"}}
-            (tabs this :parts/selected-part part-names))
-          (dom/div #js {:className "u-column--3 u-end u-hide@sm u-hide@md"}
-            (ui-search searchbar))
+          part-names (map :part/title parts)
+          drawer (boolean (om/get-state this :drawer))]
+      (dom/div #js {:className "u-layout__page u-layout__page--fixed"}
+
+        (dom/header #js {:className (str "u-layout__header c-toolbar c-toolbar--raised")}
+          (dom/div #js {:className "c-toolbar__button"}
+            (dom/button #js {:className "c-button c-button--icon" :onClick #(toggle-drawer this) :type "button"}
+              (e/ui-icon {:glyph :menu}))
+            )
+          (dom/div #js {:className "c-toolbar__row"}
+            (ui-search searchbar)
+            (dom/div #js {:className "c-toolbar__spacer u-hide@sm" :aria-hidden true})
+            (tabs this :parts/selected-part part-names)))
+
+        (dom/div #js {:className (str "c-drawer" (when drawer " is-open"))}
+          (dom/div #js {:className "c-drawer__header"}
+            (dom/img #js {:src "/img/logo.png" :height "35" :width "35"})
+            (dom/h1 nil "Untangled " (dom/strong #js {:className "is-primary"} "UI")))
+          (dom/a #js {:className "c-drawer__action" :href "guide.html"}
+            (e/ui-icon {:glyph :check_box}) "Components Guide")
+          (dom/div #js {:className "c-drawer__action is-active"}
+            (e/ui-icon {:glyph :brush}) "CSS Guide")
+          (dom/a #js {:className "c-drawer__action" :href "visuals.html"}
+            (e/ui-icon {:glyph :visibility}) "Visual Regression Tests")
+          (dom/a #js {:className "c-drawer__action" :href "test.html"}
+            (e/ui-icon {:glyph :assignment}) "Specification Tests")
+          (dom/a #js {:className "c-drawer__action" :href "https://github.com/untangled-web/untangled-ui"}
+            (dom/span #js {:className "c-icon"}
+              (dom/svg #js {:width "24" :height "24" :xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"}
+                (dom/path #js {:d "M12 0c-6.627 0-12 5.406-12 12.073 0 5.335 3.438 9.859 8.207 11.455.6.111.819-.262.819-.581l-.017-2.247c-3.337.729-4.042-1.424-4.042-1.424-.546-1.394-1.332-1.765-1.332-1.765-1.091-.749.083-.734.083-.734 1.205.084 1.839 1.244 1.839 1.244 1.071 1.845 2.81 1.312 3.492 1.002.109-.778.42-1.312.762-1.612-2.664-.305-5.466-1.341-5.466-5.967 0-1.319.468-2.395 1.234-3.24-.122-.307-.535-1.535.119-3.196 0 0 1.006-.324 3.3 1.238.957-.269 1.983-.402 3.003-.406 1.02.004 2.046.139 3.004.407 2.29-1.564 3.297-1.238 3.297-1.238.656 1.663.243 2.89.12 3.195.769.845 1.233 1.921 1.233 3.24 0 4.638-2.807 5.659-5.48 5.958.432.374.814 1.108.814 2.234 0 1.614-.016 2.915-.016 3.313 0 .321.218.697.826.579 4.765-1.599 8.2-6.123 8.2-11.455 0-6.667-5.373-12.073-12-12.073z"})))
+            "GitHub")
           )
-        (dom/div #js {:className "ui-parts"}
-          (ui-part (nth parts selected-part)))))))
+        (dom/div #js {:className (str "c-backdrop" (when drawer " is-active")) :onClick #(toggle-drawer this)})
+
+        (dom/main #js {:className "u-layout__content"}
+          (dom/article #js {:className "o-article"}
+            (dom/div #js {:className "ui-parts"}
+              (ui-part (nth parts selected-part)))))))))
 
 (def ui-parts (om/factory Parts))
 
@@ -256,6 +282,6 @@
   Object
   (render [this]
     (let [{:keys [ui/react-key main-ui]} (om/props this)]
-      (dom/div #js {:key react-key}
+      (dom/div #js {:className "u-layout" :key react-key}
         (ui-parts main-ui)))))
 

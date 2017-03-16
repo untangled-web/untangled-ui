@@ -1,0 +1,78 @@
+:root {
+  --borderWidth-tab: 3px;
+  --height-tab: 48px;
+  --maxWidth-tab: 264px;
+  --minWidth-tab: 72px;
+  --paddingX-tab: 12px;
+  --paddingY-tab: 0;
+  --opacity-tab: .6;
+  --opacity-tab--active: 1;
+  --opacity-tab--hover: 1;
+}
+
+.c-tabs {
+  @apply --row;
+
+  .c-toolbar__row &:first-child:not(:last-child) {
+    @media (--md-up) { margin-left: -var(--padding-tab); }
+  }
+}
+
+
+.c-tab {
+  background: var(--color-tab--primary, transparent);
+  border-bottom: var(--borderWidth-tab) solid transparent;
+  color: var(--color-tab--secondary, currentColor);
+  font-size: var(--fontSize-tab, var(--fontSize--tiny));
+  font-weight: var(--fontWeight-tab, bold);
+  height: var(--height-tab);
+  max-width: var(--maxWidth-tab);
+  min-width: var(--minWidth-tab);
+  opacity: var(--opacity-tab);
+  padding: var(--paddingY-tab) var(--paddingX-tab);
+  text-transform: uppercase;
+  transition:
+    background-color var(--global-duration) ease,
+    border var(--global-duration) ease,
+    opacity var(--global-duration) ease;
+
+  &:hover { opacity: var(--opacity-tab--hover); }
+
+  &:active { background-color: var(--color-tab--active); }
+
+  &.is-active {
+     background-color: transparent;
+     border-bottom-color: var(--color-tab--active);
+     box-shadow: none;
+     opacity: var(--opacity-tab--active);
+  }
+}
+
+.c-tab--primary {
+  &.is-active {
+    color: var(--color-tab-alt--primary);
+    border-bottom-color: var(--color-tab-alt--primary);
+  }
+}
+
+.c-tab--contrast {
+  &.is-active { border-bottom-color: currentColor; }
+}
+
+/* Inside a menu */
+
+.has-menu {
+  & > .c-tab,
+  &.c-tab {
+    &::before {
+       @apply --triangle;
+       @apply --triangle-bottom;
+       border-width: 5px 4px 0;
+       content: "";
+       float: right;
+       margin: 3px 0 0 12px;
+       position: relative;
+       vertical-align: middle;
+    }
+  }
+}

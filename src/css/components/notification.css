@@ -5,24 +5,19 @@ section: Components
 
 @import "card";
 
-:root {
-  --backgroundColor-notification--negative: var(--yellow-200);
-  --backgroundColor-notification--informative: var(--blue-400);
-  --color-notification--informative: var(--white);
-  --color-notification-icon: var(--blue-500);
-  --color-notification-icon--success: var(--green-700);
-  --color-notification-icon--warning: var(--orange-700);
-  --color-notification-icon--error: var(--red-700);
-}
-
 .c-notification {
   @apply --card;
   box-shadow: var(--shadow-2);
+  min-height: auto;
   padding: .5em 2.5rem .5em .5rem !important;
   position: relative;
   text-align: left;
   transition-duration: var(--global-duration);
   z-index: 200;
+
+  .t-dark & {
+    background-color: var(--color-card-dark--primary);
+  }
 
   @media (--md-up) {
     margin: 0 auto;
@@ -99,23 +94,10 @@ section: Components
 
 
 .c-notification--warning {
-  background-color: var(--backgroundColor-notification--negative);
-
   & > .c-icon { color: var(--color-notification-icon--warning); }
 }
 
 
 .c-notification--error {
-  background-color: var(--backgroundColor-notification--negative);
-
   & > .c-icon { color: var(--color-notification-icon--error); }
-}
-
-
-.c-notification--informative {
-  background-color: var(--backgroundColor-notification--informative);
-  color: var(--color-notification--informative);
-
-  & > .c-icon,
-  .c-button--icon { color: var(--color-notification--informative); }
 }

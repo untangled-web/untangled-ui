@@ -1,63 +1,22 @@
-/*---
-title: Messages
-section: Components
----*/
-
 :root {
-  --color-message: var(--color-informative);
   --fontSize-message: var(--fontSize--tiny);
-  --message: {
-    color: var(--color-message);
-    font-size: var(--fontSize-message);
-    transition: color var(--global-duration) ease;
-  };
 }
 
 
 .c-message {
-  @apply --message;
-
-  :--fullscreen & {
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
+  color: var(--color-message);
+  font-size: var(--fontSize-message);
+  transition: color var(--global-duration) ease;
 }
 
 
-.c-message--success {
-  --color-message: var(--color-positive);
-  @apply --message;
-
-  :--fullscreen & {
-    --color-message: green;
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
-}
+.c-message--primary { color: var(--color-message-alt-primary); }
 
 
-.c-message--neutral {
-  --color-message: var(--color-neutral);
-  @apply --message;
-}
+.c-message--accent { color: var(--color-message-accent-primary); }
 
 
-.c-message--warning {
-  --color-message: var(--color-live);
-  @apply --message;
-}
+.is-error + .c-message { color: var(--color-message-error); }
 
 
-.c-message--alert {
-  --color-message: var(--color-negative);
-  @apply --message;
-
-  :--fullscreen & {
-    --color-message: red;
-    --fontSize-message: 1rem;
-    @apply --message;
-  }
-}
-
-
-.c-message--cap { text-transform: uppercase; }
+.is-invalid + .c-message { color: var(--color-message-invalid); }

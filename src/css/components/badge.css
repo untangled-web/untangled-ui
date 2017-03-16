@@ -1,51 +1,29 @@
-/* ---
-title: Badges
-section: Components
----*/ 
-
-/* DEPRECATED
- * .c-badge--round
- */
-
 :root {
-  --backgroundColor-badge: var(--grey-400);
-  --backgroundColor-badge--default: transparent;
-  --backgroundColor-badge--positive: var(--green-600);
-  --backgroundColor-badge--informative: var(--blue-600);
-  --backgroundColor-badge--informative-alt: var(--magenta-500);
-  --backgroundColor-badge--live: var(--yellow-700);
-  --backgroundColor-badge--alterable: var(--orange-600);
-  --backgroundColor-badge--negative: var(--red-600);
-  --color-badge: var(--white);
-  --color-badge--default: var(--color-page);
   --borderRadius-badge: 50px;
   --marginRight-badge: 6px;
   --padding-badge: 3px 8px;
   --padding-badge--icon: 4px;
   --size-badge--small: 14px;
   --size-badge--icon: 30px;
-  --badge: {
-    border-radius: var(--borderRadius-badge);
-    color: var(--color-badge);
-    display: inline-block;
-    font-size: var(--fontSize--tiny);
-    line-height: 1;
-    max-width: 100%;
-    outline: 0;
-    padding: var(--padding-badge);
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    user-select: none;
-    vertical-align: middle;
-    white-space: nowrap;
-  };
 }
 
 .c-badge {
-  @apply --badge;
-  background-color: var(--backgroundColor-badge);
+  background-color: var(--color-badge--primary);
+  border-radius: var(--borderRadius-badge);
+  color: var(--color-badge--secondary);
+  display: inline-block;
+  font-size: var(--fontSize--tiny);
+  line-height: 12px;
+  max-width: 100%;
+  outline: 0;
+  padding: var(--padding-badge);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
 
   &:empty { display: none; }
 
@@ -53,9 +31,23 @@ section: Components
 
   .c-button & {
     background-color: var(--white);
-    color: var(--backgroundColor-button);
+    color: var(--color-text);
     margin-bottom: 3px;
   }
+
+  .c-button--primary & { color: var(--color-button-alt--primary); }
+
+  .c-button--accent & { color: var(--color-button-accent--primary); }
+
+  .c-icon:last-child:not(:first-child) { margin-left: 3px; }
+}
+
+.c-badge--primary {
+  background-color: var(--color-badge--primary);
+}
+
+.c-badge--accent {
+  background-color: var(--color-badge--accent);
 }
 
 .c-badge--small {
@@ -63,7 +55,11 @@ section: Components
   min-width: var(--size-badge--small);
 }
 
-.c-badge--round,
+.c-badge--large {
+  padding: 3px;
+  text-indent: 4px;
+}
+
 .c-badge--icon {
   height: var(--size-badge--icon);
   padding: var(--padding-badge--icon);
@@ -74,15 +70,3 @@ section: Components
     width: calc(var(--size-badge--icon) - 10px);
   }
 }
-
-.c-badge--default {
-  background-color: var(--backgroundColor-badge--default);
-  color: var(--color-badge--default);
-}
-
-.c-badge--positive { background-color: var(--backgroundColor-badge--positive); }
-.c-badge--informative { background-color: var(--backgroundColor-badge--informative); }
-.c-badge--live { background-color: var(--backgroundColor-badge--live); }
-.c-badge--alterable { background-color: var(--backgroundColor-badge--alterable); }
-.c-badge--negative { background-color: var(--backgroundColor-badge--negative); }
-.c-badge--purple { background-color: var(--backgroundColor-badge--informative-alt); }

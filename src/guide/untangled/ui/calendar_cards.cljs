@@ -1,10 +1,8 @@
 (ns untangled.ui.calendar-cards
-  (:require-macros
-    [untangled.client.cards :refer [untangled-app]]
-    [devcards.core :refer [defcard]])
   (:require
-    [devcards.core :as dc]
-    [om.next :as om :refer-macros [defui]]
+    [devcards.core :as dc :refer-macros [defcard]]
+    [untangled.client.cards :refer [untangled-app]]
+    [om.next :as om :refer [defui]]
     [om.dom :as dom]
     [untangled.i18n :refer [tr trc trf]]
     [untangled.i18n.core :as i18n]
@@ -24,15 +22,15 @@
     (let [{:keys [start-date end-date]} (om/props this)]
       (dom/div #js {:className "u-row"}
         (dom/div #js {:className "u-column--3"}
-        (c/ui-calendar start-date
+          (c/ui-calendar start-date
             ;:onDateSelected #(js/alert (str "Start " %))
-            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button" :type "button"}
                                                 (tr "Start Date: ") (c/displayed-date cal)))))
         (dom/div #js {:className "u-column--3 u-push--6 u-end"}
           (c/ui-calendar end-date
             ;:onDateSelected #(js/alert (str "End " %))
             :align :bottom-right-edge
-            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button"}
+            :overlay-trigger (fn [toggle cal] (dom/button #js {:onClick toggle :className "c-button" :type "button"}
                                                 (tr "End Date: ") (c/displayed-date cal)))))))))
 
 

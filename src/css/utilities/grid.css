@@ -4,15 +4,14 @@ section: Utilities
 ---*/
 
 .u-wrapper {
-  margin-bottom: var(--frame-half);
+  display: inline-block;
   position: relative;
-  width: 100%;
 }
 
 
 .u-row { @apply --row; }
 .u-row--break { @apply --row-break; }
-.u-row--collapse > * { @apply --row-collapse; }
+.u-row--collapse > [class^="u-column"] { @apply --row-collapse; }
 .u-row--reverse { flex-direction: row-reverse; }
 .u-row--wide {
   @apply --row-wide;
@@ -226,53 +225,4 @@ section: Utilities
   .u-pull--9\@xl { margin-right: calc(var(--width-column) * 9); }
   .u-pull--10\@xl { margin-right: calc(var(--width-column) * 10); }
   .u-pull--11\@xl { margin-right: calc(var(--width-column) * 11); }
-}
-
-/* Grid for Emails */
-
-.s-email {
-  p, a, li, td, body, table, blockquote {
-    text-size-adjust: 100%;
-  }
-
-  p, a, li, td, blockquote {
-    mso-line-height-rule: exactly;
-  }
-
-  table {
-    border-collapse: collapse;
-    mso-table-lspace: 0pt;
-    mso-table-rspace: 0pt;
-  }
-}
-
-.s-email__body {
-  @apply --egrid-reset;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-.s-email__body-cell {
-  @apply --egrid-reset;
-  border-top: 0;
-  padding: 10px;
-}
-
-.s-email__view {
-  @apply --egrid-reset;
-}
-
-.o-email-container {
-  border: 0;
-  margin: 0 auto;
-  max-width: 600px !important;
-
-  @media (--md-up) { width: 600px !important; }
-}
-
-.o-email-preheader {
-  border-bottom: 0;
-  border-top: 0;
-  padding-bottom: 9px;
-  padding-top: 9px;
 }

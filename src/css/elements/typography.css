@@ -1,15 +1,10 @@
-/*---
-title: Typography
-section: Elements
----*/
-
 /*------------------------------------*\
   #GLOBAL
 \*------------------------------------*/
 
 :root {
   /* stylelint-disable root-no-standard-properties */
-  color: var(--color-page);
+  color: var(--color-text);
   font: var(--fontSize-page) / var(--lineHeight-page) var(--fontFamily-page);
   font-weight: var(--fontWeight-page);
   text-rendering: optimizeLegibility;
@@ -26,14 +21,16 @@ section: Elements
 }
 
 
-.t-dark {
+.t-dark,
+.t-fullscreen,
+:--fullscreen {
   color: var(--white);
 }
 
 
 ::selection {
   background-color: #add7ff;
-  color: var(--color-page);
+  color: var(--color-text);
   text-shadow: none;
 }
 
@@ -65,6 +62,12 @@ section: Elements
     font-weight: bold;
     text-decoration: underline;
   }
+}
+
+a { color: var(--color-link); }
+
+a[href^="http"] {
+  cursor: pointer;
 }
 
 
