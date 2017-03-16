@@ -53,18 +53,20 @@
                                :optimizations  :none}}
                {:id           "production-guide"
                 :source-paths ["src/main" "src/guide"]
-                :compiler     {:devcards      true
-                               :asset-path    "js/pg-js"
-                               :output-dir    "resources/public/js/pg-js"
-                               :output-to     "resources/public/js/guide.min.js"
-                               :optimizations :advanced}}
+                :compiler     {:devcards       true
+                               :main           untangled.ui.start-ui
+                               :asset-path     "js/pg-js"
+                               :output-dir     "resources/public/js/pg-js"
+                               :output-to      "resources/public/js/guide.min.js"
+                               :optimizations  :advanced}}
                {:id           "production-visuals"
                 :source-paths ["src/main" "src/visuals"]
-                :compiler     {:devcards      true
-                               :asset-path    "js/pv-js"
-                               :output-dir    "resources/public/js/pv-js"
-                               :output-to     "resources/public/js/visuals.min.js"
-                               :optimizations :advanced}}
+                :compiler     {:devcards       true
+                               :main           untangled.ui.start-ui
+                               :asset-path     "js/pv-js"
+                               :output-dir     "resources/public/js/pv-js"
+                               :output-to      "resources/public/js/visuals.min.js"
+                               :optimizations  :advanced}}
                {:id           "visuals"
                 :source-paths ["src/main" "src/visuals"]
                 :figwheel     {:devcards true}
@@ -114,7 +116,7 @@
 
   ; TODO: On figwheel startup, run the gulp shell command if the CSS files are missing
   ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
-  :profiles {:release {:prep-tasks [["shell" "gulp"]]
+  :profiles {:release {:prep-tasks     [["shell" "gulp"]]
                        :jar-exclusions [#"public/img/.*" #"test/.*" #"favicon.ico" #".*html$"]
                        }
              :dev     {:dependencies [[binaryage/devtools "0.9.0"]
