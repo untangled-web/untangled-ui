@@ -22,6 +22,7 @@
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.17.0"]
             [lein-cljsbuild "1.1.5"]
+            [lein-shell "0.5.0"]
             [lein-doo "0.1.7"]]
 
   :source-paths ["src/main"]
@@ -33,6 +34,8 @@
 
   :test-refresh {:report    untangled-spec.reporters.terminal/untangled-report
                  :with-repl true}
+
+  :aliases {"jar" ["with-profile" "release" "jar"]}
 
   :doo {:build "automated-tests"
         :paths {:karma "node_modules/karma/bin/karma"}}
@@ -111,15 +114,18 @@
 
   ; TODO: On figwheel startup, run the gulp shell command if the CSS files are missing
   ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.0"]
-                                  [criterium "0.4.3"]
-                                  [figwheel-sidecar "0.5.9" :exclusions [http-kit]]
-                                  [com.cemerick/piggieback "0.2.1"]
-                                  [org.clojure/tools.namespace "0.2.11"]
-                                  [org.clojure/tools.nrepl "0.2.12"]
-                                  [hickory "0.7.0"]
-                                  [devcards "0.2.2" :exclusions [org.omcljs/om]]]
-                   :source-paths ["dev" "src/guide" "src/css-guide"]
-                   :repl-options {:init-ns          clj.user
-                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                                  :port             7001}}})
+  :profiles {:release {:prep-tasks [["shell" "gulp"]]
+                       :jar-exclusions [#"public/img/.*" #"test/.*" #"favicon.ico" #".*html$"]
+                       }
+             :dev     {:dependencies [[binaryage/devtools "0.9.0"]
+                                      [criterium "0.4.3"]
+                                      [figwheel-sidecar "0.5.9" :exclusions [http-kit]]
+                                      [com.cemerick/piggieback "0.2.1"]
+                                      [org.clojure/tools.namespace "0.2.11"]
+                                      [org.clojure/tools.nrepl "0.2.12"]
+                                      [hickory "0.7.0"]
+                                      [devcards "0.2.2" :exclusions [org.omcljs/om]]]
+                       :source-paths ["dev" "src/guide" "src/css-guide"]
+                       :repl-options {:init-ns          clj.user
+                                      :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                                      :port             7001}}})
