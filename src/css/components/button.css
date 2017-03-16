@@ -281,6 +281,7 @@ section: Components
 .c-button--radial { border-radius: var(--global-radial) !important; }
 
 .c-button--icon {
+  border-radius: 100px;
   color: var(--color-button-icon);
   min-width: var(--width-button--icon);
   padding: 0;

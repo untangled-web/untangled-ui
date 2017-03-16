@@ -39,6 +39,37 @@
       (dom/span #js {:className "c-avatar c-avatar--xlarge"} "XL")
       (dom/span #js {:className "c-avatar c-avatar--huge"} "HU"))))
 
+(defarticle avatar-customize
+  "### Customize
+
+  Use these custom properties in your stylesheet to change how your avatars look.
+
+  ```css
+  --borderRadius-avatar: 100px;
+  --borderSize-avatar: 2px;
+  --borderSize-avatar--medium: 3px;
+  --borderSize-avatar--large: 4px;
+  --borderSize-avatar--xlarge: 5px;
+  --borderSize-avatar--huge: 6px;
+  --color-avatar: color(var(--grey) a(.5));
+  --color-avatar--secondary: color(var(--grey-900) a(60%));
+  --color-avatar-alt--primary: var(--color-primary);
+  --color-avatar-alt--accent: var(--color-accent);
+  --color-avatar-alt--secondary: var(--color-primary-contrast);
+  --divisor-avatar: 2.5;
+  --size-avatar: 40px;
+  --scale-avatar: calc(var(--size-avatar) / var(--divisor-avatar));
+  --size-avatar--medium: 55px;
+  --scale-avatar--medium: calc(var(--size-avatar--medium) / var(--divisor-avatar));
+  --size-avatar--large: 75px;
+  --scale-avatar--large: calc(var(--size-avatar--large) / var(--divisor-avatar));
+  --size-avatar--xlarge: 90px;
+  --scale-avatar--xlarge: calc(var(--size-avatar--xlarge) / var(--divisor-avatar));
+  --size-avatar--huge: 110px;
+  --scale-avatar--huge: calc(var(--size-avatar--huge) / var(--divisor-avatar));
+  ```
+  ")
+
 ;; -------------------------
 ;; Badges
 ;; -------------------------
@@ -71,6 +102,25 @@
   (dom/span #js {:className "c-badge c-badge--round"}
     (icons/icon :alarm)))
 
+
+(defarticle badge-customize
+  "### Customize
+
+  Use these custom properties in your stylesheet to change how your badges look.
+
+  ```css
+  --borderRadius-badge: 50px;
+  --color-badge--primary: color(var(--grey) a(.7));
+  --color-badge--secondary: var(--white);
+  --color-badge-alt--primary: var(--color-primary);
+  --color-badge-accent--primary: var(--color-accent);
+  --marginRight-badge: 6px;
+  --padding-badge: 3px 8px;
+  --padding-badge--icon: 4px;
+  --size-badge--small: 14px;
+  --size-badge--icon: 30px;
+  ```
+  ")
 
 ;; -------------------------
 ;; Buttons
@@ -1779,6 +1829,7 @@
            :documentation avatar-header
            :examples [
                       avatar
+                      avatar-customize
                       ]}
           {:id :badges
            :title "Badges"
@@ -1787,6 +1838,7 @@
                       badge
                       badge-button
                       badge-icon
+                      badge-customize
                       ]}
           {:id :buttons
            :title "Buttons"

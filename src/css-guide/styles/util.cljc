@@ -68,10 +68,7 @@
                 (om.dom/div (cljs.core/clj->js {:className "u-row"})
                   (om.dom/div (cljs.core/clj->js {:className "ui-example__figure u-column--12"})
                     (om.dom/div (cljs.core/clj->js {:className "ui-example"})
-                      (~symfn this#)
-                      #_(let [iframe#  (.createElement js/document "IFRAME")
-                              example# (.innerHTML iframe# (om.dom/div nil (~symfn this#)))]
-                          (.appendChild example# iframe#))))
+                      (~symfn this#)))
                   (om.dom/div (cljs.core/clj->js {:className "ui-example__source u-column--12"})
                     (styles.util/source->react ~symfn ~body))))))
           (def ~sym {:name          ~(name sym)
