@@ -13,8 +13,8 @@
 .c-tabs {
   @apply --row;
 
-  .c-toolbar__row &:first-child:not(:last-child) {
-    @media (--md-up) { margin-left: -var(--padding-tab); }
+  .c-toolbar__row &:first-child {
+    @media (--md-up) { margin-left: -var(--paddingX-tab); }
   }
 }
 

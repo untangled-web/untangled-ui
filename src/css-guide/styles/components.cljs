@@ -1786,7 +1786,7 @@
                (icons/icon :account_circle)))
            ))
        (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
-         (dom/ul #js {:className "c-tabs"}
+         (dom/div #js {:className "c-tabs"}
            (dom/button #js {:className (get-class :widgets)
                             :type      "button"
                             :onClick   #(select-item :widgets)} "Widgets")
