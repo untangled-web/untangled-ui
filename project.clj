@@ -14,8 +14,8 @@
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
                  [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
-                 [navis/untangled-client "0.7.1-SNAPSHOT" :scope "provided"]
-                 [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
+                 [navis/untangled-client "0.8.0" :scope "provided"]
+                 [navis/untangled-server "0.7.0" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
                  [com.taoensso/timbre "4.7.4" :exclusions [io.aviso/pretty]]]
