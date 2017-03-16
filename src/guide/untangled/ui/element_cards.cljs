@@ -166,6 +166,22 @@
   {:visible false}
   {:inspect-data true})
 
+(defcard empty-state
+  "# Empty State
+
+  Render an icon and text for when you can't display anything when you normally would have a collection of things.
+
+  ```
+  (e/ui-empty-state {:glyph :widgets :title \"No widgets yet\" :message \"Create a widget to get started\"})
+  ```
+  "
+
+  (e/ui-iframe {:width "100%" :height "400px"}
+    (dom/div nil
+      (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+      (e/ui-empty-state {:glyph :widgets :title "No widgets yet" :message "Create a widget to get started"})))
+  {:visible false})
+
 (defsample fader
   "# Fader
 

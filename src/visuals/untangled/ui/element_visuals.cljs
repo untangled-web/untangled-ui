@@ -159,6 +159,21 @@
       (e/ui-checkbox {:id "checkbox-4" :checked :partial :disabled true}))))
 
 
+(defcard empty-state-visual-regressions
+  (dom/div nil
+    (dom/h1 nil "Nothing specified")
+    (e/ui-iframe {:width "100%" :height "400px"}
+      (dom/div nil
+        (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+        (e/ui-empty-state {})))
+
+    (dom/h1 nil "Custom specification")
+    (e/ui-iframe {:width "100%" :height "400px"}
+     (dom/div nil
+       (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
+       (e/ui-empty-state {:glyph :widgets :title "No widgets yet" :message "Create a widget to get started"}))))
+  )
+
 (defcard field-visual-regressions
   (dom/div nil
     (for [size [:normal :small :medium :large]
@@ -170,7 +185,8 @@
   (dom/div nil
     (e/ui-icon {} (icon :alarm))
     (e/ui-icon {:color :active} (icon :alarm))
-    (e/ui-icon {:color :passive} (icon :alarm))))
+    (e/ui-icon {:color :passive} (icon :alarm))
+    (e/ui-icon {:size :huge :color :passive} (icon :alarm))))
 
 
 (defcard icon-sizes-visual-regressions

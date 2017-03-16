@@ -306,7 +306,7 @@
 (defn ui-icon
   "Render an icon. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  `:color` :none (default), :positive, :informative, :neutral, :live, :alterable, :negative
+  `:color` :none (default), :active, :passive
   `:size` :regular (default), :small, :medium, :large, :xlarge, :huge
   `:glyph` - Instructs `ui-icon` to render an icon from the built-in set. See `untangled.icons/icon`.
 
@@ -576,10 +576,25 @@
 
   `:label` - A string of text to describe the tab action
   `:kind` :default, :primary, or :contrast - changes the aesthetic style of a tab
-  `:active` true or false (default) - Usually used to show that your in that tab's view."
+  `:active` true or false (default) - Usually used to show that your in that tab's view.
+
+  TODO: Add the ability to wrap this in a menu so you can show more than just the text.
+  "
   ([{:keys [className label kind active] :as props :or {className "" label ""}}]
    (let [legal-kinds #{:primary :contrast}
          classes     (cond-> (str className " c-tab " (when active " is-active "))
                        (contains? legal-kinds kind) (str " c-tab--" (name kind)))]
      (dom/button #js {:className classes :type "button"} label))))
 
+(defn ui-empty-state
+  "Render an icon and text for when you can't display anything when you normally would have a collection of things.
+
+  `:glyph` - An icon glyph name to render a given icon.
+  `:title` - A string to announce what's missing
+  `:message` - A string to instruct the user what to do next
+  "
+  ([{:keys [className glyph title message] :as props :or {className "u-absolute--middle-center" glyph :help title "Nothing to see yet" message ""}}]
+   (dom/div #js {:className className}
+     (ui-icon {:size :huge :color :passive} (icon glyph))
+     (dom/h1 nil title)
+     (dom/p #js {:className "c-message"} message))))
