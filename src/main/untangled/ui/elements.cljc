@@ -324,18 +324,21 @@
         top-level-class (cond-> (str user-classes " c-iconbar")
                           (= orientation :vertical) (str " c-iconbar--rail")
                           shifting (str " c-iconbar--shifting"))]
-    (dom/div #js {:className top-level-class}
+    (dom/div #js {}
       (apply dom/nav #js {:className top-level-class} children))))
 
 (defn ui-icon-bar-item
-  "TODO: "
+  "Render an icon button for use inside an icon bar.
+
+  `:glyph` - An icon glyph name to render that given icon.
+  `:label` - A string to label that icon.
+  `:active` true or false (default) - Usually used to show that your in that action's view."
   ([{:keys [className glyph label active] :as props :or {className "" label ""}}]
-   (ui-icon-bar-item props (ui-icon {:glyph glyph})))
-  ([{:keys [className label active] :as props :or {className ""}} icon-child]
-   (let [attrs (clj->js (str className " c-iconbar__item " (when active "is-active")))]
-     (dom/button attrs
-       icon-child
-       (dom/span #js {:className "c-iconbar__label"} label)))))
+   (dom/button #js {:className (str "c-iconbar__item " (when active "is-active"))}
+     (ui-icon {:glyph glyph})
+     (dom/span #js {:className "c-iconbar__label"}
+       label))))
+
 
 (defn ui-label
   "Render the given children within a label. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).

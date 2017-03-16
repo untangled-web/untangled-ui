@@ -250,12 +250,12 @@
           (dom/div #js {:className "c-drawer__header"}
             (dom/img #js {:src "/img/logo.png" :height "35" :width "35"})
             (dom/h1 nil "Untangled " (dom/strong #js {:className "is-primary"} "UI")))
-          (dom/a #js {:className "c-drawer__action" :href "visuals.html"}
-            (e/ui-icon {:glyph :visibility}) "Visual Regression Tests")
           (dom/a #js {:className "c-drawer__action" :href "guide.html"}
             (e/ui-icon {:glyph :check_box}) "Components Guide")
           (dom/div #js {:className "c-drawer__action is-active"}
             (e/ui-icon {:glyph :brush}) "CSS Guide")
+          (dom/a #js {:className "c-drawer__action" :href "visuals.html"}
+            (e/ui-icon {:glyph :visibility}) "Visual Regression Tests")
           (dom/a #js {:className "c-drawer__action" :href "test.html"}
             (e/ui-icon {:glyph :assignment}) "Specification Tests")
           (dom/a #js {:className "c-drawer__action" :href "https://github.com/untangled-web/untangled-ui"}

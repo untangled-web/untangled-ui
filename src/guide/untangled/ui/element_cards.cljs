@@ -239,15 +239,22 @@
   Renders icons on a horizontal or vertical bar.
   "
   (dom/div nil
-    (e/ui-icon-bar {}                                       ; FIXME: Shouldn't these lay out left-to-right in the space given?
-      (e/ui-icon {:glyph :local_activity :color :active})   ; FIXME: colors not working
-      (e/ui-icon {:glyph :local_airport :color :passive})
-      (e/ui-icon {:glyph :local_cafe}))
+    (e/ui-icon-bar {}
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )
+    (e/ui-icon-bar {:shifting true}
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )
     (dom/br nil)
     (e/ui-icon-bar {:orientation :vertical}
-      (e/ui-icon {} (icon :arrow_back))                     ; FIXME: This isn't working
-      (e/ui-icon {} (icon :arrow_forward))
-      (e/ui-icon {} (icon :arrow_drop_up)))))
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )))
 
 (defsample label
   "# Labels

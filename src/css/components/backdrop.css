@@ -3,12 +3,10 @@
   @apply --position-full;
   background-color: var(--color-backdrop);
   position: fixed;
+  z-index: var(--zIndex-backdrop) !important;
 
 
-  &:--active {
-    @apply --fade-in;
-    z-index: var(--zIndex-backdrop);
-  }
+  &:--active { @apply --fade-in; }
 
   &:--disabled {
     height: 0 !important;
