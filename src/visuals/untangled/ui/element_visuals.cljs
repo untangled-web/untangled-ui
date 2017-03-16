@@ -199,8 +199,7 @@
     (e/ui-icon-bar {:orientation :vertical}
       (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
       (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
-      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
-      )))
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"}))))
 
 (defcard labels-visual-regressions
   (dom/div nil
@@ -239,8 +238,7 @@
           (e/ui-dialog-body {} "You have been notified.")
           (e/ui-dialog-actions {}
             (e/ui-flat-button {:color :primary} "Cancel")
-            (e/ui-flat-button {:color :primary} "Ok")))))
-    ))
+            (e/ui-flat-button {:color :primary} "Ok")))))))
 
 
 (defcard notifications-visual-regressions
@@ -260,8 +258,7 @@
     (e/ui-progress {:className "u-trailer--half"})
     (for [value [0 25 50 75 100]
           size  [:regular :dense]]
-      (e/ui-progress {:max "100" :value value :size size :className "u-trailer--half" :key (str "id-" value size)})
-      )))
+      (e/ui-progress {:max "100" :value value :size size :className "u-trailer--half" :key (str "id-" value size)}))))
 
 
 (defcard radio-visual-regressions
@@ -277,9 +274,24 @@
     (e/ui-switch {:checked false :id "switch-1"})
     (e/ui-switch {:checked true :id "switch-1"})
     (e/ui-switch {:checked false :id "switch-1" :disabled true})
-    (e/ui-switch {:checked true :id "switch-1" :disabled true})
-    ))
+    (e/ui-switch {:checked true :id "switch-1" :disabled true})))
 
-;; TODO Need
-;; -------------
-;; tabs
+
+(defcard tab-visual-regressions
+  (dom/div nil
+    (e/ui-tabs {}
+      (e/ui-tab {:label "Home" :active true})
+      (e/ui-tab {:label "Docs"})
+      (e/ui-tab {:label "Support"}))
+
+    (e/ui-tabs {}
+      (e/ui-tab {:label "Home" :active true :kind :primary})
+      (e/ui-tab {:label "Docs" :kind :primary})
+      (e/ui-tab {:label "Support" :kind :primary}))
+
+    (dom/div #js {:className "t-dark"}
+      (e/ui-tabs {}
+        (e/ui-tab {:label "Home" :active true :kind :contrast})
+        (e/ui-tab {:label "Docs" :kind :contrast})
+        (e/ui-tab {:label "Support" :kind :contrast})))))
+

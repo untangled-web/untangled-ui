@@ -354,7 +354,7 @@
   `:label` - A string to label that icon.
   `:active` true or false (default) - Usually used to show that your in that action's view."
   ([{:keys [className glyph label active] :as props :or {className "" label ""}}]
-   (dom/button #js {:className (str "c-iconbar__item " (when active "is-active"))}
+   (dom/button #js {:className (str "c-iconbar__item " (when active "is-active")) :type "button"}
      (ui-icon {:glyph glyph})
      (dom/span #js {:className "c-iconbar__label"}
        label))))
@@ -560,4 +560,26 @@
         attrs       (assoc props :className classes :aria-hidden false)]
     (dom/progress (clj->js attrs))))
 
+(defn ui-tabs
+  "Render a container for tabs using a vector of icons (each a map of attributes).
+   Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+
+   all parameters are optional
+   "
+  [{:keys [className] :as props :or {className ""}} & children]
+  (let [user-classes    (get props :className "")
+        top-level-class (cond-> (str user-classes " c-tabs"))]
+    (apply dom/div #js {:className top-level-class} children)))
+
+(defn ui-tab
+  "Render an icon button for use inside an icon bar.
+
+  `:label` - A string of text to describe the tab action
+  `:kind` :default, :primary, or :contrast - changes the aesthetic style of a tab
+  `:active` true or false (default) - Usually used to show that your in that tab's view."
+  ([{:keys [className label kind active] :as props :or {className "" label ""}}]
+   (let [legal-kinds #{:primary :contrast}
+         classes     (cond-> (str className " c-tab " (when active " is-active "))
+                       (contains? legal-kinds kind) (str " c-tab--" (name kind)))]
+     (dom/button #js {:className classes :type "button"} label))))
 

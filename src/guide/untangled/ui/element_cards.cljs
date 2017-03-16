@@ -393,3 +393,25 @@
         (dom/label #js {:className "is-optional" :htmlFor "switch-1"} "With a label!"))))
   {:checked false}
   {:inspect-data true})
+
+(defsample tabs
+  "# Tabs
+
+  Renders tabs with text inside a tabs container.
+  "
+  (dom/div nil
+    (e/ui-tabs {}
+      (e/ui-tab {:label "Home" :active true})
+      (e/ui-tab {:label "Docs"})
+      (e/ui-tab {:label "Support"}))
+
+    (e/ui-tabs {}
+      (e/ui-tab {:label "Home" :active true :kind :primary})
+      (e/ui-tab {:label "Docs" :kind :primary})
+      (e/ui-tab {:label "Support" :kind :primary}))
+
+    (dom/div #js {:className "t-dark"}
+      (e/ui-tabs {}
+       (e/ui-tab {:label "Home" :active true :kind :contrast})
+       (e/ui-tab {:label "Docs" :kind :contrast})
+       (e/ui-tab {:label "Support" :kind :contrast})))))
