@@ -185,6 +185,26 @@
     (e/ui-icon {:size :xlarge} (icon :alarm))
     (e/ui-icon {:size :huge} (icon :alarm))))
 
+
+(defcard icon-bar-visual-regressions
+  (dom/div nil
+    (e/ui-icon-bar {}
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )
+    (e/ui-icon-bar {:shifting true}
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )
+    (dom/br nil)
+    (e/ui-icon-bar {:orientation :vertical}
+      (e/ui-icon-bar-item {:glyph :home :label "Home" :active true})
+      (e/ui-icon-bar-item {:glyph :description :label "Docs" :color :passive})
+      (e/ui-icon-bar-item {:glyph :feedback :label "Support"})
+      )))
+
 (defcard labels-visual-regressions
   (dom/div nil
     (for [color [:none :primary :accent]
