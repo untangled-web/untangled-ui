@@ -78,7 +78,10 @@
   &,
   & + label { user-select: none; }
 
-  & + label::before { border-color: var(--color-radio--disabled); }
+  & + label {
+    &::before { border-color: var(--color-radio--disabled); }
+    &::after { background-color: var(--color-radio--disabled); }
+  }
 }
 
 

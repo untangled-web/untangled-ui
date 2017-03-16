@@ -13,6 +13,8 @@
     position: relative;
     top: .25em;
   }
+
+  &.is-disabled { background-color: var(--color-switch-disabled--primary) }
 }
 
 .c-switch__paddle {
@@ -65,4 +67,11 @@
 
   & > .c-icon:last-of-type { fill: var(--color-switch-alt--secondary); }
   }
+
+  &[disabled] + .c-switch__paddle::before {
+    background-color: var(--color-switch-disabled);
+   }
+  &:checked[disabled] + .c-switch__paddle::before {
+     background-color: var(--color-switch-disabled--checked);
+   }
 }

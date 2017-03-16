@@ -239,8 +239,11 @@
 
   /* Switch */
   --color-switch--primary: var(--grey-200);
+  --color-switch-disabled--primary: var(--grey-100);
   --color-switch--secondary: var(--color-control-border--primary);
+  --color-switch-disabled: var(--grey-200);
   --color-switch--checked: var(--color-control--checked);
+  --color-switch-disabled--checked: var(--grey-200);
   --color-switch-alt--secondary: var(--color-control--unchecked);
   --color-switch-dark--primary: var(--grey-600);
 

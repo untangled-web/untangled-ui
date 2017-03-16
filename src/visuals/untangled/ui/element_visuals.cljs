@@ -271,7 +271,15 @@
     (e/ui-radio {:id "radio-2" :disabled true})
     (e/ui-radio {:id "radio-2" :disabled true :checked true})))
 
+
+(defcard switch-visual-regressions
+  (dom/div nil
+    (e/ui-switch {:checked false :id "switch-1"})
+    (e/ui-switch {:checked true :id "switch-1"})
+    (e/ui-switch {:checked false :id "switch-1" :disabled true})
+    (e/ui-switch {:checked true :id "switch-1" :disabled true})
+    ))
+
 ;; TODO Need
 ;; -------------
-;; switch
 ;; tabs

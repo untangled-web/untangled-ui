@@ -267,13 +267,13 @@
     `:id` string - Unique DOM ID. Required for correct rendering.
     `:checked` - true, false, or :partial
     "
-    [{:keys [id state checked className] :as props}]
+    [{:keys [id state checked className disabled] :as props}]
     (assert id "DOM ID is required on checkbox")
     (let [classes (str className " c-switch__input")
           type    "checkbox"
           checked (boolean checked)
           attrs   (assoc props :type "checkbox" :checked checked :className classes)]
-      (dom/div #js {:className "c-switch"}
+      (dom/div #js {:className (str "c-switch" (when disabled " is-disabled"))}
         (dom/input (clj->js attrs))
         (dom/label #js {:className "c-switch__paddle"
                        :htmlFor id
