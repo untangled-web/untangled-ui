@@ -215,8 +215,7 @@
     (dom/div #js {:className "c-card c-card--row is-inactive"}
       (dom/div #js {:className "c-card__title"}
         (dom/h1 #js {:className "c-card__title-text"} "Title"))
-      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))
-    ))
+      (dom/div #js {:className "c-card__supporting-text"} "I could have used lorem ipsum, but what's the fun in that?"))))
 
 ;; -------------------------
 ;; Checkboxes
@@ -359,8 +358,7 @@
              "Hide layout")
           (dom/button #js {:className (str "c-menu__item") :type "button"}
             (dom/div #js {:className "c-menu__item-icon"} (icons/icon :done))
-            "Show bleed"))
-          ))))))
+            "Show bleed"))))))))
 
 
 (defexample menus-search-multi
@@ -446,8 +444,7 @@
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
                (dom/button #js {:className "c-button" :type "button"} "Cancel")
-               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save"))))
-         )))
+               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save")))))))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
@@ -472,8 +469,7 @@
            (l/row {:density :collapse}
              (dom/div #js {:className "u-column--12 u-end"}
                (dom/button #js {:className "c-button" :type "button"} "Cancel")
-               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save"))))
-         )))
+               (dom/button #js {:className "c-button c-button--primary" :type "button"} "Save")))))))
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
       (dom/div #js {:className (str "c-expansion-panel" (when expanded-3 " is-expanded"))
@@ -510,8 +506,7 @@
          (dom/div #js {:className "c-expansion-panel__info" :aria-hidden false}
            (when-not expanded-5 "Vegetarian"))
          (dom/div #js {:className "c-expansion-panel__expand-icon"} (icons/icon :expand_more)))
-       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here"))
-     )))
+       (dom/div #js {:className "c-expansion-panel__secondary-content"} "Stuff here")))))
 
 (defexample expansion-panel-survey
   "### Example: Editing a question
@@ -549,8 +544,7 @@
            (l/col {:width 1}
              (dom/label #js {:htmlFor "input2"} "Short label"))
            (l/col {:width 9}
-             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a short question..." :value "How was your last stay?"}))
-           )
+             (dom/input #js {:className "c-field" :id "input2" :type "text" :placeholder "Type a short question..." :value "How was your last stay?"})))
 
 
          (l/row {}
@@ -595,8 +589,7 @@
                 (dom/input #js {:className "c-radio" :type "radio" :value "7" :id "sel7" :name "q1"})
                 (dom/label #js {:htmlFor "sel1"} \u00A0))
               (l/col {:className "u-column has-xpipe has-end-pipe" :halign :center}
-                (icons/icon :sentiment_very_satisfied))
-              )))
+                (icons/icon :sentiment_very_satisfied)))))
 
          (dom/div #js {:className "c-expansion-panel__actions"}
            (l/row {:density :collapse}
@@ -604,8 +597,7 @@
                (dom/button #js {:type "button" :className "c-button"} "Options")
                (dom/button #js {:type "button" :className "c-button"} "Move")
                (dom/button #js {:type "button" :className "c-button c-button--accent"} "Add Conditional")
-               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
-         )))
+               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save")))))))
 
     (let [expanded-2 (boolean (om/get-state this :expanded-2))]
      (dom/div #js {:className (str "c-expansion-panel" (when expanded-2 " is-expanded"))
@@ -624,21 +616,16 @@
 
          (l/row {:density :collapse :valign :middle :className "u-trailer"}
            (l/col {:width 1}
-             (dom/label #js {:htmlFor "cond-op"} "If answer ")
-             )
+             (dom/label #js {:htmlFor "cond-op"} "If answer "))
            (l/col {:width 1}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is"))
-             )
+               (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is")))
            (l/col {:width 2}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:type "button" :className "c-button"} "exactly"))
-             )
+               (dom/button #js {:type "button" :className "c-button"} "exactly")))
            (l/col {:width 2}
              (dom/span #js {:className "has-menu"}
-               (dom/button #js {:type "button" :className "c-button"} "red wine"))
-             )
-           )
+               (dom/button #js {:type "button" :className "c-button"} "red wine"))))
 
          (l/row {:density :collapse :valign :middle}
            (l/col {:width 1}
@@ -666,8 +653,7 @@
             (l/row {:density :collapse :valign :middle :distribute-extra-columns :between}
              (l/col {:width 12 :className "u-trailer--quarter"}
                (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "1" :id "sel1" :name "q1"})
-               (dom/label #js {:htmlFor "sel1"} "Yes")
-               )
+               (dom/label #js {:htmlFor "sel1"} "Yes"))
              (l/col {:width 12}
                (dom/input #js {:className "c-radio c-radio--expanded" :type "radio" :value "5" :id "sel5" :name "q1"})
                (dom/label #js {:htmlFor "sel1"} "No")))))
@@ -677,9 +663,7 @@
              (dom/div #js {:className "u-column--12 u-end"}
                (dom/button #js {:type "button" :className "c-button"} "Options")
                (dom/button #js {:type "button" :className "c-button"} "Move")
-               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
-
-         )))
+               (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save")))))))
 
 
     (let [expanded-3 (boolean (om/get-state this :expanded-3))]
@@ -697,37 +681,26 @@
 
           (l/row {:density :collapse :valign :middle :className "u-trailer"}
             (l/col {:width 1}
-              (dom/label #js {:htmlFor "cond-op"} "If answer ")
-              )
+              (dom/label #js {:htmlFor "cond-op"} "If answer "))
             (l/col {:width 1}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is"))
-              )
+                (dom/button #js {:type "button" :className "c-button" :id "cond-op"} "is")))
             (l/col {:width 2}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:type "button" :className "c-button"} "exactly"))
-              )
+                (dom/button #js {:type "button" :className "c-button"} "exactly")))
             (l/col {:width 2}
               (dom/span #js {:className "has-menu"}
-                (dom/button #js {:type "button" :className "c-button"} "red wine"))
-              )
-            )
+                (dom/button #js {:type "button" :className "c-button"} "red wine"))))
 
           (l/row {:density :collapse :valign :middle :halign :center :className "u-trailer"}
-            (dom/button #js {:type "button" :className "c-button c-button--primary c-button--raised"} "Choose a question")
-            )
+            (dom/button #js {:type "button" :className "c-button c-button--primary c-button--raised"} "Choose a question"))
 
           (dom/div #js {:className "c-expansion-panel__actions"}
             (l/row {:density :collapse}
               (dom/div #js {:className "u-column--12 u-end"}
                 (dom/button #js {:type "button" :className "c-button"} "Options")
                 (dom/button #js {:type "button" :className "c-button"} "Move")
-                (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save"))))
-
-          )))
-
-
-    ))
+                (dom/button #js {:type "button" :className "c-button c-button--primary"} "Save")))))))))
 
 
 ;; -------------------------
@@ -758,9 +731,7 @@
         ;; This is the input that displays the file name when selected
         ;; When you have multiple files selected, this label should read "X files selected"
         (dom/input #js {:type "text" :className "c-field" :disabled true :readOnly true :id "file-input-text"})
-        (dom/label #js {:htmlFor "file-input-text"}))
-      )
-    ))
+        (dom/label #js {:htmlFor "file-input-text"})))))
 
 (defexample field-sizes
   "### Sizes"
@@ -776,8 +747,7 @@
     (dom/input #js {:type "text" :placeholder "FOCUSED" :className "c-field has-focus" :id "field-focus"})
     (dom/input #js {:type "text" :placeholder "INVALID" :className "c-field is-invalid" :id "field-invalid"})
     (dom/input #js {:type "text" :placeholder "ERROR" :className "c-field is-error" :id "field-error"})
-    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true :id "field-disabled"})
-    ))
+    (dom/input #js {:type "text" :placeholder "Disabled" :className "c-field" :disabled true :id "field-disabled"})))
 
 (defexample field-icon
   "### Icons"
@@ -797,8 +767,7 @@
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :2))
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :3))
        (dom/span #js {:className "c-label c-label--blue"} (util/full-name :4))
-       (dom/input #js {:type "text" :className "c-field__input" :id "field1"}))))
-  )
+       (dom/input #js {:type "text" :className "c-field__input" :id "field1"})))))
 
 (defexample textarea
   "# Text Area"
@@ -1196,8 +1165,7 @@
       (dom/label #js {:className "c-switch__paddle"
                      :htmlFor "h-switch-input-1"}
         (icons/icon :clear)
-        (icons/icon :done)
-        ))))
+        (icons/icon :done)))))
 
 
 ;; -------------------------
@@ -1638,8 +1606,7 @@
         (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
         (dom/label #js {:className "is-optional u-leader--half"} "End time")
         (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
-        (dom/input #js {:className "c-field" :placeholder "Room"})
-        ))))
+        (dom/input #js {:className "c-field" :placeholder "Room"})))))
 
 
 (defviewport modal-fullscreen-2
@@ -1648,14 +1615,12 @@
     (dom/div #js {:className (str "c-dialog is-active") :style #js {:position "absolute"}}
       (dom/div #js {:className "c-dialog__card"}
         (dom/div #js {:className "c-dialog__content"}
-          (dom/span #js {} "Discard new event?")
-          )
+          (dom/span #js {} "Discard new event?"))
         (dom/div #js {:className "c-dialog__actions"}
           (dom/button #js {:className "c-button c-button--primary"
                              :onClick   #(om/update-state! this assoc :modal-visible false)} "Cancel")
             (dom/button #js {:className "c-button c-button--primary"
-                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Erase"))
-        ))
+                             :onClick   #(om/update-state! this assoc :modal-visible false)} "Erase"))))
     (dom/div #js {:className (str "c-backdrop is-active") :style #js {:position "absolute"}})
 
     (dom/div #js {:className "c-dialog c-dialog--fullscreen"}
@@ -1676,10 +1641,7 @@
          (dom/input #js {:className "c-field" :placeholder "12:00 AM"})
          (dom/label #js {:className "is-optional u-leader--half"} "End time")
          (dom/input #js {:className "c-field" :placeholder "1:00 PM"})
-         (dom/input #js {:className "c-field" :placeholder "Room"})
-         )
-       )
-     )))
+         (dom/input #js {:className "c-field" :placeholder "Room"}))))))
 
 (defexample toolbar
   "# Toolbar Example"
@@ -1736,8 +1698,7 @@
 
             (dom/span #js {:title "Kevin Mitnick"}
               (dom/button #js {:className "c-button c-button--icon" :type "button"}
-                (icons/icon :account_circle)))
-            )))
+                (icons/icon :account_circle))))))
 
       (dom/p nil " ")
 
@@ -1755,8 +1716,7 @@
 
             (dom/span #js {:title "Kevin Mitnick"}
               (dom/button #js {:className "c-button c-button--icon" :type "button"}
-                (icons/icon :search)))
-            ))))))
+                (icons/icon :search)))))))))
 
 (defexample toolbar-dense
   "### Dense
@@ -1765,8 +1725,8 @@
   "
   (let [selected-item (or (om/get-state this :selected-item) :widgets)
         get-class (fn [item] (str "c-tab c-tab--contrast " (if (= item selected-item) " is-active" "")))
-        select-item (fn [item] (om/update-state! this assoc :selected-item item))
-        ]
+        select-item (fn [item] (om/update-state! this assoc :selected-item item))]
+
     (e/ui-iframe {:width "100%"}
       (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--dark"}
         (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
@@ -1783,8 +1743,8 @@
 
            (dom/span #js {:title "Kevin Mitnick"}
              (dom/button #js {:className "c-button c-button--icon" :type "button"}
-               (icons/icon :account_circle)))
-           ))
+               (icons/icon :account_circle)))))
+
        (dom/div #js {:className "c-toolbar__row c-toolbar__row--dense"}
          (dom/div #js {:className "c-tabs"}
            (dom/button #js {:className (get-class :widgets)
@@ -1997,5 +1957,4 @@
                       tooltips
                       tooltip-directions
                       tooltip-sizes
-                      ]}
-          ])))
+                      ]}])))
