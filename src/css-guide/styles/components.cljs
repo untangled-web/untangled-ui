@@ -1764,7 +1764,7 @@
   This toolbar is mainly used for specific operations and navigation for the current app you are using.
   "
   (let [selected-item (or (om/get-state this :selected-item) :widgets)
-        get-class (fn [item] (str "c-tab " (if (= item selected-item) " is-active" "")))
+        get-class (fn [item] (str "c-tab c-tab--contrast " (if (= item selected-item) " is-active" "")))
         select-item (fn [item] (om/update-state! this assoc :selected-item item))
         ]
     (e/ui-iframe {:width "100%"}
