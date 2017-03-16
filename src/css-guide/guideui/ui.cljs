@@ -248,7 +248,7 @@
 
         (dom/div #js {:className (str "c-drawer" (when drawer " is-open"))}
           (dom/div #js {:className "c-drawer__header"}
-            (dom/img #js {:src "/img/logo.png" :height "35" :width "35"})
+            (dom/img #js {:src "img/logo.png" :height "35" :width "35"})
             (dom/h1 nil "Untangled " (dom/strong #js {:className "is-primary"} "UI")))
           (dom/a #js {:className "c-drawer__action" :href "guide.html"}
             (e/ui-icon {:glyph :check_box}) "Components Guide")
