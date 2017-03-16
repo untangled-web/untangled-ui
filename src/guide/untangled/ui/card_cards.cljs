@@ -24,14 +24,13 @@
                       or :accent
                   :size  :expand
                       or :wide
-                  :image string
+                  :image \"path/to/img.jpg\"
                   :image-position :cover
                                or :top-left
                                or :top-right
                                or :bottom-left
                                or :bottom-right
-                  :menu-icon (keyword for icon name)
-                  :menu-items [:ia \"This\" :ib \"that\"]}
+                  :menu (menu :a \"Label\" [(menu-item :ia \"This\")])}
     ...)
   ```
   ")
