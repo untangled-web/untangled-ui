@@ -431,3 +431,26 @@
        (e/ui-tab {:label "Home" :active true :kind :contrast})
        (e/ui-tab {:label "Docs" :kind :contrast})
        (e/ui-tab {:label "Support" :kind :contrast})))))
+
+(defsample toolbar
+  "# Toolbars
+
+  Renders labels and actions inside a toolbar container
+  "
+
+  (dom/div nil
+    (e/ui-toolbar {:kind :dark :raised true}
+      (e/ui-toolbar-row {}
+        "Movies"
+        (e/ui-toolbar-spacer {})
+        (dom/span nil
+          (e/ui-icon-button {:glyph :search})
+          (e/ui-icon-button {:glyph :filter_list})
+          (e/ui-icon-button {:glyph :sort}))
+        (e/ui-toolbar-button {:glyph :arrow_back}))
+      (e/ui-toolbar-row {:size :dense}
+        (e/ui-tabs {}
+          (e/ui-tab {:label "Genres" :active true :kind :contrast})
+          (e/ui-tab {:label "Actors" :kind :contrast})
+          (e/ui-tab {:label "Directors" :kind :contrast})))
+      )))
