@@ -234,3 +234,28 @@
         (e/ui-tab {:label "Docs" :kind :contrast})
         (e/ui-tab {:label "Support" :kind :contrast})))))
 
+(defcard toolbar
+  (dom/div nil
+    (for [kind [:regular :primary :dark]
+          raised [false true]
+          row-size [:normal :dense]]
+      (e/ui-toolbar {:kind kind :raised raised :key (str "id-" kind raised row-size) :className "u-trailer"}
+        (if (= row-size :normal)
+          (e/ui-toolbar-row {}
+           "Now Playing"
+           (e/ui-toolbar-spacer {})
+           (dom/span nil
+             (e/ui-icon-button {:glyph :search :title "Search"})
+             (e/ui-icon-button {:glyph :filter_list :title "Filter"})
+             (e/ui-icon-button {:glyph :sort :title "Sort by"}))
+           (e/ui-toolbar-button {}))
+          (e/ui-toolbar-row {:size row-size}
+            (e/ui-tabs {}
+              (e/ui-tab {:label "Movies" :active true})
+              (e/ui-tab {:label "TV Shows"})
+              (e/ui-tab {:label "Podcasts"})
+              ))
+          )
+       ))
+
+    ))
