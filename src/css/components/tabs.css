@@ -21,7 +21,7 @@
 
 .c-tab {
   background: var(--color-tab--primary, transparent);
-  border-bottom: var(--borderWidth-tab) solid transparent;
+  border-bottom: var(--borderWidth-tab) solid var(--color-tab);
   color: var(--color-tab--secondary, currentColor);
   font-size: var(--fontSize-tab, var(--fontSize--tiny));
   font-weight: var(--fontWeight-tab, bold);
@@ -42,7 +42,7 @@
 
   &.is-active {
      background-color: transparent;
-     border-bottom-color: var(--color-tab--active);
+     border-bottom-color: var(--borderColor-tab--active);
      box-shadow: none;
      opacity: var(--opacity-tab--active);
   }
