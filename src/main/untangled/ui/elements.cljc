@@ -450,6 +450,7 @@
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
   (om/factory DialogActions))
 
+;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
 (defui Dialog
   Object
   (render [this]
