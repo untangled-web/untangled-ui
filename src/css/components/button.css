@@ -15,7 +15,7 @@ section: Components
   --size-button: 36px;
   --size-button--dense: calc(var(--size-button) - 4px);
   --transitionDuration-button: .1s;
-  --width-button--icon: 36px;
+  --size-button--icon: 30px;
   --button--wide: {
     display: block;
     width: calc(100% - var(--marginX-button) - var(--marginX-button));
@@ -283,7 +283,11 @@ section: Components
 .c-button--icon {
   border-radius: 100px;
   color: var(--color-button-icon);
-  min-width: var(--width-button--icon);
+  height: calc(var(--size-button--icon) + 3px);
+  line-height: var(--size-button--icon);
+  margin: 6px;
+  min-height: var(--size-button--icon);
+  min-width: var(--size-button--icon);
   padding: 0;
 
   &:hover { color: var(--grey-800); }
@@ -303,6 +307,18 @@ section: Components
 
   .c-card__menu & {
     color: var(--white);
+  }
+
+  .c-toolbar__row--dense & {
+    height: calc(26px + 3px);
+    line-height: 26px;
+    min-height: 26px;
+    min-width: 26px;
+
+    .c-icon {
+      height: 20px !important;
+      width: 20px !important;
+    }
   }
 }
 

@@ -240,11 +240,10 @@
           raised [false true]
           row-size [:normal :dense]]
       (e/ui-toolbar {:kind kind :raised raised :key (str "id-" kind raised row-size) :className "u-trailer"}
-        (if (= row-size :normal)
-          (e/ui-toolbar-row {}
+          (e/ui-toolbar-row {:size row-size}
            "Now Playing"
            (e/ui-toolbar-spacer {})
-           (dom/span nil
+           (dom/span #js {:className "c-toolbar__actions"}
              (e/ui-icon-button {:glyph :search :title "Search"})
              (e/ui-icon-button {:glyph :filter_list :title "Filter"})
              (e/ui-icon-button {:glyph :sort :title "Sort by"}))
@@ -255,7 +254,6 @@
               (e/ui-tab {:label "TV Shows"})
               (e/ui-tab {:label "Podcasts"})
               ))
-          )
        ))
 
     ))
