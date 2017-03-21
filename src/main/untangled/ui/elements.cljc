@@ -462,13 +462,13 @@
           state        (when visible " is-active")
           user-classes (get props :className "")
           classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))
-          dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes}
+          dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes :aria-hidden (if visible false true)}
                          (dom/div #js {:className "c-dialog__card" :ref "dialogCard" :tabIndex (if visible 0 -1)}
             (when title title)
             (when content content)
                            (when actions actions)))]
       (if modal
-        (dom/div #js {:key key}
+        (dom/div #js {:key key :aria-hidden (if visible false true)}
           dialog-dom
           (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
                                       (when (and visible onClose (untangled.events/escape-key? evt))
