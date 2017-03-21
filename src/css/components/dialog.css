@@ -14,11 +14,11 @@
   position: var(--position-dialog, fixed);
   text-align: left;
   width: 100%;
+  z-index: var(--zIndex-modal) !important;
 
   &:--active {
     @apply --fade-in;
     pointer-events: none;
-    z-index: var(--zIndex-modal);
   }
 }
 

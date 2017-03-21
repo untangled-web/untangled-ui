@@ -15,7 +15,7 @@ section: Components
   --size-button: 36px;
   --size-button--dense: calc(var(--size-button) - 4px);
   --transitionDuration-button: .1s;
-  --size-button--icon: 30px;
+  --size-button--icon: 33px;
   --button--wide: {
     display: block;
     width: calc(100% - var(--marginX-button) - var(--marginX-button));
@@ -283,9 +283,9 @@ section: Components
 .c-button--icon {
   border-radius: 100px;
   color: var(--color-button-icon);
-  height: calc(var(--size-button--icon) + 3px);
-  line-height: var(--size-button--icon);
-  margin: 6px;
+  height: calc(var(--size-button--icon));
+  line-height: 30px;
+  margin: 3px;
   min-height: var(--size-button--icon);
   min-width: var(--size-button--icon);
   padding: 0;
@@ -310,10 +310,11 @@ section: Components
   }
 
   .c-toolbar__row--dense & {
-    height: calc(26px + 3px);
-    line-height: 26px;
-    min-height: 26px;
-    min-width: 26px;
+    height: 29px;
+    line-height: 20px;
+    min-height: 29px;
+    min-width: 29px;
+    padding: 3px;
 
     .c-icon {
       height: 20px !important;

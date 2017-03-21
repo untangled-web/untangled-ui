@@ -1,6 +1,7 @@
 (ns untangled.ui.elements
-  (:require [om.dom :as dom]
+  (:require [clojure.string :as string]
             [om.next :as om :refer [defui]]
+            [om.dom :as dom]
             [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
             [untangled.events]
@@ -461,7 +462,7 @@
           user-classes (get props :className "")
           classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))
           dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes}
-                         (dom/div #js {:className "c-dialog__card"}
+                         (dom/div #js {:className "c-dialog__card" :ref "dialogCard" :tabIndex (if visible 0 -1)}
             (when title title)
             (when content content)
                            (when actions actions)))]
@@ -588,7 +589,7 @@
   [{:keys [className] :as props :or {className ""}} & children]
   (let [user-classes    (get props :className "")
         top-level-class (cond-> (str user-classes " c-tabs"))]
-    (apply dom/div #js {:className top-level-class} children)))
+    (apply dom/nav #js {:className top-level-class :aria-label "Site"} children)))
 
 (defn ui-tab
   "Render an icon button for use inside an icon bar.

@@ -1,8 +1,3 @@
-/*---
-title: Composition
-section: Utilities
----*/
-
 .u-font-size--tiny { font-size: var(--fontSize--tiny); }
 
 
@@ -95,5 +90,10 @@ section: Utilities
     img { filter: blur(1px) brightness(80%) grayscale(80%); }
 
   }
+}
+
+.u-subheader {
+  font-size: var(--fontSize--small);
+  padding: 1em 0;
 }
 
