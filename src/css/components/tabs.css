@@ -55,9 +55,6 @@
   }
 }
 
-.c-tab--contrast {
-  &.is-active { border-bottom-color: currentColor; }
-}
 
 /* Inside a menu */
 

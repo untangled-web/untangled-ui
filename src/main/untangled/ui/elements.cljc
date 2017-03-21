@@ -594,13 +594,13 @@
   "Render an icon button for use inside an icon bar.
 
   `:label` - A string of text to describe the tab action
-  `:kind` :default, :primary, or :contrast - changes the aesthetic style of a tab
+  `:kind` :default, :primary - changes the aesthetic style of a tab
   `:active` true or false (default) - Usually used to show that your in that tab's view.
 
   TODO: Add the ability to wrap this in a menu so you can show more than just the text.
   "
   ([{:keys [className label kind active] :as props :or {className "" label ""}}]
-   (let [legal-kinds #{:primary :contrast}
+   (let [legal-kinds #{:primary}
          classes     (cond-> (str className " c-tab " (when active " is-active "))
                        (contains? legal-kinds kind) (str " c-tab--" (name kind)))]
      (dom/button #js {:className classes :type "button"} label))))

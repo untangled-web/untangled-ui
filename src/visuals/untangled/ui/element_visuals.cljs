@@ -230,9 +230,9 @@
 
     (dom/div #js {:className "t-dark"}
       (e/ui-tabs {}
-        (e/ui-tab {:label "Home" :active true :kind :contrast})
-        (e/ui-tab {:label "Docs" :kind :contrast})
-        (e/ui-tab {:label "Support" :kind :contrast})))))
+        (e/ui-tab {:label "Home" :active true})
+        (e/ui-tab {:label "Docs"})
+        (e/ui-tab {:label "Support"})))))
 
 (defcard toolbar
   (dom/div nil
