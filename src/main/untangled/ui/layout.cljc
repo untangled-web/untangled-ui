@@ -171,3 +171,69 @@
 (def css-align-center "The CSS class string u-center for horizontal center alignment. Usable on most layout containers." "u-center")
 (def css-align-end "The CSS class string u-end for horizontal right alignment. Usable on most layout containers." "u-end")
 
+(def position-fixed-class
+  "A map of positioning classes that are fixed
+
+  ```
+  :top  - Positions contents top
+  :top-center - Positions contents top and centered
+  :top-right - Positions contents top and right
+  :top-left - Positions contents top and left
+  :bottom - Positions contents to the bottom
+  :bottom-right - Positions contents bottom right
+  :bottom-left - Positions contents bottom left
+  :middle - Positions contents to the middle
+  :middle-center - Positions contents to the middle center
+  ```
+
+  Can be used like this:
+
+  ```
+  (dom/div #js {:className (l/position-class :middle-center)} children)
+  ```
+
+  See also `rwhen` for a more readable alternative.
+  "
+  {:top           "u-fixed--top"
+   :top-center    "u-fixed--top-center"
+   :top-right     "u-fixed--top-right"
+   :top-left      "u-fixed--top-left"
+   :bottom        "u-fixed--bottom"
+   :bottom-left   "u-fixed--bottom-right"
+   :bottom-right  "u-fixed--bottom-right"
+   :middle        "u-fixed--middle"
+   :middle-center "u-fixed--middle-center"})
+
+
+(def position-absolute-class
+  "A map of positioning classes that are absolute
+
+  ```
+  :top  - Positions contents top
+  :top-center - Positions contents top and centered
+  :top-right - Positions contents top and right
+  :top-left - Positions contents top and left
+  :bottom - Positions contents to the bottom
+  :bottom-right - Positions contents bottom right
+  :bottom-left - Positions contents bottom left
+  :middle - Positions contents to the middle
+  :middle-center - Positions contents to the middle center
+  ```
+
+  Can be used like this:
+
+  ```
+  (dom/div #js {:className (l/position-class :middle-center)} children)
+  ```
+
+  See also `rwhen` for a more readable alternative.
+  "
+  {:top           "u-absolute--top"
+   :top-center    "u-absolute--top-center"
+   :top-right     "u-absolute--top-right"
+   :top-left      "u-absolute--top-left"
+   :bottom        "u-absolute--bottom"
+   :bottom-left   "u-absolute--bottom-right"
+   :bottom-right  "u-absolute--bottom-right"
+   :middle        "u-absolute--middle"
+   :middle-center "u-absolute--middle-center"})
