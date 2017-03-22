@@ -32,7 +32,7 @@
 :root {
   --border-slider: 2px;
   --color-slider-thumb: var(--color-primary);
-  --color-slider-thumb--focus: color(var(--color-slider-thumb) a(.2));
+  --color-slider-thumb--focus: color(var(--color-slider-thumb) a(.15));
   --size-slider-thumb: 13px;
 }
 
@@ -73,7 +73,7 @@
     }
 
     &:focus:not(:active):--slider-thumb {
-      box-shadow: 0 0 1px 10px color(var(--color-neutral) a(.2)), inset 0 0 1px 10px color(var(--color-neutral) a(.2));
+      box-shadow: 0 0 1px 10px color(var(--color-neutral) a(.15)), inset 0 0 1px 10px color(var(--color-neutral) a(.2));
     }
   }
 
@@ -149,4 +149,5 @@
 .c-slider::-ms-fill-upper { background-color: var(--color-neutral); }
 
 .c-slider:focus::-ms-fill-upper { background-color: var(--color-neutral); }
+
 

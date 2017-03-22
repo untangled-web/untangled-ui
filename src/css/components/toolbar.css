@@ -38,7 +38,7 @@
     height: var(--size-toolbar__button);
     left: 0;
     line-height: 42px;
-    margin: calc(calc(var(--height-toolbar) - var(--size-toolbar__button)) / 2) calc(var(--marginX-toolbar__button) / 5);
+    margin: calc(var(--height-toolbar) - var(--size-toolbar__button)) calc(var(--marginX-toolbar__button) / 5);
     overflow: hidden;
     position: absolute;
     text-align: center;

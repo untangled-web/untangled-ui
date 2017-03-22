@@ -1189,43 +1189,33 @@
 (defexample slider
   "### Simple
   Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`."
-  (let [active (boolean (om/get-state this :active))]
+  (let [active (boolean (om/get-state this :active))
+        ]
     (dom/div nil
       (dom/input #js {:className "c-slider"
                       :id        "range-1"
                       :type      "range"
-                      :value     0
-                      :max       100
-                      })
+                      :value     0})
 
       (dom/input #js {:className "c-slider"
                       :id        "range-1"
                       :type      "range"
-                      :value     50
-                      :max       100
-                      })
+                      :value     25})
+
       (dom/input #js {:className "c-slider"
                       :id        "range-1"
-                      :type      "range"
-                      :value     100
-                      :max       100
-                      })
-      (dom/input #js {:className "c-slider"
-                      :id        "range-1"
-                      :type      "range"
-                      })
+                      :type      "range" })
+
       (dom/input #js {:className "c-slider"
                       :id        "range-1"
                       :disabled  true
                       :type      "range"
-                      :value 0
-                      :max 100
-                      })
+                      :value     0})
+
       (dom/input #js {:className "c-slider"
                       :id        "range-1"
                       :disabled  true
-                      :type      "range"
-                      })
+                      :type      "range" })
       )))
 
 ;; -------------------------
