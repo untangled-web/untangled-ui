@@ -581,6 +581,19 @@
         attrs       (assoc props :className classes :aria-hidden false)]
     (dom/progress (clj->js attrs))))
 
+
+(defn ui-slider
+  "Render an icon button for use inside an icon bar.
+
+  `:label` - A string of text to describe the value of this slider
+  `:id` - Required. A unique ID. Will not render correctly without one.
+
+  TODO: Add the ability to wrap this in a menu so you can show more than just the text.
+  "
+  ([{:keys [label id] :as props :or {label ""}}]
+   (assert id "DOM ID is required on slider")
+   (dom/input #js {:className "c-slider" :type "range" :title label})))
+
 (defn ui-tabs
   "Render a container for tabs using a vector of icons (each a map of attributes).
    Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
