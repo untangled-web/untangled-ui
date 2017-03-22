@@ -53,7 +53,9 @@
     box-shadow: 0 0 1px 10px transparent;
     height: var(--size-slider-thumb);
     width: var(--size-slider-thumb);
-    transition: box-shadow .1s ease-in-out, scale .1s ease-in-out;
+    transition-property: all;
+    transition-duration: .1s;
+    transition-timing-function: ease-out;
     will-change: box-shadow, scale;
     &::before {
       content: "";
@@ -87,6 +89,9 @@
        background-color: var(--color-slider-thumb); /* This enables the active state for styling */
        backface-visibility: hidden;
        box-shadow: 0 0 0 0 var(--color-slider-thumb--focus);
+       transition-property: all;
+       transition-duration: .1s;
+       transition-timing-function: ease-out;
        transform: scale(1.448) perspective(1px) translateZ(0);
     }
   }
