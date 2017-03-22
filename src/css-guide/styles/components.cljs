@@ -1188,7 +1188,7 @@
 
 (defexample slider
   "### Simple
-  Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`."
+  "
   (let [active (boolean (om/get-state this :active))
         ]
     (dom/div nil
