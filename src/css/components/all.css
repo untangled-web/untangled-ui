@@ -23,6 +23,7 @@
  * Menu...............Select and menu join forces to create a dropdown
  * Message............Small text in varying colors
  * Notification.......Informative dialogs
+ * Slider.............Input range slider
  * Table..............Responsive tabular data patterns
  * Tabs...............Navigable controls
  * Toolbar............Great for housing actions and navigation
@@ -52,6 +53,7 @@
 @import "notification";
 @import "pagination";
 @import "progress";
+@import "sliders";
 @import "switch";
 @import "table";
 @import "tabs";

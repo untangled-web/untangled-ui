@@ -1,0 +1,147 @@
+/*------------------------------------*\
+  #SLIDER
+\*------------------------------------*/
+
+.c-slider {
+  appearance: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+
+  &:focus { outline: none; }
+  &::-moz-focus-outer { border: 0; }
+
+  &::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+    width: 100%;
+  }
+}
+
+
+
+
+
+/*------------------------------------*\
+  #SLIDER-THUMB
+\*------------------------------------*/
+
+@custom-selector :--slider-thumb ::-webkit-slider-thumb, ::-moz-range-thumb, ::-ms-thumb;
+
+:root {
+  --border-slider: 2px;
+  --color-slider-thumb: var(--color-primary);
+  --color-slider-thumb--focus: color(var(--color-slider-thumb) a(.2));
+  --size-slider-thumb: 13px;
+}
+
+/* Webkit & Blink */
+.c-slider::-webkit-slider-thumb {
+   appearance: none;
+   margin-top: -calc(var(--size-slider-thumb) / 2.6);
+ }
+
+/* Browser specific styling */
+.c-slider {
+  &:--slider-thumb {
+    backface-visibility: hidden;
+    box-sizing: border-box;
+    background: var(--color-slider-thumb);
+    border: none;
+    border-radius: var(--global-circular);
+    box-shadow: 0 0 1px 10px transparent;
+    height: var(--size-slider-thumb);
+    width: var(--size-slider-thumb);
+    transition: box-shadow .1s ease-in-out, scale .1s ease-in-out;
+    will-change: box-shadow, scale;
+    &::before {
+      content: "";
+      display: inline-block;
+      height: 2px;
+      width: 100%;
+      background-color: var(--color-primary);
+     }
+  }
+
+  &[value="0"] {
+    &:--slider-thumb {
+      border: var(--border-slider) solid var(--color-neutral);
+      background-color: var(--color-page) !important;
+    }
+
+    &:focus:not(:active):--slider-thumb {
+      box-shadow: 0 0 1px 10px color(var(--color-neutral) a(.2)), inset 0 0 1px 10px color(var(--color-neutral) a(.2));
+    }
+  }
+
+  &:focus {
+    &:--slider-thumb {
+      background-color: var(--color-slider-thumb); /* This enables the focus state for styling */
+      box-shadow: 0 0 1px 10px var(--color-slider-thumb--focus), inset 0 0 1px 10px var(--color-slider-thumb--focus);
+    }
+  }
+
+  &:active {
+    &:--slider-thumb {
+       background-color: var(--color-slider-thumb); /* This enables the active state for styling */
+       backface-visibility: hidden;
+       box-shadow: 0 0 0 0 var(--color-slider-thumb--focus);
+       transform: scale(1.448) perspective(1px) translateZ(0);
+    }
+  }
+
+  &[disabled] {
+    &::-webkit-slider-thumb {
+      margin-top: -calc(8px / 2.6);
+    }
+
+    &:--slider-thumb {
+      background-color: var(--color-neutral);
+      box-shadow: 0 0 0 2px var(--color-page);
+      height: 8px;
+      width: 8px;
+     }
+
+    &[value="0"]&:--slider-thumb {
+       border: var(--border-slider) solid var(--color-neutral);
+     }
+   }
+}
+
+
+
+
+
+
+
+/*------------------------------------*\
+  #SLIDER-TRACK
+\*------------------------------------*/
+
+@custom-selector :--slider-track ::-webkit-slider-runnable-track, ::-moz-range-track, ::-ms-track;
+@custom-selector :--slider-progress ::-moz-range-progress, ::-ms-fill-lower;
+
+:root {
+  --color-slider-track--lower: var(--color-neutral);
+  --color-slider-track--upper: var(--color-neutral);
+}
+
+.c-slider:--slider-track {
+  background: var(--color-slider-track--lower);
+  height: var(--border-slider);
+  width: 100%;
+}
+
+.c-slider:focus::-webkit-slider-runnable-track {
+  /* background: #367ebd; */
+}
+
+.c-slider:not([disabled]):--slider-progress { background-color: var(--color-primary); }
+
+.c-slider:focus::-ms-fill-lower { background-color: var(--color-primary); }
+
+.c-slider::-ms-fill-upper { background-color: var(--color-neutral); }
+
+.c-slider:focus::-ms-fill-upper { background-color: var(--color-neutral); }
+

@@ -1177,9 +1177,59 @@
                       :checked (= 5 selection) :onClick #(select 5)})
       (dom/label #js {:htmlFor "sr5"} "5"))))
 
+;; -------------------------
+;; Slider
+;; -------------------------
+
+(def slider-header
+  "# Slider
+
+  A simple range input slider")
+
+(defexample slider
+  "### Simple
+  Click this example to see it's active state which is a simple `:checked` attribute on `.c-switch__input`."
+  (let [active (boolean (om/get-state this :active))]
+    (dom/div nil
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :type      "range"
+                      :value     0
+                      :max       100
+                      })
+
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :type      "range"
+                      :value     50
+                      :max       100
+                      })
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :type      "range"
+                      :value     100
+                      :max       100
+                      })
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :type      "range"
+                      })
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :disabled  true
+                      :type      "range"
+                      :value 0
+                      :max 100
+                      })
+      (dom/input #js {:className "c-slider"
+                      :id        "range-1"
+                      :disabled  true
+                      :type      "range"
+                      })
+      )))
 
 ;; -------------------------
-;; Radio
+;; Switch
 ;; -------------------------
 
 (def switch-header
@@ -1827,31 +1877,15 @@
           {:id :avatar
            :title "Avatar"
            :documentation avatar-header
-           :examples [
-                      avatar
-                      avatar-customize
-                      ]}
+           :examples [ avatar avatar-customize ]}
           {:id :badges
            :title "Badges"
            :documentation badge-header
-           :examples [
-                      badge
-                      badge-button
-                      badge-icon
-                      badge-customize
-                      ]}
+           :examples [ badge badge-button badge-icon badge-customize ]}
           {:id :buttons
            :title "Buttons"
            :documentation button-header
-           :examples [
-                      button
-                      button-shape
-                      button-color
-                      button-state
-                      button-state-raised
-                      button-icon
-                      button-group
-                      ]}
+           :examples [ button button-shape button-color button-state button-state-raised button-icon button-group ]}
           {:id :calendar-example :title "Calendar" :examples [calendar-example]
            :documentation
                "# Calendar
@@ -1860,153 +1894,84 @@
           {:id :card
            :title "Card"
            :documentation card-header
-           :examples [
-                      card
-                      card-states
-                      card-transparent
-                      card-ruled
-                      ]}
+           :examples [ card card-states card-transparent card-ruled ]}
           {:id :checkboxes
            :title "Checkboxes"
            :documentation checkbox-header
-           :examples [
-                      checkboxes
-                      ]}
+           :examples [ checkboxes ]}
           {:id :drawer
            :title "Drawer"
-           :examples [
-                      drawer
-                      ]}
+           :examples [ drawer ]}
           {:id :expanding_panel
            :title "Expansion panels"
            :documentation expansion-panel-header
-           :examples [
-                      expansion-panel
-                      expansion-panel-survey
-                      ]
-           }
+           :examples [ expansion-panel expansion-panel-survey ] }
           {:id :fields
            :title "Fields"
            :documentation field-header
-           :examples [
-                      field
-                      field-states
-                      field-sizes
-                      field-icon
-                      field-content
-                      textarea
-                      ]}
+           :examples [ field field-states field-sizes field-icon field-content textarea ]}
           {:id :icons
            :title "Icons"
            :documentation icon-header
-           :examples [
-                      icons
-                      icon-sizes
-                      icon-states
-                      icon-library
-                      ]}
+           :examples [ icons icon-sizes icon-states icon-library ]}
           {:id :icon-bar
            :title "Icon Bar"
-           :examples [
-                      icon-bar
-                      icon-rail
-                      icon-bar-shifting
-                      ]}
+           :examples [ icon-bar icon-rail icon-bar-shifting ]}
           {:id :labels
            :title "Labels"
            :documentation label-header
-           :examples [
-                      labels
-                      label-icons
-                      ]}
+           :examples [ labels label-icons ]}
           {:id :lists
            :title "Lists"
            :documentation lists-header
-           :examples [
-                      lists
-                      ]}
+           :examples [ lists ]}
           {:id :loader
            :title "Loader"
            :documentation loader-header
-           :examples [
-                      loader
-                      ]}
+           :examples [ loader ]}
           {:id :dropdowns
            :title "Menus"
            :documentation menus-header
-           :examples [
-                      menus
-                      menus-shape
-                      menus-search-multi
-                      menus-data
-                      ]}
+           :examples [ menus menus-shape menus-search-multi menus-data ]}
           {:id :messages
            :title "Messages"
            :documentation messages-header
-           :examples [
-                      messages
-                      ]}
+           :examples [ messages ]}
           {:id :modal
            :title "Dialog"
-           :examples [
-                      modal-example
-                      modal-fullscreen-1
-                      modal-fullscreen-2
-                      ]}
+           :examples [ modal-example modal-fullscreen-1 modal-fullscreen-2 ]}
           {:id :notifications
            :title "Notifications"
            :documentation notification-header
-           :examples [
-                      notification
-                      notification-success
-                      notification-warning
-                      notification-error
-                      notification-wide
-                      ]}
+           :examples [ notification notification-success notification-warning notification-error notification-wide ]}
           {:id :progressbar
            :title "Progress"
            :documentation progress-header
-           :examples [
-                      progress-basic]}
+           :examples [ progress-basic]}
           {:id :radio
            :title "Radio Buttons"
            :documentation radio-header
-           :examples [
-                      radio
-                      radio-stacked]}
+           :examples [ radio radio-stacked]}
+          {:id :slider
+           :title "Slider"
+           :documentation slider-header
+           :examples [ slider ]}
           {:id :switch
            :title "Switch"
            :documentation switch-header
-           :examples [
-                      switch
-                      switch-icon
-                      ]}
+           :examples [ switch switch-icon ]}
           {:id :table
            :title "Tables"
            :documentation tables-header
-           :examples [
-                      tables
-                      ]}
+           :examples [ tables ]}
           {:id :menus
            :title "Tabs"
            :documentation tabs-header
-           :examples [
-                      tabs
-                      tabs-colors
-                      tabs-dropdown
-                      ]}
+           :examples [ tabs tabs-colors tabs-dropdown ]}
           {:id :toolbar
            :title "Toolbar"
-           :examples [
-                      toolbar
-                      toolbar-colors
-                      toolbar-dense
-                      ]}
+           :examples [ toolbar toolbar-colors toolbar-dense ]}
           {:id :tooltip
            :title "Tooltips"
            :documentation tooltips-header
-           :examples [
-                      tooltips
-                      tooltip-directions
-                      tooltip-sizes
-                      ]}])))
+           :examples [ tooltips tooltip-directions tooltip-sizes ]}])))
