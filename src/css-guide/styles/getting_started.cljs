@@ -156,7 +156,16 @@ the easiest way to modify and extend the styles.
     .c-input:not([aria-label]) {
       @apply --assert-selector;
     }
-    ```")
+    ```
+
+    #### Markup Lint
+
+    Enable another layout of outlines to highlight anything out of date or mixed up in your markup.
+
+    ```html
+    <html class='s-markuplint'>
+    ```
+    ")
 
 
 
