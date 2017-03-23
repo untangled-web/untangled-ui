@@ -72,7 +72,7 @@
 
 
   .c-expansion-panel__title {
-    @apply --width-column-3;
+    @apply --column-3;
     color: var(--color-expansion-panel__title);
     margin-left: var(--paddingX-expansion-panel);
     padding: 0;
@@ -86,7 +86,7 @@
 
 
   .c-expansion-panel__info {
-    @apply --width-column-auto;
+    @apply --box-column-auto;
     margin-left: calc(var(--paddingX-expansion-panel) / 1.5);
     padding: 0;
 

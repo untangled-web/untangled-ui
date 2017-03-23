@@ -59,87 +59,87 @@ section: Settings
     flex-wrap: wrap;
   };
 
-  --width-column: {
+  --box-column: {
     box-sizing: border-box;
     min-width: 0;
     padding-left: var(--width-gutter--half);
     padding-right: var(--width-gutter--half);
   };
 
-  --width-column-auto: {
-    @apply --width-column;
+  --box-column-auto: {
+    @apply --box-column;
     flex: 1 0 0%;
     max-width: 100%;
   };
 
-  --width-column-1: {
-    @apply --width-column;
+  --column-1: {
+    @apply --box-column;
     flex: 1 0 var(--width-column) !important; /* IE11 */
     max-width: var(--width-column) !important;
   };
 
-  --width-column-2: {
-    @apply --width-column;
+  --column-2: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 2) !important; /* IE11 */
     max-width: calc(var(--width-column) * 2) !important;
   };
 
-  --width-column-3: {
-    @apply --width-column;
+  --column-3: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 3) !important; /* IE11 */
     max-width: calc(var(--width-column) * 3) !important;
   };
 
-  --width-column-4: {
-    @apply --width-column;
+  --column-4: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 4) !important; /* IE11 */
     max-width: calc(var(--width-column) * 4) !important;
   };
 
-  --width-column-5: {
-    @apply --width-column;
+  --column-5: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 5) !important; /* IE11 */
     max-width: calc(var(--width-column) * 5) !important;
   };
 
-  --width-column-6: {
-    @apply --width-column;
+  --column-6: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 6) !important; /* IE11 */
     max-width: calc(var(--width-column) * 6) !important;
   };
 
-  --width-column-7: {
-    @apply --width-column;
+  --column-7: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 7) !important; /* IE11 */
     max-width: calc(var(--width-column) * 7) !important;
   };
 
-  --width-column-8: {
-    @apply --width-column;
+  --column-8: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 8) !important; /* IE11 */
     max-width: calc(var(--width-column) * 8) !important;
   };
 
-  --width-column-9: {
-    @apply --width-column;
+  --column-9: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 9) !important; /* IE11 */
     max-width: calc(var(--width-column) * 9) !important;
   };
 
-  --width-column-10: {
-    @apply --width-column;
+  --column-10: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 10) !important; /* IE11 */
     max-width: calc(var(--width-column) * 10) !important;
   };
 
-  --width-column-11: {
-    @apply --width-column;
+  --column-11: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 11) !important; /* IE11 */
     max-width: calc(var(--width-column) * 11) !important;
   };
 
-  --width-column-12: {
-    @apply --width-column;
+  --column-12: {
+    @apply --box-column;
     flex: 1 0 calc(var(--width-column) * 12) !important; /* IE11 */
     max-width: calc(var(--width-column) * 12) !important;
   };
@@ -192,7 +192,7 @@ section: Settings
   };
 
   --width-column-bar: {
-    @apply --width-column-auto;
+    @apply --box-column-auto;
     @apply --middle;
     display: flex;
     padding: 0;
@@ -233,14 +233,17 @@ section: Settings
     left: 0;
     right: 0;
   };
+
   --position-bottom-left: {
     bottom: 0;
     left: 0;
   };
+
   --position-bottom-right: {
     bottom: 0;
     right: 0;
   };
+
   --position-middle: {
     bottom: auto;
     left: 50%;
@@ -259,19 +262,23 @@ section: Settings
       transition: none !important;
     }
   };
+
   --position-top: {
     left: 0;
     right: 0;
     top: 0;
   };
+
   --position-top-left: {
     left: 0;
     top: 0;
   };
+
   --position-top-right: {
     right: 0;
     top: 0;
   };
+
   --position-full: {
     bottom: 0;
     height: 100%;

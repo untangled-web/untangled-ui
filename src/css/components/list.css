@@ -60,7 +60,7 @@
 
 
   .c-list__tile {
-    @apply --width-column-auto;
+    @apply --box-column-auto;
     display: flex;
     padding: 12px 0;
     transition: background-color .1s ease;

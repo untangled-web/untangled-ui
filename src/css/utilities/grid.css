@@ -1,8 +1,3 @@
-/*---
-title: Grid
-section: Utilities
----*/
-
 .u-wrapper {
   display: inline-block;
   position: relative;
@@ -23,23 +18,23 @@ section: Utilities
 }
 
 
-.u-column { @apply --width-column-auto; }
+.u-column { @apply --box-column-auto; }
 .u-column--first { order: -1; }
 .u-column--last { order: 1; }
 .u-column--reverse { flex-direction: column-reverse; }
 .u-column--bar { @apply --width-column-bar; }
-.u-column--1 { @apply --width-column-1; }
-.u-column--2 { @apply --width-column-2; }
-.u-column--3 { @apply --width-column-3; }
-.u-column--4 { @apply --width-column-4; }
-.u-column--5 { @apply --width-column-5; }
-.u-column--6 { @apply --width-column-6; }
-.u-column--7 { @apply --width-column-7; }
-.u-column--8 { @apply --width-column-8; }
-.u-column--9 { @apply --width-column-9; }
-.u-column--10 { @apply --width-column-10; }
-.u-column--11 { @apply --width-column-11; }
-.u-column--12 { @apply --width-column-12; }
+.u-column--1 { @apply --column-1; }
+.u-column--2 { @apply --column-2; }
+.u-column--3 { @apply --column-3; }
+.u-column--4 { @apply --column-4; }
+.u-column--5 { @apply --column-5; }
+.u-column--6 { @apply --column-6; }
+.u-column--7 { @apply --column-7; }
+.u-column--8 { @apply --column-8; }
+.u-column--9 { @apply --column-9; }
+.u-column--10 { @apply --column-10; }
+.u-column--11 { @apply --column-11; }
+.u-column--12 { @apply --column-12; }
 .u-push--1 { margin-left: var(--width-column); }
 .u-push--2 { margin-left: calc(var(--width-column) * 2); }
 .u-push--3 { margin-left: calc(var(--width-column) * 3); }
@@ -67,19 +62,19 @@ section: Utilities
   .u-container { width: var(--width-container--small, 46rem); }
   .u-column--last\@sm { order: 1; }
   .u-column--first\@sm { order: -1; }
-  .u-column\@sm { @apply --width-column-auto; }
-  .u-column--1\@sm { @apply --width-column-1; }
-  .u-column--2\@sm { @apply --width-column-2; }
-  .u-column--3\@sm { @apply --width-column-3; }
-  .u-column--4\@sm { @apply --width-column-4; }
-  .u-column--5\@sm { @apply --width-column-5; }
-  .u-column--6\@sm { @apply --width-column-6; }
-  .u-column--7\@sm { @apply --width-column-7; }
-  .u-column--8\@sm { @apply --width-column-8; }
-  .u-column--9\@sm { @apply --width-column-9; }
-  .u-column--10\@sm { @apply --width-column-10; }
-  .u-column--11\@sm { @apply --width-column-11; }
-  .u-column--12\@sm { @apply --width-column-12; }
+  .u-column\@sm { @apply --box-column-auto; }
+  .u-column--1\@sm { @apply --column-1; }
+  .u-column--2\@sm { @apply --column-2; }
+  .u-column--3\@sm { @apply --column-3; }
+  .u-column--4\@sm { @apply --column-4; }
+  .u-column--5\@sm { @apply --column-5; }
+  .u-column--6\@sm { @apply --column-6; }
+  .u-column--7\@sm { @apply --column-7; }
+  .u-column--8\@sm { @apply --column-8; }
+  .u-column--9\@sm { @apply --column-9; }
+  .u-column--10\@sm { @apply --column-10; }
+  .u-column--11\@sm { @apply --column-11; }
+  .u-column--12\@sm { @apply --column-12; }
   .u-push--1\@sm { margin-left: var(--width-column); }
   .u-push--2\@sm { margin-left: calc(var(--width-column) * 2); }
   .u-push--3\@sm { margin-left: calc(var(--width-column) * 3); }
@@ -106,21 +101,21 @@ section: Utilities
 
 @media (--md-up) {
   .u-container { width: var(--width-container--medium); }
-  .u-column\@md { @apply --width-column-auto; }
+  .u-column\@md { @apply --box-column-auto; }
   .u-column--last\@md { order: 1; }
   .u-column--first\@md { order: -1; }
-  .u-column--1\@md { @apply --width-column-1; }
-  .u-column--2\@md { @apply --width-column-2; }
-  .u-column--3\@md { @apply --width-column-3; }
-  .u-column--4\@md { @apply --width-column-4; }
-  .u-column--5\@md { @apply --width-column-5; }
-  .u-column--6\@md { @apply --width-column-6; }
-  .u-column--7\@md { @apply --width-column-7; }
-  .u-column--8\@md { @apply --width-column-8; }
-  .u-column--9\@md { @apply --width-column-9; }
-  .u-column--10\@md { @apply --width-column-10; }
-  .u-column--11\@md { @apply --width-column-11; }
-  .u-column--12\@md { @apply --width-column-12; }
+  .u-column--1\@md { @apply --column-1; }
+  .u-column--2\@md { @apply --column-2; }
+  .u-column--3\@md { @apply --column-3; }
+  .u-column--4\@md { @apply --column-4; }
+  .u-column--5\@md { @apply --column-5; }
+  .u-column--6\@md { @apply --column-6; }
+  .u-column--7\@md { @apply --column-7; }
+  .u-column--8\@md { @apply --column-8; }
+  .u-column--9\@md { @apply --column-9; }
+  .u-column--10\@md { @apply --column-10; }
+  .u-column--11\@md { @apply --column-11; }
+  .u-column--12\@md { @apply --column-12; }
   .u-push--1\@md { margin-left: var(--width-column); }
   .u-push--2\@md { margin-left: calc(var(--width-column) * 2); }
   .u-push--3\@md { margin-left: calc(var(--width-column) * 3); }
@@ -147,21 +142,21 @@ section: Utilities
 
 @media (--lg-up) {
   .u-container { width: var(--width-container--large); }
-  .u-column\@lg { @apply --width-column-auto; }
+  .u-column\@lg { @apply --box-column-auto; }
   .u-column--last\@lg { order: 1; }
   .u-column--first\@lg { order: -1; }
-  .u-column--1\@lg { @apply --width-column-1; }
-  .u-column--2\@lg { @apply --width-column-2; }
-  .u-column--3\@lg { @apply --width-column-3; }
-  .u-column--4\@lg { @apply --width-column-4; }
-  .u-column--5\@lg { @apply --width-column-5; }
-  .u-column--6\@lg { @apply --width-column-6; }
-  .u-column--7\@lg { @apply --width-column-7; }
-  .u-column--8\@lg { @apply --width-column-8; }
-  .u-column--9\@lg { @apply --width-column-9; }
-  .u-column--10\@lg { @apply --width-column-10; }
-  .u-column--11\@lg { @apply --width-column-11; }
-  .u-column--12\@lg { @apply --width-column-12; }
+  .u-column--1\@lg { @apply --column-1; }
+  .u-column--2\@lg { @apply --column-2; }
+  .u-column--3\@lg { @apply --column-3; }
+  .u-column--4\@lg { @apply --column-4; }
+  .u-column--5\@lg { @apply --column-5; }
+  .u-column--6\@lg { @apply --column-6; }
+  .u-column--7\@lg { @apply --column-7; }
+  .u-column--8\@lg { @apply --column-8; }
+  .u-column--9\@lg { @apply --column-9; }
+  .u-column--10\@lg { @apply --column-10; }
+  .u-column--11\@lg { @apply --column-11; }
+  .u-column--12\@lg { @apply --column-12; }
   .u-push--1\@lg { margin-left: var(--width-column); }
   .u-push--2\@lg { margin-left: calc(var(--width-column) * 2); }
   .u-push--3\@lg { margin-left: calc(var(--width-column) * 3); }
@@ -188,21 +183,21 @@ section: Utilities
 
 @media (--xl-up) {
   .u-container { width: var(--width-container--xlarge); }
-  .u-column\@xl { @apply --width-column-auto; }
+  .u-column\@xl { @apply --box-column-auto; }
   .u-column--last\@xl { order: 1; }
   .u-column--first\@xl { order: -1; }
-  .u-column--1\@xl { @apply --width-column-1; }
-  .u-column--2\@xl { @apply --width-column-2; }
-  .u-column--3\@xl { @apply --width-column-3; }
-  .u-column--4\@xl { @apply --width-column-4; }
-  .u-column--5\@xl { @apply --width-column-5; }
-  .u-column--6\@xl { @apply --width-column-6; }
-  .u-column--7\@xl { @apply --width-column-7; }
-  .u-column--8\@xl { @apply --width-column-8; }
-  .u-column--9\@xl { @apply --width-column-9; }
-  .u-column--10\@xl { @apply --width-column-10; }
-  .u-column--11\@xl { @apply --width-column-11; }
-  .u-column--12\@xl { @apply --width-column-12; }
+  .u-column--1\@xl { @apply --column-1; }
+  .u-column--2\@xl { @apply --column-2; }
+  .u-column--3\@xl { @apply --column-3; }
+  .u-column--4\@xl { @apply --column-4; }
+  .u-column--5\@xl { @apply --column-5; }
+  .u-column--6\@xl { @apply --column-6; }
+  .u-column--7\@xl { @apply --column-7; }
+  .u-column--8\@xl { @apply --column-8; }
+  .u-column--9\@xl { @apply --column-9; }
+  .u-column--10\@xl { @apply --column-10; }
+  .u-column--11\@xl { @apply --column-11; }
+  .u-column--12\@xl { @apply --column-12; }
   .u-push--1\@xl { margin-left: var(--width-column); }
   .u-push--2\@xl { margin-left: calc(var(--width-column) * 2); }
   .u-push--3\@xl { margin-left: calc(var(--width-column) * 3); }
