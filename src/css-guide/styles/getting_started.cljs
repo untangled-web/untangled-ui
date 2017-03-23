@@ -13,19 +13,23 @@ A styleguide of user interface patterns for web applications and websites built 
 rendered with ClojureScript.
 
 
-
 #### History of this project
 
+In a 3 month span the main codebase for this project was formed using PostCSS, Gulp and a vision for future spec compliance.
+With over 25 components, this library has matured into a simplified collection that lines up with Google's Material Design.
 
 
 ## What is this for?
 
-This project is meant to suppliment your next project with a wide array of components that are styled for your HTML or
-Clojurescript project. If you are using Untangled UI, you will automatically get these styles by default.
+This project is meant to suppliment your next application or website with a wide array of components that are styled for
+your HTML or Clojurescript project. If you are using Untangled UI, you will automatically get these styles by default.
+
 
 ## What problem does this solve?
 
-
+This project sets you up with common and designed components and utilities to make crafting a new front-end UI as simple
+an painless as possible. Each component has been researched and added with the intention that we are not duplicating
+patterns and that they all serve a specific purpose.
 
 ## What design principles underlie this UI?
 
@@ -33,6 +37,10 @@ Based on the ITCSS methodology by Harry Roberts, this project is composed by set
 utilities and produces a stylesheet that has a healthy inclining specificity graph.
 
 ## How does this UI accomplish it's goals?
+
+Through well established coding practices and following the Material Design spec, we have a great blend of technology
+and design that compliments any web project. This project is also coded with future spec compliant code for CSS that we
+can expect to ship in browsers a decade from now. In short, you can write new styles in future code!
 
 # Getting Started
 
@@ -156,6 +164,5 @@ the easiest way to modify and extend the styles.
   (vec [;; NOTE: :examples is a list of example names, rendered in order given
         {:id :settings-config :title "What is this?" :examples [intro]}
         {:id :settings-config :title "Config" :examples [settings-config]}
-        {:id :settings-global :title "Global" :examples [settings-global]}
-        ]))
+        {:id :settings-global :title "Global" :examples [settings-global]}]))
 
