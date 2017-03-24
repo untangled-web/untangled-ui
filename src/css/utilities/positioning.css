@@ -1,3 +1,7 @@
+/*------------------------------------*\
+  #POSITIONING
+\*------------------------------------*/
+
 .u-fixed--top-center {
   @apply --position-top;
   position: fixed !important;

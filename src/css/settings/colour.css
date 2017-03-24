@@ -1,5 +1,5 @@
 /*------------------------------------*\
-  #COLOUR PALETTE
+  #COLOUR-PALETTE
 \*------------------------------------*/
 
 /* Setup a colour palette which allows us to theme
@@ -69,7 +69,7 @@
 
 
 /*------------------------------------*\
-  #COLOUR THEME
+  #COLOUR-THEME
 \*------------------------------------*/
 
 /* Reassign literal variables to meaningful ones. */
@@ -103,6 +103,14 @@
   --color-link: var(--color-primary);
   --color-error: var(--red-400);
   --color-invalid: var(--red-200);
+
+
+
+
+
+/*------------------------------------*\
+  #COMPONENT-COLOURS
+\*------------------------------------*/
 
 
   /* Avatar */

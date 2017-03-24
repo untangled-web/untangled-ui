@@ -1,9 +1,6 @@
-/*---
-title: Global
-section: Settings
----*/
-
-/* Project-level settings and setup */
+/*------------------------------------*\
+  #PROJECT-SETTINGS
+\*------------------------------------*/
 
 :root {
   /* Typographical styles and baseline grid */
@@ -48,12 +45,31 @@ section: Settings
   --frame-double: calc(var(--global-line-height) * 2); /* 64px */
   --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
 
+  /* Alignment sizes */
+  --tenth: .1;
+  --eighth: .125;
+  --sixth: .1666;
+  --fifth: .2;
+  --quarter: .25;
+  --third: .3;
+  --half: .5;
+  --double: 2;
+  --triple: 3;
+
+
   --assert-selector: {
     outline: 2px solid var(--red-600);
   };
 }
 
-/* Custom Media Queries */
+
+
+
+
+/*------------------------------------*\
+  #CUSTOM-MEDIA-QUERIES
+\*------------------------------------*/
+
 @custom-media --sm only screen and (max-width: 47.999em);
 
 @custom-media --md only screen and (min-width: 48em) and (max-width: 62em);
@@ -114,7 +130,13 @@ and (max-width: 47.999em) and (max-height: 63.999em);
 @custom-media --xl-down only screen and (max-width: 90em);
 
 
-/* Custom Element Selectors */
+
+
+
+/*------------------------------------*\
+  #CUSTOM-SELECTORS
+\*------------------------------------*/
+
 @custom-selector :--anchor-default a[href]:not([class]);
 
 @custom-selector :--app-blocks .s-app, .s-app__containers, .s-app__body;
@@ -149,10 +171,16 @@ button, [type="button"], [type="reset"], [type="submit"];
 
 @custom-selector :--media audio, canvas, iframe, img, svg, video;
 
+
+
+
+
+/*------------------------------------*\
+  #CUSTOM-PSEUDO-CLASS-SELECTORS
+\*------------------------------------*/
+
 @custom-selector :--fullscreen :fullscreen;
 
-
-/* Custom Pseudo Class Selectors */
 @custom-selector :--active :active, .is-active;
 
 @custom-selector :--enter :hover, :focus, .is-hover;

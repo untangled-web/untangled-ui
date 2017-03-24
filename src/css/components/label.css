@@ -5,7 +5,9 @@ section: Components
 
 :root {
   --fontSize-label: var(--fontSize--tiny);
+  --fontSize-label--small: 10px;
   --padding-label: 0 3px;
+  --padding-label--small: 1px 5px;
   --margin-label: 0 .5rem;
   --size-label: 16px;
   --size-label-icon: calc(var(--size-label) - 1);
@@ -55,4 +57,11 @@ section: Components
 .c-label--accent {
   background-color: var(--color-label-accent--primary);
   color: var(--color-label-accent--secondary);
+}
+
+.c-label--small {
+  border-radius: 1px;
+  font-size: var(--fontSize-label--small);
+  margin: 0;
+  padding: var(--padding-label--small);
 }

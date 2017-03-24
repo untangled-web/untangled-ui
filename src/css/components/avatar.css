@@ -1,3 +1,7 @@
+/*------------------------------------*\
+  #AVATAR
+\*------------------------------------*/
+
 :root {
   --borderRadius-avatar: 100px;
   --borderSize-avatar: 2px;
@@ -140,3 +144,27 @@
    }
 }
 
+
+
+
+
+/*------------------------------------*\
+  #AVATAR-INDICATOR
+\*------------------------------------*/
+
+.c-avatar__indicator {
+  background-color: var(--grey-100);
+  box-shadow: 0 0 0 2px var(--white);
+  border-radius: 100px;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+
+.c-avatar__indicator--primary {
+  background-color: var(--color-primary);
+}
+
+.c-avatar__indicator--accent {
+  background-color: var(--color-accent);
+}

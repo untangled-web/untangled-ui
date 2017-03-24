@@ -79,7 +79,7 @@
   }
 
 
-  .c-toolbar__spacer { flex-grow: 1; }
+  .c-toolbar__spacer { @apply --spacer; }
 
 
   .c-toolbar__actions {

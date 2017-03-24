@@ -1,11 +1,10 @@
-/*---
-title: Typography
-section: Settings
----*/
-
+/*------------------------------------*\
+  #TYPOGRAPHY-SETTINGS
+\*------------------------------------*/
 
 :root {
   --fontFamily--sans: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  --fontFamily--serif: Garmond, "Hoefler Text", Palatino, "Palatino Linotype", serif;
   --fontFamily--monospaced: monospace;
   --fontFamily-page: var(--fontFamily--sans);
   --fontSize--tiny: .75rem; /* 12px */
@@ -41,7 +40,7 @@ section: Settings
   --ellipsis: {
     display: inline-block;
     overflow: hidden;
-    padding: 3px 0; /* TODO Cuts off ascenders */
+    padding: 1px 0;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;

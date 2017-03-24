@@ -1039,6 +1039,18 @@
     (dom/div #js {:className "c-message c-message--primary"} "This is a primary message")
     (dom/div #js {:className "c-message c-message--accent"} "This is an accent message")))
 
+(defexample messages-raised
+  "Chat style messages"
+  (dom/div #js {}
+    (dom/div #js {:className ""}
+      (dom/span #js {:className "c-message c-message--raised c-message--large"} "This is a message"))
+    (dom/div #js {:className "u-center"}
+      (dom/div #js {:className "c-message c-message--expanded"} "Today maybe")
+      (dom/span #js {:className "c-message c-message--raised c-message--primary c-message--large"} "This is a primary message"))
+    (dom/div #js {:className "u-end"}
+      (dom/span #js {:className "c-message c-message--raised c-message--accent c-message--large"} "This is an accent message"))))
+
+
 ;; -------------------------
 ;; Notifications
 ;; -------------------------
@@ -1926,7 +1938,7 @@
           {:id :messages
            :title "Messages"
            :documentation messages-header
-           :examples [ messages ]}
+           :examples [ messages messages-raised ]}
           {:id :modal
            :title "Dialog"
            :examples [ modal-example modal-fullscreen-1 modal-fullscreen-2 ]}
