@@ -39,6 +39,99 @@
       (dom/span #js {:className "c-avatar c-avatar--xlarge"} "XL")
       (dom/span #js {:className "c-avatar c-avatar--huge"} "HU"))))
 
+(defexample avatar-group
+  "### Avatar Group
+
+  A group of avatars bundled into one block"
+
+  (dom/div nil
+    (l/row {:className "u-trailer"}
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+
+    (l/row {:className "u-trailer"}
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--medium"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--medium"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--medium"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+
+    (l/row {:className "u-trailer"}
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--large"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--large"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--large"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+
+    (l/row {:className "u-trailer"}
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--xlarge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--xlarge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--xlarge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+
+    (l/row {}
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+      (l/col {:width 2}
+        (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
+          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
+          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
+          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+    )
+  )
+
 (defarticle avatar-customize
   "### Customize
 
@@ -1879,7 +1972,7 @@
           {:id :avatar
            :title "Avatar"
            :documentation avatar-header
-           :examples [ avatar avatar-customize ]}
+           :examples [ avatar avatar-group avatar-customize ]}
           {:id :badges
            :title "Badges"
            :documentation badge-header
