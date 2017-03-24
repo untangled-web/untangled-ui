@@ -22,9 +22,9 @@
   --scale-avatar--huge: calc(var(--size-avatar--huge) / var(--divisor-avatar));
 }
 
-@custom-selector :--2-figures .c-avatar:first-child:nth-last-child(2), .c-avatar:first-child:nth-last-child(2) ~ .c-avatar, .c-icon:first-child:nth-last-child(2), .c-icon:first-child:nth-last-child(2) ~ .c-icon;
-@custom-selector :--3-figures .c-avatar:first-child:nth-last-child(3), .c-avatar:first-child:nth-last-child(3) ~ .c-avatar, .c-icon:first-child:nth-last-child(3), .c-icon:first-child:nth-last-child(3) ~ .c-icon;
-@custom-selector :--4-figures .c-avatar:first-child:nth-last-child(4), .c-avatar:first-child:nth-last-child(4) ~ .c-avatar, .c-icon:first-child:nth-last-child(4), .c-icon:first-child:nth-last-child(4) ~ .c-icon;
+@custom-selector :--2-figures *:first-child:nth-last-child(2), *:first-child:nth-last-child(2) ~ *;
+@custom-selector :--3-figures *:first-child:nth-last-child(3), *:first-child:nth-last-child(3) ~ *;
+@custom-selector :--4-figures *:first-child:nth-last-child(4), *:first-child:nth-last-child(4) ~ *;
 
 
 .c-avatar {

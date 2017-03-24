@@ -116,19 +116,21 @@
     (l/row {}
       (l/col {:width 2}
         (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
-          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
-          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))))
+          (dom/img #js {:src (:photo (util/mock-users :1)) :alt (util/full-name :1)})
+          (dom/img #js {:src (:photo (util/mock-users :2)) :alt (util/full-name :2)})))
       (l/col {:width 2}
         (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
-          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
-          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
-          (dom/span #js {:className "c-avatar"} (icons/icon :add))))
+          (dom/img #js {:src (:photo (util/mock-users :1)) :alt (util/full-name :1)})
+          (dom/img #js {:src (:photo (util/mock-users :2)) :alt (util/full-name :2)})
+          (dom/img #js {:src (:photo (util/mock-users :3)) :alt (util/full-name :3)})))
       (l/col {:width 2}
         (dom/span #js {:className "c-avatar-group c-avatar-group--huge"}
-          (dom/span #js {:className "c-avatar c-avatar--primary"} (icons/icon :supervisor_account))
-          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :person))
-          (dom/span #js {:className "c-avatar c-avatar--accent"} (icons/icon :weekend))
-          (dom/span #js {:className "c-avatar"} (icons/icon :add)))))
+          (dom/img #js {:src (:photo (util/mock-users :1)) :alt (util/full-name :1)})
+          (dom/img #js {:src (:photo (util/mock-users :2)) :alt (util/full-name :2)})
+          (dom/img #js {:src (:photo (util/mock-users :3)) :alt (util/full-name :3)})
+          (dom/img #js {:src (:photo (util/mock-users :4)) :alt (util/full-name :4)}))))
+
+
     )
   )
 
