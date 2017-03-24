@@ -14,3 +14,4 @@ dist/*.*
 !/.idea/runConfigurations/Figwheel.xml
 .lein-failures
 screen_shots
+pom.xml.asc
