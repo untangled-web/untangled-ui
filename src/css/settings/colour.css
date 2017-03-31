@@ -262,7 +262,7 @@
 
   /* Field */
   --color-field--primary: color(var(--grey) a(.5));
-  --color-field--secondary: var(--color-text);
+  --color-field--secondary: inherit;
   --color-field-dark--secondary: var(--grey-50);
   --color-field-dark--placeholder: var(--grey-300);
   --color-field--focus: var(--color-primary);
