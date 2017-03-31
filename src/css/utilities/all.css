@@ -9,11 +9,11 @@
  * Shapes.............Generated shapes
  * Typography.........Type tools
  * Visibility.........Responsive hide and show
-@import "layout";
-@import "typography";
-@import "visibility";
  */
 
 @import "alignment";
 @import "grid";
 @import "positioning";
+@import "layout";
+@import "typography";
+@import "visibility";
