@@ -120,27 +120,28 @@
     (let [{:keys [ui/open results ui/search]} (om/props this)
           open       (and open (pos? (count results)))
           menu-class (str "c-dropdown__menu" (when open " is-active"))]
-      (dom/div #js {:className "c-dropdown u-hide@sm"}
-        (dom/div #js {:className "c-field"}
-          (uic/icon :search)
-          (dom/input #js {:type        "text"
-                          :id          "docsSearch"
-                          :value       search
-                          :onChange    (fn [evt]
-                                         (let [v (.. evt -target -value)]
-                                           (om/transact! this `[(search/update-results ~{:term v})])))
-                          :onFocus     #(m/set-value! this :ui/open true)
-                          :placeholder "Search Untangled UI"
-                          :title       "Search Untangled UI"
-                          :className   "c-field__input"})
-          #_(dom/span #js {:className "c-icon"} (untangled.icons/material-icon :search))
-          )
-        (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
-          (map (fn [{:keys [label path]}]
-                 (dom/li #js {:key label :onClick (fn [evt]
-                                                    (m/set-value! this :ui/open false)
-                                                    (om/transact! this `[(guide/navigate {:path ~path}) :ui/react-key]))}
-                   (dom/button #js {:className "c-dropdown__link"} label))) results))))))
+      (dom/div #js {:className "u-column--3 u-hide@sm"}
+        (dom/div #js {:className "has-menu"}
+         (dom/div #js {:className "c-field"}
+           (uic/icon :search)
+           (dom/input #js {:type        "text"
+                           :id          "docsSearch"
+                           :value       search
+                           :onChange    (fn [evt]
+                                          (let [v (.. evt -target -value)]
+                                            (om/transact! this `[(search/update-results ~{:term v})])))
+                           :onFocus     #(m/set-value! this :ui/open true)
+                           :placeholder "Search Untangled UI"
+                           :title       "Search Untangled UI"
+                           :className   "c-field__input"})
+           #_(dom/span #js {:className "c-icon"} (untangled.icons/material-icon :search))
+           )
+         (dom/ul #js {:tabIndex "-1" :aria-hidden "true" :className menu-class}
+           (map (fn [{:keys [label path]}]
+                  (dom/li #js {:key label :onClick (fn [evt]
+                                                     (m/set-value! this :ui/open false)
+                                                     (om/transact! this `[(guide/navigate {:path ~path}) :ui/react-key]))}
+                    (dom/button #js {:className "c-dropdown__link"} label))) results)))))))
 
 (def ui-search (om/factory SearchBar))
 
