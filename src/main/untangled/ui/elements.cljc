@@ -282,27 +282,33 @@
 
 
 (defn ui-field
-  "Render an input field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+  "Render an input or textarea field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
+  `:id` string - Unique DOM ID. Required for correct rendering.
   `:size` :regular (default), :small, :medium, :large
   `:state` :valid (default), :invalid, or :error
   "
-  [{:keys [size state type] :or {size ""} :as attrs} placeholder]
+  [{:keys [id size state type label] :or {size ""} :as attrs} placeholder]
+  (assert id "DOM ID is required on checkbox")
   (let [legal-sizes  #{:small :medium :large}
         legal-states #{:invalid :error}
         user-classes (get attrs :className "")
         user-type    (if type type "text")
         has          (fn [s] (contains? state s))
-        classes      (cond-> (str user-classes " c-field ")
+        classes      (cond-> (str user-classes " c-field__input ")
                        (contains? legal-sizes size) (str " c-field--" (name size))
                        (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
                        (assoc :className classes
-                              :placeholder (name placeholder)
                               :aria-label (name placeholder)
-                              :type user-type)
+                              :type (when-not (= type :multiline) user-type))
                        (dissoc :size :state))]
-    (dom/input (clj->js attrs))))
+    (dom/span #js {:className "c-field"}
+      (if (= type :multiline)
+       (dom/textarea (clj->js attrs))
+       (dom/input (clj->js attrs)))
+      (dom/label #js {:className "c-field__label" :htmlFor id} label)
+      )))
 
 (defn ui-icon
   "Render an icon. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
