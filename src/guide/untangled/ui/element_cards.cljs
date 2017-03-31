@@ -202,7 +202,7 @@
   Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [sizes] (e/ui-field {:size sizes :key (str "ui-" sizes)} (name sizes)))
+    (mapv (fn [sizes] (e/ui-field {:id (str "input-" sizes) :label (name sizes) :placeholder "Placeholder text" :size sizes :key (str "ui-" sizes)} (name sizes)))
       [:default :small :medium :large])))
 
 (defsample field-states
@@ -211,7 +211,7 @@
   Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [states] (e/ui-field {:state states :key (str "ui-" states)} (name states)))
+    (mapv (fn [states] (e/ui-field {:id (str "input-" states) :label (name states) :placeholder "Placeholder text" :state states :key (str "ui-" states)} (name states)))
       [:valid :invalid :error])))
 
 (defsample field-types
@@ -220,8 +220,8 @@
   Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [type] (e/ui-field {:type type :key (str "ui-" type)} (name type)))
-      [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
+    (mapv (fn [type] (e/ui-field {:id (str "input-" type) :label (name type) :placeholder "Placeholder text" :type type :key (str "ui-" type)} (name type)))
+      [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color :multiline])))
 
 (defsample icon-colors
   "# Icons
