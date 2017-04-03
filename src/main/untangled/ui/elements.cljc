@@ -288,14 +288,14 @@
   `:id` string - Unique DOM ID. Required for correct rendering.
   `:kind` :single-line (default), :multi-line, :full-width
   `:size` :regular (default), :dense, :large
-  `:state` :valid (default), :invalid, or :error
+  `:state` :valid (default) or :invalid
   `:label` string - A title for the input to describe it.
   `:helper` string - Text that helps instruct the user under the input.
   "
   [{:keys [id kind size state type label helper required] :or {size ""} :as attrs} placeholder]
   (assert id "DOM ID is required on checkbox")
   (let [legal-sizes  #{:dense :large}
-        legal-states #{:invalid :error}
+        legal-states #{:invalid}
         legal-kinds  #{:multi-line :full-width}
         user-classes (get attrs :className "")
         user-type    (if type type "text")

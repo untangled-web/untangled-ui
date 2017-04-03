@@ -1,6 +1,5 @@
 @custom-selector :--focus-field :focus, .has-focus;
 @custom-selector :--invalid-field :focus:invalid, :focus.is-invalid, :invalid, .is-invalid;
-@custom-selector :--error-field :focus.is-error, .is-error;
 
 :root {
   --field-font-size: 16px;
@@ -45,6 +44,7 @@
   &:--focus-field {
     border-bottom-color: var(--color-field--focus);
     border-width: 0 0 2px;
+    caret-color: var(--color-field--focus);
     outline: none;
 
     &::placeholder { @apply --field-placeholder; }
@@ -52,23 +52,9 @@
 
 
   &:--invalid-field {
-    border-bottom-color: var(--color-field--invalid);
-    border-width: 0 0 2px;
-    color: var(--color-field--invalid);
-
-    &::placeholder { @apply --field-placeholder; }
-
-    & ~ .c-field__helper {
-      color: var(--color-field--invalid);
-      opacity: 1 !important;
-    }
-  }
-
-
-  &:--error-field {
     border-bottom-color: var(--color-field--error);
     border-width: 0 0 2px;
-    color: var(--color-field--error);
+    caret-color: var(--color-field--error);
 
     &::placeholder { @apply --field-placeholder; }
 
@@ -109,6 +95,11 @@
 
   .c-field--full-width.c-field--dense & {
     padding: 16px 0;
+  }
+
+
+  &:focus ~ .c-field__label .c-field__required {
+    color: var(--color-error);
   }
 
 
@@ -165,16 +156,8 @@
   white-space: nowrap;
   will-change: color, font-size, top, visibility;
 
-  .c-field__input:focus + & {
+  .c-field__input:focus ~ & {
     color: var(--color-primary);
-  }
-
-  .c-field__input:focus:--invalid-field + & {
-    color: var(--color-field--invalid);
-  }
-
-  .c-field__input:focus:--error-field + & {
-    color: var(--color-field--error);
   }
 
   .c-field__input::placeholder {
@@ -240,10 +223,6 @@
   padding: .5em 0 .25em;
 }
 
-
-.c-field__required {
-  color: var(--color-error);
-}
 
 
 /* Inside a toolbar */

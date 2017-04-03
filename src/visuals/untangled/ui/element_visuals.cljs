@@ -125,7 +125,7 @@
      (dom/div #js {:className (when dark "t-dark") :key dark}
        (for [kinds   [:single-line :multi-line :full-width]
              size   [:regular :dense :large]
-             states [:valid :invalid :error]]
+             states [:valid :invalid]]
          (dom/div #js {:key (str "field-" size states kinds) :className "u-trailer"}
            (e/ui-field {:id (str "field-" size states kinds) :size size :state states :kind kinds
                         :placeholder "Placeholder text"
