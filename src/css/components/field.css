@@ -14,11 +14,16 @@
 }
 
 .c-field {
+  border: none;
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   font-size: var(--field-font-size);
   max-width: 100%;
   padding: 1em 0 .5em;
   position: relative;
+
+  &.has-helper { padding-bottom: 24px; }
 }
 
 .c-field__input {
@@ -28,8 +33,7 @@
   border-radius: 0;
   border-width: 0 0 1px;
   color: var(--color-field--secondary);
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex: 1;
   font-family: inherit;
   margin: 0;
   min-height: var(--field-min-height); /* IE11 Input Height */
@@ -38,14 +42,12 @@
   transition: border var(--global-duration) ease-in-out, padding .4s ease-in, padding .2s ease-out;
   width: 100%;
 
-
   &:--focus-field {
     border-bottom-color: var(--color-field--focus);
     border-width: 0 0 2px;
-    color: var(--color-field--focus);
     outline: none;
 
-    &::-webkit-input-placeholder { @apply --field-placeholder; }
+    &::placeholder { @apply --field-placeholder; }
   }
 
 
@@ -54,7 +56,12 @@
     border-width: 0 0 2px;
     color: var(--color-field--invalid);
 
-    &::-webkit-input-placeholder { @apply --field-placeholder; }
+    &::placeholder { @apply --field-placeholder; }
+
+    & ~ .c-field__helper {
+      color: var(--color-field--invalid);
+      opacity: 1 !important;
+    }
   }
 
 
@@ -63,7 +70,12 @@
     border-width: 0 0 2px;
     color: var(--color-field--error);
 
-    &::-webkit-input-placeholder { @apply --field-placeholder; }
+    &::placeholder { @apply --field-placeholder; }
+
+    & ~ .c-field__helper {
+      color: var(--color-field--error);
+      opacity: 1 !important;
+    }
   }
 
 
@@ -72,8 +84,35 @@
     border-width: 0 0 2px;
   }
 
+  &::placeholder {
+    color: var(--grey-200);
+    font-size: var(--fontSize--semiNormal);
+  }
 
-  .c-button { margin-bottom: 0 !important; }
+  .c-field:not(.has-label) &::placeholder {
+    opacity: 1 !important;
+  }
+
+  .c-field--large & {
+    padding: .1em 0;
+    font-size: var(--fontSize--medium);
+    &::placeholder {
+       font-size: var(--fontSize--medium);
+     }
+  }
+
+  .c-field--dense & { padding: 0; }
+
+  .c-field--full-width & {
+    padding: 20px 0;
+  }
+
+  .c-field--full-width.c-field--dense & {
+    padding: 16px 0;
+  }
+
+
+  & .c-button { margin-bottom: 0 !important; }
 
   &[type="color"] {
     appearance: none;
@@ -112,8 +151,8 @@
 
 
 .c-field__label {
-  color: var(--color-primary);
   bottom: 0;
+  color: var(--grey-400);
   font-size: 12px;
   font-weight: normal;
   left: 0;
@@ -126,11 +165,15 @@
   white-space: nowrap;
   will-change: color, font-size, top, visibility;
 
-  .c-field__input:--invalid-field + & {
+  .c-field__input:focus + & {
+    color: var(--color-primary);
+  }
+
+  .c-field__input:focus:--invalid-field + & {
     color: var(--color-field--invalid);
   }
 
-  .c-field__input:--error-field + & {
+  .c-field__input:focus:--error-field + & {
     color: var(--color-field--error);
   }
 
@@ -145,9 +188,21 @@
     color: color(var(--black) a(.26));
     font-size: 1em;
     top: 21px;
+
+    .t-dark & {
+      color: color(var(--white) a(.50));
+    }
+
+    .c-field--large & {
+      font-size: var(--fontSize--medium);
+    }
   }
 
   .c-field__input[type="color"] ~ & { visibility: hidden; }
+
+  .js-field--required & {
+    color: var(--color-error);
+  }
 }
 
 .t-dark,
@@ -163,56 +218,32 @@
 }
 
 
-.c-field--block {
-  margin-bottom: .5em;
-  margin-left: 1em;
-  margin-right: 1em;
-  padding: 0;
-  width: calc(100% - 2em);
-
-  .c-field__input { padding: 0; }
-}
 
 
-.c-field--small {
+
+.c-field__helper {
+  bottom: 0;
+  color: var(--color-neutral);
   font-size: var(--fontSize--tiny);
+  left: 0;
+  position: absolute;
+  transition: opacity .1s ease;
 
-  .c-field__input { font-size: inherit; }
-}
-
-
-.c-field--medium {
-  font-size: var(--fontSize--semiMedium);
-  height: auto;
-  min-height: 34px;
-
-  .c-field__input { font-size: inherit; }
-
-  & > .c-icon { margin: 4px 0; }
+  .c-field__input:not(:focus) ~ & {
+    opacity: 0;
+  }
 }
 
 
 .c-field--large {
-  font-size: var(--fontSize--semiLarge);
-  height: 48px;
-
-  .c-field__input { font-size: inherit; }
+  font-size: var(--fontSize--medium);
+  padding: .5em 0 .25em;
 }
 
 
-.c-field--stamped {
-  color: var(--white);
-  font-family: monospace;
-  font-weight: bold;
-
-  & + .c-button--icon .c-icon { color: var(--white); }
+.c-field__required {
+  color: var(--color-error);
 }
-
-
-.c-field--inset { text-indent: 30px; }
-
-
-.c-field--inlay { padding-left: 35px; }
 
 
 /* Inside a toolbar */
@@ -261,4 +292,3 @@
     color: var(--white);
   }
 }
-

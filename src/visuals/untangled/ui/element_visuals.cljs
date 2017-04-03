@@ -121,11 +121,16 @@
 
 (defcard field-visual-regressions
   (dom/div nil
-    (for [size   [:normal :small :medium :large]
-          states [:valid :invalid :error]
-          dark   [false true]]
-      (dom/div #js {:className (when dark "t-dark") :style #js {:display "inline-block"} :key (str "field-" size states dark (rand-int 256))}
-        (e/ui-field {:size size :state states} (str (name size) " " (name states) " field"))))))
+    (for [dark [false true]]
+     (dom/div #js {:className (when dark "t-dark") :key dark}
+       (for [kinds   [:single-line :multi-line :full-width]
+             size   [:regular :dense :large]
+             states [:valid :invalid :error]]
+         (dom/div #js {:key (str "field-" size states kinds) :className "u-trailer"}
+           (e/ui-field {:id (str "field-" size states kinds) :size size :state states :kind kinds
+                        :placeholder "Placeholder text"
+                        :helper "This helps you fill out the field properly, so don't screw up"
+                        :label (when-not (= kinds :full-width)(str (name size) " " (name states) " " (name kinds)))} (str (name size) " " (name states) " " (name kinds) " field"))))))))
 
 
 (defcard icon-colors-visual-regressions

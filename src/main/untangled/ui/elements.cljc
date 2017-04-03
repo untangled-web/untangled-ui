@@ -5,6 +5,7 @@
             [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
             [untangled.events]
+            [clojure.string :as str]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
@@ -285,29 +286,43 @@
   "Render an input or textarea field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
   `:id` string - Unique DOM ID. Required for correct rendering.
-  `:size` :regular (default), :small, :medium, :large
+  `:kind` :single-line (default), :multi-line, :full-width
+  `:size` :regular (default), :dense, :large
   `:state` :valid (default), :invalid, or :error
+  `:label` string - A title for the input to describe it.
+  `:helper` string - Text that helps instruct the user under the input.
   "
-  [{:keys [id size state type label] :or {size ""} :as attrs} placeholder]
+  [{:keys [id kind size state type label helper required] :or {size ""} :as attrs} placeholder]
   (assert id "DOM ID is required on checkbox")
-  (let [legal-sizes  #{:small :medium :large}
+  (let [legal-sizes  #{:dense :large}
         legal-states #{:invalid :error}
+        legal-kinds  #{:multi-line :full-width}
         user-classes (get attrs :className "")
         user-type    (if type type "text")
         has          (fn [s] (contains? state s))
         classes      (cond-> (str user-classes " c-field__input ")
-                       (contains? legal-sizes size) (str " c-field--" (name size))
                        (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
                        (assoc :className classes
                               :aria-label (name placeholder)
-                              :type (when-not (= type :multiline) user-type))
-                       (dissoc :size :state))]
-    (dom/span #js {:className "c-field"}
-      (if (= type :multiline)
+                              :aria-multiline (when (= kind :multi-line) true)
+                              :aria-required (when required true)
+                              :required (when required true)
+                              :type user-type)
+                       (dissoc :size :state :kind :label :helper))]
+    (dom/span #js {:className (str "c-field "
+                                (when kind (str " c-field--" (name kind)))
+                                (when size (str " c-field--" (name size)))
+                                (when-not (str/blank? label) " has-label")
+                                (when-not (str/blank? helper) " has-helper"))}
+      (if (= kind :multi-line)
        (dom/textarea (clj->js attrs))
        (dom/input (clj->js attrs)))
-      (dom/label #js {:className "c-field__label" :htmlFor id} label)
+      (when label
+        (dom/label #js {:className "c-field__label" :htmlFor id}
+         label (when required (dom/span #js {:className "c-field__required"} " *"))))
+      (when helper
+        (dom/span #js {:className "c-field__helper"} helper))
       )))
 
 (defn ui-icon

@@ -157,8 +157,7 @@
   (render [this]
     (let [{:keys [example/path]} (om/props this)
           example-renderer (get-in parts (conj path :renderer))]
-      (dom/div nil
-        (example-renderer)))))
+      (example-renderer))))
 
 (def ui-example (om/factory Example {:keyfn :example/id}))
 

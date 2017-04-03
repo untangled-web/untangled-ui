@@ -24,15 +24,13 @@
 (defviewport errors-form
   "A basic form"
   (dom/span nil
-    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"};; Style for example
-      (dom/div #js {:className "c-toolbar__row"}
-       (dom/div #js {:className "c-toolbar__view"}
-         (dom/button #js {:className "c-button c-button--icon"}
-           (icons/icon :arrow_back))
-         (dom/span #js {:className "c-toolbar__label"} "Application"))
-       (dom/div #js {:className "c-toolbar__actions"}
-         (dom/button #js {:className "c-button c-button--icon"}
-           (icons/icon :more_vert)))))
+    (e/ui-toolbar {:kind :primary :raised true}
+      (e/ui-toolbar-row {}
+        "Application"
+        (e/ui-toolbar-spacer {})
+        (dom/span #js {:className "c-toolbar__actions"}
+          (e/ui-icon-button {:glyph :more_vert}))
+        (e/ui-toolbar-button {:glyph :arrow_back})))
 
     (l/row {}
       (l/col {:width 12}
@@ -40,22 +38,19 @@
           (dom/h1 nil "Personal info")))
 
       (l/col {:width 12}
-        (dom/input #js {:className "c-field" :placeholder "First name"})
-        (dom/span #js {:className "c-message"} \u00A0))
+        (e/ui-field {:id "ip1" :placeholder "First name" :helper "First name is required"} ""))
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Last name"})))
+          (e/ui-field {:id "ip2" :placeholder "Last name" :helper "Last name is required"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Birthday"})
-          (dom/span #js {:className "c-message c-message--neutral"} "MM/DD/YYYY")))
+          (e/ui-field {:id "ip3" :placeholder "Birthday" :helper "MM/DD/YYYY" :pattern ".{10,}"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Social Security"})
-          (dom/span #js {:className "c-message c-message--neutral"} "### - ## - ####")))
+          (e/ui-field {:id "ip4" :placeholder "Social Security" :helper "### - ## - ####"} "")))
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:before :half}
@@ -63,11 +58,11 @@
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Address"})))
+          (e/ui-field {:id "ip5" :placeholder "Address"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "City"})))
+          (e/ui-field {:id "ip6" :placeholder "City"} "")))
 
       (l/col {:width 6}
         (dom/div #js {:className "has-menu"}
@@ -75,47 +70,43 @@
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Postal code"})))
+          (e/ui-field {:id "ip7" :placeholder "Postal code"} "")))
 
       (l/col {:width 6}
         (dom/div #js {:className "has-menu"}
           (dom/button #js {:className "c-button"} "Country"))))))
 
+
 (defviewport errors-form-filled
   "Filled out form"
   (dom/span nil
-    (dom/div #js {:className "c-toolbar c-toolbar--raised c-toolbar--primary"} ;; Style for example
-      (dom/div #js {:className "c-toolbar__row"}
-       (dom/div #js {:className "c-toolbar__view"}
-         (dom/button #js {:className "c-button c-button--icon"}
-           (icons/icon :arrow_back))
-         (dom/span #js {:className "c-toolbar__label"} "Application"))
-       (dom/div #js {:className "c-toolbar__actions"}
-         (dom/button #js {:className "c-button c-button--icon"}
-           (icons/icon :more_vert)))
-       ))
+    (e/ui-toolbar {:kind :primary :raised true}
+      (e/ui-toolbar-row {}
+        "Application"
+        (e/ui-toolbar-spacer {})
+        (dom/span #js {:className "c-toolbar__actions"}
+          (e/ui-icon-button {:glyph :more_vert}))
+        (e/ui-toolbar-button {:glyph :arrow_back})))
+
     (l/row {}
       (l/col {:width 12}
         (l/ui-vertical-margin {:before :half}
           (dom/h1 nil "Personal info")))
 
       (l/col {:width 12}
-       (dom/input #js {:className "c-field is-error" :placeholder "First name"})
-       (dom/span #js {:className "c-message c-message--alert"} "First name is required"))
+        (e/ui-field {:id "ip1" :placeholder "First name" :required true :helper "First name is required"} ""))
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Last name" :value "Connors"})))
+          (e/ui-field {:id "ip2" :placeholder "Last name" :required true :helper "Last name is required" :value "Connors"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field is-error" :placeholder "Birthday" :value "01/01/90"})
-          (dom/span #js {:className "c-message c-message--alert"} "MM/DD/YYYY")))
+          (e/ui-field {:id "ip3" :placeholder "Birthday" :required true :helper "MM/DD/YYYY" :pattern ".{10,}" :value "01/01/90"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field is-error" :placeholder "Social Security"})
-          (dom/span #js {:className "c-message c-message--alert"} "### - ## - ####")))
+          (e/ui-field {:id "ip4" :placeholder "Social Security" :required true :helper "### - ## - ####"} "")))
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:before :half}
@@ -123,24 +114,25 @@
 
       (l/col {:width 12}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Address" :value "2000 Main Street, Apartment J"})))
+          (e/ui-field {:id "ip5" :placeholder "Address" :value "2000 Main Street, Apartment J"} "")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "City" :value "San Francisco"})))
+          (e/ui-field {:id "ip6" :placeholder "City" :value "San Francisco"} "")))
 
       (l/col {:width 6}
         (dom/div #js {:className "has-menu"}
-          (dom/button #js {:className "c-button"} "State")))
+          (dom/button #js {:className "c-button"} "CA")))
 
       (l/col {:width 6}
         (l/ui-vertical-margin {:after :half}
-          (dom/input #js {:className "c-field" :placeholder "Postal code" :value "97701"})))
+          (e/ui-field {:id "ip7" :placeholder "Postal code" :value "94112"} "")))
 
       (l/col {:width 6}
         (dom/div #js {:className "has-menu"}
-          (dom/button #js {:className "c-button"} "Country")))
-      )))
+          (dom/button #js {:className "c-button"} "United States"))))))
+
+
 
 
 (defexample empty-states

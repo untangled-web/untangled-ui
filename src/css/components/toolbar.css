@@ -60,7 +60,7 @@
     align-self: stretch;
     flex-wrap: nowrap;
     margin: 0;
-    padding: 0;
+    padding: 0 5px 0 calc(var(--indent-toolbar__row) - 18px);
     min-height: var(--height-toolbar);
 
     @media (--md-up) {

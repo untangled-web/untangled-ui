@@ -116,6 +116,7 @@
 
 .has-menu {
   display: inline-block;
+  padding: calc(1em - 8px) 0 .5em;
   position: relative;
   width: 100%;
 }
