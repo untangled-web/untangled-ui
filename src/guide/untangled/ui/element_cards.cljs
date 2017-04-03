@@ -220,8 +220,8 @@
   Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
   "
   (dom/div nil
-    (mapv (fn [states] (e/ui-field {:id (str "input-" states) :label (name states) :placeholder "Placeholder text" :state states :key (str "ui-" states)} (name states)))
-      [:valid :invalid :error])
+    (mapv (fn [states] (e/ui-field {:id (str "input-" states) :label (name states) :placeholder "Placeholder text" :state states :action :visibility :key (str "ui-" states)} (name states)))
+      [:valid :invalid])
     (e/ui-field {:id "required" :required true :label "required"} "")))
 
 (defsample field-types

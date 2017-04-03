@@ -62,6 +62,10 @@
       color: var(--color-field--error);
       opacity: 1 !important;
     }
+
+    & ~ .c-field__action {
+      color: var(--color-field--error);
+    }
   }
 
 
@@ -224,6 +228,11 @@
 }
 
 
+.c-field__action {
+  position: absolute;
+  right: 0;
+  top: .75em;
+}
 
 /* Inside a toolbar */
 
