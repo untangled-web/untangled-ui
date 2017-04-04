@@ -5,7 +5,7 @@
   "repository": "untangled-web/untangled-ui",
   "author": "Stephen Way <scway@thenavisway.com> (http://stephenway.net)",
   "license": "MIT",
-  "main": "src/main/css/untangled-ui.css",
+  "main": "src/css/untangled-ui.css",
   "devDependencies": {
     "autoprefixer": "^6.3.6",
     "babel-core": "^6.10.4",
