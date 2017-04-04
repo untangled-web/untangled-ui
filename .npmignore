@@ -1,0 +1,12 @@
+/.idea
+/dev
+/resources
+/script
+/src
+!src/css
+/target
+/Makefile
+/*.js
+*.clj
+*.log
+*.iml
