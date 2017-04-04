@@ -1,7 +1,7 @@
 {
   "name": "untangled-ui",
   "description": "A PostCSS Framework for web apps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": "untangled-web/untangled-ui",
   "author": "Stephen Way <scway@thenavisway.com> (http://stephenway.net)",
   "license": "MIT",
