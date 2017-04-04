@@ -13,6 +13,7 @@
   font-size: var(--fontSize--normalPlus);
   position: relative;
   width: 100%;
+  z-index: var(--zIndex-appBar);
 }
 
 .c-toolbar--raised { box-shadow: var(--shadow-2); }
