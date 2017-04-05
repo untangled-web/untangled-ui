@@ -13,9 +13,9 @@
                  [lein-doo "0.1.7" :scope "test"]
                  [org.clojure/clojure "1.9.0-alpha14" :scope "provided"]
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
-                 [org.omcljs/om "1.0.0-alpha47" :scope "provided"]
-                 [navis/untangled-client "0.8.0" :scope "provided"]
-                 [navis/untangled-server "0.7.0" :scope "provided"]
+                 [org.omcljs/om "1.0.0-alpha48" :scope "provided"]
+                 [navis/untangled-client "0.8.2-SNAPSHOT" :scope "provided"]
+                 [navis/untangled-server "0.7.0-SNAPSHOT" :scope "provided"]
                  [navis/untangled-spec "0.3.9" :scope "test"
                   :exclusions [ring/ring-core commons-fileupload prismatic/schema bidi]]
                  [com.taoensso/timbre "4.7.4" :exclusions [io.aviso/pretty]]]
@@ -129,5 +129,6 @@
                                       [devcards "0.2.2" :exclusions [org.omcljs/om]]]
                        :source-paths ["dev" "src/guide" "src/css-guide"]
                        :repl-options {:init-ns          clj.user
-                                      :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                                      :init (use 'clj.user :reload)
+                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                       :port             7001}}})

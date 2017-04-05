@@ -8,6 +8,7 @@
     untangled.ui.Forms--05-Whole-Form-Logic
     untangled.ui.Forms--09-Predefined-Fields
     untangled.ui.Forms--10-Full-Stack-Demo
+    untangled.ui.Forms--15-File-Upload
     untangled.ui.menu-cards
     untangled.ui.dialog-cards
     untangled.ui.image-tool-cards
