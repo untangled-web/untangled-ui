@@ -65,6 +65,8 @@
 (defcard-doc
   "# Forms – File Upload
 
+  SEE: upload_server.clj and the devcards in this file for an example.
+
   There are a few steps for setting up a working file upload control:
 
   1. Install file upload server support in your server's Ring stack and add logic for dealing with
@@ -188,7 +190,7 @@
           :failed (dom/span nil \"FAILED!\")
           :done (dom/span nil \"Ready.\")
           (dom/span nil \"Sending...\" progress \"%\"))
-        (dom/img #js {:width \"100px\" :ref (fn [c] (.setFile js-file))})
+        (dom/img #js {:width \"100px\" :ref (fn [c] (.setFile c js-file))})
         (e/ui-icon {:onClick #(onCancel id)
                     :glyph   :cancel}))))))
 
