@@ -1,5 +1,6 @@
 :root {
   --borderWidth-tab: 3px;
+  --fontSize-tab: var(--fontSize--tiny);
   --height-tab: 48px;
   --maxWidth-tab: 264px;
   --minWidth-tab: 72px;
@@ -23,7 +24,7 @@
   background: var(--color-tab--primary, transparent);
   border-bottom: var(--borderWidth-tab) solid var(--color-tab);
   color: var(--color-tab--secondary, currentColor);
-  font-size: var(--fontSize-tab, var(--fontSize--tiny));
+  font-size: var(--fontSize-tab);
   font-weight: var(--fontWeight-tab, bold);
   height: var(--height-tab);
   max-width: var(--maxWidth-tab);
