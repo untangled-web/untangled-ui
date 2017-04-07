@@ -210,7 +210,7 @@
     (let [{:keys [part/selected-section part/sections part/title] :or {part/selected-section 0}} (om/props this)
           section-names (map :section/title sections)]
       (dom/div #js {:className "ui-part u-row"}
-        (dom/div #js {:className "u-column--12 u-column--10@md"}
+        (dom/div #js {:className "ui-part__content u-column--12 u-column--10@md"}
           (ui-section (nth sections selected-section)))
         (dom/div #js {:className "u-column--12 u-column--2@md"}
           (navlist this :part/selected-section section-names))
