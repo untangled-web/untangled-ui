@@ -17,7 +17,6 @@ section: Components
     line-height: 20px;
     margin: var(--margin-card);
     min-height: 200px;
-    overflow: hidden;
     position: relative;
     text-decoration: none;
     transition: box-shadow var(--global-duration) ease;
@@ -143,14 +142,15 @@ section: Components
 
 
   .c-card__supporting-text {
-    overflow: hidden;
     padding: 1em 1rem;
+    position: relative;
     text-align: start;
-    width: 90%;
+    width: 100%; /* Originally was 90% for better typography, however need a better solution for full width stuff */
   }
 
 
   .c-card__actions {
+    margin-top: auto; /* This pins it down to the bottom of the card */
     min-height: 45px;
     text-align: start;
     width: 100%;

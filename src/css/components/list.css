@@ -63,6 +63,7 @@
     @apply --box-column-auto;
     display: flex;
     padding: 12px 0;
+    position: relative;
     transition: background-color .1s ease;
 
     @media (--md-up) {

@@ -234,6 +234,15 @@
   top: .75em;
 }
 
+
+.c-field__info {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+}
+
+
 /* Inside a toolbar */
 
 .c-toolbar {

@@ -92,8 +92,23 @@
   }
 }
 
+
 .u-subheader {
   font-size: var(--fontSize--small);
   padding: 1em 0;
+}
+
+
+.u-break\@sm {
+  display: block;
+
+  @media (--md-up) { display: inline; }
+}
+
+
+.u-break\@md {
+  display: inline;
+
+  @media (--md-up) { display: block; }
 }
 
