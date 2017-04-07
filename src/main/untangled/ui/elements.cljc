@@ -194,7 +194,7 @@
         legal-sizes  #{:expand :wide}
         id-class     (gensym "c-card--")
         className    (or className "")
-        classes      (cond-> (str "c-card " id-class className)
+        classes      (cond-> (str "c-card " (when image id-class) className)
                        (contains? legal-kinds kind) (str " c-card--" (name kind))
                        (contains? legal-colors color) (str " c-card--" (name color))
                        (contains? legal-sizes size) (str " c-card--" (name size)))
@@ -224,10 +224,9 @@
         (dom/div #js {:className "c-card__menu"}
           (menu/ui-menu menu :style :icon)
           ))
-      (dom/style nil
-        (str "." id-class" .c-card__title { background-image: url(" image "); }")
-        )
-      )))
+      (when image
+        (dom/style nil
+         (str "." id-class " .c-card__title { background-image: url(" image "); }"))))))
 
 
 (let [render-input (fn [{:keys [type id] :as props}]
