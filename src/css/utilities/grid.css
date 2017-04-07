@@ -7,7 +7,7 @@
 .u-row { @apply --row; }
 .u-row--break { @apply --row-break; }
 .u-row--collapse > [class^="u-column"] { @apply --row-collapse; }
-.u-row--reverse { flex-direction: row-reverse; }
+.u-row--reverse { @apply --row-reverse; }
 .u-row--wide {
   @apply --row-wide;
 

@@ -198,4 +198,9 @@
   margin-bottom: 1em;
 }
 
+.ui-part__content {
+  height: calc(100vh - var(--height-toolbar));
+  overflow: scroll;
+}
+
 /* stylelint-enable */

@@ -10,13 +10,25 @@
   --minWidth-media--large: 75;  /* 1200px */
   --minWidth-media--xlarge: 90; /* 1440px */
   --width-gutter: 1rem;
-  --width-gutter--half: calc((var(--width-gutter) * .5));
-  --width-gutter--compensation: calc((var(--width-gutter) * .5) * -1);
+  --width-gutter--half: calc(var(--width-gutter) * .5);
+  --width-gutter--compensation: calc(var(--width-gutter--half) * -1);
   --width-container--small: calc(var(--minWidth-media--small) + var(--width-gutter));
   --width-container--medium: calc(var(--minWidth-media--medium) + var(--width-gutter));
   --width-container--large: calc(var(--minWidth-media--large) + var(--width-gutter));
   --width-container--xlarge: calc(var(--minWidth-media--xlarge) + var(--width-gutter));
   --width-column: calc(100% / 12);
+  --width-column--1: var(--width-column);
+  --width-column--2: calc(var(--width-column) * 2);
+  --width-column--3: calc(var(--width-column) * 3);
+  --width-column--4: calc(var(--width-column) * 4);
+  --width-column--5: calc(var(--width-column) * 5);
+  --width-column--6: calc(var(--width-column) * 6);
+  --width-column--7: calc(var(--width-column) * 7);
+  --width-column--8: calc(var(--width-column) * 8);
+  --width-column--9: calc(var(--width-column) * 9);
+  --width-column--10: calc(var(--width-column) * 10);
+  --width-column--11: calc(var(--width-column) * 11);
+  --width-column--12: calc(var(--width-column) * 12);
   --reset-box: {
     border: 0;
     margin: 0;
@@ -33,13 +45,19 @@
   };
 
   --container-flex: {
-    align-items: center;
     border: 0;
-    display: flex;
+    display: inline-block;
     height: 100%;
-    justify-content: center;
     margin: 0;
     padding: 0;
+    text-align: center;
+    vertical-align: middle;
+
+    @supports (display: flex) {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
   };
 
   --container-fluid: {
@@ -51,110 +69,188 @@
 
   --row: {
     box-sizing: border-box;
-    display: flex;
-    flex: 0 1 auto;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: inline-block;
+    float: left;
+    margin: 0 auto;
+
+    @supports (display: flex) {
+      display: flex;
+      flex: 0 1 auto;
+      flex-flow: row wrap;
+      float: initial;
+    }
   };
 
   --box-column: {
     box-sizing: border-box;
+    float: left;
     min-width: 0;
     padding-left: var(--width-gutter--half);
     padding-right: var(--width-gutter--half);
+
+    @supports (display: flex) {
+      float: initial;
+      width: initial !important;
+    }
   };
 
   --box-column-auto: {
     @apply --box-column;
-    flex: 1 0 0%;
-    max-width: 100%;
+    width: 100%;
+
+    @supports (display: flex) {
+      flex: 1 0 0%;
+      max-width: 100%;
+    }
   };
 
   --column-1: {
     @apply --box-column;
-    flex: 1 0 var(--width-column) !important; /* IE11 */
-    max-width: var(--width-column) !important;
+    width: var(--width-column--1);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--1) !important; /* IE11 */
+      max-width: var(--width-column--1) !important;
+    }
   };
 
   --column-2: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 2) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 2) !important;
+    width: var(--width-column--2);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--2) !important; /* IE11 */
+      max-width: var(--width-column--2) !important;
+    }
   };
 
   --column-3: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 3) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 3) !important;
+    width: var(--width-column--3);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--3) !important; /* IE11 */
+      max-width: var(--width-column--3) !important;
+    }
   };
 
   --column-4: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 4) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 4) !important;
+    width: var(--width-column--4);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--4) !important; /* IE11 */
+      max-width: var(--width-column--4) !important;
+    }
   };
 
   --column-5: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 5) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 5) !important;
+    width: var(--width-column--5);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--5) !important; /* IE11 */
+      max-width: var(--width-column--5) !important;
+    }
   };
 
   --column-6: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 6) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 6) !important;
+    width: var(--width-column--6);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--6) !important; /* IE11 */
+      max-width: var(--width-column--6) !important;
+    }
   };
 
   --column-7: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 7) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 7) !important;
+    width: var(--width-column--7);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--7) !important; /* IE11 */
+      max-width: var(--width-column--7) !important;
+    }
   };
 
   --column-8: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 8) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 8) !important;
+    width: var(--width-column--8);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--8) !important; /* IE11 */
+      max-width: var(--width-column--8) !important;
+    }
   };
 
   --column-9: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 9) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 9) !important;
+    width: var(--width-column--9);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--9) !important; /* IE11 */
+      max-width: var(--width-column--9) !important;
+    }
   };
 
   --column-10: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 10) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 10) !important;
+    width: var(--width-column--10);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--10) !important; /* IE11 */
+      max-width: var(--width-column--10) !important;
+    }
   };
 
   --column-11: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 11) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 11) !important;
+    width: var(--width-column--11);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--11) !important; /* IE11 */
+      max-width: var(--width-column--11) !important;
+    }
   };
 
   --column-12: {
     @apply --box-column;
-    flex: 1 0 calc(var(--width-column) * 12) !important; /* IE11 */
-    max-width: calc(var(--width-column) * 12) !important;
+    width: var(--width-column--12);
+
+    @supports (display: flex) {
+      flex: 1 0 var(--width-column--12) !important; /* IE11 */
+      max-width: var(--width-column--12) !important;
+    }
   };
 
   --start: {
-    justify-content: flex-start !important;
-    text-align: start;
+    text-align: left;
+    /* All children should be inline-block */
+
+    @supports (display: flex) {
+      justify-content: flex-start !important;
+      text-align: start;
+    }
   };
 
   --center: {
-    justify-content: center !important;
     text-align: center;
+    /* All children should be inline-block */
+
+    @supports (display: flex) {
+      justify-content: center !important;
+    }
   };
 
   --end: {
-    justify-content: flex-end !important;
-    text-align: end;
+    text-align: right;
+    /* All children should be inline-block */
+
+    @supports (display: flex) {
+      justify-content: flex-end !important;
+      text-align: end;
+    }
   };
 
   --text-center: {
@@ -170,15 +266,31 @@
   };
 
   --top: {
-    align-items: flex-start;
+    display: inline-block;
+
+    @supports (display: flex) {
+      align-items: flex-start;
+    }
   };
 
   --middle: {
-    align-items: center;
+    display: table-cell;
+    vertical-align: middle;
+    /* All children should be inline-block */
+
+    @supports (display: flex) {
+      align-items: center;
+    }
   };
 
   --bottom: {
-    align-items: flex-end;
+    display: table-cell;
+    vertical-align: bottom;
+    /* All children should be inline-block */
+
+    @supports (display: flex) {
+      align-items: flex-end;
+    }
   };
 
   --center-middle: {
@@ -213,8 +325,12 @@
   };
 
   --flex-layout: {
-    display: flex;
-    flex-direction: column;
+    display: block;
+
+    @supports (display: flex) {
+      display: flex;
+      flex-direction: column;
+    }
   };
 
   --reset-text-border: {
@@ -224,6 +340,14 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  };
+
+  --row-reverse {
+    direction: rtl;
+
+    @supports (display: flex) {
+      flex-direction: row-reverse;
+    }
   };
 
 }
