@@ -7,16 +7,36 @@
   --fontFamily--serif: Garmond, "Hoefler Text", Palatino, "Palatino Linotype", serif;
   --fontFamily--monospaced: monospace;
   --fontFamily-page: var(--fontFamily--sans);
-  --fontSize--tiny: .75rem; /* 12px */
-  --fontSize--small: .875rem; /* 14px */
-  --fontSize--semiNormal: 1rem; /* 16px */
-  --fontSize--normal: 1.125rem; /* 18px */
-  --fontSize--normalPlus: 1.25rem; /* 20px */
-  --fontSize--semiMedium: 1.5rem; /* 24px */
-  --fontSize--medium: 2rem; /* 32px */
-  --fontSize--semiLarge: 2.5rem; /* 40px */
-  --fontSize--large: 3rem; /* 48px */
-  --fontSize--xlarge: 4.7rem; /* 75.2px */
+  --fontSize--s: .75;   /* 12px */
+  --fontSize--0: .875;  /* 14px */
+  --fontSize--1: 1;     /* 16px */
+  --fontSize--2: 1.125; /* 18px */
+  --fontSize--3: 1.25;  /* 20px */
+  --fontSize--4: 1.5;   /* 24px */
+  --fontSize--5: 2;     /* 32px */
+  --fontSize--6: 2.5;   /* 40px */
+  --fontSize--7: 3;     /* 48px */
+  --fontSize--8: 4.7;   /* 75.2px */
+
+  --fontSize--tiny: var(--fontSize--s)rem;
+  --fontSize--small: var(--fontSize--0)rem;
+  --fontSize--semiNormal: var(--fontSize--1)rem;
+  --fontSize--normal: var(--fontSize--2)rem;
+  --fontSize--normalPlus: var(--fontSize--3)rem;
+  --fontSize--semiMedium: var(--fontSize--4)rem;
+  --fontSize--medium: var(--fontSize--5)rem;
+  --fontSize--semiLarge: var(--fontSize--6)rem;
+  --fontSize--large: var(--fontSize--7)rem;
+  --fontSize--xlarge: var(--fontSize--8)rem;
+
+  --fluidFont-setup: calc((100vw - var(--minWidth-media--small)rem) / var(--minWidth-media--medium));
+  --fluidFont--1: calc(var(--fontSize--0)rem + (var(--fontSize--3) - var(--fontSize--0)) * var(--fluidFont-setup));
+  --fluidFont--2: calc(var(--fontSize--1)rem + (var(--fontSize--4) - var(--fontSize--1)) * var(--fluidFont-setup));
+  --fluidFont--3: calc(var(--fontSize--2)rem + (var(--fontSize--5) - var(--fontSize--2)) * var(--fluidFont-setup));
+  --fluidFont--4: calc(var(--fontSize--3)rem + (var(--fontSize--6) - var(--fontSize--3)) * var(--fluidFont-setup));
+  --fluidFont--5: calc(var(--fontSize--4)rem + (var(--fontSize--7) - var(--fontSize--4)) * var(--fluidFont-setup));
+  --fluidFont--6: calc(var(--fontSize--5)rem + (var(--fontSize--8) - var(--fontSize--5)) * var(--fluidFont-setup));
+
   --fontSize-page: 100%;
   --fontSize-heading: var(--fontSize--normalPlus);
   --fontWeight-page: 400;
