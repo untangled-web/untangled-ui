@@ -15,3 +15,5 @@ dist/*.*
 .lein-failures
 screen_shots
 pom.xml.asc
+.lein-repl-history
+out/
