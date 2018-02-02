@@ -241,11 +241,11 @@
     `:id` - Required. A unique ID. Will not render correctly without one.
     "
     [{:keys [className id] :as props}]
-    (assert id "DOM ID is required on radio")
     (let [classes (str className " c-radio")
           attrs   (assoc props :type "radio"
                                :className classes)]
-      (render-input attrs)))
+      (render-input attrs)
+      ))
 
   (defn ui-checkbox
     "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:
@@ -254,12 +254,21 @@
     `:id` string - Unique DOM ID. Required for correct rendering.
     `:checked` - true, false, or :partial
     "
-    [{:keys [id state checked className] :as props}]
-    (assert id "DOM ID is required on checkbox")
+    [{:keys [id state checked className label] :as props}]
     (let [classes (str className " c-checkbox" (when (= :partial checked) " is-indeterminate"))
-          checked (boolean checked)
-          attrs   (assoc props :type "checkbox" :checked checked :className classes)]
-      (render-input attrs))))
+          checked (boolean checked)]
+      (if id
+        (dom/label nil
+                  (dom/input #js {:id        id
+                                  :type      "checkbox"
+                                  :checked   checked
+                                  :className classes})
+                  (dom/label #js {:htmlFor id} \u00A0)
+                  label)
+        (dom/label nil
+          (dom/input #js {:type    "checkbox"
+                         :checked checked})
+                   label)))))
 
 (defn ui-switch
     "Render a checkbox (not the label). Props is a normal clj(s) map with React/HTML attributes plus:

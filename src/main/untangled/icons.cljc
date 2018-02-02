@@ -1033,7 +1033,8 @@ z"
   (assert (keyword? iconPath) "Must pass a :key")
   (let [add-class  (fn [attrs])
         path-check (iconPath material-icon-paths)
-        icon-name  (str/replace (name iconPath) #"_" "-")]
+        icon-name  (str/replace (name iconPath) #"_" "-")
+        icon-title-name (str "title-" icon-name "-" (rand-int 999))]
     (when-not (str/blank? path-check)
       (dom/svg (clj->js
                  (cond->
@@ -1045,10 +1046,11 @@ z"
                     :xmlns           "http://www.w3.org/2000/svg"
                     :width           "24"
                     :height          "24"
-                    :aria-labelledby "title"
+                    :aria-labelledby icon-title-name
+                    :focusable       "false"
                     :role            "img"
                     :viewBox         "0 0 24 24"}
                    onClick (assoc :onClick #(onClick))))
-        (dom/title nil (str (title-case (str/replace (name iconPath) #"_" " "))))
+        (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
         (dom/path #js {:d path-check})))))
 

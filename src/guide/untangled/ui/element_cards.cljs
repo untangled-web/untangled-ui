@@ -90,8 +90,9 @@
                                second)
           move-to-next-state (fn [] (swap! state assoc :checked next-state))]
       (dom/div nil
-        (e/ui-checkbox {:checked current-state :id "checkbox-5" :onClick #(move-to-next-state)})
-        (dom/label #js {:className "is-optional" :htmlFor "checkbox-5"} "With a label!"))))
+        (dom/label #js {:className "is-optional"}
+                   (e/ui-checkbox {:checked current-state :id "checkbox-5" :onClick #(move-to-next-state)})
+                   "With a label!"))))
   {:checked false}
   {:inspect-data true})
 
@@ -234,7 +235,7 @@
       [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample icon-colors
-  "# Icons
+  "# Icon Colors
 
   Use `ui-icon` to render an icon with designated color attributes.
 
@@ -245,7 +246,7 @@
     (e/ui-icon {:color :active} (icon :alarm))))
 
 (defsample icon-sizes
-  "# Icons
+  "# Icon Sizes
 
   Use `ui-icon` to render an icon with designated size attributes.
 
