@@ -18,7 +18,7 @@
   --green-700: #1e7f6f;
   --green-800: #106c5e;
   --green-900: #0a5a4e;
-  --green: var(--green-400);
+  --green: var(--green-700);
 
   --blue-50:  #eaecf8;
   --blue-100: #d2d4f0;
@@ -30,7 +30,7 @@
   --blue-700: #474ea4;
   --blue-800: #303a93;
   --blue-900: #152681;
-  --blue: var(--blue-400);
+  --blue: var(--blue-600);
 
   --red-50:  #f6e6df;
   --red-100: #fbc7b2;
@@ -54,7 +54,7 @@
   --grey-700: #555;
   --grey-800: #3f3f3f;
   --grey-900: #2c2c2c;
-  --grey: var(--grey-400);
+  --grey: var(--grey-600);
 
   --black-pure: #111;
   --black-rich: #000;
@@ -115,7 +115,7 @@
 
   /* Avatar */
   --color-avatar: color(var(--grey) a(.5));
-  --color-avatar--secondary: color(var(--grey-900) a(60%));
+  --color-avatar--secondary: var(--black);
   --color-avatar-alt--primary: var(--color-primary);
   --color-avatar-alt--accent: var(--color-accent);
   --color-avatar-alt--secondary: var(--color-primary-contrast);
