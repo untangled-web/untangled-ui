@@ -114,6 +114,8 @@
   :figwheel {:server-port 8001
              :css-dirs    ["resources/public/css"]}
 
+  :deploy-repositories [["snapshots" :clojars]]
+
   ; TODO: On figwheel startup, run the gulp shell command if the CSS files are missing
   ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
   :profiles {:release {:prep-tasks     [["shell" "gulp"]]
