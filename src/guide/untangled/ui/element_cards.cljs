@@ -455,9 +455,9 @@
         "Movies"
         (e/ui-toolbar-spacer {})
         (dom/span nil
-          (e/ui-icon-button {:glyph :search :title "Search movies"})
-          (e/ui-icon-button {:glyph :filter_list :title "Filter movies"})
-          (e/ui-icon-button {:glyph :sort :title "Sort by"}))
+          (e/ui-icon-button {:glyph :search :label "Search movies"})
+          (e/ui-icon-button {:glyph :filter_list :label "Filter movies"})
+          (e/ui-icon-button {:glyph :sort :label "Sort by"}))
         (e/ui-toolbar-button {:glyph :arrow_back :title "Go back home"}))
       (e/ui-toolbar-row {:size :dense}
         (e/ui-tabs {}

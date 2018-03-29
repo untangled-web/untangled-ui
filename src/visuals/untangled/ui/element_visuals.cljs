@@ -294,9 +294,9 @@
            "Now Playing"
            (e/ui-toolbar-spacer {})
            (dom/span #js {:className "c-toolbar__actions"}
-             (e/ui-icon-button {:glyph :search :title "Search"})
-             (e/ui-icon-button {:glyph :filter_list :title "Filter"})
-             (e/ui-icon-button {:glyph :sort :title "Sort by"}))
+             (e/ui-icon-button {:glyph :search :label "Search"})
+             (e/ui-icon-button {:glyph :filter_list :label "Filter"})
+             (e/ui-icon-button {:glyph :sort :label "Sort by"}))
            (e/ui-toolbar-button {}))
           (e/ui-toolbar-row {:size row-size}
             (e/ui-tabs {}

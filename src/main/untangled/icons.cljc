@@ -1049,7 +1049,8 @@ z"
                     :aria-labelledby icon-title-name
                     :focusable       "false"
                     :role            "img"
-                    :viewBox         "0 0 24 24"}
+                    :viewBox         "0 0 24 24"
+                    :aria-hidden     true}
                    onClick (assoc :onClick #(onClick))))
         (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
         (dom/path #js {:d path-check})))))
