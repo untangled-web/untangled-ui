@@ -16,7 +16,7 @@
     [untangled.client.impl.network :as net]
     [clojure.string :as str]
     [untangled.icons :as i]
-    [untangled.ui.file-upload :refer [IFileUpload FileUploadInput file-upload-input file-upload-networking]]
+    [untangled.ui.file-upload :refer [FileUploadInput file-upload-input file-upload-networking]]
     [untangled.client.logging :as log])
   (:refer-clojure :exclude [send])
   (:import [goog.net XhrIo EventType]))

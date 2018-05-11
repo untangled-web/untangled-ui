@@ -6,7 +6,7 @@
             [untangled.icons :refer [icon]]
             [untangled.events]
             [clojure.string :as str]
-            [untangled.client.logging :as log]))
+            [focus-trap-react :refer [FocusTrap]]))
 
 #?(:clj (def clj->js identity))
 
@@ -489,8 +489,16 @@
 ;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
 (defui Dialog
   Object
+  (initLocalState [this] {:activeTrap false})
+
+  (mountTrap [this]
+    (om/set-state! this :activeTrap true))
+
+  (unmountTrap [this]
+    (om/set-state! this :activeTrap false))
+
   (render [this]
-    (let [{:keys [key full-screen visible modal onClose] :as props :or {key ""}} (om/props this)
+    (let [{:keys [key full-screen visible modal onClose focusTrapPaused] :as props :or {key ""}} (om/props this)
           children     (om/children this)
           title        (first-node DialogTitle children)
           content      (first-node DialogBody children)
@@ -500,17 +508,20 @@
           classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))
           dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes :aria-hidden (if visible false true)}
                          (dom/div #js {:className "c-dialog__card" :ref "dialogCard" :tabIndex (if visible 0 -1)}
-            (when title title)
-            (when content content)
-                           (when actions actions)))]
+                           (when title title)
+                           (when content content)
+                           (when actions actions)))
+          trap         (FocusTrap dialog-dom)]
       (if modal
         (dom/div #js {:key key :aria-hidden (if visible false true)}
-          dialog-dom
+          trap
           (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
                                       (when (and visible onClose (untangled.events/escape-key? evt))
                                         (onClose)))
-                        :onClick    (fn [] (when (and visible onClose) (onClose))) :className (str "c-backdrop" state)}))
-        dialog-dom))))
+                        :onClick    (fn [] (when (and visible onClose) (onClose)))
+                        :className (str "c-backdrop" state)}))
+        trap))))
+
 
 (def ui-dialog
   "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).

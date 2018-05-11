@@ -16,4 +16,5 @@ dist/*.*
 screen_shots
 pom.xml.asc
 .lein-repl-history
+.rebel_readline_history
 out/

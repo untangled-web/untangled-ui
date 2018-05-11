@@ -71,6 +71,10 @@
     "sw-precache": "^4.3.0"
   },
   "dependencies": {
+    "@cljs-oss/module-deps": "^1.1.1",
+    "focus-trap-react": "^3.1.2",
+    "module-deps": "^6.0.2",
+    "react": "^16.0.0",
     "react-frame-component": "^1.0.0"
   },
   "engines": {
