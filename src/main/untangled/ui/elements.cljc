@@ -487,6 +487,15 @@
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
   (om/factory DialogActions))
 
+; (defn getContainer
+;   [{:keys [container defaultContainer] :as props}]
+;   (or (js/ReactDOM.findDOMNode container) defaultContainer))
+
+; (defn getHasTransition
+;   [{:keys [children] :as props}]
+;   (if )
+; )
+
 ;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
 (defui Dialog
   Object
@@ -506,14 +515,16 @@
                            (when actions actions)))]
       (if modal
         (dom/div #js {:key         key
-                      :aria-hidden (if visible false true)
                       :role        "dialog"}
-          dialog-dom
           (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
                                       (when (and visible onClose (untangled.events/escape-key? evt))
                                         (onClose)))
                         :onClick    (fn [] (when (and visible onClose) (onClose)))
-                        :className  (str "c-backdrop" state)}))
+                        :className  (str "c-backdrop" state)})
+          (dom/div #js {:role "document"
+                        :tabIndex -1}
+                   dialog-dom)
+          )
         dialog-dom))))
 
 (def ui-dialog
