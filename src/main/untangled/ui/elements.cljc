@@ -462,7 +462,7 @@
 (defui DialogTitle
   Object
   (render [this]
-    (dom/div #js {:className "c-dialog__title"}
+    (dom/div #js {:className "c-dialog__title" :id "simple-dialog-title"}
       (dom/h2 nil (om/children this))))
 
 (def ui-dialog-title
@@ -515,8 +515,10 @@
                            (when actions actions)))]
       (if modal
         (dom/div #js {:key         key
-                      :role        "dialog"}
-          (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
+                      :role        "dialog"
+                      :aria-labelledby "simple-dialog-title"}
+          (dom/div #js {:aria-hidden true
+                        :onKeyPress (fn [evt] ; FIXME: This does not work
                                       (when (and visible onClose (untangled.events/escape-key? evt))
                                         (onClose)))
                         :onClick    (fn [] (when (and visible onClose) (onClose)))
