@@ -462,7 +462,8 @@
 (defui DialogTitle
   Object
   (render [this]
-    (dom/div #js {:className "c-dialog__title"} (om/children this))))
+    (dom/div #js {:className "c-dialog__title"}
+      (dom/h2 nil (om/children this))))
 
 (def ui-dialog-title
   "Render a dialog's title (using supplied DOM children). Should only be used in a ui-dialog"
@@ -504,12 +505,15 @@
             (when content content)
                            (when actions actions)))]
       (if modal
-        (dom/div #js {:key key :aria-hidden (if visible false true)}
+        (dom/div #js {:key         key
+                      :aria-hidden (if visible false true)
+                      :role        "dialog"}
           dialog-dom
           (dom/div #js {:onKeyPress (fn [evt] ; FIXME: This does not work
                                       (when (and visible onClose (untangled.events/escape-key? evt))
                                         (onClose)))
-                        :onClick    (fn [] (when (and visible onClose) (onClose))) :className (str "c-backdrop" state)}))
+                        :onClick    (fn [] (when (and visible onClose) (onClose)))
+                        :className  (str "c-backdrop" state)}))
         dialog-dom))))
 
 (def ui-dialog
