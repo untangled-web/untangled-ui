@@ -463,7 +463,7 @@
   Object
   (render [this]
     (dom/div #js {:className "c-dialog__title" :id "simple-dialog-title"}
-      (dom/h2 nil (om/children this))))
+      (dom/h2 nil (om/children this)))))
 
 (def ui-dialog-title
   "Render a dialog's title (using supplied DOM children). Should only be used in a ui-dialog"
@@ -487,20 +487,11 @@
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
   (om/factory DialogActions))
 
-; (defn getContainer
-;   [{:keys [container defaultContainer] :as props}]
-;   (or (js/ReactDOM.findDOMNode container) defaultContainer))
-
-; (defn getHasTransition
-;   [{:keys [children] :as props}]
-;   (if )
-; )
-
 ;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
 (defui Dialog
   Object
   (render [this]
-    (let [{:keys [key full-screen visible modal onClose] :as props :or {key ""}} (om/props this)
+    (let [{:keys [key full-screen visible modal onClose disableAutoFocus] :as props :or {key ""}} (om/props this)
           children     (om/children this)
           title        (first-node DialogTitle children)
           content      (first-node DialogBody children)

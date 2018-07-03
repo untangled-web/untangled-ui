@@ -13,7 +13,9 @@
 }
 
 /* stylelint-disable */
-.box-row { margin-bottom: 1rem; }
+.box-row {
+  margin-bottom: 1rem;
+}
 
 .box,
 .box-first,
@@ -25,18 +27,26 @@
   font-size: var(--fontSize--tiny);
   min-height: 2em;
   overflow: hidden;
-  padding: .75em 0;
+  padding: 0.75em 0;
   position: relative;
   text-align: center;
 }
 
-.box-first { background-color: color(var(--black) a(25%)); }
+.box-first {
+  background-color: color(var(--black) a(25%));
+}
 
-.box-nested { background-color: color(var(--black) a(40%)); }
+.box-nested {
+  background-color: color(var(--black) a(40%));
+}
 
-.box--large { height: 5rem; }
+.box--large {
+  height: 5rem;
+}
 
-.box-tall { padding: 200px 0; }
+.box-tall {
+  padding: 200px 0;
+}
 
 .ui-example {
   margin-bottom: var(--frame-half);
@@ -47,13 +57,11 @@
     font-size: var(--fontSize--medium);
   }
 
-
   h2 {
     margin-top: 24px;
     margin-bottom: 16px;
     line-height: 1.25;
   }
-
 
   h6 {
     font-size: var(--fontSize--small);
@@ -70,7 +78,7 @@
     background-color: var(--grey-50);
     font-size: var(--fontSize--semiNormal);
     border-radius: var(--global-rounded);
-    padding: .2em 0;
+    padding: 0.2em 0;
     margin: 0;
 
     .t-dark &,
@@ -107,7 +115,6 @@
   display: inline-block;
   box-shadow: 0 0 0 1px var(--grey-50);
   overflow: hidden;
-
 }
 
 .ui-viewport--android {
@@ -118,7 +125,6 @@
 .ui-viewport--mobile {
   height: 640px;
   width: 360px;
-
 }
 
 .ui-example__figure {
@@ -139,7 +145,7 @@
   line-height: 18px;
   margin-bottom: 2em;
   padding: 5px 0;
-  overflow-x: scroll;
+  overflow-x: auto;
 
   .t-dark &,
   .t-fullscreen &,
@@ -148,13 +154,13 @@
   }
 }
 
-
 ._example-layout {
-
   .o-header,
   .o-nav,
   .o-article,
-  .o-footer { padding: 1em; }
+  .o-footer {
+    padding: 1em;
+  }
 
   .o-header {
     background-color: var(--color-primary);
@@ -184,14 +190,14 @@
   padding: 1em 1rem;
 
   &__name,
-   &__code {
-      font-size: var(--fontSize--small);
-      font-weight: 600;
-    }
+  &__code {
+    font-size: var(--fontSize--small);
+    font-weight: 600;
+  }
 
   &__code {
     float: right;
-   }
+  }
 }
 
 .ui-palette {
@@ -201,7 +207,7 @@
 .ui-part__content {
   height: calc(100vh - var(--height-toolbar));
   margin-top: -1em;
-  overflow: scroll;
+  overflow: auto;
   padding-top: 1em;
 }
 

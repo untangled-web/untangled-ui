@@ -3,7 +3,6 @@ title: Layout
 section: Elements
 ---*/
 
-
 /*------------------------------------*\
   #GLOBAL STYLES
 \*------------------------------------*/
@@ -16,28 +15,28 @@ section: Elements
   margin: 0;
   -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge 12+, IE 11- */
   overflow-x: hidden;
-  overflow-y: scroll; /* All browsers without overlaying scrollbars */
+  overflow-y: auto; /* All browsers without overlaying scrollbars */
   width: 100%;
   /* stylelint-enable */
 }
 
-
-.t-dark { background-color: var(--color-page-dark); }
-
+.t-dark {
+  background-color: var(--color-page-dark);
+}
 
 .t-fullscreen,
 :--fullscreen {
   background-color: var(--color-page-dark);
   font-size: 150% !important;
   margin-top: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
-
 
 @media print {
-  :root { background-color: var(--white); }
+  :root {
+    background-color: var(--white);
+  }
 }
-
 
 ::before,
 ::after {
@@ -45,7 +44,6 @@ section: Elements
   text-decoration: inherit;
   vertical-align: inherit;
 }
-
 
 * {
   @apply --reset-text-border;

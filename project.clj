@@ -1,4 +1,4 @@
-(defproject navis/untangled-ui "1.0.0-alpha5"
+(defproject navis/untangled-ui "1.0.0-alpha7"
   :description "Untangled Components is a library of pre-built CSS and active components for use with Untangled and Om Next"
   :url ""
   :license {:name "MIT"
@@ -108,8 +108,7 @@
                                :output-dir    "resources/private/js/unit-tests"
                                :main          untangled.ui.all-tests
                                :asset-path    "js/unit-tests"
-                               :optimizations :none
-                               }}]}
+                               :optimizations :none}}]}
 
   :figwheel {:server-port 8001
              :css-dirs    ["resources/public/css"]}
@@ -119,8 +118,7 @@
   ; TODO: On figwheel startup, run the gulp shell command if the CSS files are missing
   ; TODO: JAR generation: Make sure to do a prep-task to build the CSS, then include it in the jar.
   :profiles {:release {:prep-tasks     [["shell" "gulp"]]
-                       :jar-exclusions [#"public/img/.*" #"test/.*" #"favicon.ico" #".*html$"]
-                       }
+                       :jar-exclusions [#"public/img/.*" #"test/.*" #"favicon.ico" #".*html$"]}
              :dev     {:dependencies [[binaryage/devtools "0.9.0"]
                                       [criterium "0.4.3"]
                                       [figwheel-sidecar "0.5.9" :exclusions [http-kit]]
@@ -132,5 +130,5 @@
                        :source-paths ["dev" "src/guide" "src/css-guide"]
                        :repl-options {:init-ns          clj.user
                                       :init (use 'clj.user :reload)
-                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                                      :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
                                       :port             7001}}})
