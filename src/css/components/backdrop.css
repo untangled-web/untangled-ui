@@ -5,8 +5,10 @@
   position: fixed;
   z-index: var(--zIndex-backdrop) !important;
 
-
-  &:--active { @apply --fade-in; }
+  &:--active {
+    @apply --fade-in;
+    z-index: -1 !important;
+  }
 
   &:--disabled {
     height: 0 !important;
@@ -14,10 +16,10 @@
   }
 }
 
-
 .c-backdrop--blur > :not(.c-backdrop) {
-  filter: blur(5px) grayscale(.7);
+  filter: blur(5px) grayscale(0.7);
 }
 
-
-.c-backdrop--inverted { background-color: var(--color-backdrop--inverted); }
+.c-backdrop--inverted {
+  background-color: var(--color-backdrop--inverted);
+}

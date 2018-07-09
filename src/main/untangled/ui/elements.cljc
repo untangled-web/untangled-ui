@@ -462,7 +462,7 @@
 (defui DialogTitle
   Object
   (render [this]
-    (dom/div #js {:className "c-dialog__title" :id "simple-dialog-title"}
+    (dom/div #js {:className "c-dialog__title" :id "ut-dialog-title"}
       (dom/h2 nil (om/children this)))))
 
 (def ui-dialog-title
@@ -491,34 +491,30 @@
 (defui Dialog
   Object
   (render [this]
-    (let [{:keys [key full-screen visible modal onClose disableAutoFocus] :as props :or {key ""}} (om/props this)
+    (let [{:keys [key full-screen visible onClose disableAutoFocus] :as props :or {key ""}} (om/props this)
           children     (om/children this)
           title        (first-node DialogTitle children)
           content      (first-node DialogBody children)
           actions      (first-node DialogActions children)
           state        (when visible " is-active")
           user-classes (get props :className "")
-          classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))
-          dialog-dom   (dom/div #js {:key (str key "-dialog") :className classes :aria-hidden (if visible false true)}
-                         (dom/div #js {:className "c-dialog__card" :ref "dialogCard" :tabIndex (if visible 0 -1)}
-            (when title title)
-            (when content content)
-                           (when actions actions)))]
-      (if modal
-        (dom/div #js {:key         key
-                      :role        "dialog"
-                      :aria-labelledby "simple-dialog-title"}
-          (dom/div #js {:aria-hidden true
-                        :onKeyPress (fn [evt] ; FIXME: This does not work
-                                      (when (and visible onClose (untangled.events/escape-key? evt))
-                                        (onClose)))
-                        :onClick    (fn [] (when (and visible onClose) (onClose)))
-                        :className  (str "c-backdrop" state)})
-          (dom/div #js {:role "document"
-                        :tabIndex -1}
-                   dialog-dom)
-          )
-        dialog-dom))))
+          classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))]
+        (dom/div #js {:key             (str key "-dialog")
+                      :className       classes
+                      :role            "dialog"
+                      :aria-labelledby "ut-dialog-title"}
+            (dom/div #js {:aria-hidden true
+                          :onKeyPress  (fn [evt] ; FIXME: This does not work
+                                          (when (and visible onClose (untangled.events/escape-key? evt))
+                                          (onClose)))
+                          :onClick     (fn [] (when (and visible onClose) (onClose)))
+                          :className   (str "c-backdrop" state)})
+            (dom/div #js {:className "c-dialog__card"
+                            :role "document"
+                            :tabIndex -1}
+                (when title title)
+                (when content content)
+                (when actions actions))))))
 
 (def ui-dialog
   "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
@@ -528,7 +524,6 @@
   `:visible` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
   in the DOM.
   `:full-screen` - A boolean. Renders the dialog to consume the entire screen when true. (useful for mobile).
-  `:modal` - A boolean. When true the dialog will block the rest of the UI.
   `:className` - Additional CSS classes to place on the dialog.
   `:key` - React key
   `:onClose` - A callback that advises *your* code that the user is indicating a desire to be out of the dialog

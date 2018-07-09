@@ -7,7 +7,7 @@
             [om.dom :as dom]))
 
 (defarticle intro
-"# Untangled UI
+  "# Untangled UI
 
 A styleguide of user interface patterns for web applications and websites built with a custom PostCSS preprocessor
 rendered with ClojureScript.
@@ -94,7 +94,7 @@ the easiest way to modify and extend the styles.
   --zIndex-bottomNav: 8;
   --zIndex-menu: 8;
   --zIndex-subMenu: calc(var(--zIndex-menu) + 1);
-  --zIndex-backdrop: 15;
+  --zIndex-backdrop: -1;
   --zIndex-modal: 16;
   --zIndex-drawer: 16;
   --zIndex-picker: 24;

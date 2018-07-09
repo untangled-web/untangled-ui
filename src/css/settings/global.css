@@ -8,7 +8,7 @@
   --global-line-height: 32px;
 
   /* Standardized treatments */
-  --global-duration: .1s;
+  --global-duration: 0.1s;
   --global-margin: 8px;
   --global-rounded: 2px;
   --global-radial: 100px;
@@ -31,7 +31,7 @@
   --zIndex-bottomNav: 8;
   --zIndex-menu: 8;
   --zIndex-subMenu: calc(var(--zIndex-menu) + 1);
-  --zIndex-backdrop: 15;
+  --zIndex-backdrop: -1;
   --zIndex-modal: 16;
   --zIndex-drawer: 16;
   --zIndex-picker: 24;
@@ -46,25 +46,20 @@
   --frame-triple: calc(var(--global-line-height) * 3); /* 96px */
 
   /* Alignment sizes */
-  --tenth: .1;
-  --eighth: .125;
-  --sixth: .1666;
-  --fifth: .2;
-  --quarter: .25;
-  --third: .3;
-  --half: .5;
+  --tenth: 0.1;
+  --eighth: 0.125;
+  --sixth: 0.1666;
+  --fifth: 0.2;
+  --quarter: 0.25;
+  --third: 0.3;
+  --half: 0.5;
   --double: 2;
   --triple: 3;
 
-
   --assert-selector: {
     outline: 2px solid var(--red-600);
-  };
+  }
 }
-
-
-
-
 
 /*------------------------------------*\
   #CUSTOM-MEDIA-QUERIES
@@ -92,11 +87,7 @@
 
 @custom-media --fullscreen (device-width: 100vw) and (device-height: 100vh);
 
-@custom-media --ipad only screen
-and (min-device-width: 768px)
-and (max-device-width: 1024px)
-and (-webkit-min-device-pixel-ratio: 2);
-
+@custom-media --ipad only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2);
 
 @custom-media --ie6-7 screen\9;
 
@@ -104,10 +95,10 @@ and (-webkit-min-device-pixel-ratio: 2);
 
 @custom-media --ie8-10 screen\0;
 
-@custom-media --ie9-10 screen and (min-width:0{{ content }});
+@custom-media --ie9-10 screen and (min-width: 0{{ content }});
 
-@custom-media --ie10-11 all
-and (-ms-high-contrast: none), (-ms-high-contrast: active);
+@custom-media --ie10-11 all and (-ms-high-contrast: none),
+  (-ms-high-contrast: active);
 
 /* For Edge 12, use @supports (-ms-accelerator: true) { ... } */
 
@@ -120,18 +111,13 @@ and (-ms-high-contrast: none), (-ms-high-contrast: active);
 
 @custom-media --sm-up only screen and (min-width: 34em);
 
-@custom-media --sm-down only screen
-and (max-width: 47.999em) and (max-height: 63.999em);
+@custom-media --sm-down only screen and (max-width: 47.999em) and (max-height: 63.999em);
 
 @custom-media --md-down only screen and (max-width: 62em);
 
 @custom-media --lg-down only screen and (max-width: 75em);
 
 @custom-media --xl-down only screen and (max-width: 90em);
-
-
-
-
 
 /*------------------------------------*\
   #CUSTOM-SELECTORS
@@ -142,26 +128,59 @@ and (max-width: 47.999em) and (max-height: 63.999em);
 @custom-selector :--app-blocks .s-app, .s-app__containers, .s-app__body;
 
 @custom-selector :--blocks
-article, aside, figcaption, figure, footer, header, hgroup,
-main, menu, nav, section;
+  article,
+  aside,
+  figcaption,
+  figure,
+  footer,
+  header,
+  hgroup,
+  main,
+  menu,
+  nav,
+  section;
 
-@custom-selector :--button button, .c-button, input[type="submit"];
+@custom-selector :--button button, .c-button, input[type='submit'];
 
 @custom-selector :--clickable
-a, area, button, input, label, select, textarea, [tabindex];
+  a,
+  area,
+  button,
+  input,
+  label,
+  select,
+  textarea,
+  [tabindex];
 
 @custom-selector :--code code, kbd, pre, samp;
 
 @custom-selector :--control input, select, textarea;
 
 @custom-selector :--control-text
-[type="button"], [type="date"], [type="datetime"], [type="datetime-local"],
-[type="email"], [type="month"], [type="number"], [type="password"],
-[type="reset"], [type="search"], [type="submit"], [type="tel"],
-[type="text"], [type="time"], [type="url"], [type="week"], select, textarea;
+  [type='button'],
+  [type='date'],
+  [type='datetime'],
+  [type='datetime-local'],
+  [type='email'],
+  [type='month'],
+  [type='number'],
+  [type='password'],
+  [type='reset'],
+  [type='search'],
+  [type='submit'],
+  [type='tel'],
+  [type='text'],
+  [type='time'],
+  [type='url'],
+  [type='week'],
+  select,
+  textarea;
 
 @custom-selector :--control-button
-button, [type="button"], [type="reset"], [type="submit"];
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'];
 
 @custom-selector :--headings h1, h2, h3, h4, h5, h6;
 
@@ -170,10 +189,6 @@ button, [type="button"], [type="reset"], [type="submit"];
 @custom-selector :--list-items li, dt, dd;
 
 @custom-selector :--media audio, canvas, iframe, img, svg, video;
-
-
-
-
 
 /*------------------------------------*\
   #CUSTOM-PSEUDO-CLASS-SELECTORS
@@ -190,4 +205,3 @@ button, [type="button"], [type="reset"], [type="submit"];
 @custom-selector :--disabled :disabled, [disabled], .is-disabled;
 
 @custom-selector :--invalid :invalid, .is-invalid;
-
