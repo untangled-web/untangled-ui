@@ -96,40 +96,6 @@
   {:checked false}
   {:inspect-data true})
 
-(defcard dialog-not-modal
-  "# Dialogs
-
-  Use `ui-dialog` to render a modal dialog with title, body and action items (typically buttons).
-
-  ```
-  (e/ui-button {:onClick #(show-dialog)} \"Show Dialog\")
-  (dom/div #js {}
-    (e/ui-dialog {:visible is-visible :onClose #(hide-dialog)}
-      (e/ui-dialog-title {} \"Informative\")
-      (e/ui-dialog-body {} \"You have been notified.\")
-      (e/ui-dialog-actions {}
-        (e/ui-flat-button {:color :primary} \"Cancel\")
-        (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} \"Ok\"))))
-  ```
-  "
-  (fn [state _]
-    (let [show-dialog (fn [] (swap! state assoc :visible true))
-          hide-dialog (fn [] (swap! state assoc :visible false))
-          is-visible  (:visible @state)]
-      (e/ui-iframe {:height "200" :width "100%"}
-        (dom/div nil
-          (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-          (e/ui-button {:onClick #(show-dialog)} "Show Dialog")
-          (dom/div #js {}
-            (e/ui-dialog {:visible is-visible :onClose #(hide-dialog)}
-              (e/ui-dialog-title {} "Informative")
-              (e/ui-dialog-body {} "You have been notified.")
-              (e/ui-dialog-actions {}
-                (e/ui-flat-button {:color :primary} "Cancel")
-                (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))))
-  {:visible false}
-  {:inspect-data true})
-
 
 (defcard dialog-modal
   "# Modal Dialogs
@@ -141,7 +107,7 @@
   ```
   (e/ui-button {:onClick #(show-dialog)} \"Show Dialog\")
   (dom/div #js {}
-    (e/ui-dialog {:visible is-visible :modal true :onClose #(hide-dialog)}
+    (e/ui-dialog {:open is-open :modal true :onClose #(hide-dialog)}
       (e/ui-dialog-title {} \"Informative\")
       (e/ui-dialog-body {} \"You have been notified.\")
       (e/ui-dialog-actions {}
@@ -150,21 +116,22 @@
   ```
   "
   (fn [state _]
-    (let [show-dialog (fn [] (swap! state assoc :visible true))
-          hide-dialog (fn [] (swap! state assoc :visible false))
-          is-visible  (:visible @state)]
-      (e/ui-iframe {:height "200" :width "100%"}
+    (let [show-dialog (fn [] (swap! state assoc :open true))
+          hide-dialog (fn [] (swap! state assoc :open false))
+          is-open  (:open @state)]
         (dom/div nil
           (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
-          (e/ui-button {:onClick #(show-dialog)} "Show Dialog")
-          (dom/div #js {}
-            (e/ui-dialog {:visible is-visible :modal true :onClose #(hide-dialog)}
-              (e/ui-dialog-title {} "Informative")
-              (e/ui-dialog-body {} "You have been notified.")
-              (e/ui-dialog-actions {}
-                (e/ui-flat-button {:color :primary} "Cancel")
-                (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))))
-  {:visible false}
+
+          (dom/div #js {:aria-hidden (not (:open @state))} (e/ui-button {:onClick #(show-dialog)} "Open Simple Dialog"))
+
+          (e/ui-dialog {:open is-open
+                        ; :hideBackdrop true
+                        :onClose #(hide-dialog)}
+                (e/ui-dialog-title {} "Informative")
+                (e/ui-dialog-body {} "You have been notified.")
+                (e/ui-dialog-actions {}
+                    (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))
+  {:open false}
   {:inspect-data true})
 
 (defcard empty-state

@@ -2,6 +2,7 @@
   (:require [clojure.string :as string]
             [om.next :as om :refer [defui]]
             [om.dom :as dom]
+            [untangled.client.core :as uc]
             [untangled.ui.menu :as menu]
             [untangled.icons :refer [icon]]
             [untangled.events]
@@ -462,7 +463,7 @@
 (defui DialogTitle
   Object
   (render [this]
-    (dom/div #js {:className "c-dialog__title" :id "ut-dialog-title"}
+    (dom/div #js {:className "c-dialog__title"}
       (dom/h2 nil (om/children this)))))
 
 (def ui-dialog-title
@@ -481,53 +482,123 @@
 (defui DialogActions
   Object
   (render [this]
-    (dom/div #js {:className "c-dialog__actions"} (om/children this))))
+    (dom/div #js {:className "c-dialog__actions" :key "dialogActions"} (om/children this))))
 
 (def ui-dialog-actions
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
   (om/factory DialogActions))
 
+#?(:cljs
+    (defn ownerDocument [node]
+        (or (and node (.ownerDocument node)) js/document)))
+
 ;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
-(defui Dialog
-  Object
-  (render [this]
-    (let [{:keys [key full-screen visible onClose disableAutoFocus] :as props :or {key ""}} (om/props this)
-          children     (om/children this)
-          title        (first-node DialogTitle children)
-          content      (first-node DialogBody children)
-          actions      (first-node DialogActions children)
-          state        (when visible " is-active")
-          user-classes (get props :className "")
-          classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))]
-        (dom/div #js {:key             (str key "-dialog")
-                      :className       classes
-                      :role            "dialog"
-                      :aria-labelledby "ut-dialog-title"}
-            (dom/div #js {:aria-hidden true
-                          :onKeyPress  (fn [evt] ; FIXME: This does not work
-                                          (when (and visible onClose (untangled.events/escape-key? evt))
-                                          (onClose)))
-                          :onClick     (fn [] (when (and visible onClose) (onClose)))
-                          :className   (str "c-backdrop" state)})
-            (dom/div #js {:className "c-dialog__card"
-                            :role "document"
-                            :tabIndex -1}
-                (when title title)
-                (when content content)
-                (when actions actions))))))
+#?(:cljs
+    (defui Dialog
+        static uc/InitialAppState
+        (initial-state [this params] {:mountNode nil
+                                      :modalRef  nil
+                                      :dialogRef nil
+                                      :mounted   false})
+
+        static om/IQuery
+        (query [this] [:mountNode :modalRef :dialogRef :mounted])
+
+        Object
+        (handleDocumentKeyDown [this event onClose]
+            (js/console.log "handleDocumentKeyDown")
+            (when (= (.-keyCode event) 27)
+                (js/console.log "handleDocumentKeyDown esc")
+                (when (onClose)
+                    (js/console.log "handleDocumentKeyDown onClose")
+                    (onClose this))
+
+                ; (when onEscapeKeyDown
+                ;     (onEscapeKeyDown event))
+
+                ; (when (and (not disableEscapeKeyDown) onClose)
+                ;     #(onClose %))
+                ))
+
+        (enforceFocus [this event]
+            (js/console.log "enforceFocus")
+            (let [{:keys [mountNode]} (om/props this)
+                  doc (ownerDocument mountNode)]
+                (js/console.log doc)))
+
+        (handleOpen [this event onClose]
+            (js/console.log "handleOpen")
+            (let [{:keys [mountNode]} (om/props this)
+                  doc (ownerDocument mountNode)]
+                (.addEventListener doc "keydown" #(.handleDocumentKeyDown this % onClose))
+                (.addEventListener doc "focus" #(.enforceFocus this %) true)))
+
+        (handleClose [this event onClose]
+            (js/console.log "handleClose")
+            (let [{:keys [mountNode]} (om/props this)
+                  doc (ownerDocument mountNode)]
+                (.removeEventListener doc "keydown" #(.handleDocumentKeyDown this % onClose))
+                (.addEventListener doc "focus" #(.enforceFocus this %) true)))
+
+        (componentDidMount [this event]
+            (let [{:keys [open onClose]} (om/props this)]
+                (js/console.log "componentDidMount with props")
+                (when open
+                    (js/console.log "componentDidMount open")
+                    (.handleOpen this event onClose))))
+
+        (componentDidUpdate [this prevprops prevstate]
+            (let [{:keys [open onClose]} (om/props this)]
+                (js/console.log "componentDidUpdate with props")
+                (when (and (:open prevprops) (not open))
+                    (js/console.log "componentDidUpdate handleClose")
+                    #(.handleClose this % onClose))
+                (when (and (not (:open prevprops)) open)
+                    (js/console.log "componentDidUpdate handleOpen")
+                    #(.handleOpen this % onClose))))
+
+        (componentWillUnmount [this]
+            (let [{:keys [open onClose]} (om/props this)]
+                (js/console.log "componentWillUnmount with props")
+                (when open
+                    #(.handleClose this % onClose))))
+
+        (render [this]
+            (let [{:keys [key full-screen open onClose disableAutoFocus hideBackdrop] :as props :or {key "" hideBackdrop false}} (om/props this)
+                children     (om/children this)
+                title        (first-node DialogTitle children)
+                content      (first-node DialogBody children)
+                actions      (first-node DialogActions children)
+                state        (when open " is-active")
+                user-classes (get props :className "")
+                classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))]
+                (dom/div #js {:ref (fn [node] (if node (.getMountNode node) node))}
+                    (dom/div #js {:key       (str key "-dialog")
+                              :className classes
+                              :role      "dialog"}
+                    (when-not hideBackdrop
+                        (dom/div #js {:aria-hidden true
+                                      :onClick     #(when (and open onClose) (onClose))
+                                      :className   (str "c-backdrop" state)}))
+                    (dom/div #js {:className "c-dialog__card"
+                                    :role "document"
+                                    :tabIndex -1}
+                        (when title title)
+                        (when content content)
+                        (when actions actions))))))))
 
 (def ui-dialog
   "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
   Options:
 
-  `:visible` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
+  `:open` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
   in the DOM.
   `:full-screen` - A boolean. Renders the dialog to consume the entire screen when true. (useful for mobile).
   `:className` - Additional CSS classes to place on the dialog.
   `:key` - React key
   `:onClose` - A callback that advises *your* code that the user is indicating a desire to be out of the dialog
-  (e.g. the clicked on the modal backdrop). You must still set the visible flag since this is a stateless
+  (e.g. the clicked on the modal backdrop). You must still set the open flag since this is a stateless
   rendering of a dialog UI, not an active stateful component.
 
   You should include at most one of each of three following children for this node:
