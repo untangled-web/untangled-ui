@@ -7,6 +7,7 @@
             [untangled.icons :refer [icon]]
             [untangled.events]
             [clojure.string :as str]
+            [untangled.client.mutations :as m]
             [untangled.client.logging :as log]))
 
 #?(:clj (def clj->js identity))
@@ -488,129 +489,358 @@
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
   (om/factory DialogActions))
 
+;; Portal Functions
 #?(:cljs
     (defn ownerDocument [node]
-        (or (and node (.ownerDocument node)) js/document)))
+        (if node
+            (and node (.-ownerDocument node))
+            js/document)))
 
-;; TODO: We need to give focus to the dialog when visible, track who the initiating control is, then give focus back to the initiating control when the dialog is closed.
+
+#?(:cljs
+    (defn getContainer [container defaultContainer]
+        (let [typedContainer (if (fn? container) (container) container)
+            domNode (.findDOMNode js/ReactDOM typedContainer)]
+                       (if domNode
+                           domNode
+                           defaultContainer))))
+
+#?(:cljs
+    (defn getOwnerDocument [element]
+        (ownerDocument (.findDOMNode js/ReactDOM element))))
+
+; #?(:cljs
+;     (defn getHasTransition [props]
+;         (js/console.log (.children props))
+;         (if (.children props)
+;             (.hasOwnProperty (.-props (.-children props)) "in")
+;             false)))
+
+#?(:cljs
+    (defui Portal
+        static uc/InitialAppState
+        (initial-state [this params] {:disablePortal false})
+
+        static om/IQuery
+        (query [this] [:disablePortal])
+
+        Object
+        (initLocalState [this] {:mountNode nil})
+
+        (getMountNode [this]
+            (:mountNode (om/get-state this)))
+
+        (setMountNode [this container]
+            (let [{:keys [disablePortal]} (om/props this)
+                  targetNode (if disablePortal
+                                (.-parentElement (.findDOMNode js/ReactDOM this))
+                                (getContainer container (.-body (getOwnerDocument this))))]
+
+                (when (not= (.getMountNode this) targetNode)
+                    (om/update-state! this assoc :mountNode targetNode))))
+
+        (componentDidMount [this]
+          (let [{:keys [container disablePortal onRendered]} (om/get-props this)]
+
+            (.setMountNode this container)
+
+            ;; Only rerender if needed
+            (when (not disablePortal)
+                (.forceUpdate this onRendered))))
+
+        (componentDidUpdate [this prev-props prev-state]
+          (let [{:keys [container disablePortal onRendered]} (om/get-props this)]
+
+            (when (or (not= (:container prev-props) container)
+                      (not= (:disablePortal prev-props) disablePortal))
+                (do
+                    (.setMountNode this container)
+
+                    ;; Only rerender if needed
+                    (when (not disablePortal)
+                        (.forceUpdate this onRendered))))))
+
+        (componentWillUnmount [this]
+            (when (not= (.getMountNode this) nil)
+                (om/update-state! this assoc :mountNode nil)))
+
+        (render [this]
+            (let [{:keys [disablePortal ref aria-hidden] :as props} (om/props this)
+                  attrs (assoc props :ref ref :aria-hidden aria-hidden)
+                  children (om/children this)]
+
+            (if disablePortal
+                (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
+                (when (:mountNode (om/get-state this))
+                    (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
+                ))))))
+
+#?(:cljs
+    (def ui-portal (om/factory Portal)))
+
+
 #?(:cljs
     (defui Dialog
         static uc/InitialAppState
-        (initial-state [this params] {:mountNode nil
-                                      :modalRef  nil
-                                      :dialogRef nil
-                                      :mounted   false})
+        (initial-state [this params] {:key                  ""
+                                      :container            nil
+                                      :disableAutoFocus     false
+                                      :disableBackdropClick false
+                                      :disableEnforceFocus  false
+                                      :disableEscapeKeyDown false
+                                      :disablePortal        true
+                                      :disableRestoreFocus  false
+                                      :hideBackdrop         false
+                                      :keepMounted          false
+                                      :onEscapeKeyDown      nil})
 
         static om/IQuery
-        (query [this] [:mountNode :modalRef :dialogRef :mounted])
+        (query [this] [:key
+                       :container
+                       :disableAutoFocus
+                       :disableBackdropClick
+                       :disableEnforceFocus
+                       :disableEscapeKeyDown
+                       :disablePortal
+                       :disableRestoreFocus
+                       :hideBackdrop
+                       :keyMounted
+                       :onEscapeKeyDown])
 
         Object
-        (handleDocumentKeyDown [this event onClose]
-            (js/console.log "handleDocumentKeyDown")
-            (when (= (.-keyCode event) 27)
-                (js/console.log "handleDocumentKeyDown esc")
-                (when (onClose)
-                    (js/console.log "handleDocumentKeyDown onClose")
-                    (onClose this))
+        (initLocalState [this] {:mounted   false
+                                :exited    (not (:open (om/props this)))
+                                :lastFocus nil})
+        
+        (handleDocumentKeyDown [this event]
+            (let [{:keys [disableEscapeKeyDown onEscapeKeyDown onClose open]} (om/props this)]
 
-                ; (when onEscapeKeyDown
-                ;     (onEscapeKeyDown event))
+                (when (and open (= (.-keyCode event) 27))
+                    (when onEscapeKeyDown
+                        (onEscapeKeyDown event))
 
-                ; (when (and (not disableEscapeKeyDown) onClose)
-                ;     #(onClose %))
-                ))
+                    (when (and (not= disableEscapeKeyDown true) onClose)
+                        (onClose event "escapeKeyDown")))))
 
-        (enforceFocus [this event]
-            (js/console.log "enforceFocus")
-            (let [{:keys [mountNode]} (om/props this)
-                  doc (ownerDocument mountNode)]
-                (js/console.log doc)))
+        (checkForFocus [this]
+            (let [mountNode (:mountNode (om/get-state this))
+                  lastFocus (:lastFocus (om/get-state this))
+                  currentActiveElement (.-activeElement (ownerDocument mountNode))]
 
-        (handleOpen [this event onClose]
+                    (when (not= lastFocus currentActiveElement)
+                        (om/update-state! this assoc :lastFocus currentActiveElement))))
+
+        (enforceFocus [this]
+            ; (js/console.log "enforceFocus")
+
+            (let [{:keys [disableEnforceFocus]} (om/props this)
+                  mountNode (:mountNode (om/get-state this))
+                  dialogNode (:dialogRef (om/get-state this))
+                  currentActiveElement (.-activeElement (ownerDocument mountNode))]
+
+                (when-not (or disableEnforceFocus (not (:mounted (om/get-state this))))
+                        ;; Check isTopModal
+
+                    (when dialogNode
+                        (when (not (.contains dialogNode currentActiveElement))
+                            (.focus dialogNode))))))
+
+        (autoFocus [this]
+            (let [{:keys [disableAutoFocus]} (om/props this)
+                  mountNode (:mountNode (om/get-state this))
+                  dialogNode (:dialogRef (om/get-state this))
+                  ownerOfMounted (ownerDocument mountNode)
+                  currentActiveElement (.-activeElement ownerOfMounted)]
+                (js/console.log "autoFocus")
+
+                (when-not disableAutoFocus
+
+                    (when (and dialogNode (not (.contains dialogNode currentActiveElement))
+                    ;; The inverse statement fixes returnFocus, but breaks enforceFocus
+                        (do
+                            (when (not= (:lastFocus (om/get-state this)) currentActiveElement)
+                                #(om/update-state! this assoc :lastFocus currentActiveElement))
+
+                            (when (not (.hasAttribute dialogNode "tabIndex"))
+                                (do
+                                    (js/console.log
+                                    "Untangled-UI: The modal content node does not accept focus. For the benefit of assistive technologies, the tabIndex of the node is being set to '-1'.")
+                                    (.setAttribute dialogNode "tabIndex" -1)))
+                                
+                    (.focus dialogNode)))))))
+
+        (restoreLastFocus [this]
+            (js/console.log "restoreLastFocus")
+
+            (let [lastFocus (:lastFocus (om/get-state this))
+                  mountNode (:mountNode (om/get-state this))]
+
+                (when lastFocus
+                    (do
+                        (when (.-focus lastFocus)
+                            (do
+                            (js/console.log "focus last focus bru")
+                            (.focus lastFocus)))
+                        (om/update-state! this assoc :lastFocus nil)))))
+
+        (handleRendered [this]
+            ; (js/console.log "handleRendered")
+            (let [modalRef (:modalRef (om/get-state this))]
+                (.autoFocus this)
+
+                (when modalRef 
+                    (aset modalRef "scrollTop" 0))
+
+                ;; TODO conditionally run onRendered prop fn
+        ))
+
+        (handleOpen [this]
             (js/console.log "handleOpen")
-            (let [{:keys [mountNode]} (om/props this)
-                  doc (ownerDocument mountNode)]
-                (.addEventListener doc "keydown" #(.handleDocumentKeyDown this % onClose))
-                (.addEventListener doc "focus" #(.enforceFocus this %) true)))
+            (let [{:keys [container]} (om/props this)
+                  mountNode (:mountNode (om/get-state this))
+                  doc (ownerDocument mountNode)
+                  container (getContainer container (.-body doc))]
+                (.addEventListener doc "keydown" #(.handleDocumentKeyDown this %))
+                (.addEventListener doc "focus" #(.enforceFocus this) true))
+                )
 
-        (handleClose [this event onClose]
+        (handleClose [this]
             (js/console.log "handleClose")
-            (let [{:keys [mountNode]} (om/props this)
+            (let [mountNode (:mountNode (om/get-state this))
                   doc (ownerDocument mountNode)]
-                (.removeEventListener doc "keydown" #(.handleDocumentKeyDown this % onClose))
-                (.addEventListener doc "focus" #(.enforceFocus this %) true)))
+                (.removeEventListener doc "keydown" #(.handleDocumentKeyDown this %))
+                (.removeEventListener doc "focus" #(.enforceFocus this) true)
 
+                (.restoreLastFocus this)))
+
+        (handleExited [this]
+            (let [{:keys [open]} (om/props this)]
+                (when (not= (:exited (om/get-state this)) open)
+                    (om/update-state! this assoc :exited true))
+                (.handleClose this)))
+
+        (handleBackdropClick [this event]
+            (let [{:keys [onClose disableBackdropClick]} (om/props this)
+                  target (.-target event)]
+
+                (when (not= target (.-currentTarget target))
+                    (when (and (not disableBackdropClick) (onClose))
+                        (onClose event "backdropClick")
+                    ))))
+
+        ; Start ----------------------------------------------
         (componentDidMount [this event]
-            (let [{:keys [open onClose]} (om/props this)]
-                (js/console.log "componentDidMount with props")
-                (when open
-                    (js/console.log "componentDidMount open")
-                    (.handleOpen this event onClose))))
+            (let [{:keys [open onClose]} (om/props this)
+                  mountNode (:mountNode (om/get-state this))
+                  modalNode (:modalRef (om/get-state this))
+                  dialogNode (:dialogRef (om/get-state this))]
 
-        (componentDidUpdate [this prevprops prevstate]
-            (let [{:keys [open onClose]} (om/props this)]
-                (js/console.log "componentDidUpdate with props")
-                (when (and (:open prevprops) (not open))
-                    (js/console.log "componentDidUpdate handleClose")
-                    #(.handleClose this % onClose))
-                (when (and (not (:open prevprops)) open)
-                    (js/console.log "componentDidUpdate handleOpen")
-                    #(.handleOpen this % onClose))))
+                (js/console.log "componentDidMount")
+
+                (when (not= (:mounted (om/get-state this)) true)
+                    (om/update-state! this assoc :mounted true))
+
+                (when open
+                    (.handleOpen this))))
+
+        (componentDidUpdate [this prev-props prev-state]
+            (let [{:keys [open]} (om/props this)]
+
+                (js/console.log "componentDidUpdate")
+                (js/console.log (om/get-state this))
+                (js/console.log (om/props this))
+                ; (js/console.log "The activeElement is...")
+                (js/console.log (.-activeElement js/document))
+
+                (when open
+                    (.checkForFocus this))
+
+                (if (not open)
+                    (.handleClose this)
+                    (.handleOpen this))))
 
         (componentWillUnmount [this]
-            (let [{:keys [open onClose]} (om/props this)]
-                (js/console.log "componentWillUnmount with props")
-                (when open
-                    #(.handleClose this % onClose))))
+            (let [{:keys [open onClose exited]} (om/props this)]
+                (js/console.log "componentWillUnmount")
+
+                (when (not (:mounted (om/get-state this)))
+                    (om/update-state! this assoc :mounted false))
+
+                (when (or open (not exited))
+                    (.handleClose this))))
+
+        (getDerivedStateFromProps [this nextProps]
+            (when (:open nextProps)
+                (om/update-state! this assoc :exited false))
+
+            ; getHasTransition TODO
+        )
 
         (render [this]
-            (let [{:keys [key full-screen open onClose disableAutoFocus hideBackdrop] :as props :or {key "" hideBackdrop false}} (om/props this)
+            (let [{:keys [key
+                          full-screen
+                          open
+                          onClose
+                          disableAutoFocus
+                          disableBackdropClick
+                          hideBackdrop
+                          disablePortal
+                          container] :as props} (om/props this)
                 children     (om/children this)
-                title        (first-node DialogTitle children)
-                content      (first-node DialogBody children)
-                actions      (first-node DialogActions children)
                 state        (when open " is-active")
                 user-classes (get props :className "")
                 classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))]
-                (dom/div #js {:ref (fn [node] (if node (.getMountNode node) node))}
-                    (dom/div #js {:key       (str key "-dialog")
-                              :className classes
-                              :role      "dialog"}
-                    (when-not hideBackdrop
-                        (dom/div #js {:aria-hidden true
-                                      :onClick     #(when (and open onClose) (onClose))
-                                      :className   (str "c-backdrop" state)}))
-                    (dom/div #js {:className "c-dialog__card"
-                                    :role "document"
-                                    :tabIndex -1}
-                        (when title title)
-                        (when content content)
-                        (when actions actions))))))))
+                    (dom/div #js {:ref (fn [r]
+                                        (when (not (:mountNode (om/get-state this)))
+                                            (om/update-state! this assoc :mountNode r)))}
+                        (ui-portal {:container     container
+                                    :disablePortal disablePortal
+                                    :onRendered    (.handleRendered this)
+                                    :aria-hidden   (not open)}
+                            (dom/div #js {:key (str key "-dialog")
+                                          :className classes
+                                          :ref       (fn [r]
+                                                           (when (not (:modalRef (om/get-state this)))
+                                                               (om/update-state! this assoc :modalRef r))) 
+                                          :role      "dialog"}
+                                (when-not hideBackdrop
+                                    (dom/div #js {:aria-hidden true
+                                                  :onClick     #(.handleBackdropClick this %)
+                                                  :className   (str "c-backdrop" state)}))
+                                (dom/div #js {:className "c-dialog__card"
+                                              :ref       (fn [r]
+                                                           (when (not (:dialogRef (om/get-state this)))
+                                                               (om/update-state! this assoc :dialogRef r)))
+                                              :onFocus   #(js/console.log % (.-activeElement js/document))
+                                              :tabIndex  (if open -1 nil)
+                                              :role      "document"}
+                                    children))))))))
 
-(def ui-dialog
-  "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
+#?(:cljs
+    (def ui-dialog
+    "Render a dialog. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
 
-  Options:
+    Options:
 
-  `:open` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
-  in the DOM.
-  `:full-screen` - A boolean. Renders the dialog to consume the entire screen when true. (useful for mobile).
-  `:className` - Additional CSS classes to place on the dialog.
-  `:key` - React key
-  `:onClose` - A callback that advises *your* code that the user is indicating a desire to be out of the dialog
-  (e.g. the clicked on the modal backdrop). You must still set the open flag since this is a stateless
-  rendering of a dialog UI, not an active stateful component.
+    `:open` - A boolean. When true the dialog is on-screen. When not, it is hidden. Allows you to keep the dialog
+    in the DOM.
+    `:full-screen` - A boolean. Renders the dialog to consume the entire screen when true. (useful for mobile).
+    `:className` - Additional CSS classes to place on the dialog.
+    `:key` - React key
+    `:onClose` - A callback that advises *your* code that the user is indicating a desire to be out of the dialog
+    (e.g. the clicked on the modal backdrop). You must still set the open flag since this is a stateless
+    rendering of a dialog UI, not an active stateful component.
 
-  You should include at most one of each of three following children for this node:
+    You should include at most one of each of three following children for this node:
 
-  (ui-dialog {}
-    (ui-dialog-title {} title-nodes)
-    (ui-dialog-body {} body-nodes)
-    (ui-dialog-actions {} action-nodes)
+    (ui-dialog {}
+        (ui-dialog-title {} title-nodes)
+        (ui-dialog-body {} body-nodes)
+        (ui-dialog-actions {} action-nodes)
 
-  The `title-nodes` can be any inline DOM (or just a string), as can body-nodes.  Action-notes must include at least one button that
-  closes the dialog or redirects the user."
-  (om/factory Dialog))
+    The `title-nodes` can be any inline DOM (or just a string), as can body-nodes.  Action-notes must include at least one button that
+    closes the dialog or redirects the user."
+    (om/factory Dialog)))
 
 (defui NotificationTitle
   Object

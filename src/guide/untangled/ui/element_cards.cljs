@@ -105,32 +105,37 @@
   rendering).
 
   ```
-  (e/ui-button {:onClick #(show-dialog)} \"Show Dialog\")
+  (e/ui-button {:onClick #(handleClickOpen)} \"Show Dialog\")
   (dom/div #js {}
-    (e/ui-dialog {:open is-open :modal true :onClose #(hide-dialog)}
+    (e/ui-dialog {:open open :onClose #(handleClose)}
       (e/ui-dialog-title {} \"Informative\")
-      (e/ui-dialog-body {} \"You have been notified.\")
-      (e/ui-dialog-actions {}
-        (e/ui-flat-button {:color :primary} \"Cancel\")
-        (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} \"Ok\"))))
+      (e/ui-dialog-body {} \"You have been notified.\")))
   ```
   "
   (fn [state _]
-    (let [show-dialog (fn [] (swap! state assoc :open true))
-          hide-dialog (fn [] (swap! state assoc :open false))
-          is-open  (:open @state)]
+    (let [handleClickOpen (fn [] (swap! state assoc :open true))
+          handleClose (fn [] (swap! state assoc :open false))
+          open  (:open @state)]
         (dom/div nil
           (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
 
-          (dom/div #js {:aria-hidden (not (:open @state))} (e/ui-button {:onClick #(show-dialog)} "Open Simple Dialog"))
+          (e/ui-button {:onClick #(handleClickOpen) :onFocus #(js/console.log %)} "Open Simple Dialog")
 
-          (e/ui-dialog {:open is-open
-                        ; :hideBackdrop true
-                        :onClose #(hide-dialog)}
-                (e/ui-dialog-title {} "Informative")
-                (e/ui-dialog-body {} "You have been notified.")
+          (e/ui-dialog {:open open
+                        :onClose #(handleClose)
+                        :aria-labelledby "alert-dialog-title"
+                        :aria-describedby "alert-dialog-description"}
+                (e/ui-dialog-title {:id "dialog-title"} "Use Google's location service?")
+                (e/ui-dialog-body {} (dom/span #js {:id "dialog-description"}
+                    "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+                ))
                 (e/ui-dialog-actions {}
-                    (e/ui-flat-button {:color :primary :onClick #(hide-dialog)} "Ok"))))))
+                  (dom/span nil
+                    (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Disagree")
+                    (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Agree")
+                  )
+                )
+                ))))
   {:open false}
   {:inspect-data true})
 

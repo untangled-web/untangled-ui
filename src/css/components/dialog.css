@@ -8,6 +8,7 @@
   @apply --fade-out;
   @apply --position-top-left;
   @apply --text-center;
+  display: none;
   height: 100%;
   max-height: var(--height-dialog, 100vh);
   overflow: hidden;
@@ -18,6 +19,7 @@
 
   &:--active {
     @apply --fade-in;
+    display: flex;
     pointer-events: none;
   }
 }
