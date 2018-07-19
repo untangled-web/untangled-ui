@@ -511,7 +511,6 @@
 
 ; #?(:cljs
 ;     (defn getHasTransition [props]
-;         (js/console.log (.children props))
 ;         (if (.children props)
 ;             (.hasOwnProperty (.-props (.-children props)) "in")
 ;             false)))
@@ -631,8 +630,6 @@
                         (om/update-state! this assoc :lastFocus currentActiveElement))))
 
         (enforceFocus [this]
-            ; (js/console.log "enforceFocus")
-
             (let [{:keys [disableEnforceFocus]} (om/props this)
                   mountNode (:mountNode (om/get-state this))
                   dialogNode (:dialogRef (om/get-state this))
@@ -651,7 +648,6 @@
                   dialogNode (:dialogRef (om/get-state this))
                   ownerOfMounted (ownerDocument mountNode)
                   currentActiveElement (.-activeElement ownerOfMounted)]
-                (js/console.log "autoFocus")
 
                 (when-not disableAutoFocus
 
@@ -670,21 +666,16 @@
                     (.focus dialogNode)))))))
 
         (restoreLastFocus [this]
-            (js/console.log "restoreLastFocus")
-
             (let [lastFocus (:lastFocus (om/get-state this))
                   mountNode (:mountNode (om/get-state this))]
 
                 (when lastFocus
                     (do
                         (when (.-focus lastFocus)
-                            (do
-                            (js/console.log "focus last focus bru")
-                            (.focus lastFocus)))
+                            (.focus lastFocus))
                         (om/update-state! this assoc :lastFocus nil)))))
 
         (handleRendered [this]
-            ; (js/console.log "handleRendered")
             (let [modalRef (:modalRef (om/get-state this))]
                 (.autoFocus this)
 
@@ -695,7 +686,6 @@
         ))
 
         (handleOpen [this]
-            (js/console.log "handleOpen")
             (let [{:keys [container]} (om/props this)
                   mountNode (:mountNode (om/get-state this))
                   doc (ownerDocument mountNode)
@@ -705,7 +695,6 @@
                 )
 
         (handleClose [this]
-            (js/console.log "handleClose")
             (let [mountNode (:mountNode (om/get-state this))
                   doc (ownerDocument mountNode)]
                 (.removeEventListener doc "keydown" #(.handleDocumentKeyDown this %))
@@ -735,8 +724,6 @@
                   modalNode (:modalRef (om/get-state this))
                   dialogNode (:dialogRef (om/get-state this))]
 
-                (js/console.log "componentDidMount")
-
                 (when (not= (:mounted (om/get-state this)) true)
                     (om/update-state! this assoc :mounted true))
 
@@ -745,13 +732,6 @@
 
         (componentDidUpdate [this prev-props prev-state]
             (let [{:keys [open]} (om/props this)]
-
-                (js/console.log "componentDidUpdate")
-                (js/console.log (om/get-state this))
-                (js/console.log (om/props this))
-                ; (js/console.log "The activeElement is...")
-                (js/console.log (.-activeElement js/document))
-
                 (when open
                     (.checkForFocus this))
 
@@ -761,7 +741,6 @@
 
         (componentWillUnmount [this]
             (let [{:keys [open onClose exited]} (om/props this)]
-                (js/console.log "componentWillUnmount")
 
                 (when (not (:mounted (om/get-state this)))
                     (om/update-state! this assoc :mounted false))
@@ -811,8 +790,7 @@
                                               :ref       (fn [r]
                                                            (when (not (:dialogRef (om/get-state this)))
                                                                (om/update-state! this assoc :dialogRef r)))
-                                              :onFocus   #(js/console.log % (.-activeElement js/document))
-                                              :tabIndex  (if open -1 nil)
+                                              :tabIndex  -1 
                                               :role      "document"}
                                     children))))))))
 

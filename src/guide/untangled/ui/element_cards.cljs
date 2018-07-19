@@ -119,7 +119,7 @@
         (dom/div nil
           (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
 
-          (e/ui-button {:onClick #(handleClickOpen) :onFocus #(js/console.log %)} "Open Simple Dialog")
+          (e/ui-button {:onClick #(handleClickOpen)} "Open Simple Dialog")
 
           (e/ui-dialog {:open open
                         :onClose #(handleClose)
