@@ -17,7 +17,7 @@
   width: 100%;
   z-index: var(--zIndex-modal) !important;
 
-  &:--active {
+  &.is-active {
     @apply --fade-in;
     display: flex;
     pointer-events: none;

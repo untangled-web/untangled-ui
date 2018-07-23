@@ -582,6 +582,7 @@
     (defui Dialog
         static uc/InitialAppState
         (initial-state [this params] {:key                  ""
+                                      :open                 false
                                       :container            nil
                                       :disableAutoFocus     false
                                       :disableBackdropClick false
@@ -595,6 +596,7 @@
 
         static om/IQuery
         (query [this] [:key
+                       :open
                        :container
                        :disableAutoFocus
                        :disableBackdropClick

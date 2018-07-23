@@ -126,16 +126,14 @@
                         :aria-labelledby "alert-dialog-title"
                         :aria-describedby "alert-dialog-description"}
                 (e/ui-dialog-title {:id "dialog-title"} "Use Google's location service?")
+
                 (e/ui-dialog-body {} (dom/span #js {:id "dialog-description"}
-                    "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
-                ))
+                    "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."))
+
                 (e/ui-dialog-actions {}
                   (dom/span nil
                     (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Disagree")
-                    (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Agree")
-                  )
-                )
-                ))))
+                    (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Agree")))))))
   {:open false}
   {:inspect-data true})
 
