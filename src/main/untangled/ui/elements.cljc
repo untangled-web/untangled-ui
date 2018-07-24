@@ -582,7 +582,6 @@
     (defui ^:once Dialog
         static uc/InitialAppState
         (initial-state [this params] {:key                  ""
-                                      :open                 false
                                       :container            nil
                                       :disableAutoFocus     false
                                       :disableBackdropClick false
@@ -596,7 +595,6 @@
 
         static om/IQuery
         (query [this] [:key
-                       :open
                        :container
                        :disableAutoFocus
                        :disableBackdropClick
@@ -610,11 +608,12 @@
 
         Object
         (initLocalState [this] {:mounted   false
-                                :exited    (not (:open (om/props this)))
+                                ; :exited    (not (:open (om/computed this)))
                                 :lastFocus nil})
         
         (handleDocumentKeyDown [this event]
-            (let [{:keys [disableEscapeKeyDown onEscapeKeyDown onClose open]} (om/props this)]
+            (let [{:keys [disableEscapeKeyDown onEscapeKeyDown]} (om/props this)
+                  {:keys [open onClose]} (om/get-computed this)]
 
                 (when (and open (= (.-keyCode event) 27))
                     (when onEscapeKeyDown
@@ -705,13 +704,14 @@
                 (.restoreLastFocus this)))
 
         (handleExited [this]
-            (let [{:keys [open]} (om/props this)]
-                (when (not= (:exited (om/get-state this)) open)
-                    (om/update-state! this assoc :exited true))
+            (let [{:keys [open]} (om/get-computed this)]
+                ; (when (not= (:exited (om/get-state this)) open)
+                ;     (om/update-state! this assoc :exited true))
                 (.handleClose this)))
 
         (handleBackdropClick [this event]
-            (let [{:keys [onClose disableBackdropClick]} (om/props this)
+            (let [{:keys [disableBackdropClick]} (om/props this)
+                  {:keys [onClose]} (om/get-computed this)
                   target (.-target event)]
 
                 (when (not= target (.-currentTarget target))
@@ -721,7 +721,7 @@
 
         ; Start ----------------------------------------------
         (componentDidMount [this event]
-            (let [{:keys [open onClose]} (om/props this)
+            (let [{:keys [open onClose]} (om/get-computed this)
                   mountNode (:mountNode (om/get-state this))
                   modalNode (:modalRef (om/get-state this))
                   dialogNode (:dialogRef (om/get-state this))]
@@ -733,7 +733,7 @@
                     (.handleOpen this))))
 
         (componentDidUpdate [this prev-props prev-state]
-            (let [{:keys [open]} (om/props this)]
+            (let [{:keys [open]} (om/get-computed this)]
                 (when open
                     (.checkForFocus this))
 
@@ -742,20 +742,21 @@
                     (.handleOpen this))))
 
         (componentWillUnmount [this]
-            (let [{:keys [open onClose exited]} (om/props this)]
+            (let [;{:keys [exited]} (om/props this)
+                  {:keys [open onClose]} (om/get-computed this)]
 
                 (when (not (:mounted (om/get-state this)))
                     (om/update-state! this assoc :mounted false))
 
-                (when (or open (not exited))
+                (when open
                     (.handleClose this))))
 
-        (getDerivedStateFromProps [this nextProps]
-            (when (:open nextProps)
-                (om/update-state! this assoc :exited false))
+        ; ; (getDerivedStateFromProps [this nextProps]
+        ; ;     (when (:open nextProps)
+        ; ;         (om/update-state! this assoc :exited false))
 
-            ; getHasTransition TODO
-        )
+        ;     ; getHasTransition TODO
+        ; )
 
         (render [this]
             (let [{:keys [key
