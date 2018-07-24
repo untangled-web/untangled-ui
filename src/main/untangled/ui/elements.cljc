@@ -579,7 +579,7 @@
 
 
 #?(:cljs
-    (defui Dialog
+    (defui ^:once Dialog
         static uc/InitialAppState
         (initial-state [this params] {:key                  ""
                                       :open                 false
