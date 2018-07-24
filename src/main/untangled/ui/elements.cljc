@@ -461,7 +461,7 @@
                        (dissoc :color))]
     (apply dom/div (clj->js props) children)))
 
-(defui DialogTitle
+(defui ^:once DialogTitle
   Object
   (render [this]
     (dom/div #js {:className "c-dialog__title"}
@@ -471,7 +471,7 @@
   "Render a dialog's title (using supplied DOM children). Should only be used in a ui-dialog"
   (om/factory DialogTitle))
 
-(defui DialogBody
+(defui ^:once DialogBody
   Object
   (render [this]
     (dom/div #js {:className "c-dialog__content"} (om/children this))))
@@ -480,7 +480,7 @@
   "Render the body of a dialog (using the supplied DOM children). Should only be used in a ui-dialog"
   (om/factory DialogBody))
 
-(defui DialogActions
+(defui ^:once DialogActions
   Object
   (render [this]
     (dom/div #js {:className "c-dialog__actions" :key "dialogActions"} (om/children this))))
@@ -516,7 +516,7 @@
 ;             false)))
 
 #?(:cljs
-    (defui Portal
+    (defui ^:once Portal
         static uc/InitialAppState
         (initial-state [this params] {:disablePortal false})
 
