@@ -527,7 +527,8 @@
         (initLocalState [this] {:mountNode nil})
 
         (getMountNode [this]
-            (:mountNode (om/get-state this)))
+            (let [{:keys [mountNode]} (om/get-state this)]
+                mountNode))
 
         (setMountNode [this container]
             (let [{:keys [disablePortal]} (om/props this)
@@ -565,14 +566,15 @@
 
         (render [this]
             (let [{:keys [disablePortal ref aria-hidden] :as props} (om/props this)
+                  {:keys [mountNode]} (om/get-state this)
                   attrs (assoc props :ref ref :aria-hidden aria-hidden)
                   children (om/children this)]
 
-            (if disablePortal
-                (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
-                (when (:mountNode (om/get-state this))
+                (if disablePortal
                     (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
-                ))))))
+                    (when mountNode 
+                        (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
+                    ))))))
 
 #?(:cljs
     (def ui-portal (om/factory Portal)))
@@ -608,12 +610,11 @@
 
         Object
         (initLocalState [this] {:mounted   false
-                                ; :exited    (not (:open (om/computed this)))
+                                :exited    (not (:open (om/props this)))
                                 :lastFocus nil})
         
         (handleDocumentKeyDown [this event]
-            (let [{:keys [disableEscapeKeyDown onEscapeKeyDown]} (om/props this)
-                  {:keys [open onClose]} (om/get-computed this)]
+            (let [{:keys [disableEscapeKeyDown onEscapeKeyDown open onClose]} (om/get-computed this)]
 
                 (when (and open (= (.-keyCode event) 27))
                     (when onEscapeKeyDown
@@ -623,52 +624,48 @@
                         (onClose event "escapeKeyDown")))))
 
         (checkForFocus [this]
-            (let [mountNode (:mountNode (om/get-state this))
-                  lastFocus (:lastFocus (om/get-state this))
+            (let [{:keys [mountNode lastFocus]} (om/get-state this)
                   currentActiveElement (.-activeElement (ownerDocument mountNode))]
 
                     (when (not= lastFocus currentActiveElement)
                         (om/update-state! this assoc :lastFocus currentActiveElement))))
 
         (enforceFocus [this]
-            (let [{:keys [disableEnforceFocus]} (om/props this)
-                  mountNode (:mountNode (om/get-state this))
-                  dialogNode (:dialogRef (om/get-state this))
+            (let [{:keys [disableEnforceFocus]} (om/get-computed this)
+                  {:keys [mountNode dialogRef mounted]} (om/get-state this)
                   currentActiveElement (.-activeElement (ownerDocument mountNode))]
 
-                (when-not (or disableEnforceFocus (not (:mounted (om/get-state this))))
+                (when-not (or disableEnforceFocus (not mounted))
                         ;; Check isTopModal
 
-                    (when dialogNode
-                        (when (not (.contains dialogNode currentActiveElement))
-                            (.focus dialogNode))))))
+                    (when dialogRef
+                        (when (not (.contains dialogRef currentActiveElement))
+                            (.focus dialogRef))))))
 
         (autoFocus [this]
-            (let [{:keys [disableAutoFocus]} (om/props this)
-                  mountNode (:mountNode (om/get-state this))
-                  dialogNode (:dialogRef (om/get-state this))
+            (let [{:keys [disableAutoFocus]} (om/get-computed this)
+                  {:keys [mountNode dialogRef lastFocus]} (om/get-state this)
                   ownerOfMounted (ownerDocument mountNode)
                   currentActiveElement (.-activeElement ownerOfMounted)]
 
                 (when-not disableAutoFocus
 
-                    (when (and dialogNode (not (.contains dialogNode currentActiveElement))
+                    (when (and dialogRef (not (.contains dialogRef currentActiveElement))
                     ;; The inverse statement fixes returnFocus, but breaks enforceFocus
                         (do
-                            (when (not= (:lastFocus (om/get-state this)) currentActiveElement)
+                            (when (not= lastFocus currentActiveElement)
                                 #(om/update-state! this assoc :lastFocus currentActiveElement))
 
-                            (when (not (.hasAttribute dialogNode "tabIndex"))
+                            (when (not (.hasAttribute dialogRef "tabIndex"))
                                 (do
                                     (js/console.log
                                     "Untangled-UI: The modal content node does not accept focus. For the benefit of assistive technologies, the tabIndex of the node is being set to '-1'.")
-                                    (.setAttribute dialogNode "tabIndex" -1)))
+                                    (.setAttribute dialogRef "tabIndex" -1)))
                                 
-                    (.focus dialogNode)))))))
+                    (.focus dialogRef)))))))
 
         (restoreLastFocus [this]
-            (let [lastFocus (:lastFocus (om/get-state this))
-                  mountNode (:mountNode (om/get-state this))]
+            (let [{:keys [lastFocus mountNode]} (om/get-state this)]
 
                 (when lastFocus
                     (do
@@ -677,7 +674,7 @@
                         (om/update-state! this assoc :lastFocus nil)))))
 
         (handleRendered [this]
-            (let [modalRef (:modalRef (om/get-state this))]
+            (let [{:keys [modalRef]} (om/get-state this)]
                 (.autoFocus this)
 
                 (when modalRef 
@@ -687,16 +684,15 @@
         ))
 
         (handleOpen [this]
-            (let [{:keys [container]} (om/props this)
-                  mountNode (:mountNode (om/get-state this))
+            (let [{:keys [container]} (om/get-computed this)
+                  {:keys [mountNode]} (om/get-state this)
                   doc (ownerDocument mountNode)
                   container (getContainer container (.-body doc))]
                 (.addEventListener doc "keydown" #(.handleDocumentKeyDown this %))
-                (.addEventListener doc "focus" #(.enforceFocus this) true))
-                )
+                (.addEventListener doc "focus" #(.enforceFocus this) true)))
 
         (handleClose [this]
-            (let [mountNode (:mountNode (om/get-state this))
+            (let [{:keys [mountNode]} (om/get-state this)
                   doc (ownerDocument mountNode)]
                 (.removeEventListener doc "keydown" #(.handleDocumentKeyDown this %))
                 (.removeEventListener doc "focus" #(.enforceFocus this) true)
@@ -710,23 +706,20 @@
                 (.handleClose this)))
 
         (handleBackdropClick [this event]
-            (let [{:keys [disableBackdropClick]} (om/props this)
-                  {:keys [onClose]} (om/get-computed this)
+            (let [{:keys [disableBackdropClick onClose]} (om/get-computed this)
                   target (.-target event)]
 
                 (when (not= target (.-currentTarget target))
-                    (when (and (not disableBackdropClick) (onClose))
+                    (when (and (not disableBackdropClick) onClose)
                         (onClose event "backdropClick")
                     ))))
 
         ; Start ----------------------------------------------
         (componentDidMount [this event]
             (let [{:keys [open onClose]} (om/get-computed this)
-                  mountNode (:mountNode (om/get-state this))
-                  modalNode (:modalRef (om/get-state this))
-                  dialogNode (:dialogRef (om/get-state this))]
+                  {:keys [mounted]} (om/get-state this)]
 
-                (when (not= (:mounted (om/get-state this)) true)
+                (when (not= mounted true)
                     (om/update-state! this assoc :mounted true))
 
                 (when open
@@ -742,10 +735,10 @@
                     (.handleOpen this))))
 
         (componentWillUnmount [this]
-            (let [;{:keys [exited]} (om/props this)
-                  {:keys [open onClose]} (om/get-computed this)]
+            (let [{:keys [open onClose]} (om/get-computed this)
+                  {:keys [mounted]} (om/get-state this)]
 
-                (when (not (:mounted (om/get-state this)))
+                (when (not mounted)
                     (om/update-state! this assoc :mounted false))
 
                 (when open
@@ -767,11 +760,9 @@
                           disableBackdropClick
                           hideBackdrop
                           disablePortal
-                          container] :as props} (om/props this)
+                          container]} (om/get-computed this)
                 children     (om/children this)
-                state        (when open " is-active")
-                user-classes (get props :className "")
-                classes      (str user-classes " c-dialog" state (when full-screen " c-dialog--fullscreen"))]
+                state        (when open " is-active")]
                     (dom/div #js {:ref (fn [r]
                                         (when (not (:mountNode (om/get-state this)))
                                             (om/update-state! this assoc :mountNode r)))}
@@ -780,7 +771,7 @@
                                     :onRendered    (.handleRendered this)
                                     :aria-hidden   (not open)}
                             (dom/div #js {:key (str key "-dialog")
-                                          :className classes
+                                          :className (str "c-dialog" state (when full-screen " c-dialog--fullscreen"))
                                           :ref       (fn [r]
                                                            (when (not (:modalRef (om/get-state this)))
                                                                (om/update-state! this assoc :modalRef r))) 
