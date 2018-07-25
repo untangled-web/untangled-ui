@@ -583,7 +583,7 @@
 #?(:cljs
     (defui ^:once Dialog
         static uc/InitialAppState
-        (initial-state [this params] {:key                  ""
+        (uc/initial-state [clz params] {:key                  ""
                                       :container            nil
                                       :disableAutoFocus     false
                                       :disableBackdropClick false
