@@ -664,7 +664,7 @@
                     (.focus dialogRef)))))))
 
         (restoreLastFocus [this]
-            (let [{:keys [lastFocus mountNode]} (om/get-state this)]
+            (let [{:keys [lastFocus mountNode disableRestoreFocus]} (om/get-state this)]
 
                 (when (not disableRestoreFocus)
 
@@ -762,7 +762,8 @@
                           disableBackdropClick
                           hideBackdrop
                           disablePortal
-                          container]} (om/get-computed this)
+                          container
+                          keepMounted]} (om/get-computed this)
                 children     (om/children this)
                 state        (when open " is-active")]
                     (when (and keepMounted open) ;; also hasTransition or not exited
