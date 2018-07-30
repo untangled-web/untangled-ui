@@ -5,34 +5,78 @@
 }
 
 .c-dialog {
-  @apply --fade-out;
-  @apply --position-top-left;
-  @apply --text-center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1300;
+  position: fixed;
   display: none;
-  height: 100%;
-  max-height: var(--height-dialog, 100vh);
-  overflow: hidden;
-  position: var(--position-dialog, fixed);
-  text-align: left;
-  width: 100%;
-  z-index: var(--zIndex-modal) !important;
+
+  &.c-dialog--scrollPaper {
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.c-dialog--scrollBody {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   &.is-active {
-    @apply --fade-in;
     display: flex;
-    pointer-events: none;
   }
 }
 
 .c-dialog__card {
+  margin: 48px;
+  display: flex;
+  outline: none;
+  position: relative;
+  overflow-y: auto;
+  /* overflow: visible; */
+  flex-direction: column;
+
   background-color: var(--color-dialog--primary);
   border-radius: var(--radius-dialog);
   box-shadow: var(--shadow-2);
-  margin: var(--margin-dialog__card, 1em 1rem);
-  min-height: var(--height-dialog__card, 100px);
-  min-width: var(--width-dialog__card, 280px);
-  pointer-events: auto;
-  position: relative;
+
+  .c-dialog--disableOverflow & {
+    overflow-y: initial;
+    overflow-x: initial;
+  }
+
+  &.c-dialog__card--xs {
+    --breakpointXs: 0px;
+    max-width: 360px;
+
+    .c-dialog--scrollPaper & {
+      margin: 48px;
+    }
+  }
+
+  &.c-dialog__card--sm {
+    --breakpointSm: 600px;
+    max-width: var(--breakpointSm);
+
+    .c-dialog--scrollPaper & {
+      margin: 48px;
+    }
+  }
+
+  &.c-dialog__card--md {
+    --breakpointMd: 960px;
+    max-width: var(--breakpointMd);
+
+    .c-dialog--scrollPaper & {
+      margin: 48px;
+    }
+  }
+
+  .c-dialog--scrollPaper & {
+    flex: 0 1 auto;
+    max-height: calc(100% - 96px);
+  }
 
   .t-dark &,
   .t-fullscreen &,
@@ -48,7 +92,6 @@
 
 .c-dialog__content {
   max-height: var(--height-dialog__content, 82vh);
-  overflow-y: auto;
   padding: var(--padding-dialog__content, 0.85em 1rem 1em);
 
   &:first-child {

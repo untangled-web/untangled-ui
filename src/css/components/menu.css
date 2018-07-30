@@ -10,6 +10,7 @@
   @apply --fade-out;
   background-color: var(--color-menu-background);
   box-shadow: var(--shadow-menu);
+  clip-depth: 100;
   left: 0;
   list-style: none;
   min-width: 100px;

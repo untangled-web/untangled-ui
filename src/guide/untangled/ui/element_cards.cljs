@@ -8,6 +8,7 @@
     [untangled.i18n.core :as i18n]
     [untangled.client.core :as uc]
     [untangled.ui.layout :as layout]
+    [untangled.ui.menu :as menu]
     [untangled.icons :refer [icon]]
     [untangled.ui.elements :as e]
     [untangled.client.mutations :as m]))
@@ -115,20 +116,27 @@
   (fn [state _]
     (let [handleClickOpen (fn [] (swap! state assoc :open true))
           handleClose (fn [] (swap! state assoc :open false))
-          open  (:open @state)]
+          open  (:open @state)
+          menu1 (menu/menu :mood-filter "Mood Filter"
+                                         [(menu/menu-item :happy "Happy")
+                                          (menu/menu-item :indifferent "Indifferent")
+                                          (menu/menu-item :sad "Sad")])]
         (dom/div nil
           (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
 
           (e/ui-button {:onClick #(handleClickOpen)} "Open Simple Dialog")
 
-          (e/ui-dialog {:open open
-                        :onClose #(handleClose)
-                        :aria-labelledby "alert-dialog-title"
-                        :aria-describedby "alert-dialog-description"}
+          (e/ui-dialog (om/computed @state {:open        open
+                                            :onClose     #(handleClose)
+                                            :labelledby  "dialog-title"
+                                            :describedby "dialog-description"})
                 (e/ui-dialog-title {:id "dialog-title"} "Use Google's location service?")
 
-                (e/ui-dialog-body {} (dom/span #js {:id "dialog-description"}
-                    "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."))
+                (e/ui-dialog-body {:key "udb" :id "dialog-description"}
+                    (dom/div nil
+                        (dom/span #js {}
+                            "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.")
+                        #_(menu/ui-menu menu1)))
 
                 (e/ui-dialog-actions {}
                   (dom/span nil
