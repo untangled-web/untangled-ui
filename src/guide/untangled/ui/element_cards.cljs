@@ -106,17 +106,36 @@
   rendering).
 
   ```
-  (e/ui-button {:onClick #(handleClickOpen)} \"Show Dialog\")
+  (e/ui-button {:onClick #(handleClickOpen)} \"Open Simple Dialog\")
   (dom/div #js {}
-    (e/ui-dialog {:open open :onClose #(handleClose)}
-      (e/ui-dialog-title {} \"Informative\")
-      (e/ui-dialog-body {} \"You have been notified.\")))
+    (e/ui-dialog (om/computed dialog {:open        open
+                                      :onClose     #(handleClose)
+                                      :labelledby  \"dialog-title\"
+                                      :describedby \"dialog-description\"})
+      (e/ui-dialog-title {:id 'dialog-title} \"Use Google's location service?\")
+      (e/ui-dialog-body {:id 'dialog-description}
+        \"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.\")))
   ```
   "
   (fn [state _]
     (let [handleClickOpen (fn [] (swap! state assoc :open true))
-          handleClose (fn [] (swap! state assoc :open false))
+          handleClickFullscreen (fn [] (swap! state assoc :fullscreen true)
+                                       (swap! state assoc :open true))
+          handleClickScrollPaper (fn [] (swap! state assoc :scroll :paper)
+                                       (swap! state assoc :open true))
+          handleClickScrollBody (fn [] (swap! state assoc :scroll :body)
+                                       (swap! state assoc :open true))
+          handleClickDisableOverflow (fn [] (swap! state assoc :disablePaperOverflow true)
+                                       (swap! state assoc :open true))
+          handleClose (fn [] (swap! state assoc :fullscreen false)
+                             (swap! state assoc :scroll nil)
+                             (swap! state assoc :disablePaperOverflow false)
+                             (swap! state assoc :open false))
           open  (:open @state)
+          fullwd  (:fullwidth @state)
+          fullscr  (:fullscreen @state)
+          scroll  (:scroll @state)
+          disableOverflow (:disablePaperOverflow @state)
           menu1 (menu/menu :mood-filter "Mood Filter"
                                          [(menu/menu-item :happy "Happy")
                                           (menu/menu-item :indifferent "Indifferent")
@@ -125,9 +144,16 @@
           (dom/link #js {:rel "stylesheet" :href "css/untangled-ui.css"})
 
           (e/ui-button {:onClick #(handleClickOpen)} "Open Simple Dialog")
+          (e/ui-button {:onClick #(handleClickFullscreen)} "Fullscreen")
+          (e/ui-button {:onClick #(handleClickScrollPaper)} "Scroll=Paper")
+          (e/ui-button {:onClick #(handleClickScrollBody)} "Scroll=Body")
+          (e/ui-button {:onClick #(handleClickDisableOverflow)} "disable Paper Overflow")
 
           (e/ui-dialog (om/computed @state {:open        open
                                             :onClose     #(handleClose)
+                                            :fullscreen  fullscr
+                                            :scroll      scroll
+                                            :disablePaperOverflow disableOverflow
                                             :labelledby  "dialog-title"
                                             :describedby "dialog-description"})
                 (e/ui-dialog-title {:id "dialog-title"} "Use Google's location service?")
@@ -135,6 +161,21 @@
                 (e/ui-dialog-body {:key "udb" :id "dialog-description"}
                     (dom/div nil
                         (dom/span #js {}
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
+"Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
                             "Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.")
                         #_(menu/ui-menu menu1)))
 
@@ -142,7 +183,11 @@
                   (dom/span nil
                     (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Disagree")
                     (e/ui-flat-button {:onClick #(handleClose) :color :primary} "Agree")))))))
-  {:open false}
+  {:open false
+   :scroll nil
+   :fullwidth false
+   :fullscreen false
+   :disablePaperOverflow false}
   {:inspect-data true})
 
 (defcard empty-state

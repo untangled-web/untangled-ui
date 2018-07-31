@@ -586,7 +586,9 @@
                                         :hideBackdrop         false
                                         :keepMounted          false
                                         :disablePaperOverflow false
-                                        :maxWidth             :sm})
+                                        :maxWidth             :sm
+                                        :fullwidth            false
+                                        :fullscreen           false})
 
         static om/IQuery
         (query [this] [:container
@@ -603,7 +605,9 @@
                        :disablePaperOverflow
                        :maxWidth
                        :labelledby
-                       :describedby])
+                       :describedby
+                       :fullwidth
+                       :fullscreen])
 
         Object
         (initLocalState [this] {:mounted   false
@@ -627,12 +631,11 @@
             (let [{:keys [mountNode dialogRef lastFocus]} (om/get-state this)
                   currentActiveElement (.-activeElement (utils/ownerDocument mountNode))]
 
-                (js/console.warn "checkForFocus")
                     (when (and currentActiveElement
                                (not= lastFocus currentActiveElement)
                                (not (isLocalNode dialogRef currentActiveElement)))
                         (om/update-state! this assoc :lastFocus currentActiveElement)
-                        (js/console.log "checkForFocus/setLastFocus: " (:lastFocus (om/get-state this))))))
+                        )))
 
         (enforceFocus [this]
             (let [{:keys [disableEnforceFocus]} (om/get-computed this)
@@ -650,16 +653,12 @@
                   {:keys [mountNode dialogRef lastFocus]} (om/get-state this)
                   ownerOfMounted (utils/ownerDocument mountNode)
                   currentActiveElement (.-activeElement ownerOfMounted)]
-                (js/console.warn "autofocus")
                 (when (not disableAutoFocus)
 
                     (when (and dialogRef (not (isLocalNode dialogRef currentActiveElement))
                         (do
                             (when (not= lastFocus currentActiveElement)
-                                (do
-                                    #(om/update-state! this assoc :lastFocus currentActiveElement)
-                                    (js/console.log "autoFocus/setLastFocus: " (:lastFocus (om/get-state this)))
-                                ))
+                                    #(om/update-state! this assoc :lastFocus currentActiveElement))
 
                             (when (not (.hasAttribute dialogRef "tabIndex"))
                                 (do
@@ -671,8 +670,6 @@
 
         (restoreLastFocus [this]
             (let [{:keys [lastFocus mountNode disableRestoreFocus]} (om/get-state this)]
-                (js/console.warn "restoreLastFocus: " (:lastFocus (om/get-state this)))
-
                 (when (not disableRestoreFocus)
 
                     (when lastFocus
@@ -680,9 +677,7 @@
                             ; IE Silencer Disabled for now
                             ; (when (.-focus lastFocus)
                             (.focus lastFocus)
-                            (om/update-state! this assoc :lastFocus nil)
-                            (js/console.log "nilLastFocus: " (:lastFocus (om/get-state this)))
-                          )))))
+                            (om/update-state! this assoc :lastFocus nil))))))
 
         (handleRendered [this]
             (let [{:keys [onRendered]} (om/get-computed this)
@@ -781,10 +776,14 @@
                           maxWidth
                           disablePaperOverflow
                           labelledby
-                          describedby]} (om/get-computed this)
+                          describedby
+                          fullwidth
+                          fullscreen]} (om/get-computed this)
                 children     (om/children this)
                 state        (when open " is-active")
                 disableOverflow (when disablePaperOverflow " c-dialog--disableOverflow ")
+                fullwidthClass (when fullwidth " c-dialog__card--fullwidth ")
+                fullscreenClass (when fullscreen " c-dialog__card--fullscreen ")
                 paperWidth    (case maxWidth
                                 :xs " c-dialog__card--xs "
                                 :sm " c-dialog__card--sm "
@@ -813,7 +812,7 @@
                                     (dom/div #js {:aria-hidden true
                                                   :onClick     #(.handleBackdropClick this %)
                                                   :className   (str "c-backdrop" state)}))
-                                (dom/div #js {:className (str "c-dialog__card " paperWidth)
+                                (dom/div #js {:className (str "c-dialog__card " paperWidth fullwidthClass fullscreenClass)
                                               :ref       (fn [r]
                                                            (when (not (:dialogRef (om/get-state this)))
                                                                (om/update-state! this assoc :dialogRef r)))

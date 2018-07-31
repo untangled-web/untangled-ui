@@ -19,6 +19,7 @@
   }
 
   &.c-dialog--scrollBody {
+    display: block !important;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -40,6 +41,10 @@
   background-color: var(--color-dialog--primary);
   border-radius: var(--radius-dialog);
   box-shadow: var(--shadow-2);
+
+  .c-dialog--scrollBody & {
+    margin: 48px auto;
+  }
 
   .c-dialog--disableOverflow & {
     overflow-y: initial;
@@ -73,6 +78,19 @@
     }
   }
 
+  &.c-dialog__card--fullwidth {
+    width: 100%;
+  }
+
+  &.c-dialog__card--fullscreen {
+    margin: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: none !important;
+    border-radius: 0;
+  }
+
   .c-dialog--scrollPaper & {
     flex: 0 1 auto;
     max-height: calc(100% - 96px);
@@ -86,20 +104,20 @@
 }
 
 .c-dialog__title {
-  font-size: var(--fontSize-dialog__title);
-  padding: var(--padding-dialog__title, 1em 1rem 0.85em);
+  margin: 0;
+  padding: 24px 24px 20px;
+
+  h2 { margin: 0; }
 }
 
 .c-dialog__content {
-  max-height: var(--height-dialog__content, 82vh);
-  padding: var(--padding-dialog__content, 0.85em 1rem 1em);
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 24px 24px;
 
   &:first-child {
-    padding-top: 1.25em;
-  }
-
-  .c-dialog__title + & {
-    padding-top: 0;
+    padding-top: 24px;
   }
 }
 
