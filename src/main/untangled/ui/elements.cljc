@@ -144,6 +144,7 @@
                          :always (dissoc :active :color :shape :size))]
     (apply dom/button (clj->js attrs) fixed-children)))
 
+#?(:cljs
 (defn ui-button
   "Render a raised button. Props is a normal clj(s) map with React/HTML attributes plus:
 
@@ -155,8 +156,9 @@
   Any other React properties are allowed, including additional CSS classes.
   "
   [{:keys [className size color shape disabled active] :or {className ""} :as props} & children]
-  (apply ui-flat-button (update props :className str " c-button--raised") children))
+  (apply ui-flat-button (update props :className str " c-button--raised") children)))
 
+#?(:cljs
 (defn ui-circular-button
   "Render a raised circle button of fixed size (configurable in CSS variables, see CSS guide).
   Extra content will overflow out of the cirle. Props is a normal clj(s) map with React/HTML attributes plus:
@@ -171,7 +173,7 @@
   circle.
   "
   [{:keys [className size color disabled active] :or {className ""} :as props} & children]
-  (apply ui-flat-button (update props :className str " c-button--circular") children))
+  (apply ui-flat-button (update props :className str " c-button--circular") children)))
 
 
 (defn ui-card
@@ -565,9 +567,9 @@
                   children (om/children this)]
 
                 (if disablePortal
-                    (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
+                    (dom/div #js {:ref ref :aria-hidden aria-hidden :key "ut-portal"} children)
                     (when mountNode 
-                        (dom/div #js {:ref ref :aria-hidden aria-hidden} children)
+                        (dom/div #js {:ref ref :aria-hidden aria-hidden :key "ut-portal"} children)
                     ))))))
 
 #?(:cljs
@@ -793,15 +795,16 @@
                 scrollState  (if (= scroll :body)
                                " c-dialog--scrollBody "
                                " c-dialog--scrollPaper ")]
-                        (dom/div #js {:ref (fn [r]
+                        (dom/div #js {:key "ut-mountDialog"
+                                      :ref (fn [r]
                                         (when (not (:mountNode (om/get-state this)))
                                             (om/update-state! this assoc :mountNode r)))}
                         (ui-portal {:container     container
                                     :disablePortal disablePortal
                                     :onRendered    (.handleRendered this)
                                     :aria-hidden   (not open)}
-                            (dom/div #js {:key       "ui-dialog"
-                                          :className (str "c-dialog" state scrollState disableOverflow (when full-screen " c-dialog--fullscreen"))
+                            (dom/div #js {:className (str "c-dialog" state scrollState disableOverflow (when full-screen " c-dialog--fullscreen"))
+                                          :key "ut-dialog"
                                           :aria-labelledby labelledby
                                           :aria-describedby describedby
                                           :ref       (fn [r]

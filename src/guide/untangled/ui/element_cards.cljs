@@ -149,7 +149,8 @@
           (e/ui-button {:onClick #(handleClickScrollBody)} "Scroll=Body")
           (e/ui-button {:onClick #(handleClickDisableOverflow)} "disable Paper Overflow")
 
-          (e/ui-dialog (om/computed @state {:open        open
+          (e/ui-dialog (om/computed @state {:key         "tryingthis"
+                                            :open        open
                                             :onClose     #(handleClose)
                                             :fullscreen  fullscr
                                             :scroll      scroll

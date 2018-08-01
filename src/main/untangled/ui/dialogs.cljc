@@ -33,25 +33,29 @@
    :dialog/yes-label yes-label
    :dialog/no-label no-label})
 
-(defui ConfirmationDialog
-  static om/Ident
-  (ident [this props] (dialog-ident props))
-  static om/IQuery
-  (query [this] [:visible :modal])
-  Object
-  (render [this]
-          (let [{:keys [title message no-label yes-label onDone]} (om/get-computed this)
-                respond (fn [v]
-                          (m/set-value! this :dialog/visible? false)
-                          (when onDone (onDone v)))
-                {:keys [dialog/visible? dialog/modal?]} (om/props this)]
-            (e/ui-dialog {}
-                         (when title (e/ui-dialog-title (tr-unsafe title)))
-                         (when message (e/ui-dialog-body (tr-unsafe message)))
-                         (e/ui-dialog-actions {}
-                                              (dom/div nil
-                                                       (e/ui-button #js {:onClick #(respond false)} (tr-unsafe no-label))
-                                                       (e/ui-button #js {:onClick #(respond true)} (tr-unsafe yes-label))))))))
+#?(:cljs
+   (defui ^:once ConfirmationDialog
+     static om/Ident
+     (ident [this props] (dialog-ident props))
+     static om/IQuery
+     (query [this] [:visible :modal])
+     Object
+     (render [this]
+             (let [{:keys [title message no-label yes-label onDone] :as props} (om/get-computed this)
+                   respond (fn [v]
+                             (m/set-value! this :dialog/visible? false)
+                             (when onDone (onDone v)))
+                   {:keys [dialog/visible? dialog/modal?]} (om/props this)]
+               (e/ui-dialog (om/computed props {:open :visible
+                                                :disableBackdrop :dialog/modal?
+                                                :labelledby "confirm-dialog-title"
+                                                :describedby "confirm-dialog-description"})
+                            (when title (e/ui-dialog-title {:id "confirm-dialog-title"} (tr-unsafe title)))
+                            (when message (e/ui-dialog-body {:id "confirm-dialog-description"} (tr-unsafe message)))
+                            (e/ui-dialog-actions {}
+                                                 (dom/span nil
+                                                           (e/ui-button #js {:onClick #(respond false)} (tr-unsafe no-label))
+                                                           (e/ui-button #js {:onClick #(respond true)} (tr-unsafe yes-label)))))))))
 
 (let [factory (om/factory ConfirmationDialog {:keyfn :dialog/id})]
   (defn ui-confirmation-dialog
