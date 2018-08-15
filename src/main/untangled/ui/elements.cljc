@@ -386,7 +386,14 @@
   `:label` string - A title for the input to describe it.
   `:helper` string - Text that helps instruct the user under the input.
   "
-  [{:keys [id kind size state type label helper required action actionEvent] :or {size ""} :as attrs} placeholder]
+  [{:keys [id kind size state type label helper required action actionEvent placeholder ariaLabel wrapperStyle]
+    :or {id ""
+         kind :single-line
+         size :regular
+         state :valid
+         type "text"
+         ariaLabel ""
+         wrapperStyle nil} :as attrs}]
   (assert id "DOM ID is required on checkbox")
   (let [legal-sizes  #{:dense :large}
         legal-states #{:invalid}
@@ -398,7 +405,7 @@
                        (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
                        (assoc :className classes
-                              :aria-label (name placeholder)
+                              :aria-label ariaLabel
                               :aria-multiline (when (= kind :multi-line) true)
                               :aria-required (when required true)
                               :required (when required true)
@@ -409,7 +416,8 @@
                                 (when size (str " c-field--" (name size)))
                                 (when action " has-action")
                                 (when-not (str/blank? label) " has-label")
-                                (when-not (str/blank? helper) " has-helper"))}
+                                (when-not (str/blank? helper) " has-helper"))
+                   :style wrapperStyle}
       (if (= kind :multi-line)
         (dom/textarea (clj->js attrs))
         (dom/input (clj->js attrs)))

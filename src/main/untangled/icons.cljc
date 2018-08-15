@@ -1,8 +1,8 @@
 (ns untangled.icons
   (:require
-    [clojure.string :as str]
-    [om.dom :as dom]
-    [om.next :as om :refer-macros [defui]]))
+   [clojure.string :as str]
+   [om.dom :as dom]
+   [om.next :as om :refer-macros [defui]]))
 
 (def material-icon-paths
   {;; Action
@@ -974,7 +974,8 @@ z"
 
    ;; Custom
    :editing_circle                              "M10 0c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm-6.721 13.466h13.442v2.188h-13.442v-2.188zm12.218-8.43c.218-.213.218-.558 0-.771l-1.311-1.28c-.218-.213-.571-.213-.79 0l-1.098 1.072 2.1 2.051 1.098-1.072h.001zm-1.517 1.482l-2.1-2.051-5.601 5.47v2.051h2.1l5.601-5.47z"
-   })
+   :rotary                                      "M8.21537 6.17396C10.6734 5.39925 13.3324 5.39364 15.7846 6.17396V8.64405C15.7846 8.95842 15.9627 9.22227 16.2269 9.35701C17.0826 9.77804 17.8866 10.3394 18.6045 11.0412C18.9203 11.3499 19.4372 11.3499 19.7531 11.0412L21.7631 9.07631C22.079 8.76755 22.079 8.26231 21.7631 7.95355C16.3704 2.68215 7.62958 2.68215 2.2369 7.95355C1.92104 8.26231 1.92104 8.76755 2.2369 9.07631L4.24121 11.0355C4.55708 11.3443 5.07395 11.3443 5.38981 11.0355C6.10194 10.3394 6.9117 9.77243 7.76741 9.35139C8.03733 9.22227 8.21537 8.9472 8.21537 8.64405L8.21537 6.17396ZM19 20H5C4.5 20 4 19.5 4 19V15C4 13.5 7.5 10.5 9.5 10L9.5 8.5C9.5 8 9.5 7.66667 10 7.5C10.6047 7.29844 13.393 7.29766 14 7.5C14.5 7.66667 14.5 8 14.5 8.5V10C16.5 10.5 20 13.5 20 15V19C20 19.5 19.5 20 19 20ZM16 15C16 17.2091 14.2091 19 12 19C9.79086 19 8 17.2091 8 15C8 12.7909 9.79086 11 12 11C14.2091 11 16 12.7909 16 15ZM15 15C15 15.7684 14.7111 16.4693 14.2361 17C13.6868 17.6138 12.8885 18 12 18C10.3431 18 9 16.6569 9 15C9 13.3432 10.3431 12 12 12C13.6569 12 15 13.3432 15 15Z"
+   :rotary_off                                  "M7.80377 9.35139C6.94806 9.77243 6.1383 10.3394 5.42617 11.0355C5.1103 11.3443 4.59344 11.3443 4.27757 11.0355L2.27326 9.07631C1.9574 8.76755 1.9574 8.26231 2.27326 7.95355C3.01459 7.2289 3.81918 6.60386 4.66966 6.07844L3 4.41L4.41 3L20.0364 18.6289L21 19.59L19.59 21L18.5898 20H5.03636C4.53636 20 4.03636 19.5 4.03636 19V15C4.03636 13.6644 6.81116 11.1396 8.83124 10.2493L7.9 9.30453C7.8811 9.31662 7.85571 9.32794 7.83216 9.33845C7.82215 9.34291 7.81248 9.34723 7.80377 9.35139ZM21.7995 9.07632C22.1153 8.76756 22.1153 8.26231 21.7995 7.95355C18.2364 4.47062 13.2117 3.28894 8.65681 4.40851L10 5.7575C11.9394 5.43942 13.9409 5.57572 15.821 6.17396V8.64405C15.821 8.95843 15.999 9.22227 16.2632 9.35701C17.1189 9.77804 17.9229 10.3394 18.6408 11.0412C18.9567 11.3499 19.4736 11.3499 19.7894 11.0412L21.7995 9.07632ZM20.0364 15C20.0364 13.5 16.5364 10.5 14.5364 10V8.50001C14.5364 8.00001 14.5364 7.66667 14.0364 7.50001C13.6784 7.38069 12.562 7.332 11.5821 7.35346L20.0364 15.8086V15ZM12.0364 19C9.82722 19 8.03636 17.2091 8.03636 15C8.03636 13.494 8.86865 12.1824 10.0984 11.5L10.8424 12.247C9.77965 12.7085 9.03636 13.7675 9.03636 15C9.03636 16.6569 10.3795 18 12.0364 18C12.9249 18 13.7231 17.6138 14.2725 17C14.4854 16.7621 14.6609 16.49 14.7898 16.1929L15.5328 16.9444C14.8494 18.1706 13.5397 19 12.0364 19Z"})
 
 (def icon-names (sort (keys material-icon-paths)))
 
@@ -983,8 +984,8 @@ z"
   "Capitalize every word in a string"
   [s]
   (->> (str/split (str s) #"\b")
-    (map str/capitalize)
-    str/join))
+       (map str/capitalize)
+       str/join))
 
 (def state-mods {:is  #{:active :open :optional :collapsed :passive :positive :negative :neutral :live :alterable :informative :featured :disabled :indeterminate :invalid :error}
                  :has #{:descendents :focus :actions}})
@@ -997,10 +998,10 @@ z"
    (concat-class-string "" type fragments))
   ([base-str type fragments]
    (reduce
-     (fn [acc n]
-       (str acc " " (str base-str type (name n))))
-     base-str
-     fragments)))
+    (fn [acc n]
+      (str acc " " (str base-str type (name n))))
+    base-str
+    fragments)))
 
 (defn concat-state-string
   [states]
@@ -1009,8 +1010,8 @@ z"
                           ((:is state-mods) n) (str acc middle (str "is-" (name n)))
                           ((:has state-mods) n) (str acc middle (str "has-" (name n)))
                           :else acc)))
-    ""
-    states))
+          ""
+          states))
 
 (defn material-icon
   "Get a React DOM SVG node for a material 24x24 icon."
@@ -1023,35 +1024,41 @@ z"
                   :aria-labelledby "title"
                   :role            "img"
                   :viewBox         "0 0 24 24"}
-      (dom/path #js {:d path}))))
+             (dom/path #js {:d path}))))
 
 #?(:clj (def clj->js identity))
 
-(defn icon
-  [iconPath
-   & {:keys [width height modifiers states className onClick]}]
-  (assert (keyword? iconPath) "Must pass a :key")
-  (let [add-class  (fn [attrs])
-        path-check (iconPath material-icon-paths)
-        icon-name  (str/replace (name iconPath) #"_" "-")
-        icon-title-name (str "title-" icon-name "-" (rand-int 999))]
-    (when-not (str/blank? path-check)
-      (dom/svg (clj->js
-                 (cond->
-                   {:className       (str/join " " [(concat-class-string "c-icon" "--" modifiers)
-                                                    (str "c-icon--" icon-name)
-                                                    (concat-state-string states)
-                                                    (concat-class-string className)])
-                    :version         "1.1"
-                    :xmlns           "http://www.w3.org/2000/svg"
-                    :width           "24"
-                    :height          "24"
-                    :aria-labelledby icon-title-name
-                    :focusable       "false"
-                    :role            "img"
-                    :viewBox         "0 0 24 24"
-                    :aria-hidden     true}
-                   onClick (assoc :onClick #(onClick))))
-        (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
-        (dom/path #js {:d path-check})))))
+#?(:cljs (defn icon
+           [iconPath
+            & {:keys [width height modifiers states className onClick]}]
+           (assert (keyword? iconPath) "Must pass a :key")
+           (let [add-class  (fn [attrs])
+                 path-check (iconPath material-icon-paths)
+                 icon-name  (str/replace (name iconPath) #"_" "-")
+                 icon-title-name (str "title-" icon-name "-" (rand-int 999))
+                 icon-evenodd (case iconPath
+                                :rotary "evenodd"
+                                :rotary_off "evenodd"
+                                nil)]
 
+             (when-not (str/blank? path-check)
+               (dom/svg (clj->js
+                         (cond->
+                          {:className       (str/join " " [(concat-class-string "c-icon" "--" modifiers)
+                                                           (str "c-icon--" icon-name)
+                                                           (concat-state-string states)
+                                                           (concat-class-string className)])
+                           :version         "1.1"
+                           :xmlns           "http://www.w3.org/2000/svg"
+                           :width           "24"
+                           :height          "24"
+                           :aria-labelledby icon-title-name
+                           :focusable       "false"
+                           :role            "img"
+                           :viewBox         "0 0 24 24"
+                           :aria-hidden     true}
+                           onClick (assoc :onClick #(onClick))))
+                        (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
+                        (dom/path #js {:d path-check
+                                       :fillRule icon-evenodd
+                                       :clipRule icon-evenodd}))))))
