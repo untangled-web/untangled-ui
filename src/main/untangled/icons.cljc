@@ -1028,7 +1028,7 @@ z"
 
 #?(:clj (def clj->js identity))
 
-#?(:cljs (defn icon
+(defn icon
            [iconPath
             & {:keys [width height modifiers states className onClick]}]
            (assert (keyword? iconPath) "Must pass a :key")
@@ -1061,4 +1061,4 @@ z"
                         (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
                         (dom/path #js {:d path-check
                                        :fillRule icon-evenodd
-                                       :clipRule icon-evenodd}))))))
+                                       :clipRule icon-evenodd})))))

@@ -378,7 +378,6 @@
 
 (defn ui-field
   "Render an input or textarea field. Normal HTML/React attributes can be included, and should be a cljs map (not a js object).
-
   `:id` string - Unique DOM ID. Required for correct rendering.
   `:kind` :single-line (default), :multi-line, :full-width
   `:size` :regular (default), :dense, :large
@@ -386,14 +385,7 @@
   `:label` string - A title for the input to describe it.
   `:helper` string - Text that helps instruct the user under the input.
   "
-  [{:keys [id kind size state type label helper required action actionEvent placeholder ariaLabel wrapperStyle]
-    :or {id ""
-         kind :single-line
-         size :regular
-         state :valid
-         type "text"
-         ariaLabel ""
-         wrapperStyle nil} :as attrs}]
+  [{:keys [id kind size state type label helper required action actionEvent wrapperStyle] :or {size ""} :as attrs} ariaLabel]
   (assert id "DOM ID is required on checkbox")
   (let [legal-sizes  #{:dense :large}
         legal-states #{:invalid}
@@ -401,33 +393,36 @@
         user-classes (get attrs :className "")
         user-type    (if type type "text")
         has          (fn [s] (contains? state s))
+        helper-id    (str id "-helper-text" (rand-int 1000))
         classes      (cond-> (str user-classes " c-field__input ")
                        (contains? legal-states state) (str " is-" (name state)))
         attrs        (-> attrs
-                       (assoc :className classes
-                              :aria-label ariaLabel
-                              :aria-multiline (when (= kind :multi-line) true)
-                              :aria-required (when required true)
-                              :required (when required true)
-                              :type user-type)
-                       (dissoc :size :state :kind :label :helper :action :actionEvent))]
-    (dom/span #js {:className (str "c-field "
-                                (when kind (str " c-field--" (name kind)))
-                                (when size (str " c-field--" (name size)))
-                                (when action " has-action")
-                                (when-not (str/blank? label) " has-label")
-                                (when-not (str/blank? helper) " has-helper"))
-                   :style wrapperStyle}
-      (if (= kind :multi-line)
-        (dom/textarea (clj->js attrs))
-        (dom/input (clj->js attrs)))
-      (when action
-        (ui-icon-button {:glyph action :className "c-field__action" :onClick (when actionEvent actionEvent)}))
-      (when label
-        (dom/label #js {:className "c-field__label" :htmlFor id}
-          label (when required (dom/span #js {:className "c-field__required"} " *"))))
-      (when helper
-        (dom/span #js {:className "c-field__helper"} helper)))))
+                         (assoc :className classes
+                                :aria-label (when ariaLabel ariaLabel)
+                                :aria-multiline (= kind :multi-line)
+                                :aria-required (when required true)
+                                :aria-invalid (contains? legal-states state)
+                                :required (when required true)
+                                :type user-type)
+                         (dissoc :size :state :kind :label :helper :action :actionEvent))]
+    (dom/div #js {:className (str "c-field "
+                                   (when kind (str " c-field--" (name kind)))
+                                   (when size (str " c-field--" (name size)))
+                                   (when action " has-action")
+                                   (when-not (str/blank? label) " has-label")
+                                   (when-not (str/blank? helper) " has-helper"))
+                  :style wrapperStyle
+                  :aria-describedby (when helper helper-id)}
+              (when label
+                (dom/label #js {:className "c-field__label" :htmlFor id}
+                           label (when required (dom/span #js {:className "c-field__required"} " *"))))
+              (if (= kind :multi-line)
+                (dom/textarea (clj->js attrs))
+                (dom/input (clj->js attrs)))
+              (when action
+                (ui-icon-button {:glyph action :className "c-field__action" :onClick (when actionEvent actionEvent)}))
+              (when helper
+                (dom/span #js {:className "c-field__helper" :id helper-id} helper)))))
 
 
 (defn ui-label

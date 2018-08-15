@@ -224,14 +224,14 @@
 (defsample field-kinds
   "# Field Kinds
 
-  Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
+  Use `ui-field` to render a field with optional sizes and provide a11y text.  Also supports custom classes.
   "
   (dom/div nil
-    #_(mapv (fn [kinds]
+    (mapv (fn [kinds]
       (e/ui-field {:id (str "input-" kinds)
                    :label (when-not (= kinds :full-width) (name kinds))
                    :helper "Helper text"
-                   :placeholder "Placeholder text"
+                   :ariaLabel "a11y text"
                    :kind kinds
                    :key (str "ui-" kinds)}
                    (name kinds)))
@@ -240,29 +240,29 @@
 (defsample field-sizes
   "# Field Sizes
 
-  Use `ui-field` to render a field with optional sizes and provide placeholder text.  Also supports custom classes.
+  Use `ui-field` to render a field with optional sizes and provide a11y text.  Also supports custom classes.
   "
   (dom/div nil
-    #_(mapv (fn [sizes] (e/ui-field {:id (str "input-" sizes) :label (name sizes) :placeholder "Placeholder text" :size sizes :key (str "ui-" sizes)} (name sizes)))
+    (mapv (fn [sizes] (e/ui-field {:id (str "input-" sizes) :label (name sizes) :ariaLabel "a11y text" :size sizes :key (str "ui-" sizes)} (name sizes)))
       [:regular :dense :large])))
 
 (defsample field-states
   "# Field States
 
-  Use `ui-field` to render a field with optional states and provide placeholder text.  Also supports custom classes.
+  Use `ui-field` to render a field with optional states and provide a11y text.  Also supports custom classes.
   "
   (dom/div nil
-    #_(mapv (fn [states] (e/ui-field {:id (str "input-" states) :label (name states) :placeholder "Placeholder text" :state states :action :visibility :key (str "ui-" states)} (name states)))
+    (mapv (fn [states] (e/ui-field {:id (str "input-" (name states)) :label (name states) :ariaLabel "a11y text" :state states :action :visibility :key (str "ui-" states) :helper "Helper Text"} (name states)))
       [:valid :invalid])
-    #_(e/ui-field {:id "required" :required true :label "required"} "")))
+    (e/ui-field {:id "required" :required true :label "required"} "")))
 
 (defsample field-types
   "# Field Types
 
-  Use `ui-field` to render a field of optional types and provide placeholder text.  Also supports custom classes.
+  Use `ui-field` to render a field of optional types and provide a11y text.  Also supports custom classes.
   "
   (dom/div nil
-    #_(mapv (fn [type] (e/ui-field {:id (str "input-" type) :label (name type) :placeholder "Placeholder text" :type type :key (str "ui-" type)} (name type)))
+    (mapv (fn [type] (e/ui-field {:id (str "input-" type) :label (name type) :ariaLabel "a11y text" :type type :key (str "ui-" type)} (name type)))
       [:text :password :date :datetime :datetime-local :month :week :email :number :search :tel :time :url :color])))
 
 (defsample icon-colors
