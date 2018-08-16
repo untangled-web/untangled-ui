@@ -1,4 +1,4 @@
-(defproject navis/untangled-ui "1.0.0-alpha22"
+(defproject navis/untangled-ui "1.0.0-alpha23"
   :description "Untangled Components is a library of pre-built CSS and active components for use with Untangled and Om Next"
   :url ""
   :license {:name "MIT"

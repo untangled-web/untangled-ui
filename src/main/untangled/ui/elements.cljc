@@ -404,7 +404,7 @@
                                 :aria-invalid (contains? legal-states state)
                                 :required (when required true)
                                 :type user-type)
-                         (dissoc :size :state :kind :label :helper :action :actionEvent))]
+                         (dissoc :size :state :kind :label :helper :action :actionEvent :wrapperStyle :ariaLabel))]
     (dom/div #js {:className (str "c-field "
                                    (when kind (str " c-field--" (name kind)))
                                    (when size (str " c-field--" (name size)))
