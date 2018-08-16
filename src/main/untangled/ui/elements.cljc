@@ -404,14 +404,14 @@
                                 :aria-invalid (contains? legal-states state)
                                 :required (when required true)
                                 :type user-type)
-                         (dissoc :size :state :kind :label :helper :action :actionEvent :wrapperStyle :ariaLabel))]
+                         (dissoc :size :state :kind :label :helper :action :actionEvent :ariaLabel))]
     (dom/div #js {:className (str "c-field "
                                    (when kind (str " c-field--" (name kind)))
                                    (when size (str " c-field--" (name size)))
                                    (when action " has-action")
                                    (when-not (str/blank? label) " has-label")
                                    (when-not (str/blank? helper) " has-helper"))
-                  :style wrapperStyle
+                  :style (when wrapperStyle wrapperStyle)
                   :aria-describedby (when helper helper-id)}
               (when label
                 (dom/label #js {:className "c-field__label" :htmlFor id}
