@@ -404,7 +404,7 @@
                                 :aria-invalid (contains? legal-states state)
                                 :required (when required true)
                                 :type user-type)
-                         (dissoc :size :state :kind :label :helper :action :actionEvent :ariaLabel))]
+                         (dissoc :size :state :kind :label :helper :action :actionEvent :ariaLabel :wrapperStyle))]
     (dom/div #js {:className (str "c-field "
                                    (when kind (str " c-field--" (name kind)))
                                    (when size (str " c-field--" (name size)))
@@ -476,8 +476,8 @@
           (dom/div #js {:id id :className classes} typeTitle)))
 
 (defn ui-dialog-body
-[{:keys [id className] :as props :or {id "" className ""}} & children]
-    (dom/div #js {:id id :className (str className " c-dialog__content")} children))
+[{:keys [id className key] :as props :or {id "" className "" key ""}} & children]
+    (dom/div #js {:id id :className (str className " c-dialog__content") :key key} children))
 
 (defn ui-dialog-actions
   "Render one or more action elements (e.g. buttons) in the action area of the dialog. Should only be used in a ui-dialog"
