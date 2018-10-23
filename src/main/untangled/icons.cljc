@@ -1035,7 +1035,6 @@ z"
            (let [add-class  (fn [attrs])
                  path-check (iconPath material-icon-paths)
                  icon-name  (str/replace (name iconPath) #"_" "-")
-                 icon-title-name (str "title-" icon-name "-" (rand-int 999))
                  icon-evenodd (case iconPath
                                 :rotary "evenodd"
                                 :rotary_off "evenodd"
@@ -1052,13 +1051,11 @@ z"
                            :xmlns           "http://www.w3.org/2000/svg"
                            :width           "24"
                            :height          "24"
-                           :aria-labelledby icon-title-name
                            :focusable       "false"
                            :role            "img"
                            :viewBox         "0 0 24 24"
                            :aria-hidden     true}
                            onClick (assoc :onClick #(onClick))))
-                        (dom/title #js {:id icon-title-name} (str (title-case (str/replace (name iconPath) #"_" " "))))
                         (dom/path #js {:d path-check
                                        :fillRule icon-evenodd
                                        :clipRule icon-evenodd})))))
