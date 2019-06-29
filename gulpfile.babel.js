@@ -18,7 +18,7 @@ import postcssApply from 'postcss-apply';
 import postcssSimpleVars from 'postcss-simple-vars';
 import postcssCustomMedia from 'postcss-custom-media';
 import postcssCustomSelectors from 'postcss-custom-selectors';
-import postcssNested from 'postcss-Nested';
+import postcssNested from 'postcss-nested';
 import postcssCssVariables from 'postcss-css-variables';
 import postcssSelectorNot from 'postcss-selector-not';
 import postcssCalc from 'postcss-calc';
